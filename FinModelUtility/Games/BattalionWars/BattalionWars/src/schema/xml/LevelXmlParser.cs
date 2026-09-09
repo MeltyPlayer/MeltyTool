@@ -369,7 +369,7 @@ public sealed class LevelXmlParser {
     var modlReader = new ModlModelImporter();
 
     var modelMap = new ConcurrentDictionary<string, IModel>();
-    var task = Parallel.ForEachAsync(
+    Parallel.ForEach(
         modelFiles,
         async (modelFile, _) => {
           var modelId = modelFile.NameWithoutExtension.ToString();
@@ -378,29 +378,27 @@ public sealed class LevelXmlParser {
           if (gameVersion == GameVersion.BW1) {
             if (modelId.Length == 4 && modelId.EndsWith("VET")) {
               var firstTwoCharactersInModelId = modelId[..2];
-              animFiles = fvAnimFiles
-                          .Concat(animationFiles.Where(
-                                      file => file.Name.StartsWith(
-                                          firstTwoCharactersInModelId)))
-                          .ToArray();
+              animFiles = [
+                  .. fvAnimFiles,
+                  .. animationFiles.Where(file => file.Name.StartsWith(
+                                              firstTwoCharactersInModelId))
+              ];
             } else if (modelId.Length == 6 && modelId.EndsWith("GRUNT")) {
               var firstTwoCharactersInModelId = modelId[..2];
-              animFiles = fgAnimFiles
-                          .Concat(animationFiles.Where(
-                                      file => file.Name.StartsWith(
-                                          firstTwoCharactersInModelId)))
-                          .ToArray();
+              animFiles = [
+                  .. fgAnimFiles,
+                  .. animationFiles.Where(file => file.Name.StartsWith(
+                                              firstTwoCharactersInModelId))
+              ];
             }
           }
 
-          modelMap[modelId] = await modlReader.ImportModelAsync(
+          modelMap[modelId] = modlReader.Import(
               null,
               modelFile,
               animFiles,
               gameVersion);
         });
-    task.ConfigureAwait(false);
-    task.Wait();
 
     files.Add(modelMap.Values.SelectMany(m => m.Files));
 

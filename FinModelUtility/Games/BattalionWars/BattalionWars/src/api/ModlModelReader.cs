@@ -4,6 +4,7 @@ using System.Numerics;
 using fin.animation.keyframes;
 using fin.data.dictionaries;
 using fin.data.lazy;
+using fin.data.parallel;
 using fin.data.queues;
 using fin.image;
 using fin.io;
@@ -27,14 +28,14 @@ using schema.binary;
 
 namespace modl.api;
 
-public sealed class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle> {
-  public Task<IModel> ImportAsync(ModlModelFileBundle modelFileBundle)
-    => this.ImportModelAsync(modelFileBundle,
-                             modelFileBundle.ModlFile,
-                             modelFileBundle.AnimFiles?.ToArray(),
-                             modelFileBundle.GameVersion);
+public sealed class ModlModelImporter : IModelImporter<ModlModelFileBundle> {
+  public IModel Import(ModlModelFileBundle modelFileBundle)
+    => this.Import(modelFileBundle,
+                   modelFileBundle.ModlFile,
+                   modelFileBundle.AnimFiles?.ToArray(),
+                   modelFileBundle.GameVersion);
 
-  public async Task<IModel> ImportModelAsync(
+  public IModel Import(
       ModlModelFileBundle modelFileBundle,
       IReadOnlyTreeFile modlFile,
       IList<IReadOnlyTreeFile>? animFiles,
@@ -62,6 +63,46 @@ public sealed class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle>
     var finBones = new IBone[bwModel.Nodes.Count];
     var finBonesByModlNode = new Dictionary<IBwNode, IBone>();
     var finBonesByIdentifier = new Dictionary<string, IBone>();
+
+    var levelDir = modlFile.AssertGetParent();
+    var baseLevelDir = levelDir.AssertGetParent();
+
+    var texrFilesByName
+        = baseLevelDir.GetFilesWithFileType(".texr", true)
+                      .ToDictionary(f => f.NameWithoutExtension.ToString());
+
+    var textureImagesByName
+        = ParallelUtil.ToDictionaryParallelized(
+            bwModel.Nodes.SelectMany(n => n.Materials)
+                   .SelectMany(m => m.Texture1.Yield().Concat(m.Texture2))
+                   .Where(t => t != "")
+                   .Distinct()
+                   .ToArray(),
+            textureName => textureName,
+            textureName => {
+              var textureFileName = $"{textureName}.texr";
+              IReadOnlyTreeFile? textureFile;
+              if (!levelDir.TryToGetExistingFile(
+                      textureName,
+                      out textureFile)) {
+                textureFile = baseLevelDir
+                              .GetFilesWithNameRecursive(textureFileName)
+                              .FirstOrDefault();
+              }
+
+              IImage image;
+              if (textureFile != null) {
+                files.Add(textureFile);
+                var texr = gameVersion == GameVersion.BW2
+                    ? (ITexr) textureFile.ReadNew<Gtxd>()
+                    : textureFile.ReadNew<Text>();
+                image = texr.Image;
+              } else {
+                image = FinImage.Create1x1FromColor(Color.Magenta);
+              }
+
+              return image;
+            });
 
     {
       var nodeQueue =
@@ -116,34 +157,12 @@ public sealed class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle>
                             finBonesByIdentifier);
       }
 
-      var levelDir = modlFile.AssertGetParent();
-      var baseLevelDir = levelDir.AssertGetParent();
-      var textureDictionary = new LazyCaseInvariantStringDictionary<Task<ITexture>>(
-          async textureNameWithoutExtension => {
-            var textureName = $"{textureNameWithoutExtension}.texr";
-            IReadOnlyTreeFile? textureFile;
-            if (!levelDir.TryToGetExistingFile(
-                    textureName,
-                    out textureFile)) {
-              textureFile = baseLevelDir
-                            .GetFilesWithNameRecursive(textureName)
-                            .FirstOrDefault();
-            }
+      var lazyFinTextures = new LazyCaseInvariantStringDictionary<IReadOnlyTexture>(
+          textureName => {
+            var image = textureImagesByName[textureName];
 
-            IImage image;
-            if (textureFile != null) {
-              files.Add(textureFile);
-              var texr = gameVersion == GameVersion.BW2
-                  ? (ITexr) textureFile.ReadNew<Gtxd>()
-                  : textureFile.ReadNew<Text>();
-              image = texr.Image;
-            } else {
-              image = FinImage.Create1x1FromColor(Color.Magenta);
-            }
-
-            var finTexture =
-                model.MaterialManager.CreateTexture(image);
-            finTexture.Name = textureNameWithoutExtension;
+            var finTexture = model.MaterialManager.CreateTexture(image);
+            finTexture.Name = textureName;
 
             // TODO: Need to handle wrapping
             finTexture.WrapModeU = WrapMode.REPEAT;
@@ -152,24 +171,23 @@ public sealed class ModlModelImporter : IAsyncModelImporter<ModlModelFileBundle>
             return finTexture;
           });
 
+      var lazyFinMaterials
+          = new LazyCaseInvariantStringDictionary<IReadOnlyMaterial>(
+              texture1Name => {
+                var finTexture = lazyFinTextures[texture1Name];
+                return model.MaterialManager.AddTextureMaterial(finTexture);
+              });
+
       foreach (var modlNode in bwModel.Nodes) {
         if (modlNode.IsHidden) {
           continue;
         }
 
-        var modlMaterials = modlNode.Materials;
-        var finMaterials = new ITextureMaterial[modlMaterials.Count];
-        await Task.WhenAll(modlMaterials.Select(async (modlMaterial, i) => {
-                    var textureName = modlMaterial.Texture1.ToLower();
-                    if (textureName == "") {
-                      return;
-                    }
-
-                    var finTexture = await textureDictionary[textureName];
-                    finMaterials[i] = model.MaterialManager
-                                           .AddTextureMaterial(finTexture);
-                  }))
-                  .ConfigureAwait(false);
+        var finMaterials
+            = modlNode
+              .Materials
+              .Select(modlMaterial => lazyFinMaterials[modlMaterial.Texture1])
+              .ToArray();
 
         foreach (var modlMesh in modlNode.Meshes) {
           var finMaterial = finMaterials[modlMesh.MaterialIndex];

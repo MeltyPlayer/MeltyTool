@@ -7,8 +7,7 @@ public sealed class BattalionWarsModelImporter
     : IModelImporter<IBattalionWarsModelFileBundle> {
   public IModel Import(IBattalionWarsModelFileBundle modelFileBundle)
     => modelFileBundle switch {
-        ModlModelFileBundle modlFileBundle => new ModlModelImporter()
-                                              .ImportAsync(modlFileBundle).Result,
+        ModlModelFileBundle modlFileBundle => new ModlModelImporter().Import(modlFileBundle),
         OutModelFileBundle outFileBundle => new OutModelImporter().Import(
             outFileBundle),
         _ => throw new ArgumentOutOfRangeException(
