@@ -44,6 +44,14 @@ public partial interface IAnimation : INamed {
 
 [GenerateReadOnly]
 public partial interface IModelAnimation : IAnimation {
+  /// <summary>
+  /// Optional absolute vertex poses, indexed by animation frame. A null entry
+  /// selects the model's base pose.
+  /// </summary>
+  new IReadOnlyList<IMorphTarget?> MorphTargetFrames { get; }
+
+  void SetMorphTargetFrames(IReadOnlyList<IMorphTarget?> morphTargetFrames);
+
   new IReadOnlyIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks {
     get;
   }

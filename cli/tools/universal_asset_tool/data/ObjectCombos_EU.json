@@ -1,0 +1,2930 @@
+{
+  "ObjectCombos": [
+    {
+      "Name": "[!] Box",
+      "ModelID": "0x89",
+      "ModelAddress": "0x0F000694",
+      "Behavior": "0x13002250",
+      "BP1_NAME": "Star #",
+      "BP2_NAME": "Content",
+      "BP1_DESCRIPTION": "The star number when 'Content' is equal to 8 (Star)",
+      "BP2_DESCRIPTION": "The item inside the [!] Box.\n0 = Wing Cap, 1 = Metal Cap\n2 = Vanish Cap, 3 = Koopa Shell\n4 = One Coin, 5 = Five Coins\n6 = Ten Coins, 7 = 1-Up Mushroom\n8 = Star, 9 = 1-Up (Running away)\n10 = Star 1, 11 = Star 2\n12 = Star 3, 13 = Star 4\n14 = Star 5, 15 = Empty"
+    },
+    {
+      "Name": "1-up Mushroom",
+      "ModelID": "0xD4",
+      "ModelAddress": "0x16000E84",
+      "Behavior": "0x1300407C"
+    },
+    {
+      "Name": "1-up Mushroom (Hidden in tree or pole)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130041A4"
+    },
+    {
+      "Name": "1-up Mushroom (hidden)",
+      "ModelID": "0xD4",
+      "ModelAddress": "0x16000E84",
+      "Behavior": "0x130040EC"
+    },
+    {
+      "Name": "1-up Mushroom (Sliding)",
+      "ModelID": "0xD4",
+      "ModelAddress": "0x16000E84",
+      "Behavior": "0x13004044"
+    },
+    {
+      "Name": "Amp",
+      "ModelID": "0xC2",
+      "ModelAddress": "0x0F000028",
+      "Behavior": "0x13003388"
+    },
+    {
+      "Name": "Amp 2",
+      "ModelID": "0xC2",
+      "ModelAddress": "0x0F000028",
+      "Behavior": "0x13003354"
+    },
+    {
+      "Name": "Aquarium Bubble",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13000494"
+    },
+    {
+      "Name": "Aquarium Bubble",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13000494"
+    },
+    {
+      "Name": "Arrow Lift",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000598",
+      "Behavior": "0x13004314"
+    },
+    {
+      "Name": "Baby Penguin",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000104",
+      "Behavior": "0x130020E8"
+    },
+    {
+      "Name": "Baby Penguin",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000104",
+      "Behavior": "0x130020E8"
+    },
+    {
+      "Name": "Bascule Bridge",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000B20",
+      "Behavior": "0x130038D0"
+    },
+    {
+      "Name": "Big Bully and 3 small",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000120",
+      "Behavior": "0x13003694"
+    },
+    {
+      "Name": "Big Bully Boss",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000120",
+      "Behavior": "0x13003660"
+    },
+    {
+      "Name": "Big Fence",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E000878",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Big Mushroom Platform",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E000778",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Big Pushy Rock with eyes",
+      "ModelID": "0xB1",
+      "ModelAddress": "0x0E000A40",
+      "Behavior": "0x13003940"
+    },
+    {
+      "Name": "Big Rotating Gear",
+      "ModelID": "0x44",
+      "ModelAddress": "0x0E0003A0",
+      "Behavior": "0x13004D64"
+    },
+    {
+      "Name": "Big Rotating Gear",
+      "ModelID": "0x44",
+      "ModelAddress": "0x0E0003A0",
+      "Behavior": "0x13004D64"
+    },
+    {
+      "Name": "Big Staircase Level Part",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E000820",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Big Staircase Level Part",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E000820",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Bird ambient sounds",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003C7C"
+    },
+    {
+      "Name": "Bird ambient sounds",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003C7C"
+    },
+    {
+      "Name": "Bird Flock",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x13005354"
+    },
+    {
+      "Name": "Blue Coin",
+      "ModelID": "0x76",
+      "ModelAddress": "0x16000200",
+      "Behavior": "0x13002588"
+    },
+    {
+      "Name": "Blue Coin",
+      "ModelID": "0x76",
+      "ModelAddress": "0x16000200",
+      "Behavior": "0x13002588"
+    },
+    {
+      "Name": "Blue Coins Switch",
+      "ModelID": "0x8C",
+      "ModelAddress": "0x0F000000",
+      "Behavior": "0x13002568"
+    },
+    {
+      "Name": "Blue Coins Switch",
+      "ModelID": "0x8C",
+      "ModelAddress": "0x0F000000",
+      "Behavior": "0x13002568"
+    },
+    {
+      "Name": "Blue Elevator Platform",
+      "ModelID": "0x40",
+      "ModelAddress": "0x0E0008F0",
+      "Behavior": "0x13000CFC"
+    },
+    {
+      "Name": "Blue Elevator Platform",
+      "ModelID": "0x40",
+      "ModelAddress": "0x0E0008F0",
+      "Behavior": "0x13000CFC"
+    },
+    {
+      "Name": "Blue Flame",
+      "ModelID": "0x91",
+      "ModelAddress": "0x16000B8C",
+      "Behavior": "0x13000C84"
+    },
+    {
+      "Name": "Blue Flame",
+      "ModelID": "0x91",
+      "ModelAddress": "0x16000B8C",
+      "Behavior": "0x13000C84"
+    },
+    {
+      "Name": "Blue Smiley",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000D14",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Bob-omb",
+      "ModelID": "0xBC",
+      "ModelAddress": "0x0F0007B8",
+      "Behavior": "0x13003174"
+    },
+    {
+      "Name": "Bomb",
+      "ModelID": "0xB3",
+      "ModelAddress": "0x0D000BBC",
+      "Behavior": "0x130037EC"
+    },
+    {
+      "Name": "Boo Boss on Balcony",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000224",
+      "Behavior": "0x13002768"
+    },
+    {
+      "Name": "Boo Buddy",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000224",
+      "Behavior": "0x13002790"
+    },
+    {
+      "Name": "Boo Buddy",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000224",
+      "Behavior": "0x130027D0"
+    },
+    {
+      "Name": "Boo Buddy 2",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000224",
+      "Behavior": "0x13002804"
+    },
+    {
+      "Name": "Boo Buddy 3",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000224",
+      "Behavior": "0x130027E4"
+    },
+    {
+      "Name": "Boo Buddy With Cage",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000224",
+      "Behavior": "0x13002710"
+    },
+    {
+      "Name": "Boo Flame Thrower",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002684"
+    },
+    {
+      "Name": "Boo in Castle",
+      "ModelID": "0x65",
+      "ModelAddress": "0x0D0005B0",
+      "Behavior": "0x130026D4"
+    },
+    {
+      "Name": "Book Enemy",
+      "ModelID": "0x59",
+      "ModelAddress": "0x0C0000C0",
+      "Behavior": "0x1300506C"
+    },
+    {
+      "Name": "Bookshelf",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000610",
+      "Behavior": "0x130028FC"
+    },
+    {
+      "Name": "Bookshelf Check?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130050B4"
+    },
+    {
+      "Name": "Bookshelf Puzzle",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130050D4"
+    },
+    {
+      "Name": "Bottom Part Platforms",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E000528",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Boulder Dropper",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003DA0"
+    },
+    {
+      "Name": "Bowser",
+      "ModelID": "0x64",
+      "ModelAddress": "0x0D000AC4",
+      "Behavior": "0x13001850"
+    },
+    {
+      "Name": "Bowser Bomb Stand",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E000380",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Bowser Picture Door",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000478",
+      "Behavior": "0x130022D8"
+    },
+    {
+      "Name": "Bowser Platform 1",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000290",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 10",
+      "ModelID": "0x3F",
+      "ModelAddress": "0x0E000368",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 2",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0002A8",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 3",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E0002C0",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 4",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E0002D8",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 5",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E0002F0",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 6",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E000308",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 7",
+      "ModelID": "0x3C",
+      "ModelAddress": "0x0E000320",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 8",
+      "ModelID": "0x3D",
+      "ModelAddress": "0x0E000338",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser Platform 9",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000350",
+      "Behavior": "0x13001958"
+    },
+    {
+      "Name": "Bowser's Sub",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0004A0",
+      "Behavior": "0x13002308"
+    },
+    {
+      "Name": "Box Platform",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000310",
+      "Behavior": "0x13004CF8"
+    },
+    {
+      "Name": "Breakable Box (Big)",
+      "ModelID": "0x81",
+      "ModelAddress": "0x0F0005D0",
+      "Behavior": "0x130014E0"
+    },
+    {
+      "Name": "Breakable Box (Hidden)",
+      "ModelID": "0x81",
+      "ModelAddress": "0x0F0005D0",
+      "Behavior": "0x130014BC"
+    },
+    {
+      "Name": "Breakable Box (Small)",
+      "ModelID": "0x82",
+      "ModelAddress": "0x0F000610",
+      "Behavior": "0x13004218"
+    },
+    {
+      "Name": "Breakable Wall Corner",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000B90",
+      "Behavior": "0x13000638"
+    },
+    {
+      "Name": "Breakable Wall Corner (Star)",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000B78",
+      "Behavior": "0x13000624"
+    },
+    {
+      "Name": "Bubba",
+      "ModelID": "0x59",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x130055DC"
+    },
+    {
+      "Name": "Bubbles",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130032C8"
+    },
+    {
+      "Name": "Bubbles?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003158"
+    },
+    {
+      "Name": "Bubbly Tree",
+      "ModelID": "0x17",
+      "ModelAddress": "0x16000FE8",
+      "Behavior": "0x13002AA4"
+    },
+    {
+      "Name": "Bullet Bill",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000264",
+      "Behavior": "0x1300179C"
+    },
+    {
+      "Name": "Bullet Bill Cannon",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E0008E8",
+      "Behavior": "0x13000600"
+    },
+    {
+      "Name": "Bully",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x1300362C"
+    },
+    {
+      "Name": "Butterfly",
+      "ModelID": "0xBB",
+      "ModelAddress": "0x160000A8",
+      "Behavior": "0x130033BC"
+    },
+    {
+      "Name": "Butterfly (Spawn 1-up?)",
+      "ModelID": "0xBB",
+      "ModelAddress": "0x160000A8",
+      "Behavior": "0x13005598"
+    },
+    {
+      "Name": "Cabin Door",
+      "ModelID": "0x27",
+      "ModelAddress": "0x1600043C",
+      "Behavior": "0x13000AFC"
+    },
+    {
+      "Name": "Cabin Door Check?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130015C0"
+    },
+    {
+      "Name": "Cable Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0003E0",
+      "Behavior": "0x13004AB0"
+    },
+    {
+      "Name": "Cage Platform for tilting Bridge",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E000A40",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Cage Platform on Track",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000758",
+      "Behavior": "0x13004AB0"
+    },
+    {
+      "Name": "Cage Sloped Platform",
+      "ModelID": "0x0E",
+      "ModelAddress": "0x0E000538",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Cage Track",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E0004E0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Cannon",
+      "ModelID": "0x80",
+      "ModelAddress": "0x0F0001A8",
+      "Behavior": "0x13004F10"
+    },
+    {
+      "Name": "Cannon (Closed)",
+      "ModelID": "0xC9",
+      "ModelAddress": "0x080048E0",
+      "Behavior": "0x13003274"
+    },
+    {
+      "Name": "Cannon (Opened)",
+      "ModelID": "0x80",
+      "ModelAddress": "0x0F0001A8",
+      "Behavior": "0x130004A8"
+    },
+    {
+      "Name": "Cannon Grill (Hidden, 120 stars)",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000724",
+      "Behavior": "0x13003CB8"
+    },
+    {
+      "Name": "Cannon Hole",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E000858",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Cap Switch",
+      "ModelID": "0x55",
+      "ModelAddress": "0x0C000048",
+      "Behavior": "0x130001CC"
+    },
+    {
+      "Name": "Castle Courtyard Tower",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E000200",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Castle Door (0 Stars)",
+      "ModelID": "0x22",
+      "ModelAddress": "0x160007B4",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Castle Door (1 Star)",
+      "ModelID": "0x23",
+      "ModelAddress": "0x16000868",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Castle Door (3 Stars)",
+      "ModelID": "0x24",
+      "ModelAddress": "0x1600091C",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Castle Flag",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000660",
+      "Behavior": "0x13003C58"
+    },
+    {
+      "Name": "Castle Floor Trap",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002A5C"
+    },
+    {
+      "Name": "Castle In the Sky",
+      "ModelID": "0x0F",
+      "ModelAddress": "0x0E000788",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Castle Tower",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0006F4",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "CCM Part",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E0004F4",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Chain Chomp",
+      "ModelID": "0x66",
+      "ModelAddress": "0x0D0005EC",
+      "Behavior": "0x1300478C"
+    },
+    {
+      "Name": "Checkerboard Elevator",
+      "ModelID": "0xCA",
+      "ModelAddress": "0x0F0004E4",
+      "Behavior": "0x13004AB0"
+    },
+    {
+      "Name": "Checkerboard Elevators",
+      "ModelID": "0xCA",
+      "ModelAddress": "0x0F0004E4",
+      "Behavior": "0x13001B70"
+    },
+    {
+      "Name": "Chill Bully",
+      "ModelID": "0x65",
+      "ModelAddress": "0x06003874",
+      "Behavior": "0x13003700"
+    },
+    {
+      "Name": "Chimney house",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E00043C",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Chirp Chirp (Water Levels Only)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130021E4"
+    },
+    {
+      "Name": "Chuckya",
+      "ModelID": "0xDF",
+      "ModelAddress": "0x0F0001D8",
+      "Behavior": "0x13000528"
+    },
+    {
+      "Name": "Clam Shell",
+      "ModelID": "0x58",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x13005440"
+    },
+    {
+      "Name": "Clock Big Arm",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E001530",
+      "Behavior": "0x13001C7C"
+    },
+    {
+      "Name": "Clock Little Arm",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E001548",
+      "Behavior": "0x13001C8C"
+    },
+    {
+      "Name": "Clock Pendulum",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E001518",
+      "Behavior": "0x1300442C"
+    },
+    {
+      "Name": "Cloud",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E000160",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Coin Formation",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130008EC"
+    },
+    {
+      "Name": "Coins",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001298"
+    },
+    {
+      "Name": "Couple of Concrete Platforms",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E000660",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Cricket ambient sounds",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003C90"
+    },
+    {
+      "Name": "Crushing Wall Trap",
+      "ModelID": "0x53",
+      "ModelAddress": "0x0E000EA8",
+      "Behavior": "0x13003F78"
+    },
+    {
+      "Name": "Door (Castle)",
+      "ModelID": "0x26",
+      "ModelAddress": "0x160003A8",
+      "Behavior": "0x13000AFC"
+    },
+    {
+      "Name": "Door (Metal)",
+      "ModelID": "0x29",
+      "ModelAddress": "0x160005F8",
+      "Behavior": "0x13000AFC"
+    },
+    {
+      "Name": "Dorrie",
+      "ModelID": "0x68",
+      "ModelAddress": "0x0D000230",
+      "Behavior": "0x13004F90"
+    },
+    {
+      "Name": "Elevator Platform",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E0005D0",
+      "Behavior": "0x13000D30"
+    },
+    {
+      "Name": "Empty Object",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13000000"
+    },
+    {
+      "Name": "Ending Brick Structure",
+      "ModelID": "0x11",
+      "ModelAddress": "0x0E000600",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Evil Lakitu",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C0001BC",
+      "Behavior": "0x13004918"
+    },
+    {
+      "Name": "Extending Platform",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0005F8",
+      "Behavior": "0x13004E4C"
+    },
+    {
+      "Name": "Eyerock Boss",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130052B4"
+    },
+    {
+      "Name": "Falling Pillar",
+      "ModelID": "0x3D",
+      "ModelAddress": "0x0E000900",
+      "Behavior": "0x130043A0"
+    },
+    {
+      "Name": "Falling Pillar Base",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000918",
+      "Behavior": "0x130043E0"
+    },
+    {
+      "Name": "Fences",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E000490",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Final Platform Area",
+      "ModelID": "0x14",
+      "ModelAddress": "0x0E0005C8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Finish Line Check",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130053C4"
+    },
+    {
+      "Name": "Fire Spewer",
+      "ModelID": "0xB4",
+      "ModelAddress": "0x0F000640",
+      "Behavior": "0x1300518C"
+    },
+    {
+      "Name": "Fish",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x1300215C"
+    },
+    {
+      "Name": "Fish 2",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x1300213C"
+    },
+    {
+      "Name": "Fish 3",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x1300214C"
+    },
+    {
+      "Name": "Fish in Aquarium",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001B54"
+    },
+    {
+      "Name": "Flame Thrower",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001108"
+    },
+    {
+      "Name": "Flat Star",
+      "ModelID": "0x14",
+      "ModelAddress": "0x0E000648",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Flipping Floorboards",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0005C8",
+      "Behavior": "0x130028CC"
+    },
+    {
+      "Name": "Floating Brick Platform",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E000890",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Floating Bridge",
+      "ModelID": "0x3F",
+      "ModelAddress": "0x0E000948",
+      "Behavior": "0x130042E4"
+    },
+    {
+      "Name": "Floating Grassy Island",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0005F0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Floating Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000580",
+      "Behavior": "0x13004284"
+    },
+    {
+      "Name": "Floating Wood Bridge",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001E30"
+    },
+    {
+      "Name": "Fly Guy",
+      "ModelID": "0xDC",
+      "ModelAddress": "0x0F000518",
+      "Behavior": "0x130046DC"
+    },
+    {
+      "Name": "Flying Carpet",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000848",
+      "Behavior": "0x13004AB0"
+    },
+    {
+      "Name": "Flying Ship",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E000738",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Flying Ship Wing",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E000890",
+      "Behavior": "0x13003AE0"
+    },
+    {
+      "Name": "Four rotating Platforms",
+      "ModelID": "0x3D",
+      "ModelAddress": "0x0E000640",
+      "Behavior": "0x13004B44"
+    },
+    {
+      "Name": "Four Rotating Platforms",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000570",
+      "Behavior": "0x13004B44"
+    },
+    {
+      "Name": "Fwoosh Cloud",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004988"
+    },
+    {
+      "Name": "Giant Pole",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E000AE0",
+      "Behavior": "0x13000118"
+    },
+    {
+      "Name": "Goomba",
+      "ModelID": "0xC0",
+      "ModelAddress": "0x0F0006E4",
+      "Behavior": "0x1300472C"
+    },
+    {
+      "Name": "Grindel",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000734",
+      "Behavior": "0x1300525C"
+    },
+    {
+      "Name": "Grindel",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000734",
+      "Behavior": "0x13000B58"
+    },
+    {
+      "Name": "Haunted Chair",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C0000D8",
+      "Behavior": "0x13004FD4"
+    },
+    {
+      "Name": "Haunted Door",
+      "ModelID": "0x1D",
+      "ModelAddress": "0x16000720",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Haunted Room Check?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130053F4"
+    },
+    {
+      "Name": "Hazy Maze Door",
+      "ModelID": "0x20",
+      "ModelAddress": "0x1600068C",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Heave-Ho",
+      "ModelID": "0x59",
+      "ModelAddress": "0x0C00028C",
+      "Behavior": "0x13001548"
+    },
+    {
+      "Name": "Hexagonal Mesh Platform",
+      "ModelID": "0x0E",
+      "ModelAddress": "0x0E000AF0",
+      "Behavior": "0x13002018"
+    },
+    {
+      "Name": "Hidden 1-up Trigger",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004124"
+    },
+    {
+      "Name": "Hidden Platform",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E0005E8",
+      "Behavior": "0x130014BC"
+    },
+    {
+      "Name": "Hidden Staircase Step",
+      "ModelID": "0x35",
+      "ModelAddress": "0x0E0005B0",
+      "Behavior": "0x1300286C"
+    },
+    {
+      "Name": "Hidden Star Trigger (Secrets)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003F1C"
+    },
+    {
+      "Name": "Hoot the Owl",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C000018",
+      "Behavior": "0x130033EC"
+    },
+    {
+      "Name": "Hovering Metal Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0005A0",
+      "Behavior": "0x130041BC"
+    },
+    {
+      "Name": "Ice Pillar",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E0004CC",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Igloo",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130016B8"
+    },
+    {
+      "Name": "In Sunken Ship 2?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002480"
+    },
+    {
+      "Name": "In Sunken Ship 3?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130023EC"
+    },
+    {
+      "Name": "In Sunken Ship?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x1300246C"
+    },
+    {
+      "Name": "Inside JRB Cannon",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130029B0"
+    },
+    {
+      "Name": "Jumping Box",
+      "ModelID": "0x81",
+      "ModelAddress": "0x0F0005D0",
+      "Behavior": "0x13001650"
+    },
+    {
+      "Name": "Jumping Fireball",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001168"
+    },
+    {
+      "Name": "Kickable Wooden Board",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000BA8",
+      "Behavior": "0x1300066C"
+    },
+    {
+      "Name": "King Bob-omb",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x130001F4"
+    },
+    {
+      "Name": "Klepto",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x13005310"
+    },
+    {
+      "Name": "Koopa",
+      "ModelID": "0x68",
+      "ModelAddress": "0x0D000214",
+      "Behavior": "0x13004580"
+    },
+    {
+      "Name": "Koopa Flag",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130045D0"
+    },
+    {
+      "Name": "Koopa Shell",
+      "ModelID": "0xBE",
+      "ModelAddress": "0x0F000AB0",
+      "Behavior": "0x13000708"
+    },
+    {
+      "Name": "Lakitu Cam",
+      "ModelID": "0x66",
+      "ModelAddress": "0x0D000000",
+      "Behavior": "0x13004954"
+    },
+    {
+      "Name": "Large Lava Platform",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E0004F8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Large Lava Platform at Top",
+      "ModelID": "0x15",
+      "ModelAddress": "0x0E000660",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Large Lava Platform with Hole",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E000558",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Large Platform",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E0003D8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Level Part",
+      "ModelID": "0x12",
+      "ModelAddress": "0x0E0009E8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Level Part (Grass and Flowers)",
+      "ModelID": "0x0F",
+      "ModelAddress": "0x0E0009A0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Level Part (Grass)",
+      "ModelID": "0x0E",
+      "ModelAddress": "0x0E000958",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Level Part (platform)",
+      "ModelID": "0x11",
+      "ModelAddress": "0x0E0009D0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Level Slope Part",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E000900",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Little Star Cage",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000710",
+      "Behavior": "0x13000F48"
+    },
+    {
+      "Name": "LLL Bowser Puzzle",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002068"
+    },
+    {
+      "Name": "Locked Castle Door",
+      "ModelID": "0x25",
+      "ModelAddress": "0x160009D0",
+      "Behavior": "0x13000AFC"
+    },
+    {
+      "Name": "Long Floating Platform",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E000628",
+      "Behavior": "0x130042B4"
+    },
+    {
+      "Name": "Long Platform",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E000448",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Long Platform for tilting bridge",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E000A28",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Long Rocky Platform",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E0006D8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mad Piano",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C0001B4",
+      "Behavior": "0x13005024"
+    },
+    {
+      "Name": "Magic Staircase",
+      "ModelID": "0x3F",
+      "ModelAddress": "0x0E000600",
+      "Behavior": "0x13004EA0"
+    },
+    {
+      "Name": "Manta",
+      "ModelID": "0x54",
+      "ModelAddress": "0x05008D14",
+      "Behavior": "0x13004370"
+    },
+    {
+      "Name": "Manta Rings (Water Levels only)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003738"
+    },
+    {
+      "Name": "Merry-Go-Round",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E000640",
+      "Behavior": "0x13002968"
+    },
+    {
+      "Name": "Mesh Elevator",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000628",
+      "Behavior": "0x1300292C"
+    },
+    {
+      "Name": "Mesh Platform Side Path",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E000510",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Meshes",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E0005A0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Meshes and Cage",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E000540",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Metal Ball",
+      "ModelID": "0xB4",
+      "ModelAddress": "0x0F000640",
+      "Behavior": "0x13003A08"
+    },
+    {
+      "Name": "Metal Ball Generator",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003AA4"
+    },
+    {
+      "Name": "Metal Ball Generator 2",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003A80"
+    },
+    {
+      "Name": "Metal Door (HMC)",
+      "ModelID": "0x1F",
+      "ModelAddress": "0x160005F8",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Metal Platform",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000288",
+      "Behavior": "0x13004C5C"
+    },
+    {
+      "Name": "Mini Metal Balls Generator",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003AC8"
+    },
+    {
+      "Name": "Mini Mushroom Platform",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E0007D8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "MIPS the Rabbit",
+      "ModelID": "0x64",
+      "ModelAddress": "0x0D000448",
+      "Behavior": "0x130044FC"
+    },
+    {
+      "Name": "Moat Grills",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E00070C",
+      "Behavior": "0x13001C58"
+    },
+    {
+      "Name": "Moneybag (with coin)",
+      "ModelID": "0x74",
+      "ModelAddress": "0x1600013C",
+      "Behavior": "0x130039D4"
+    },
+    {
+      "Name": "Monty Mole",
+      "ModelID": "0x55",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x13004A00"
+    },
+    {
+      "Name": "Monty Mole (in hole)",
+      "ModelID": "0x54",
+      "ModelAddress": "0x05000840",
+      "Behavior": "0x13004A58"
+    },
+    {
+      "Name": "Moon Smiley",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000DBC",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mother Penguin",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000104",
+      "Behavior": "0x13002088"
+    },
+    {
+      "Name": "Mountain Bridge Part",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E000880",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Hole for Star",
+      "ModelID": "0x10",
+      "ModelAddress": "0x0E000948",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 1",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E000808",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 10",
+      "ModelID": "0x16",
+      "ModelAddress": "0x0E000A40",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 2",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E000830",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 3",
+      "ModelID": "0x0B",
+      "ModelAddress": "0x0E0008A8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 4",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E0008D0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 5",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E0008F8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 6",
+      "ModelID": "0x0F",
+      "ModelAddress": "0x0E000920",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 7",
+      "ModelID": "0x13",
+      "ModelAddress": "0x0E0009C0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 8",
+      "ModelID": "0x14",
+      "ModelAddress": "0x0E0009F0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Part 9",
+      "ModelID": "0x15",
+      "ModelAddress": "0x0E000A18",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Mountain Summit",
+      "ModelID": "0x11",
+      "ModelAddress": "0x0E000970",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Moving Blue Coin",
+      "ModelID": "0x76",
+      "ModelAddress": "0x16000200",
+      "Behavior": "0x130030A4"
+    },
+    {
+      "Name": "Moving Concrete Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0008C0",
+      "Behavior": "0x13004E4C"
+    },
+    {
+      "Name": "Moving Hexagonal Mesh",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000B08",
+      "Behavior": "0x13001D78"
+    },
+    {
+      "Name": "Moving Platform on Track",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000658",
+      "Behavior": "0x13004ECC"
+    },
+    {
+      "Name": "Moving Pyramid Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000558",
+      "Behavior": "0x13001408"
+    },
+    {
+      "Name": "Moving Pyramid Wall",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000794",
+      "Behavior": "0x13003B30"
+    },
+    {
+      "Name": "Moving Triangle Platform",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000728",
+      "Behavior": "0x13004E4C"
+    },
+    {
+      "Name": "Mr. Blizzard",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C000348",
+      "Behavior": "0x13004DBC"
+    },
+    {
+      "Name": "Mr. Blizzard (Hidden)",
+      "ModelID": "0x55",
+      "ModelAddress": "0x0C00021C",
+      "Behavior": "0x13004DBC"
+    },
+    {
+      "Name": "Mr. I",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13000054"
+    },
+    {
+      "Name": "Mushroom Platform",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E000748",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Narrow Path Platform",
+      "ModelID": "0x11",
+      "ModelAddress": "0x0E000510",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Octo Platform",
+      "ModelID": "0x0E",
+      "ModelAddress": "0x0E0005B8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Octogonal Platform",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000610",
+      "Behavior": "0x13004E78"
+    },
+    {
+      "Name": "Octogonal Platform",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E000450",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Octogonal Platform",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E000A10",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Octogonal Rotating Platform",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E0008A8",
+      "Behavior": "0x13004E78"
+    },
+    {
+      "Name": "Octo-Rectangular Platform",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0009E0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Openable Grills",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130025E0"
+    },
+    {
+      "Name": "Other Rectangular Platform",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E000520",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Over the Rainbow Platform",
+      "ModelID": "0x11",
+      "ModelAddress": "0x0E0007B8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Palm Tree",
+      "ModelID": "0x1B",
+      "ModelAddress": "0x16001048",
+      "Behavior": "0x13002AA4"
+    },
+    {
+      "Name": "Pendulum",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000270",
+      "Behavior": "0x13004C24"
+    },
+    {
+      "Name": "Penguin Crossing Bridge",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000104",
+      "Behavior": "0x13002E58"
+    },
+    {
+      "Name": "Pillar Platform",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E000860",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Pink Bob-omb (Message)",
+      "ModelID": "0xC3",
+      "ModelAddress": "0x0F0008F4",
+      "Behavior": "0x130031DC"
+    },
+    {
+      "Name": "Pink Bob-omb (Open Cannons)",
+      "ModelID": "0xC3",
+      "ModelAddress": "0x0F0008F4",
+      "Behavior": "0x13003228"
+    },
+    {
+      "Name": "Piranha Plant",
+      "ModelID": "0x64",
+      "ModelAddress": "0x0D000358",
+      "Behavior": "0x13005120"
+    },
+    {
+      "Name": "Piranha Plant",
+      "ModelID": "0x64",
+      "ModelAddress": "0x0D000358",
+      "Behavior": "0x13001FBC"
+    },
+    {
+      "Name": "Platform and Bridge Board",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E000940",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform Assembly",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E0004C0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform Assembly Fences",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E0004D8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform Assembly on Middle Floor",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E000588",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform for Cage 1",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000610",
+      "Behavior": "0x130021C0"
+    },
+    {
+      "Name": "Platform for Cage 2",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000610",
+      "Behavior": "0x13002194"
+    },
+    {
+      "Name": "Platform Path",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E000478",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform with Archway",
+      "ModelID": "0x0B",
+      "ModelAddress": "0x0E000AA8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform with Arrows",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E000AC0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platform with Hill",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E000468",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms 2",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E000690",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms 3",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E0006C0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms 4",
+      "ModelID": "0x10",
+      "ModelAddress": "0x0E0007A0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms 5",
+      "ModelID": "0x12",
+      "ModelAddress": "0x0E0007D0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms and Tilting",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E000498",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms and Tilting 2",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E0004B0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Platforms Group",
+      "ModelID": "0x0F",
+      "ModelAddress": "0x0E000550",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Pokey (SSL)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004634"
+    },
+    {
+      "Name": "Pole",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13000144"
+    },
+    {
+      "Name": "Pole and Spike",
+      "ModelID": "0x12",
+      "ModelAddress": "0x0E000598",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Poundable Wooden Log",
+      "ModelID": "0x6B",
+      "ModelAddress": "0x0D0000B8",
+      "Behavior": "0x1300481C"
+    },
+    {
+      "Name": "Pryamid Top",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000618",
+      "Behavior": "0x13003BB4"
+    },
+    {
+      "Name": "Purple Floor Switch",
+      "ModelID": "0xCF",
+      "ModelAddress": "0x0F0004CC",
+      "Behavior": "0x13001468"
+    },
+    {
+      "Name": "Purple Floor Switch (For Hidden Objects)",
+      "ModelID": "0xCF",
+      "ModelAddress": "0x0F0004CC",
+      "Behavior": "0x130014AC"
+    },
+    {
+      "Name": "Purple Switch (for Grills)",
+      "ModelID": "0xCF",
+      "ModelAddress": "0x0F0004CC",
+      "Behavior": "0x13001478"
+    },
+    {
+      "Name": "Push/Pull Platform",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E0002C8",
+      "Behavior": "0x13004C94"
+    },
+    {
+      "Name": "Pushable Metal Box",
+      "ModelID": "0xD9",
+      "ModelAddress": "0x0F000A30",
+      "Behavior": "0x13001518"
+    },
+    {
+      "Name": "Pushy Rock with eyes",
+      "ModelID": "0xAE",
+      "ModelAddress": "0x0E000A00",
+      "Behavior": "0x13003910"
+    },
+    {
+      "Name": "Pyramid Elevator Cage",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E0007AC",
+      "Behavior": "0x13003B60"
+    },
+    {
+      "Name": "Pyro Box",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E000AD8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Quartz Crystal",
+      "ModelID": "0x0E",
+      "ModelAddress": "0x0E0004C8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Quartzy Path 1",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E000408",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Quartzy Path 2",
+      "ModelID": "0x07",
+      "ModelAddress": "0x0E000420",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Quartzy Path Fences",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E000438",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Racing Penguin",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000104",
+      "Behavior": "0x13005380"
+    },
+    {
+      "Name": "Rainbow Path 1",
+      "ModelID": "0x13",
+      "ModelAddress": "0x0E0007E8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rainbow Path 2",
+      "ModelID": "0x14",
+      "ModelAddress": "0x0E000800",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rainbow Path 3",
+      "ModelID": "0x15",
+      "ModelAddress": "0x0E000818",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rainbow Ring",
+      "ModelID": "0x0E",
+      "ModelAddress": "0x0E000770",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Recovery Heart",
+      "ModelID": "0x78",
+      "ModelAddress": "0x0F0004FC",
+      "Behavior": "0x13004EF8"
+    },
+    {
+      "Name": "Rectangular Lava Platform",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E000A60",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rectangular Platform",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E0004A8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Red Coin",
+      "ModelID": "0xD7",
+      "ModelAddress": "0x160002C4",
+      "Behavior": "0x13003EAC"
+    },
+    {
+      "Name": "Red Coin Maze",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E000708",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Red Flame",
+      "ModelID": "0x90",
+      "ModelAddress": "0x16000B2C",
+      "Behavior": "0x13000C84"
+    },
+    {
+      "Name": "Required for WDW water?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002620"
+    },
+    {
+      "Name": "Rising Platform",
+      "ModelID": "0x40",
+      "ModelAddress": "0x0E000340",
+      "Behavior": "0x13004D28"
+    },
+    {
+      "Name": "Rising Platform (Bowser course 2)",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E000678",
+      "Behavior": "0x13004ECC"
+    },
+    {
+      "Name": "Rock",
+      "ModelID": "0x3B",
+      "ModelAddress": "0x0E000930",
+      "Behavior": "0x130022B8"
+    },
+    {
+      "Name": "Rocky Path upward",
+      "ModelID": "0x0F",
+      "ModelAddress": "0x0E0005D0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rocky Platform Path",
+      "ModelID": "0x0B",
+      "ModelAddress": "0x0E0004F0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rocky Platform Path 2",
+      "ModelID": "0x13",
+      "ModelAddress": "0x0E0005B0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rocky Staircase",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0007E0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Rolling Log",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000DE8",
+      "Behavior": "0x13003FA4"
+    },
+    {
+      "Name": "Rolling Wooden Log",
+      "ModelID": "0x35",
+      "ModelAddress": "0x0E000730",
+      "Behavior": "0x13003F40"
+    },
+    {
+      "Name": "Rotating Clock Hand",
+      "ModelID": "0x41",
+      "ModelAddress": "0x0E000358",
+      "Behavior": "0x13004D64"
+    },
+    {
+      "Name": "Rotating Clockwork Platform",
+      "ModelID": "0x42",
+      "ModelAddress": "0x0E000370",
+      "Behavior": "0x13004D90"
+    },
+    {
+      "Name": "Rotating Cube",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000240",
+      "Behavior": "0x13004BF0"
+    },
+    {
+      "Name": "Rotating Grass Platform",
+      "ModelID": "0x10",
+      "ModelAddress": "0x0E0009B8",
+      "Behavior": "0x130005B4"
+    },
+    {
+      "Name": "Rotating Hexa Platform",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E000A78",
+      "Behavior": "0x13001D14"
+    },
+    {
+      "Name": "Rotating Hexa-Block with Fire Bars",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000B38",
+      "Behavior": "0x13001DA8"
+    },
+    {
+      "Name": "Rotating Hexagonal Ring Platform",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000BB0",
+      "Behavior": "0x13001E6C"
+    },
+    {
+      "Name": "Rotating Platform",
+      "ModelID": "0x3C",
+      "ModelAddress": "0x0E0002E0",
+      "Behavior": "0x13004CCC"
+    },
+    {
+      "Name": "Rotating Prism",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000258",
+      "Behavior": "0x13004BF0"
+    },
+    {
+      "Name": "Rotating Rainbow Platform",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000878",
+      "Behavior": "0x130010D8"
+    },
+    {
+      "Name": "Rotating Triangle Platform",
+      "ModelID": "0x3D",
+      "ModelAddress": "0x0E0002F8",
+      "Behavior": "0x13004CCC"
+    },
+    {
+      "Name": "Rotating Wooden Bridge",
+      "ModelID": "0xAF",
+      "ModelAddress": "0x0E000A58",
+      "Behavior": "0x130006E0"
+    },
+    {
+      "Name": "Rubbery Horseshoe Path",
+      "ModelID": "0x0C",
+      "ModelAddress": "0x0E000508",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Sand ambient sounds",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003CA4"
+    },
+    {
+      "Name": "Scutlebug",
+      "ModelID": "0x65",
+      "ModelAddress": "0x0D000394",
+      "Behavior": "0x13002B5C"
+    },
+    {
+      "Name": "Scuttlebug Spawner?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002BA0"
+    },
+    {
+      "Name": "Shifting Sand Pit",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0005C0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Shifting Sand Pit 2",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E0005D8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Ship Back",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000A00",
+      "Behavior": "0x130023D0"
+    },
+    {
+      "Name": "Ship Back Left",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0009B0",
+      "Behavior": "0x130023D0"
+    },
+    {
+      "Name": "Ship Half",
+      "ModelID": "0x35",
+      "ModelAddress": "0x0E000978",
+      "Behavior": "0x130023D0"
+    },
+    {
+      "Name": "Ship Platforms",
+      "ModelID": "0x0B",
+      "ModelAddress": "0x0E000720",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Ship Right Side",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0009E8",
+      "Behavior": "0x130023D0"
+    },
+    {
+      "Name": "Shortcut Check 2?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002998"
+    },
+    {
+      "Name": "Shortcut Check?",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130053DC"
+    },
+    {
+      "Name": "Sign on Wall",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003324"
+    },
+    {
+      "Name": "Sinking Cage Platform",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E000690",
+      "Behavior": "0x13000FC8"
+    },
+    {
+      "Name": "Sinking Lava Platform",
+      "ModelID": "0x3F",
+      "ModelAddress": "0x0E000BC8",
+      "Behavior": "0x13001E94"
+    },
+    {
+      "Name": "Sinking Lava Rock Block",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000DD0",
+      "Behavior": "0x13001D40"
+    },
+    {
+      "Name": "Sinking Platforms",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000770",
+      "Behavior": "0x13000F9C"
+    },
+    {
+      "Name": "Skeeter",
+      "ModelID": "0x69",
+      "ModelAddress": "0x0D000000",
+      "Behavior": "0x13005468"
+    },
+    {
+      "Name": "Sliding Brick Platform",
+      "ModelID": "0xAD",
+      "ModelAddress": "0x0E000A98",
+      "Behavior": "0x13003970"
+    },
+    {
+      "Name": "Sliding Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0005E0",
+      "Behavior": "0x13004E4C"
+    },
+    {
+      "Name": "Sliding Platform",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000528",
+      "Behavior": "0x13004E4C"
+    },
+    {
+      "Name": "Sliding Skull Box",
+      "ModelID": "0x3C",
+      "ModelAddress": "0x0E000960",
+      "Behavior": "0x130023A4"
+    },
+    {
+      "Name": "Sliding Star Door (30 Stars)",
+      "ModelID": "0xD0",
+      "ModelAddress": "0x0E000F00",
+      "Behavior": "0x13000000"
+    },
+    {
+      "Name": "Sliding Star Door (50 Stars)",
+      "ModelID": "0xD1",
+      "ModelAddress": "0x0E000F00",
+      "Behavior": "0x13000000"
+    },
+    {
+      "Name": "Sliding Star Door (70 Stars)",
+      "ModelID": "0xD6",
+      "ModelAddress": "0x0E000F00",
+      "Behavior": "0x13000000"
+    },
+    {
+      "Name": "Sliding Star Door (8 Stars)",
+      "ModelID": "0xD5",
+      "ModelAddress": "0x0E000F00",
+      "Behavior": "0x13000000"
+    },
+    {
+      "Name": "Small Hexagonal Platform",
+      "ModelID": "0x3C",
+      "ModelAddress": "0x0E000640",
+      "Behavior": "0x130005B4"
+    },
+    {
+      "Name": "Small Mesh Hill",
+      "ModelID": "0x10",
+      "ModelAddress": "0x0E0005E8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Small Metal Platform",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E0002A8",
+      "Behavior": "0x13004C5C"
+    },
+    {
+      "Name": "Small Mushroom Platform",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E0007A8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Small Platform",
+      "ModelID": "0x0B",
+      "ModelAddress": "0x0E000570",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Small Rotating Gear",
+      "ModelID": "0x43",
+      "ModelAddress": "0x0E000388",
+      "Behavior": "0x13004D64"
+    },
+    {
+      "Name": "Small Tilting Platform",
+      "ModelID": "0x41",
+      "ModelAddress": "0x0E000BF8",
+      "Behavior": "0x13001EF8"
+    },
+    {
+      "Name": "Snow Tree",
+      "ModelID": "0x19",
+      "ModelAddress": "0x16001018",
+      "Behavior": "0x13002AA4"
+    },
+    {
+      "Name": "Snow Wave Generator (SL)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004270"
+    },
+    {
+      "Name": "Snowman Ball Base",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E0004A4",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Snowman's Head",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E00041C",
+      "Behavior": "0x13003D0C"
+    },
+    {
+      "Name": "Snowman's Torso",
+      "ModelID": "0xD2",
+      "ModelAddress": "0x0E000400",
+      "Behavior": "0x13003CE4"
+    },
+    {
+      "Name": "Snufit",
+      "ModelID": "0xCE",
+      "ModelAddress": "0x0D0001A0",
+      "Behavior": "0x130051E0"
+    },
+    {
+      "Name": "Some Meshes",
+      "ModelID": "0x12",
+      "ModelAddress": "0x0E000618",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Spiky Tree",
+      "ModelID": "0x18",
+      "ModelAddress": "0x16001000",
+      "Behavior": "0x13002AA4"
+    },
+    {
+      "Name": "Spindel",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000764",
+      "Behavior": "0x13003B00"
+    },
+    {
+      "Name": "Spindrift",
+      "ModelID": "0x54",
+      "ModelAddress": "0x0C000000",
+      "Behavior": "0x130012B4"
+    },
+    {
+      "Name": "Squishable Platform Assembly",
+      "ModelID": "0x3C",
+      "ModelAddress": "0x0E000708",
+      "Behavior": "0x13001064"
+    },
+    {
+      "Name": "Staircase Floor",
+      "ModelID": "0x10",
+      "ModelAddress": "0x0E000568",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Staircase Slope and Platform",
+      "ModelID": "0x0F",
+      "ModelAddress": "0x0E0004E0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Star",
+      "ModelID": "0x7A",
+      "ModelAddress": "0x16000EA0",
+      "Behavior": "0x13003E3C"
+    },
+    {
+      "Name": "Star (Hidden)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003EFC"
+    },
+    {
+      "Name": "Star Cage Bars (Exploding)",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000440",
+      "Behavior": "0x13004868"
+    },
+    {
+      "Name": "Star for Red Coins (Hidden)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003E8C"
+    },
+    {
+      "Name": "Star for Red Coins (Hidden, Bowser Levels)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003EE4"
+    },
+    {
+      "Name": "Star Smiley",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000D84",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Start Platform",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0003C0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Start Platform and Cage track",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E0004B0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Starting Arrow Platform",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0E000430",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Starting Platforms",
+      "ModelID": "0x09",
+      "ModelAddress": "0x0E0006F0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Sunken Ship",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000990",
+      "Behavior": "0x1300241C"
+    },
+    {
+      "Name": "Sunken Ship Back",
+      "ModelID": "0x3A",
+      "ModelAddress": "0x0E0009C8",
+      "Behavior": "0x1300241C"
+    },
+    {
+      "Name": "Sunken Ship Half",
+      "ModelID": "0x35",
+      "ModelAddress": "0x0E000978",
+      "Behavior": "0x1300244C"
+    },
+    {
+      "Name": "Sunken Ship Right Side",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0009E8",
+      "Behavior": "0x1300244C"
+    },
+    {
+      "Name": "Sushi (Shark)",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C000068",
+      "Behavior": "0x13002338"
+    },
+    {
+      "Name": "Swinging Platform",
+      "ModelID": "0x3E",
+      "ModelAddress": "0x0E000860",
+      "Behavior": "0x130054B8"
+    },
+    {
+      "Name": "Swoop (Bat)",
+      "ModelID": "0x64",
+      "ModelAddress": "0x0D0000DC",
+      "Behavior": "0x13004698"
+    },
+    {
+      "Name": "Three Goombas",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004770"
+    },
+    {
+      "Name": "Tilting Bowser Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E000170",
+      "Behavior": "0x13001920"
+    },
+    {
+      "Name": "Tilting Bridge",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000458",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Tilting Inverted Pyramid",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0006C0",
+      "Behavior": "0x13001030"
+    },
+    {
+      "Name": "Tilting Platform",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0001F0",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Tilting Platform",
+      "ModelID": "0x3D",
+      "ModelAddress": "0x0E000788",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Tilting Rectangular Platform",
+      "ModelID": "0x3C",
+      "ModelAddress": "0x0E000908",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Tilting Square Platform",
+      "ModelID": "0x40",
+      "ModelAddress": "0x0E000BE0",
+      "Behavior": "0x13001EC4"
+    },
+    {
+      "Name": "Tilting Wooden Platform",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E000540",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Tilting Wooden Platform",
+      "ModelID": "0x3F",
+      "ModelAddress": "0x0E000670",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Tiny Huge Island Top",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E0005B0",
+      "Behavior": "0x13000174"
+    },
+    {
+      "Name": "Tiny Island Top",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0005C8",
+      "Behavior": "0x13000194"
+    },
+    {
+      "Name": "Toad",
+      "ModelID": "0xDD",
+      "ModelAddress": "0x0D0003E4",
+      "Behavior": "0x13002EF8"
+    },
+    {
+      "Name": "Tower Door",
+      "ModelID": "0x39",
+      "ModelAddress": "0x0E000BE0",
+      "Behavior": "0x130006A4"
+    },
+    {
+      "Name": "Tox Box",
+      "ModelID": "0xC7",
+      "ModelAddress": "0x0E000630",
+      "Behavior": "0x13001F90"
+    },
+    {
+      "Name": "Track for Moving Platform",
+      "ModelID": "0x11",
+      "ModelAddress": "0x0E000580",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Track for Pyramid Platforms",
+      "ModelID": "0x10",
+      "ModelAddress": "0x0E0004F8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Treasure Chests",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004494"
+    },
+    {
+      "Name": "Treasure Chests (Sunken Ship)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x1300444C"
+    },
+    {
+      "Name": "Treasure Chests Puzzle",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004470"
+    },
+    {
+      "Name": "Tricky Triangle Platforms",
+      "ModelID": "0x06",
+      "ModelAddress": "0x0E0006A8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Tricky Triangle Platforms",
+      "ModelID": "0x41",
+      "ModelAddress": "0x0E000958",
+      "Behavior": "0x13004EA0"
+    },
+    {
+      "Name": "TTM Slide Exit Podium",
+      "ModelID": "0x7B",
+      "ModelAddress": "0x0E000DF4",
+      "Behavior": "0x13000720"
+    },
+    {
+      "Name": "Tumbling Bridge",
+      "ModelID": "0xB2",
+      "ModelAddress": "0x0E000AC8",
+      "Behavior": "0x13000C28"
+    },
+    {
+      "Name": "Tumbling Bridge",
+      "ModelID": "0x37",
+      "ModelAddress": "0x0E0005E0",
+      "Behavior": "0x13000C44"
+    },
+    {
+      "Name": "Tumbling Bridge",
+      "ModelID": "0x41",
+      "ModelAddress": "0x0E0006F0",
+      "Behavior": "0x13000C28"
+    },
+    {
+      "Name": "Tweester",
+      "ModelID": "0x56",
+      "ModelAddress": "0x05014630",
+      "Behavior": "0x13002650"
+    },
+    {
+      "Name": "Twhomp",
+      "ModelID": "0x58",
+      "ModelAddress": "0x0C000248",
+      "Behavior": "0x13000BC8"
+    },
+    {
+      "Name": "Twhomp 2",
+      "ModelID": "0x58",
+      "ModelAddress": "0x0C000248",
+      "Behavior": "0x13000B8C"
+    },
+    {
+      "Name": "Two Checkerboard Elevators",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001B70"
+    },
+    {
+      "Name": "Two Checkerboard Elevators",
+      "ModelID": "0x37",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001B70"
+    },
+    {
+      "Name": "Two Pillars",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E0004C8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Ukiki",
+      "ModelID": "0x56",
+      "ModelAddress": "0x0C000110",
+      "Behavior": "0x13000F08"
+    },
+    {
+      "Name": "Unagi",
+      "ModelID": "0x55",
+      "ModelAddress": "0x0C00010C",
+      "Behavior": "0x13004F40"
+    },
+    {
+      "Name": "Under Tower",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130012F4"
+    },
+    {
+      "Name": "Underwater Tweester",
+      "ModelID": "0x57",
+      "ModelAddress": "0x05013CB8",
+      "Behavior": "0x130032A8"
+    },
+    {
+      "Name": "Unknown",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003C44"
+    },
+    {
+      "Name": "Unknown",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001C34"
+    },
+    {
+      "Name": "Unknown",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130054EC"
+    },
+    {
+      "Name": "Unknown CG",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13001BF4"
+    },
+    {
+      "Name": "Vine Bridge",
+      "ModelID": "0x12",
+      "ModelAddress": "0x0E000990",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Volcano",
+      "ModelID": "0x0A",
+      "ModelAddress": "0x0E000A90",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Walkable Steep Hill and Platform",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E000460",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Warp",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F60"
+    },
+    {
+      "Name": "Warp",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F84"
+    },
+    {
+      "Name": "Warp",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F68"
+    },
+    {
+      "Name": "Warp (Fading)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x1300075C"
+    },
+    {
+      "Name": "Warp (Level Exit)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F8C"
+    },
+    {
+      "Name": "Warp (Level Exit, Ceiling)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F88"
+    },
+    {
+      "Name": "Warp (Level Exit, From Hole)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F90"
+    },
+    {
+      "Name": "Warp (Level Exit, Restore Life)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F70"
+    },
+    {
+      "Name": "Warp (Mario Start 1)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F74"
+    },
+    {
+      "Name": "Warp (Mario Start 2)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F64"
+    },
+    {
+      "Name": "Warp (Mario Start 3)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F6C"
+    },
+    {
+      "Name": "Warp (Mario Start 4)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x130056A4"
+    },
+    {
+      "Name": "Warp (Mario Start 5)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F78"
+    },
+    {
+      "Name": "Warp (Mario Start in water)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F94"
+    },
+    {
+      "Name": "Warp Cone",
+      "ModelID": "0x13",
+      "ModelAddress": "0x0E000630",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Warp Hole",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13000780"
+    },
+    {
+      "Name": "Warp Painting Exit (Failure)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F80"
+    },
+    {
+      "Name": "Warp Painting Exit (Success)",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002F7C"
+    },
+    {
+      "Name": "Warp Pipe",
+      "ModelID": "0x49",
+      "ModelAddress": "0x16000388",
+      "Behavior": "0x130007A0"
+    },
+    {
+      "Name": "Warp Pipe",
+      "ModelID": "0x16",
+      "ModelAddress": "0x16000388",
+      "Behavior": "0x130007A0"
+    },
+    {
+      "Name": "Water Bubble Drop",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13004B8C"
+    },
+    {
+      "Name": "Water Level Diamond",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E0005C0",
+      "Behavior": "0x130025F8"
+    },
+    {
+      "Name": "Water Level Pillar",
+      "ModelID": "0x36",
+      "ModelAddress": "0x0E001940",
+      "Behavior": "0x13001C04"
+    },
+    {
+      "Name": "Water Mist",
+      "ModelID": "0x8E",
+      "ModelAddress": "0x16000000",
+      "Behavior": "0x13000DD8"
+    },
+    {
+      "Name": "Waterfall ambient sounds",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13003C30"
+    },
+    {
+      "Name": "Whomp",
+      "ModelID": "0x67",
+      "ModelAddress": "0x0D000480",
+      "Behavior": "0x13002BCC"
+    },
+    {
+      "Name": "Whomp King",
+      "ModelID": "0x67",
+      "ModelAddress": "0x0D000480",
+      "Behavior": "0x13002BB8"
+    },
+    {
+      "Name": "Whomp's Fortress Tower",
+      "ModelID": "0x08",
+      "ModelAddress": "0x0E0008A8",
+      "Behavior": "0x130005D8"
+    },
+    {
+      "Name": "Wiggler Boss",
+      "ModelID": "0x57",
+      "ModelAddress": "0x0C000030",
+      "Behavior": "0x13004898"
+    },
+    {
+      "Name": "Wind Blowing",
+      "ModelID": "0x00",
+      "ModelAddress": "0x00000000",
+      "Behavior": "0x13002E3C"
+    },
+    {
+      "Name": "Wooden Boards Platform",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E000678",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Wooden Boards Platforms",
+      "ModelID": "0x16",
+      "ModelAddress": "0x0E000830",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Wooden Bridge and Fences",
+      "ModelID": "0x05",
+      "ModelAddress": "0x0E0003F0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Wooden Cabin",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E00046C",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Wooden Castle Door",
+      "ModelID": "0x27",
+      "ModelAddress": "0x160004D0",
+      "Behavior": "0x13000AFC"
+    },
+    {
+      "Name": "Wooden Door",
+      "ModelID": "0x1D",
+      "ModelAddress": "0x160004D0",
+      "Behavior": "0x13000B0C"
+    },
+    {
+      "Name": "Wooden Fence Platform",
+      "ModelID": "0x0D",
+      "ModelAddress": "0x0E000758",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Wooden Platform",
+      "ModelID": "0x0B",
+      "ModelAddress": "0x0E000480",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Wooden Signpost",
+      "ModelID": "0x7C",
+      "ModelAddress": "0x16000FB4",
+      "Behavior": "0x130032E0"
+    },
+    {
+      "Name": "W-Shaped Platform",
+      "ModelID": "0x04",
+      "ModelAddress": "0x0E0009F8",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "W-Shaped Tilting Platform",
+      "ModelID": "0x40",
+      "ModelAddress": "0x0E000688",
+      "Behavior": "0x13004B1C"
+    },
+    {
+      "Name": "Yellow Coin",
+      "ModelID": "0x74",
+      "ModelAddress": "0x1600013C",
+      "Behavior": "0x1300090C"
+    },
+    {
+      "Name": "Yellow Coin (for triggers?)",
+      "ModelID": "0x74",
+      "ModelAddress": "0x1600013C",
+      "Behavior": "0x1300091C"
+    },
+    {
+      "Name": "Yellow Pole",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000450",
+      "Behavior": "0x13005528"
+    },
+    {
+      "Name": "Yellow Sliding Platform",
+      "ModelID": "0x3F",
+      "ModelAddress": "0x0E000740",
+      "Behavior": "0x13004E4C"
+    },
+    {
+      "Name": "Yellow Smiley",
+      "ModelID": "0x38",
+      "ModelAddress": "0x0E000D4C",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Yellow Sphere",
+      "ModelID": "0x03",
+      "ModelAddress": "0x0D0000B0",
+      "Behavior": "0x13002A48"
+    },
+    {
+      "Name": "Yellow-Green Staircase",
+      "ModelID": "0x41",
+      "ModelAddress": "0x0E0006A0",
+      "Behavior": "0x13004EA0"
+    },
+    {
+      "Name": "Yoshi",
+      "ModelID": "0x55",
+      "ModelAddress": "0x0C000468",
+      "Behavior": "0x13004538"
+    }
+  ]
+}

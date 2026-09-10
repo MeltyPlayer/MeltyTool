@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Fmod5Sharp" Version="3.1.0" />
     <PackageReference Include="FModBankParser" Version="1.2.0" />
+    <PackageReference Include="Microsoft.Bcl.Memory" Version="9.0.14" />
   </ItemGroup>
 
   <ItemGroup>

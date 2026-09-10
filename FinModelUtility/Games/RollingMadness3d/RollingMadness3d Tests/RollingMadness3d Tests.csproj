@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RollingMadness3d\RollingMadness3d.csproj" />
+    <ProjectReference Include="..\..\..\Fin\Fin.Testing\Fin.Testing.csproj" />
   </ItemGroup>
 
   <ItemGroup>

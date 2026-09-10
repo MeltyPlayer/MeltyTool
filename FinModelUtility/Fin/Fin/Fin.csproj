@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <AssimpNetterVersion Condition="'$(AssimpNetterVersion)' == ''">6.0.2.1</AssimpNetterVersion>
+    <DefineConstants Condition="'$(EnablePatchedAssimpMorphFbx)' == 'true'">$(DefineConstants);ENABLE_PATCHED_ASSIMP_MORPH_FBX</DefineConstants>
     <RootNamespace>fin</RootNamespace>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
@@ -15,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AssimpNetter" Version="$(AssimpNetterVersion)" />
     <PackageReference Include="AssimpNetter" Version="6.0.5" />
     <PackageReference Include="Autofac" Version="9.3.2" />
     <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.4.2" />

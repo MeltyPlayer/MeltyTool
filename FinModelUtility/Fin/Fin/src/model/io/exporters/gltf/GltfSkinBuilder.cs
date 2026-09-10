@@ -10,6 +10,7 @@ using fin.model.util;
 using fin.util.enumerables;
 
 using SharpGLTF.Geometry;
+using SharpGLTF.Geometry.VertexTypes;
 using SharpGLTF.Materials;
 using SharpGLTF.Schema2;
 
@@ -23,7 +24,7 @@ public sealed class GltfSkinBuilder {
 
   public void AddSkin(
       ModelRoot gltfModel,
-      Skin gltfSkin,
+      Skin? gltfSkin,
       IReadOnlyModel model,
       Node rootNode,
       float scale,
@@ -179,6 +180,51 @@ public sealed class GltfSkinBuilder {
         }
       }
 
+      // glTF morph targets are stored as deltas from the base mesh. SharpGLTF
+      // accepts absolute vertices here and performs that conversion for us.
+      // Keep the target index identical across every mesh so animation weight
+      // channels can be shared by all mesh nodes.
+      var morphTargets = model.AnimationManager.MorphTargets;
+      for (var morphTargetIndex = 0;
+           morphTargetIndex < morphTargets.Count;
+           ++morphTargetIndex) {
+        var finMorphTarget = morphTargets[morphTargetIndex];
+        var gltfMorphTarget = gltfMeshBuilder.UseMorphTarget(morphTargetIndex);
+
+        foreach (var finVertex in verticesInMesh) {
+          var baseGeometry = vertexToBuilder[finVertex].GetGeometry();
+          var morphPosition = finMorphTarget.PositionMorphs.TryGetValue(
+              finVertex,
+              out var targetPosition)
+              ? targetPosition * scale
+              : baseGeometry.GetPosition();
+
+          IVertexGeometry morphGeometry;
+          if (!hasNormals) {
+            morphGeometry = new VertexPosition(morphPosition);
+          } else {
+            baseGeometry.TryGetNormal(out var baseNormal);
+            var morphNormal = finMorphTarget.NormalMorphs.TryGetValue(
+                finVertex,
+                out var targetNormal)
+                ? targetNormal
+                : baseNormal;
+
+            if (!hasTangents) {
+              morphGeometry = new VertexPositionNormal(morphPosition,
+                                                       morphNormal);
+            } else {
+              baseGeometry.TryGetTangent(out var baseTangent);
+              morphGeometry = new VertexPositionNormalTangent(morphPosition,
+                                                              morphNormal,
+                                                              baseTangent);
+            }
+          }
+
+          gltfMorphTarget.SetVertex(baseGeometry, morphGeometry);
+        }
+      }
+
       var gltfNode = parentGltfNode.CreateNode();
       gltfNode.Name = finMesh.Name;
 
@@ -190,7 +236,9 @@ public sealed class GltfSkinBuilder {
       if (gltfMesh != null) {
         gltfNode.WithMesh(gltfMesh);
         if (weightCount > 0) {
-          gltfNode.Skin = gltfSkin;
+          gltfNode.Skin = gltfSkin ??
+                          throw new InvalidOperationException(
+                              "A weighted mesh requires a glTF skin.");
         }
 
         gltfMesh.Name = finMesh.Name;

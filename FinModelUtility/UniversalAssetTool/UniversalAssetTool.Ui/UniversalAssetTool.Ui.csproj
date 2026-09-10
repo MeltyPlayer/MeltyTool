@@ -43,6 +43,21 @@
 
   <ItemGroup>
     <PackageReference Include="OpenTK.GLControl" Version="4.0.2" />
+    <PackageReference Include="OpenTK.Redist.GLFW" Version="3.4.0.44"
+                      GeneratePathProperty="true" />
+    <PackageReference Include="OpenAL.Soft" Version="1.23.1"
+                      GeneratePathProperty="true" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RuntimeIdentifier)' == 'win-x64'">
+    <Content Include="$(PkgOpenTK_Redist_GLFW)\runtimes\win-x64\native\glfw3.dll"
+             Link="glfw3.dll"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="Always" />
+    <Content Include="$(PkgOpenAL_Soft)\runtimes\win-x64\native\Release\OpenAL32.dll"
+             Link="OpenAL32.dll"
+             CopyToOutputDirectory="PreserveNewest"
+             CopyToPublishDirectory="Always" />
   </ItemGroup>
 
   <ItemGroup>

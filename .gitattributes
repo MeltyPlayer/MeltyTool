@@ -1,5 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+*.patch text eol=lf
 
 FinModelUtility/ModelPluginWrappers/lib/** linguist-vendored
 FinModelUtility/ModelPluginWrappers/blender/** linguist-vendored
