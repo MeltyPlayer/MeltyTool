@@ -9,15 +9,14 @@ using marioartist.api;
 
 using NUnit.Framework;
 
+using GlUtil = fin.ui.rendering.gl.GlUtil;
+
 namespace marioartist;
 
 public sealed class TstltModelGoldenTests
     : BModelGoldenTests<TstltModelFileBundle, TstltModelImporter> {
   [OneTimeSetUp]
-  public void OneTimeSetUp() {
-    // Initialize plugin
-    HeadlessGl.MakeCurrent();
-  }
+  public void OneTimeSetUp() => HeadlessGl.MakeCurrent();
 
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]

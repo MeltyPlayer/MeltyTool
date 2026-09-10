@@ -1,4 +1,4 @@
-#version 460
+#version 450
 precision mediump float;
 
 layout (std140, binding = 1) uniform GlobalMatrices {

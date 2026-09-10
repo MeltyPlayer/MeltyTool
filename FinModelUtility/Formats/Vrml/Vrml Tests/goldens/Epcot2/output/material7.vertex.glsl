@@ -1,4 +1,4 @@
-#version 460
+#version 450
 
 layout (std140, binding = 1) uniform GlobalMatrices {
   mat4 projectionViewMatrix;

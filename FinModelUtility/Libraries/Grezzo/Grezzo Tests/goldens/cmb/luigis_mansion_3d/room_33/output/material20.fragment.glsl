@@ -1,4 +1,4 @@
-#version 460
+#version 450
 precision mediump float;
 
 uniform float scalar_3dsAlpha5;

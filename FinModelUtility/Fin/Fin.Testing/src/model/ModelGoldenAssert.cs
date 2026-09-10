@@ -20,7 +20,7 @@ public static class ModelGoldenAssert {
           gatherModelBundleFromInputDirectory)
       where TModelBundle : IModelFileBundle {
     QuaternionUtil.UseSlowButConsistentSlerp();
-    OpenGlVersionService.Init(false);
+    OpenGlVersionService.Init(false, 4, 5);
 
     await GoldenAssert.AssertGoldenFiles(
         goldenSubdir,

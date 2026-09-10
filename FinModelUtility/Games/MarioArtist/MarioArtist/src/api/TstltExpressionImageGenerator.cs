@@ -50,11 +50,6 @@ public static class TstltExpressionImageGenerator {
     viewMatricesUbo.UpdateData();
     viewMatricesUbo.Bind();
 
-    var conversionFactor = new Vector2(fbo.Width, fbo.Height) /
-                           new Vector2(Expression.WIDTH - 1,
-                                       Expression.HEIGHT - 1) /
-                           16;
-
     for (var i = 0; i < expressions.Length; ++i) {
       var expression = expressions[i];
       var expressionName = i switch {
