@@ -21,54 +21,10 @@ public static class TstltExpressionImageGenerator {
       IAnimationManager dstAnimationManager,
       IReadOnlyTexture baseFaceTexture,
       Expression[] expressions) {
-    var faceModel = ModelImpl.CreateForViewer();
-
     var baseFaceImage = baseFaceTexture.Image;
-
-    var (faceMaterial, faceTexture)
-        = faceModel.MaterialManager.AddSimpleTextureMaterialFromImage(
-            baseFaceImage);
-    faceMaterial.CullingMode = CullingMode.SHOW_BOTH;
-    faceTexture.WrapModeU = faceTexture.WrapModeV = WrapMode.CLAMP;
-
-    var faceSkin = faceModel.Skin;
-    var pinVertices = new Grid<IVertex>(Expression.WIDTH, Expression.HEIGHT);
-    for (var yI = 0; yI < Expression.HEIGHT; ++yI) {
-      var v = 1f * yI / (Expression.HEIGHT - 1);
-      var y = v * baseFaceImage.Height;
-
-      for (var xI = 0; xI < Expression.WIDTH; ++xI) {
-        var u = 1f * xI / (Expression.WIDTH - 1);
-        var x = u * baseFaceImage.Width;
-
-        var pinVertex = faceSkin.AddVertex(new Vector3(x, y, 0));
-        pinVertex.SetUv(u, v);
-
-        pinVertices[xI, yI] = pinVertex;
-      }
-    }
-
-    var triangleVertices
-        = new List<(IReadOnlyVertex, IReadOnlyVertex, IReadOnlyVertex)>();
-    for (var vY = 0; vY < Expression.HEIGHT - 1; ++vY) {
-      for (var vX = 0; vX < Expression.WIDTH - 1; ++vX) {
-        var a = pinVertices[vX, vY];
-        var b = pinVertices[vX + 1, vY];
-        var c = pinVertices[vX, vY + 1];
-        var d = pinVertices[vX + 1, vY + 1];
-
-        triangleVertices.Add((a, b, c));
-        triangleVertices.Add((d, c, b));
-      }
-    }
-
-    faceSkin.AddMesh()
-            .AddTriangles(triangleVertices)
-            .SetMaterial(faceMaterial);
-
-    using var faceRenderer = ModelRenderer.CreateDynamic(faceModel);
-
+    using var faceRenderer = new FaceRenderer(baseFaceImage);
     using var fbo = new GlFbo(baseFaceImage.Width, baseFaceImage.Height);
+
     GlUtil.PushState();
 
     GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
@@ -110,22 +66,11 @@ public static class TstltExpressionImageGenerator {
           5 => "sleep",
       };
 
-      for (var xI = 0; xI < Expression.WIDTH; ++xI) {
-        for (var yI = 0; yI < Expression.HEIGHT; ++yI) {
-          var pin = expression.Pins[xI * Expression.HEIGHT + yI];
-
-          pin = (pin - new Vector2(88, 24)) * conversionFactor;
-
-          pinVertices[xI, yI].SetLocalPosition(pin.X, pin.Y, 0);
-        }
-      }
-
       fbo.TargetFbo();
       GlUtil.SetViewport(new Rectangle(0, 0, fbo.Width, fbo.Height));
       GlUtil.ClearColorAndDepth();
 
-      faceRenderer.UpdateBuffer();
-
+      faceRenderer.SetExpression(expression);
       faceRenderer.Render();
 
       fbo.UntargetFbo();

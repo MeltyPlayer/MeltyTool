@@ -5,8 +5,7 @@ using OpenTK.Graphics.OpenGL4;
 namespace fin.ui.rendering.gl;
 
 public partial record GlState {
-  public CullingMode CurrentCullingMode { get; set; } =
-    CullingMode.SHOW_NEITHER;
+  public CullingMode CurrentCullingMode { get; set; } = CullingMode.SHOW_FRONT_ONLY;
 }
 
 public static partial class GlUtil {

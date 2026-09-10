@@ -22,8 +22,10 @@ public sealed class TstltModelGoldenTests
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(
-      IFileHierarchyDirectory goldenDirectory)
-    => await this.AssertGolden(goldenDirectory);
+      IFileHierarchyDirectory goldenDirectory) {
+    GlUtil.ResetGl();
+    await this.AssertGolden(goldenDirectory);
+  }
 
   public override TstltModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory) {
