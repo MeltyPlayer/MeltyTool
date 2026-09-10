@@ -2,7 +2,7 @@
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
+public partial record GlState {
   public bool FlipFaces { get; set; }
 }
 

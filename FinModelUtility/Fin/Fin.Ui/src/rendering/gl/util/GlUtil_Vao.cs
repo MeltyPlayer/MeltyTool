@@ -2,8 +2,8 @@
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
-  public int CurrentVaoId { get; set; } = -1;
+public partial record GlState {
+  public int CurrentVaoId { get; set; }
 }
 
 public static partial class GlUtil {

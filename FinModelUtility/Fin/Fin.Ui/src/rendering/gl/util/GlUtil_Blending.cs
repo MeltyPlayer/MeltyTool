@@ -12,13 +12,13 @@ using GlBlendFactorDst = OpenTK.Graphics.OpenGL4.BlendingFactorDest;
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
+public partial record GlState {
   public Color BlendColor { get; set; }
 
   public (FinBlendEquation colorBlendEquation, FinBlendFactor colorSrcFactor,
       FinBlendFactor colorDstFactor,
       FinBlendEquation alphaBlendEquation, FinBlendFactor alphaSrcFactor,
-      FinBlendFactor alphaDstFactor, FinLogicOp)
+      FinBlendFactor alphaDstFactor, FinLogicOp logicOp)
       CurrentBlending { get; set; } = (
       FinBlendEquation.ADD, FinBlendFactor.SRC_ALPHA,
       FinBlendFactor.ONE_MINUS_SRC_ALPHA,

@@ -2,9 +2,9 @@
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
-  public int CurrentUboDataId { get; set; } = -1;
-  public int[] CurrentUboBufferBaseIdByIndex { get; } = [-1, -1, -1, -1];
+public partial record GlState {
+  public int CurrentUboDataId { get; set; }
+  public int[] CurrentUboBufferBaseIdByIndex { get; } = [0, 0, 0, 0];
 }
 
 public static partial class GlUtil {

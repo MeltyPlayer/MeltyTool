@@ -69,7 +69,7 @@ public static class TstltExpressionImageGenerator {
     using var faceRenderer = ModelRenderer.CreateDynamic(faceModel);
 
     using var fbo = new GlFbo(baseFaceImage.Width, baseFaceImage.Height);
-    GlUtil.PushContext();
+    GlUtil.PushState();
 
     GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
     GlTransform.PushMatrix();
@@ -152,6 +152,6 @@ public static class TstltExpressionImageGenerator {
     GlTransform.MatrixMode(TransformMatrixMode.MODEL);
     GlTransform.PopMatrix();
 
-    GlUtil.PopContext();
+    GlUtil.PopState();
   }
 }
