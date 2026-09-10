@@ -110,9 +110,6 @@ public sealed class GlFbo : IFinDisposable {
   public void BindDepth(int textureIndex = 0)
     => GlUtil.BindTexture(textureIndex, this.depthTextureId_);
 
-  public void TargetFbo()
-    => GL.BindFramebuffer(FramebufferTarget.Framebuffer, this.fboId_);
-
-  public void UntargetFbo()
-    => GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+  public void TargetFbo() => GlUtil.BindFbo(this.fboId_);
+  public void UntargetFbo() => GlUtil.ResetFbo();
 }

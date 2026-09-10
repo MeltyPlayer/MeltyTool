@@ -55,6 +55,7 @@ public static partial class GlUtil {
     SetCulling(state.CurrentCullingMode);
     SetDepth(state.DepthModeAndCompareType.Item1,
              state.DepthModeAndCompareType.Item2);
+    BindFbo(state.CurrentFboId);
     SetFlipFaces(state.FlipFaces);
     BindUboData(state.CurrentUboDataId);
     for (var i = 0; i < state.CurrentUboBufferBaseIdByIndex.Length; ++i) {
