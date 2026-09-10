@@ -29,6 +29,7 @@ using fin.util.sets;
 
 using marioartist.schema;
 using marioartist.schema.talent_studio;
+using marioartist.schema.talent_studio.face;
 
 using OneOf;
 
@@ -155,6 +156,9 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     var skinChosenPart = new ChosenPart0();
     skinChosenPart.ChosenColor0.Color = skinColor;
+
+    br.Position = 0x9344;
+    var expressions = br.ReadNews<Expression>(6);
 
     br.Position = 0xb840;
     var headChosenPart0s = br.ReadNews<ChosenPart0>(5);
@@ -362,6 +366,13 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                                 return faceTexture;
                               })
                               .ToArray());
+
+      TstltExpressionImageGenerator
+          .GenerateExpressionTextures(
+              model.MaterialManager,
+              model.AnimationManager,
+              faceTextures[0],
+              expressions);
 
       var faceMeshes = new List<IMesh>();
       if (!USE_GRANULAR_MESHES) {

@@ -20,7 +20,7 @@ public partial class GlShaderProgram {
     }
 
   private class Mat4sShaderUniform(int location, int length)
-      : BShaderUniform, IShaderUniformArray<Matrix4x4> {
+      : BShaderUniform(location), IShaderUniformArray<Matrix4x4> {
     private readonly Matrix4x4[] value_ = new Matrix4x4[length];
 
     public void SetAndMarkDirty(int index, in Matrix4x4 value) {

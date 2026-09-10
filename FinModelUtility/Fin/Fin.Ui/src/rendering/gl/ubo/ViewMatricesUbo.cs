@@ -2,7 +2,7 @@
 
 namespace fin.ui.rendering.gl.ubo;
 
-public sealed class ViewMatricesUbo {
+public sealed class ViewMatricesUbo : IDisposable {
   private readonly int bufferSize_;
   private readonly GlUbo impl_;
 

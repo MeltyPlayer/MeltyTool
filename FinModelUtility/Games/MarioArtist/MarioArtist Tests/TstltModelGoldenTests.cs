@@ -3,6 +3,7 @@
 using fin.io;
 using fin.testing;
 using fin.testing.model;
+using fin.ui.rendering.gl;
 
 using marioartist.api;
 
@@ -12,6 +13,12 @@ namespace marioartist;
 
 public sealed class TstltModelGoldenTests
     : BModelGoldenTests<TstltModelFileBundle, TstltModelImporter> {
+  [OneTimeSetUp]
+  public void OneTimeSetUp() {
+    // Initialize plugin
+    HeadlessGl.MakeCurrent();
+  }
+
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

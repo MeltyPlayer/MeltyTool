@@ -16,7 +16,7 @@ public partial class GlShaderProgram {
   }
 
   private class BoolShaderUniform(int location)
-      : BShaderUniform, IShaderUniform<bool> {
+      : BShaderUniform(location), IShaderUniform<bool> {
     private bool value_;
 
     public void SetAndMarkDirty(in bool value) {

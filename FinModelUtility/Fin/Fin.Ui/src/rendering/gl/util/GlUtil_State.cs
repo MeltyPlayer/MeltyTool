@@ -7,8 +7,9 @@ namespace fin.ui.rendering.gl;
 public partial class GlState;
 
 public static partial class GlUtil {
-  private static NullFriendlyDictionary<object?, GlState>
-      stateByKey_ = new();
+  private static NullFriendlyDictionary<object?, GlState> stateByKey_ = new();
+
+  private static Stack<GlState> stateStack_ = new();
 
   private static GlState currentState_;
 
@@ -28,4 +29,11 @@ public static partial class GlUtil {
 
     currentState_ = state;
   }
+
+  public static void PushContext() {
+    stateStack_.Push(currentState_);
+    currentState_ = new GlState();
+  }
+
+  public static void PopContext() => currentState_ = stateStack_.Pop();
 }

@@ -5,7 +5,11 @@ using readOnly;
 
 namespace fin.ui.rendering.gl;
 
-public interface IShaderUniform<T> {
+public interface IShaderUniform {
+  bool IsValid { get; }
+}
+
+public interface IShaderUniform<T> : IShaderUniform {
   void SetAndMarkDirty(in T value);
   void SetAndMaybeMarkDirty(in T value);
 }

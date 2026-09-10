@@ -18,7 +18,7 @@ public partial class GlShaderProgram {
   }
 
   private class Vec3ShaderUniform(int location)
-      : BShaderUniform, IShaderUniform<Vector3> {
+      : BShaderUniform(location), IShaderUniform<Vector3> {
     private Vector3 value_;
 
     public void SetAndMarkDirty(in Vector3 value) {

@@ -83,11 +83,18 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   public IReadOnlyShaderProgram ShaderProgram => this.impl_;
 
   public void Use() {
-    this.cameraPositionUniform_.SetAndMaybeMarkDirty(Camera.Instance.Position);
+    if (this.cameraPositionUniform_.IsValid) {
+      this.cameraPositionUniform_.SetAndMaybeMarkDirty(Camera.Instance.Position);
+    }
 
     var shininess = this.Material?.Shininess ?? 0;
-    this.hasSpecularUniform_.SetAndMaybeMarkDirty(!shininess.IsRoughly0());
-    this.shininessUniform_.SetAndMaybeMarkDirty(shininess);
+    if (this.hasSpecularUniform_.IsValid) {
+      this.hasSpecularUniform_.SetAndMaybeMarkDirty(!shininess.IsRoughly0());
+    }
+
+    if (this.shininessUniform_.IsValid) {
+      this.shininessUniform_.SetAndMaybeMarkDirty(shininess);
+    }
 
     foreach (var cachedTextureUniformData in
              this.cachedTextureUniformDatas_) {
