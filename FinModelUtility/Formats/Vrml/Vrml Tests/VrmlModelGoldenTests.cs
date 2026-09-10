@@ -16,7 +16,7 @@ public sealed class VrmlModelGoldenTests
   [OneTimeSetUp]
   public void OneTimeSetUp() {
     // Initialize plugin
-    HeadlessGl.MakeCurrent();
+    TestingGl.InitOneTimeSetup();
     FreeTypeFontUtil.InitIfNeeded();
     // Initialize shared state
     var _ = new QFontDrawing();
@@ -25,8 +25,10 @@ public sealed class VrmlModelGoldenTests
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(
-      IFileHierarchyDirectory goldenDirectory)
-    => await this.AssertGolden(goldenDirectory);
+      IFileHierarchyDirectory goldenDirectory) {
+    TestingGl.InitBeforeEach();
+    await this.AssertGolden(goldenDirectory);
+  }
 
   public override VrmlModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory)

@@ -16,13 +16,13 @@ namespace marioartist;
 public sealed class TstltModelGoldenTests
     : BModelGoldenTests<TstltModelFileBundle, TstltModelImporter> {
   [OneTimeSetUp]
-  public void OneTimeSetUp() => HeadlessGl.MakeCurrent();
+  public void OneTimeSetUp() => TestingGl.InitOneTimeSetup();
 
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(
       IFileHierarchyDirectory goldenDirectory) {
-    GlUtil.ResetGl();
+    TestingGl.InitBeforeEach();
     await this.AssertGolden(goldenDirectory);
   }
 
