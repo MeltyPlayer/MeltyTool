@@ -22,10 +22,6 @@ public static class HeadlessGl {
         DepthBits = 32,
     };
     
-    if (GlConstants.Debug) {
-      headlessWindowSettings.Flags = ContextFlags.Debug;
-    }
-
     headlessWindow_ = new GameWindow(
         GameWindowSettings.Default,
         headlessWindowSettings);
