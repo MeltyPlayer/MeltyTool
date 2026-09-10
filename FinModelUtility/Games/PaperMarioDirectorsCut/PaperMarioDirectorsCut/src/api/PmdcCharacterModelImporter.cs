@@ -33,11 +33,14 @@ public sealed class PmdcCharacterModelImporter
         Files = bundle.Files.ToHashSet(),
     };
 
+    var backAnimationImageFile
+        = bundle.AnimationImageFiles.SingleOrDefaultByName("e.gif");
+
     var orderedAnimationImageFiles
-        = bundle.AnimationImageFiles.OrderByDescending(f => f.Name.Equals(
-              "s.gif",
-              StringComparison
-                  .OrdinalIgnoreCase));
+        = bundle.AnimationImageFiles.Where(f => !f.Name.Equals("e.gif", StringComparison.OrdinalIgnoreCase))
+                .OrderByDescending(f => f.Name.Equals(
+                                       "s.gif",
+                                       StringComparison.OrdinalIgnoreCase));
 
     ITexture baseTexture = null!;
     ITextureMaterial material = null!;
@@ -74,8 +77,7 @@ public sealed class PmdcCharacterModelImporter
       var flipbookSwapKeyframes
           = textureTracks.UseFlipbookSwapKeyframes(frameTextures.Length);
       for (var f = 0; f < frameTextures.Length; ++f) {
-        flipbookSwapKeyframes.Add(
-            new Keyframe<IReadOnlyTexture?>(f, frameTextures[f]));
+        flipbookSwapKeyframes.Add(new Keyframe<IReadOnlyTexture?>(f, frameTextures[f]));
       }
     }
 
@@ -110,16 +112,65 @@ public sealed class PmdcCharacterModelImporter
                          billboardBone);
     }
 
+    if (backAnimationImageFile != null) {
+      var backFrameImages = FinImage.FromGifFile(backAnimationImageFile);
+      var name = backAnimationImageFile.NameWithoutExtension.ToString();
+
+      var backFrameTextures
+          = backFrameImages
+            .Select((frameImage, i) => {
+              var frameTexture = finMaterialManager.CreateTexture(
+                  frameImage.RemoveTopLeftBackgroundColor());
+              frameTexture.Name = backFrameImages.Length > 0 ? $"{name}_{i}" : name;
+              frameTexture.WrapModeU = frameTexture.WrapModeV = WrapMode.CLAMP;
+              return frameTexture;
+            })
+            .ToArray();
+
+      var backBaseTexture = backFrameTextures[0];
+
+      var backMaterial = finMaterialManager.AddTextureMaterial(backBaseTexture);
+      backMaterial.Name = "diffuse";
+
+      var animation = model.AnimationManager.AddAnimation();
+      animation.Name = name;
+      animation.FrameCount = backFrameImages.Length;
+      animation.FrameRate = 30;
+
+      var textureTracks = animation.AddTextureTracks(backBaseTexture);
+      var flipbookSwapKeyframes
+          = textureTracks.UseFlipbookSwapKeyframes(backFrameTextures.Length);
+      for (var f = 0; f < backFrameTextures.Length; ++f) {
+        flipbookSwapKeyframes.Add(new Keyframe<IReadOnlyTexture?>(f, backFrameTextures[f]));
+      }
+
+      var backDistance = -1;
+
+      var ul = new Vector3(-width / 2, height, backDistance);
+      var ur = new Vector3(width / 2, height, backDistance);
+      var lr = new Vector3(width / 2, 0, backDistance);
+      var ll = new Vector3(-width / 2, 0, backDistance);
+
+      mesh.AddSimpleQuad(skin,
+                         (ul, new Vector2(0, 0), null),
+                         (ur, new Vector2(1, 0), null),
+                         (lr, new Vector2(1, 1), null),
+                         (ll, new Vector2(0, 1), null),
+                         backMaterial,
+                         billboardBone);
+    }
+
     {
       var shadowBone = rootBone.AddChild(Vector3.Zero);
       shadowBone.Name = "shadow";
 
-      var (shadowMaterial, shadowTexture) = finMaterialManager.AddSimpleTextureMaterialFromFile(
+      var (shadowMaterial, shadowTexture)
+          = finMaterialManager.AddSimpleTextureMaterialFromFile(
               bundle.CharactersDirectory
                     .AssertGetExistingFile("bacShadow.png"));
       shadowTexture.WrapModeU = shadowTexture.WrapModeV = WrapMode.CLAMP;
 
-      var ul = new Vector3(-width / 2, 0, -height/2);
+      var ul = new Vector3(-width / 2, 0, -height / 2);
       var ur = new Vector3(width / 2, 0, -height / 2);
       var lr = new Vector3(width / 2, 0, height / 2);
       var ll = new Vector3(-width / 2, 0, height / 2);
