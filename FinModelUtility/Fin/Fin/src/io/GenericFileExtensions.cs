@@ -100,9 +100,9 @@ public static class GenericFileExtensions {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void WriteAllBytes(this IGenericFile file,
-                                   ReadOnlyMemory<byte> bytes) {
+                                   ReadOnlySpan<byte> bytes) {
     using var s = file.OpenWrite();
-    s.Write(bytes.Span);
+    s.Write(bytes);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
