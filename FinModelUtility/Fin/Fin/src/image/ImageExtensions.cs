@@ -1,4 +1,10 @@
-﻿using fin.image.formats;
+﻿using System;
+using System.Numerics;
+
+using fin.image.formats;
+using fin.math;
+
+using readOnly;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -69,5 +75,81 @@ public static class ImageExtensions {
     });
 
     return dst;
+  }
+
+  public delegate void Rgba32GetInterpolatedHandler(
+      float x,
+      float y,
+      out float r,
+      out float g,
+      out float b,
+      out float a);
+
+  public delegate void AccessInterpolatedHandler(
+      Rgba32GetInterpolatedHandler getHandler);
+
+  public static void AccessInterpolated(
+      this IReadOnlyImage image,
+      AccessInterpolatedHandler accessHandler) {
+    var imageWidth = image.Width;
+    var imageHeight = image.Height;
+
+    image.Access(getHandler => {
+      void InternalGetInterpolatedHandler(
+          float x,
+          float y,
+          out float r,
+          out float g,
+          out float b,
+          out float a) {
+        var leftX = (int) Math.Floor(x).Clamp(0, imageWidth);
+        var topY = (int) Math.Floor(y).Clamp(0, imageHeight);
+        var rightX = (int) (x + 1).Clamp(0, imageWidth);
+        var bottomY = (int) (y + 1).Clamp(0, imageHeight);
+
+        var xF = x - leftX;
+        var yF = y - topY;
+
+        getHandler(
+            leftX,
+            topY,
+            out var rTopLeft,
+            out var gTopLeft,
+            out var bTopLeft,
+            out var aTopLeft);
+        getHandler(
+            rightX,
+            topY,
+            out var rTopRight,
+            out var gTopRight,
+            out var bTopRight,
+            out var aTopRight);
+        getHandler(
+            rightX,
+            bottomY,
+            out var rBottomRight,
+            out var gBottomRight,
+            out var bBottomRight,
+            out var aBottomRight);
+        getHandler(
+            leftX,
+            bottomY,
+            out var rBottomLeft,
+            out var gBottomLeft,
+            out var bBottomLeft,
+            out var aBottomLeft);
+
+        r = (1 - yF) * ((1 - xF) * rTopLeft + xF * rTopRight) +
+            yF * ((1 - xF) * rBottomLeft + xF * rBottomRight);
+        g = (1 - yF) * ((1 - xF) * gTopLeft + xF * gTopRight) +
+            yF * ((1 - xF) * gBottomLeft + xF * gBottomRight);
+        b = (1 - yF) * ((1 - xF) * bTopLeft + xF * bTopRight) +
+            yF * ((1 - xF) * bBottomLeft + xF * bBottomRight);
+        a = (1 - yF) * ((1 - xF) * aTopLeft + xF * aTopRight) +
+            yF * ((1 - xF) * aBottomLeft + xF * aBottomRight);
+      }
+
+      accessHandler(InternalGetInterpolatedHandler);
+    });
   }
 }

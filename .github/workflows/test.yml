@@ -40,9 +40,6 @@ jobs:
       run: dir
       working-directory: mesa
 
-    - name: Copy Mesa files to Mario Artist test directory
-      run: xcopy . "${{github.workspace}}\FinModelUtility\Games\MarioArtist\MarioArtist Tests\bin\x64\Debug\net10.0"
-      working-directory: mesa
     - name: Copy Mesa files to VRML test directory
       run: xcopy . "${{github.workspace}}\FinModelUtility\Formats\Vrml\Vrml Tests\bin\x64\Debug\net10.0"
       working-directory: mesa

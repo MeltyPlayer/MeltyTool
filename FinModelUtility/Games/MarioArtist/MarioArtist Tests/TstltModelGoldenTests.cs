@@ -3,28 +3,20 @@
 using fin.io;
 using fin.testing;
 using fin.testing.model;
-using fin.ui.rendering.gl;
 
 using marioartist.api;
 
 using NUnit.Framework;
 
-using GlUtil = fin.ui.rendering.gl.GlUtil;
-
 namespace marioartist;
 
 public sealed class TstltModelGoldenTests
     : BModelGoldenTests<TstltModelFileBundle, TstltModelImporter> {
-  [OneTimeSetUp]
-  public void OneTimeSetUp() => TestingGl.InitOneTimeSetup();
-
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(
-      IFileHierarchyDirectory goldenDirectory) {
-    TestingGl.InitBeforeEach();
-    await this.AssertGolden(goldenDirectory);
-  }
+      IFileHierarchyDirectory goldenDirectory)
+    => await this.AssertGolden(goldenDirectory);
 
   public override TstltModelFileBundle GetFileBundleFromDirectory(
       IFileHierarchyDirectory directory) {

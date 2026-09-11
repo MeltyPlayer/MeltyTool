@@ -1,20 +1,17 @@
-﻿using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 
 using fin.animation.keyframes;
-using fin.data;
+using fin.image.effects;
 using fin.model;
-using fin.model.impl;
-using fin.model.util;
-using fin.ui.rendering.gl;
-using fin.ui.rendering.gl.model;
-using fin.ui.rendering.gl.texture;
-using fin.ui.rendering.gl.ubo;
 
 using marioartist.schema.talent_studio.face;
 
 namespace marioartist.api;
 
+/// <summary>
+///   Super annoying, but we should do the warp in software for deterministic
+///   test results.
+/// </summary>
 public static class TstltExpressionImageGenerator {
   public static void GenerateExpressionTextures(
       IMaterialManager dstMaterialManager,
@@ -22,33 +19,17 @@ public static class TstltExpressionImageGenerator {
       IReadOnlyTexture baseFaceTexture,
       Expression[] expressions) {
     var baseFaceImage = baseFaceTexture.Image;
-    using var faceRenderer = new FaceRenderer(baseFaceImage);
-    using var fbo = new GlFbo(baseFaceImage.Width, baseFaceImage.Height);
 
-    GlUtil.PushState();
+    var meshWarp = new MeshWarp(
+        baseFaceImage.Width,
+        baseFaceImage.Height,
+        Expression.WIDTH,
+        Expression.HEIGHT);
 
-    GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
-    GlTransform.PushMatrix();
-    GlTransform.LoadIdentity();
-    GlTransform.Set(
-        Matrix4x4.CreateOrthographicOffCenter(0,
-                                              fbo.Width,
-                                              0,
-                                              fbo.Height,
-                                              -1,
-                                              1));
-
-    GlTransform.MatrixMode(TransformMatrixMode.VIEW);
-    GlTransform.PushMatrix();
-    GlTransform.LoadIdentity();
-
-    GlTransform.MatrixMode(TransformMatrixMode.MODEL);
-    GlTransform.PushMatrix();
-    GlTransform.LoadIdentity();
-
-    using var viewMatricesUbo = new ViewMatricesUbo();
-    viewMatricesUbo.UpdateData();
-    viewMatricesUbo.Bind();
+    var conversionFactor
+        = new Vector2(baseFaceImage.Width, baseFaceImage.Height) /
+          new Vector2(Expression.WIDTH - 1, Expression.HEIGHT - 1) /
+          16;
 
     for (var i = 0; i < expressions.Length; ++i) {
       var expression = expressions[i];
@@ -61,16 +42,18 @@ public static class TstltExpressionImageGenerator {
           5 => "sleep",
       };
 
-      fbo.TargetFbo();
-      GlUtil.SetViewport(new Rectangle(0, 0, fbo.Width, fbo.Height));
-      GlUtil.ClearColorAndDepth();
+      for (var xI = 0; xI < Expression.WIDTH; ++xI) {
+        for (var yI = 0; yI < Expression.HEIGHT; ++yI) {
+          var expressionPin = expression.Pins[xI * Expression.HEIGHT + yI];
 
-      faceRenderer.SetExpression(expression);
-      faceRenderer.Render();
+          expressionPin = (expressionPin - new Vector2(88, 24)) * conversionFactor;
 
-      fbo.UntargetFbo();
+          meshWarp.Pins[xI, yI].Position = new Vector2(expressionPin.X, expressionPin.Y);
+        }
+      }
 
-      var expressionImage = fbo.ConvertToImage();
+      var expressionImage = meshWarp.WarpImage(baseFaceImage);
+
       var expressionTexture
           = dstMaterialManager.CreateTexture(expressionImage);
       expressionTexture.Name = expressionName;
@@ -82,16 +65,5 @@ public static class TstltExpressionImageGenerator {
       textureTracks.UseFlipbookSwapKeyframes()
                    .SetKeyframe(0, expressionTexture);
     }
-
-    GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
-    GlTransform.PopMatrix();
-
-    GlTransform.MatrixMode(TransformMatrixMode.VIEW);
-    GlTransform.PopMatrix();
-
-    GlTransform.MatrixMode(TransformMatrixMode.MODEL);
-    GlTransform.PopMatrix();
-
-    GlUtil.PopState();
   }
 }
