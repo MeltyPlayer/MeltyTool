@@ -5,6 +5,7 @@ using System.Numerics;
 using fin.data.indexable;
 using fin.data.sets;
 using fin.math.matrix.four;
+using fin.ui.rendering.gl;
 
 using readOnly;
 
@@ -150,7 +151,9 @@ public enum PrimitiveType {
 
 public static class PrimitiveTypeExtensions {
   public static bool IsSupportedByOpenGl(this PrimitiveType primitiveType)
-    => primitiveType is not (PrimitiveType.QUADS or PrimitiveType.QUAD_STRIP);
+    => (!OpenGlVersionService.Es &&
+        primitiveType is not PrimitiveType.QUAD_STRIP) ||
+       primitiveType is not (PrimitiveType.QUADS or PrimitiveType.QUAD_STRIP);
 }
 
 public enum VertexOrder {

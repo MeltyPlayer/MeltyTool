@@ -3,6 +3,8 @@ using System.Numerics;
 
 using fin.data;
 using fin.image.formats;
+using fin.math;
+using fin.math.floats;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -49,23 +51,54 @@ public sealed class MeshWarp : IMeshWarp {
       using var fastLock = output.Lock();
       var scan0 = fastLock.Pixels;
 
-      for (var y = 0; y < height; y++) {
-        for (var x = 0; x < width; x++) {
-          var point = new Vector2(x + .5f, y + .5f);
+      Span<Vector2> quad = stackalloc Vector2[4];
 
-          for (var mY = 0; mY < this.Pins.Height - 1; ++mY) {
-            for (var mX = 0; mX < this.Pins.Width - 1; ++mX) {
-              var vTopLeft = this.Pins[mX, mY];
-              var vTopRight = this.Pins[mX + 1, mY];
-              var vBottomRight = this.Pins[mX + 1, mY + 1];
-              var vBottomLeft = this.Pins[mX, mY + 1];
+      for (var mY = 0; mY < this.Pins.Height - 1; ++mY) {
+        for (var mX = 0; mX < this.Pins.Width - 1; ++mX) {
+          var vTopLeft = this.Pins[mX, mY];
+          var vTopRight = this.Pins[mX + 1, mY];
+          var vBottomRight = this.Pins[mX + 1, mY + 1];
+          var vBottomLeft = this.Pins[mX, mY + 1];
 
-              if (!IsPointInsideQuad_(
-                      point,
-                      vTopLeft.Position,
-                      vTopRight.Position,
-                      vBottomRight.Position,
-                      vBottomLeft.Position)) {
+          quad[0] = vTopLeft.Position;
+          quad[1] = vTopRight.Position;
+          quad[2] = vBottomRight.Position;
+          quad[3] = vBottomLeft.Position;
+
+          var minX = (int) FinMath.Min(
+              vTopLeft.Position.X,
+              vTopRight.Position.X,
+              vBottomRight.Position.X,
+              vBottomLeft.Position.X);
+          var maxX = (int) FinMath.Max(
+              vTopLeft.Position.X,
+              vTopRight.Position.X,
+              vBottomRight.Position.X,
+              vBottomLeft.Position.X);
+          var minY = (int) FinMath.Min(
+              vTopLeft.Position.Y,
+              vTopRight.Position.Y,
+              vBottomRight.Position.Y,
+              vBottomLeft.Position.Y);
+          var maxY = (int) FinMath.Max(
+              vTopLeft.Position.Y,
+              vTopRight.Position.Y,
+              vBottomRight.Position.Y,
+              vBottomLeft.Position.Y);
+
+          for (var y = minY; y <= maxY; y++) {
+            if (y >= height) {
+              break;
+            }
+
+            for (var x = minX; x <= maxX; x++) {
+              if (x >= width) {
+                continue;
+              }
+
+              var point = new Vector2(x, y);
+
+              if (!IsPointInQuad_(point, quad)) {
                 continue;
               }
 
@@ -76,9 +109,7 @@ public sealed class MeshWarp : IMeshWarp {
                                vTopLeft.Position,
                                out var u,
                                out var v)) {
-                scan0[y * width + x] = new Rgba32(255, 0, 0, 255);
-
-                goto FoundPin;
+                continue;
               }
 
               var weightedOriginalPosition =
@@ -103,14 +134,8 @@ public sealed class MeshWarp : IMeshWarp {
 
               scan0[y * width + x]
                   = new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
-
-              goto FoundPin;
             }
           }
-
-          scan0[y * width + x] = new Rgba32(255, 0, 255, 255);
-
-          FoundPin: ;
         }
       }
     });
@@ -118,10 +143,16 @@ public sealed class MeshWarp : IMeshWarp {
     return output;
   }
 
-  public static bool VectorToUV_(Vector2 p, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, out double u, out double v) {
+  public static bool VectorToUV_(Vector2 p,
+                                 Vector2 p0,
+                                 Vector2 p1,
+                                 Vector2 p2,
+                                 Vector2 p3,
+                                 out double u,
+                                 out double v) {
     u = 0;
     v = 0;
-    
+
     // Coefficients for the quadratic equation: A*v^2 + B*v + C = 0
     double ax = p0.X - p1.X + p2.X - p3.X;
     double ay = p0.Y - p1.Y + p2.Y - p3.Y;
@@ -137,79 +168,92 @@ public sealed class MeshWarp : IMeshWarp {
     double C = bx * dy - by * dx;
 
     // Check if the equations degrade to a linear form (e.g., if the quad is a parallelogram)
-    if (Math.Abs(A) < 1e-9)
-    {
-        if (Math.Abs(B) < 1e-9) {
-          return false; // Degenerate quad
-        }
-        v = -C / B;
-    }
-    else
-    {
-        double discriminant = B * B - 4 * A * C;
-        if (discriminant < 0) {
-          return false; // Point might be outside or quad is self-intersecting
-        }
+    if (Math.Abs(A) < FloatsExtensions.EPSILON) {
+      if (Math.Abs(B) < FloatsExtensions.EPSILON) {
+        return false; // Degenerate quad
+      }
 
-        double sqrtDisc = Math.Sqrt(discriminant);
-        
-        // Evaluate both roots to find the one inside [0, 1]
-        double v1 = (-B + sqrtDisc) / (2 * A);
-        double v2 = (-B - sqrtDisc) / (2 * A);
+      v = -C / B;
+    } else {
+      double discriminant = B * B - 4 * A * C;
+      if (discriminant < 0) {
+        return false; // Point might be outside or quad is self-intersecting
+      }
 
-        if (v1 >= -1e-7 && v1 <= 1.0000001) v = Math.Clamp(v1, 0, 1);
-        else if (v2 >= -1e-7 && v2 <= 1.0000001) v = Math.Clamp(v2, 0, 1);
-        else return false; // Both roots fall outside the valid normalized quad space
+      double sqrtDisc = Math.Sqrt(discriminant);
+
+      // Evaluate both roots to find the one inside [0, 1]
+      double v1 = (-B + sqrtDisc) / (2 * A);
+      double v2 = (-B - sqrtDisc) / (2 * A);
+
+      if (v1 >= -1e-7 && v1 <= 1.0000001) v = Math.Clamp(v1, 0, 1);
+      else if (v2 >= -1e-7 && v2 <= 1.0000001) v = Math.Clamp(v2, 0, 1);
+      else
+        return false; // Both roots fall outside the valid normalized quad space
     }
 
     // Solve for u using the calculated v
     double denomU = bx + ax * v;
-    if (Math.Abs(denomU) > 1e-9)
-    {
-        u = (-dx - cx * v) / denomU;
-    }
-    else
-    {
-        // Alternative calculation if denominator is zero
-        double denomUAlt = by + ay * v;
-        if (Math.Abs(denomUAlt) < 1e-9) {
-          return false;
-        }
-        u = (-dy - cy * v) / denomUAlt;
+    if (Math.Abs(denomU) > FloatsExtensions.EPSILON) {
+      u = (-dx - cx * v) / denomU;
+    } else {
+      // Alternative calculation if denominator is zero
+      double denomUAlt = by + ay * v;
+      if (Math.Abs(denomUAlt) < FloatsExtensions.EPSILON) {
+        return false;
+      }
+
+      u = (-dy - cy * v) / denomUAlt;
     }
 
     u = Math.Clamp(u, 0, 1);
     return true;
   }
 
-  /// <summary>
-  ///   Shamelessly stolen from: https://stackoverflow.com/a/12634247
-  /// </summary>
-  private static bool IsPointInsideQuad_(
-      Vector2 point,
-      Vector2 v0,
-      Vector2 v1,
-      Vector2 v2,
-      Vector2 v3) {
-    var sign0 = CalculateCrossProductSign_(point, v0, v1);
-    var sign1 = CalculateCrossProductSign_(point, v1, v2);
-    var sign2 = CalculateCrossProductSign_(point, v2, v3);
-    var sign3 = CalculateCrossProductSign_(point, v3, v0);
+  public static bool IsPointInQuad_(Vector2 p, Span<Vector2> quad) {
+    const double epsilon = FloatsExtensions.EPSILON;
 
-    // Check if the point is consistently on the same side (or on the line, where d == 0)
-    bool hasNegative = sign0 < 0 || sign1 < 0 || sign2 < 0 || sign3 < 0;
-    bool hasPositive = sign0 > 0 || sign1 > 0 || sign2 > 0 || sign3 > 0;
+    // 1. Check if the point lies exactly on any of the 4 edges
+    for (int i = 0; i < 4; i++) {
+      Vector2 a = quad[i];
+      Vector2 b = quad[(i + 1) % 4];
 
-    // If it doesn't have both negative and positive signs, it's inside or on the border
-    return !(hasNegative && hasPositive);
+      if (IsPointOnSegment_(p, a, b, epsilon))
+        return true;
+    }
+
+    // 2. Ray-Casting Algorithm (Even-Odd Rule) for the interior check
+    bool inside = false;
+    for (int i = 0, j = 3; i < 4; j = i++) {
+      // Check if the ray crosses the edge
+      if ((quad[i].Y > p.Y) != (quad[j].Y > p.Y) &&
+          (p.X <
+           (quad[j].X - quad[i].X) *
+           (p.Y - quad[i].Y) /
+           (quad[j].Y - quad[i].Y) +
+           quad[i].X)) {
+        inside = !inside;
+      }
+    }
+
+    return inside;
   }
 
-  private static int CalculateCrossProductSign_(
-      Vector2 point,
-      Vector2 v0,
-      Vector2 v1) {
-    var ev = v1 - v0;
-    var pv = point - v0;
-    return Math.Sign(Vector2.Cross(ev, pv));
+  private static bool IsPointOnSegment_(
+      Vector2 p,
+      Vector2 a,
+      Vector2 b,
+      double epsilon) {
+    // Cross product determines collinearity (if the point aligns with the line)
+    var crossProduct = Vector2.Cross(p - a, b - a);
+    if (Math.Abs(crossProduct) > epsilon) {
+      return false;
+    }
+
+    // Bounding box check ensures the point is between A and B, not just on the infinite line
+    return p.X >= Math.Min(a.X, b.X) - epsilon &&
+           p.X <= Math.Max(a.X, b.X) + epsilon &&
+           p.Y >= Math.Min(a.Y, b.Y) - epsilon &&
+           p.Y <= Math.Max(a.Y, b.Y) + epsilon;
   }
 }

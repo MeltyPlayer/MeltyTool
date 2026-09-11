@@ -83,4 +83,25 @@ public static class FinMath {
   public static bool IsTruthy<TNumber>(this TNumber? number)
       where TNumber : struct, INumber<TNumber>
     => (number ?? default) != default;
+
+
+  public static TNumber Min<TNumber>(params ReadOnlySpan<TNumber> numbers)
+      where TNumber : struct, INumber<TNumber> {
+    var min = numbers[0];
+    for (var i = 1; i < numbers.Length; ++i) {
+      min = TNumber.Min(min, numbers[i]);
+    }
+
+    return min;
+  }
+
+  public static TNumber Max<TNumber>(params ReadOnlySpan<TNumber> numbers)
+      where TNumber : struct, INumber<TNumber> {
+    var max = numbers[0];
+    for (var i = 1; i < numbers.Length; ++i) {
+      max = TNumber.Max(max, numbers[i]);
+    }
+
+    return max;
+  }
 }

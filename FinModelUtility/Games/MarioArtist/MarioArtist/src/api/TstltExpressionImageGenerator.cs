@@ -48,7 +48,8 @@ public static class TstltExpressionImageGenerator {
 
           expressionPin = (expressionPin - new Vector2(88, 24)) * conversionFactor;
 
-          meshWarp.Pins[xI, yI].Position = new Vector2(expressionPin.X, expressionPin.Y);
+          var meshWarpPin = meshWarp.Pins[xI, yI];
+          meshWarpPin.Position = expressionPin;
         }
       }
 
