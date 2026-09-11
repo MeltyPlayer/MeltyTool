@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Buffers;
 
-using CommunityToolkit.HighPerformance;
-
 using schema.binary;
 
 using SixLabors.ImageSharp.PixelFormats;
@@ -19,10 +17,10 @@ public sealed class Dxt1ImageReader(
   private readonly Dxt1TileReader tileReader_
       = new(subTileCountInAxis, subTileSizeInAxis, flipBlocksHorizontally);
 
-  public IImage<Rgba32> ReadImage(IBinaryReader br) {
+  public unsafe IImage<Rgba32> ReadImage(IBinaryReader br) {
     var image = this.tileReader_.CreateImage(width, height);
-    using var imageLock = image.Lock();
-    var scan0 = imageLock.Pixels;
+    using var imageLock = image.UnsafeLock();
+    var scan0 = imageLock.pixelScan0;
 
     var tileXCount
         = (int) Math.Ceiling(1f * width / this.tileReader_.TileWidth);
@@ -30,12 +28,6 @@ public sealed class Dxt1ImageReader(
         = (int) Math.Ceiling(1f * height / this.tileReader_.TileHeight);
 
     var tileSizeInAxis = subTileCountInAxis * subTileSizeInAxis;
-
-    Span<ushort> shortBuffer = stackalloc ushort[2];
-    var shortBufferBytes = shortBuffer.AsBytes();
-
-    Span<Rgba32> paletteBuffer = stackalloc Rgba32[4];
-    Span<byte> indicesBuffer = stackalloc byte[4];
 
     var subblockCount = tileXCount *
                         tileYCount *
@@ -47,31 +39,44 @@ public sealed class Dxt1ImageReader(
     Span<byte> allSubblocks = allSubBlocksArray.AsSpan(0, allSubBlocksSize);
     br.ReadBytes(allSubblocks);
 
-    var subblockIndex = 0;
+    Span<ushort> shortBuffer = stackalloc ushort[2];
 
-    for (var tileY = 0; tileY < tileYCount; ++tileY) {
-      for (var tileX = 0; tileX < tileXCount; ++tileX) {
-        for (var j = 0; j < subTileCountInAxis; ++j) {
-          for (var i = 0; i < subTileCountInAxis; ++i) {
-            var subblock = allSubblocks.Slice((subblockIndex++) * 8, 8);
+    Span<Rgba32> paletteBuffer = stackalloc Rgba32[4];
+    Span<byte> indicesBuffer = stackalloc byte[4];
 
-            if (!br.IsOppositeEndiannessOfSystem) {
-              subblock.Slice(0, 4).CopyTo(shortBufferBytes);
-            } else {
-              shortBuffer[0] = (ushort) ((subblock[0] << 8) | subblock[1]);
-              shortBuffer[1] = (ushort) ((subblock[2] << 8) | subblock[3]);
+    fixed (byte* allSubblocksPtr = &allSubblocks[0]) {
+      fixed (ushort* shortBufferPtr = &shortBuffer[0]) {
+        fixed (Rgba32* paletteBufferPtr = &paletteBuffer[0]) {
+          fixed (byte* indicesBufferPtr = &indicesBuffer[0]) {
+            var subblockIndex = 0;
+
+            for (var tileY = 0; tileY < tileYCount; ++tileY) {
+              for (var tileX = 0; tileX < tileXCount; ++tileX) {
+                for (var j = 0; j < subTileCountInAxis; ++j) {
+                  for (var i = 0; i < subTileCountInAxis; ++i) {
+                    var subblockPtr = allSubblocksPtr + (subblockIndex++) * 8;
+
+                    if (!br.IsOppositeEndiannessOfSystem) {
+                      Buffer.MemoryCopy(subblockPtr, shortBufferPtr, 4, 4);
+                    } else {
+                      shortBufferPtr[0] = (ushort) ((subblockPtr[0] << 8) | subblockPtr[1]);
+                      shortBufferPtr[1] = (ushort) ((subblockPtr[2] << 8) | subblockPtr[3]);
+                    }
+                    Buffer.MemoryCopy(subblockPtr + 4, indicesBufferPtr, 4, 4);
+
+                    this.tileReader_.DecodeSubblock(
+                        shortBufferPtr,
+                        scan0,
+                        paletteBufferPtr,
+                        indicesBufferPtr,
+                        tileX * tileSizeInAxis + i * subTileSizeInAxis,
+                        tileY * tileSizeInAxis + j * subTileSizeInAxis,
+                        width,
+                        height);
+                  }
+                }
+              }
             }
-            subblock.Slice(4).CopyTo(indicesBuffer);
-
-            this.tileReader_.DecodeSubblock(
-                shortBuffer,
-                scan0,
-                paletteBuffer,
-                indicesBuffer,
-                tileX * tileSizeInAxis + i * subTileSizeInAxis,
-                tileY * tileSizeInAxis + j * subTileSizeInAxis,
-                width,
-                height);
           }
         }
       }

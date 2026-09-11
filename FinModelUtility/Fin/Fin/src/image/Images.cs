@@ -29,6 +29,7 @@ namespace fin.image;
 public static class FinImage {
   public static void Initialize() {
     Configuration.Default.PreferContiguousImageBuffers = true;
+    // We have to create an image to warm up ImageSharp.
     FinImage.Create1x1FromColor(Color.Magenta)
             .ExportToStream(new MemoryStream(), LocalImageFormat.PNG);
   }
