@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using fin.io;
 using fin.testing;
 using fin.testing.image;
+using fin.util.enums;
 
 using NUnit.Framework;
 
@@ -26,7 +27,7 @@ public sealed class Dxt1GoldenTests : BImageGoldenTests {
           var parts = inputFile.NameWithoutExtension.ToString().Split('_');
           var width = int.Parse(parts[0]);
           var height = int.Parse(parts[1]);
-          Endianness.TryParse(parts[2], out Endianness endianness);
+          var endianness = Endianness.Parse(parts[2]);
 
           return new Dxt1ImageReader(width, height).ReadImage(
               inputFile.OpenReadAsBinary(endianness));
