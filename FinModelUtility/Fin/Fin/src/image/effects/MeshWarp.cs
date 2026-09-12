@@ -5,6 +5,7 @@ using fin.data;
 using fin.image.formats;
 using fin.math;
 using fin.math.floats;
+using fin.math.matrix.two;
 
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -51,14 +52,16 @@ public sealed class MeshWarp : IMeshWarp {
       using var fastLock = output.Lock();
       var scan0 = fastLock.Pixels;
 
+      var alreadySet = new bool[width * height];
+
       Span<Vector2> quad = stackalloc Vector2[4];
 
-      for (var mY = 0; mY < this.Pins.Height - 1; ++mY) {
-        for (var mX = 0; mX < this.Pins.Width - 1; ++mX) {
-          var vTopLeft = this.Pins[mX, mY];
-          var vTopRight = this.Pins[mX + 1, mY];
-          var vBottomRight = this.Pins[mX + 1, mY + 1];
-          var vBottomLeft = this.Pins[mX, mY + 1];
+      for (var mY = this.Pins.Height - 1; mY > 0; --mY) {
+        for (var mX = this.Pins.Width - 1; mX > 0; --mX) {
+          var vTopLeft = this.Pins[mX - 1, mY - 1];
+          var vTopRight = this.Pins[mX, mY - 1];
+          var vBottomRight = this.Pins[mX, mY];
+          var vBottomLeft = this.Pins[mX - 1, mY];
 
           quad[0] = vTopLeft.Position;
           quad[1] = vTopRight.Position;
@@ -96,6 +99,11 @@ public sealed class MeshWarp : IMeshWarp {
                 continue;
               }
 
+              var index = y * width + x;
+              if (alreadySet[index]) {
+                continue;
+              }
+
               var point = new Vector2(x, y);
 
               if (!IsPointInQuad_(point, quad)) {
@@ -113,16 +121,13 @@ public sealed class MeshWarp : IMeshWarp {
               }
 
               var weightedOriginalPosition =
-                  Vector2.Lerp(
-                      Vector2.Lerp(
+                  SystemVector2Util.Blerp(
                           vTopLeft.OriginalPosition,
                           vTopRight.OriginalPosition,
-                          (float) u),
-                      Vector2.Lerp(
-                          vBottomLeft.OriginalPosition,
                           vBottomRight.OriginalPosition,
-                          (float) u),
-                      (float) (1 - v));
+                          vBottomLeft.OriginalPosition,
+                          u,
+                          1 - v);
 
               getHandler(
                   weightedOriginalPosition.X,
@@ -132,8 +137,9 @@ public sealed class MeshWarp : IMeshWarp {
                   out var b,
                   out var a);
 
-              scan0[y * width + x]
+              scan0[index]
                   = new Rgba32((byte) r, (byte) g, (byte) b, (byte) a);
+              alreadySet[index] = true;
             }
           }
         }
