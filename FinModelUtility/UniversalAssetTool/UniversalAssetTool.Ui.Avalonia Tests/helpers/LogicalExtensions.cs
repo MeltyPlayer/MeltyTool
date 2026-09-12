@@ -7,7 +7,11 @@ internal static class LogicalExtensions {
   extension<TControl>(ILogical scope) where TControl : Control {
     public bool Any() => scope.All<TControl>().Any();
     public TControl First() => scope.All<TControl>().First();
+
     public TControl Single() => scope.All<TControl>().Single();
+
+    public TControl Single(Func<TControl, bool> predicate)
+      => scope.All<TControl>().Single(predicate);
 
     public IEnumerable<TControl> All()
       => scope.GetLogicalDescendants().OfType<TControl>();

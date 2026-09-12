@@ -5,6 +5,7 @@ using Avalonia.Controls;
 
 using fin.language.equations.fixedFunction;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.util.strings;
 
 using ReactiveUI;
@@ -59,7 +60,7 @@ public class RegistersPanelViewModel : BViewModel {
   }
 }
 
-public partial class RegistersPanel : UserControl {
+public partial class RegistersPanel : BUserControl<RegistersPanelViewModel> {
   public RegistersPanel() {
     this.InitializeComponent();
   }
