@@ -3,7 +3,10 @@
 using fin.language.equations.fixedFunction;
 using fin.util.asserts;
 
+using uni.ui.avalonia.common.controls;
 using uni.ui.avalonia.helpers;
+
+using Assert = NUnit.Framework.Assert;
 
 namespace uni.ui.avalonia.resources.registers;
 
@@ -27,5 +30,17 @@ public class RegistersPanelTests {
     Asserts.SequenceEqual(
         ["ambientLightAmount", "item 1", "item 2", "item 10"],
         registersPanel.GetScalarRegisterNames());
+  }
+
+  [AvaloniaTest]
+  [TestCase(false)]
+  [TestCase(true)]
+  public void TestShowsEmptyStateIfThereAreNoRegisters(
+      bool shouldShowEmptyState) {
+    var registersPanel = RegistersPanel.Bootstrap(new RegistersPanelViewModel {
+        Registers = !shouldShowEmptyState ? new FixedFunctionRegisters() : null
+    });
+
+    Assert.AreEqual(shouldShowEmptyState, registersPanel.Any<EmptyState>());
   }
 }
