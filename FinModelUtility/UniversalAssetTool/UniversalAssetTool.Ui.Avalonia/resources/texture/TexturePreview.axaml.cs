@@ -1,4 +1,5 @@
 using System.Drawing;
+using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -61,16 +62,13 @@ public partial class TexturePreview : BUserControl<TexturePreviewViewModel> {
     this.InitializeComponent();
   }
 
-  private TexturePreviewViewModel ViewModel_
-    => Asserts.AsA<TexturePreviewViewModel>(this.ViewModel);
-
   private async void CopyToClipboard_(object? sender, RoutedEventArgs e) {
     var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
     if (clipboard == null) {
       return;
     }
 
-    var bitmapTask = this.ViewModel_.ImageAsync?.GetTask();
+    var bitmapTask = this.ViewModel.ImageAsync?.GetTask();
     var bitmap = bitmapTask != null ? await bitmapTask : null;
     await clipboard.SetBitmapAsync(bitmap);
   }

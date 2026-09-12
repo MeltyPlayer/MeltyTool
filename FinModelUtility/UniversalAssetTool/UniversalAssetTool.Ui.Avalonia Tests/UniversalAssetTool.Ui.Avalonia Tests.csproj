@@ -19,9 +19,19 @@
   <ItemGroup>
     <PackageReference Update="coverlet.msbuild" Version="8.0.0" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.8.1" />
-    <PackageReference Update="NUnit" Version="4.5.0" />
+    <PackageReference Update="NUnit" Version="4.5.1" />
     <PackageReference Update="NUnit.Analyzers" Version="4.14.0" />
     <PackageReference Update="NUnit3TestAdapter" Version="6.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia.Headless.NUnit" Version="12.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="TestApp.axaml.cs">
+      <DependentUpon>TestApp.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 </Project>

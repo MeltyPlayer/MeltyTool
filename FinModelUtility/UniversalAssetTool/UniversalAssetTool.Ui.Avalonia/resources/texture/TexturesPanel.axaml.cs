@@ -7,6 +7,7 @@ using Avalonia.Controls;
 using fin.math;
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.util.asserts;
 
 using ReactiveUI;
@@ -127,17 +128,13 @@ public class TexturesPanelViewModel : BViewModel {
   }
 }
 
-public partial class TexturesPanel : UserControl {
+public partial class TexturesPanel : BUserControl<TexturesPanelViewModel> {
   public TexturesPanel() {
     this.InitializeComponent();
   }
 
-  protected TexturesPanelViewModel ViewModel
-    => Asserts.AsA<TexturesPanelViewModel>(this.DataContext);
-
   protected void TextureList_OnTextureSelected(
       object? sender,
-      TextureSelectedEventArgs e) {
-    this.ViewModel.SelectedTexture = e.Texture;
-  }
+      TextureSelectedEventArgs e)
+    => this.ViewModel.SelectedTexture = e.Texture;
 }
