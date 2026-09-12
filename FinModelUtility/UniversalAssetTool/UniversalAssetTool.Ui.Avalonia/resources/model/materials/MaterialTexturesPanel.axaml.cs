@@ -2,11 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia;
-using Avalonia.Controls;
-
 using fin.model;
 using fin.ui;
-using fin.util.asserts;
+using fin.ui.avalonia.controls;
 
 using ReactiveUI;
 
@@ -62,13 +60,11 @@ public class MaterialTexturesPanelViewModel : BViewModel {
   }
 }
 
-public partial class MaterialTexturesPanel : UserControl {
+public partial class MaterialTexturesPanel
+    : BUserControl<MaterialTexturesPanelViewModel> {
   public MaterialTexturesPanel() {
     this.InitializeComponent();
   }
-
-  protected MaterialTexturesPanelViewModel ViewModel
-    => Asserts.AsA<MaterialTexturesPanelViewModel>(this.DataContext);
 
   protected void TextureList_OnTextureSelected(
       object? sender,

@@ -56,7 +56,7 @@
           <TextBlock Text="Skeleton" />
         </StackPanel>
       </TabItem.Header>
-      <skeleton:SkeletonTree DataContext="{Binding SkeletonTree}" />
+      <skeleton:SkeletonPanel DataContext="{Binding SkeletonPanel}" />
     </TabItem>
     <TabItem>
       <TabItem.Header>

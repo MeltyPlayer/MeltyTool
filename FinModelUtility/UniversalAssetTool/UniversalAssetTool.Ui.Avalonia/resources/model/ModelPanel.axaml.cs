@@ -43,7 +43,7 @@ public class ModelPanelViewModel : BViewModel {
       this.RegistersPanel = new RegistersPanelViewModel() {
           Registers = value.MaterialManager.Registers,
       };
-      this.SkeletonTree = new SkeletonTreeViewModel { Model = value };
+      this.SkeletonPanel = new SkeletonPanelViewModel { Model = value };
       this.TexturesPanel = new TexturesPanelViewModel {
           ModelAndTextures = (value, value.MaterialManager.Textures),
       };
@@ -76,7 +76,7 @@ public class ModelPanelViewModel : BViewModel {
     private set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
-  public SkeletonTreeViewModel SkeletonTree {
+  public SkeletonPanelViewModel SkeletonPanel {
     get;
     private set => this.RaiseAndSetIfChanged(ref field, value);
   }
