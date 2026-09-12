@@ -1,10 +1,9 @@
 ﻿using Avalonia.Controls;
-using Avalonia.Headless;
 using Avalonia.Headless.NUnit;
-using Avalonia.Threading;
 
 using fin.model.impl;
 
+using uni.ui.avalonia.common.controls;
 using uni.ui.avalonia.helpers;
 using uni.ui.avalonia.resources.model;
 
@@ -14,7 +13,7 @@ namespace uni.ui.avalonia.resources.texture;
 
 public class TexturesPanelTests {
   [AvaloniaTest]
-  public void UpdatesSelectedTextureOnClick() {
+  public void TestUpdatesSelectedTextureOnClick() {
     var model = ModelImpl.CreateForViewer();
 
     var mm = model.MaterialManager;
@@ -23,14 +22,9 @@ public class TexturesPanelTests {
       texture.Name = name;
     }
 
-    var texturesPanel = new TexturesPanel {
-        ViewModel = new TexturesPanelViewModel {
-            ModelAndTextures = (model, mm.Textures)
-        }
-    };
-
-    var window = new Window { Content = texturesPanel };
-    window.Show();
+    var texturesPanel = TexturesPanel.Bootstrap(new TexturesPanelViewModel {
+        ModelAndTextures = (model, mm.Textures)
+    });
 
     var groupBox = texturesPanel.Single<GroupBox>();
 
@@ -42,5 +36,25 @@ public class TexturesPanelTests {
 
     texturesPanel.ClickText("xyz");
     Assert.AreEqual("xyz", groupBox.Header);
+  }
+
+  [AvaloniaTest]
+  [TestCase(false)]
+  [TestCase(true)]
+  public void TestShowsEmptyStateIfThereAreNoTextures(
+      bool shouldShowEmptyState) {
+    var model = ModelImpl.CreateForViewer();
+
+    var mm = model.MaterialManager;
+    foreach (var name in !shouldShowEmptyState ? new[] { "foo", "bar" } : []) {
+      var texture = mm.CreateTexture(ModelDesignerUtil.CreateStubImage(32, 32));
+      texture.Name = name;
+    }
+
+    var texturesPanel = TexturesPanel.Bootstrap(new TexturesPanelViewModel {
+        ModelAndTextures = (model, mm.Textures)
+    });
+
+    Assert.AreEqual(shouldShowEmptyState, texturesPanel.Any<EmptyState>());
   }
 }

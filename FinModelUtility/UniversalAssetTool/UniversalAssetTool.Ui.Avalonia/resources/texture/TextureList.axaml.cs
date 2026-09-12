@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 using fin.util.strings;
 
@@ -97,7 +98,7 @@ public sealed class TextureViewModel : BViewModel {
   }
 }
 
-public partial class TextureList : UserControl {
+public partial class TextureList : BUserControl<TextureListViewModel> {
   public TextureList() {
     this.InitializeComponent();
   }
