@@ -366,6 +366,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Natsume", "Libraries\Natsum
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HarvestMoon64 Tests", "Games\HarvestMoon64\HarvestMoon64 Tests\HarvestMoon64 Tests.csproj", "{8B35CF58-CE43-4F30-A3B1-CB944FA5B08B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaperMario Tests", "Games\PaperMario\PaperMario Tests\PaperMario Tests.csproj", "{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1254,6 +1256,14 @@ Global
 		{8B35CF58-CE43-4F30-A3B1-CB944FA5B08B}.Release|x64.Build.0 = Release|x64
 		{8B35CF58-CE43-4F30-A3B1-CB944FA5B08B}.Release|x86.ActiveCfg = Release|x86
 		{8B35CF58-CE43-4F30-A3B1-CB944FA5B08B}.Release|x86.Build.0 = Release|x86
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Debug|x64.ActiveCfg = Debug|x64
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Debug|x64.Build.0 = Debug|x64
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Debug|x86.ActiveCfg = Debug|x86
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Debug|x86.Build.0 = Debug|x86
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Release|x64.ActiveCfg = Release|x64
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Release|x64.Build.0 = Release|x64
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Release|x86.ActiveCfg = Release|x86
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1418,6 +1428,7 @@ Global
 		{0A4D55E3-1A18-4699-90A6-2892A1C41778} = {10A1E3E0-0E8F-495E-B38B-B678BFBBF043}
 		{D3EBEE42-7806-490D-A6A3-78719AEE3F38} = {0A4D55E3-1A18-4699-90A6-2892A1C41778}
 		{8B35CF58-CE43-4F30-A3B1-CB944FA5B08B} = {DB24F3EB-2DF9-4B2D-A104-D9DCF6473F32}
+		{F56D31CF-8821-4AEE-8675-4F660A1CD5C8} = {FEF6A7E0-50C4-4989-AECC-448829723C37}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}

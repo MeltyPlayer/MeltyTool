@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>hm64</RootNamespace>
+    <RootNamespace>pm</RootNamespace>
     <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -18,15 +18,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PaperMario\PaperMario.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="goldens\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\HarvestMoon64\HarvestMoon64.csproj" />
   </ItemGroup>
 
 </Project>
