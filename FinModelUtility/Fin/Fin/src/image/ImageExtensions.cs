@@ -102,10 +102,10 @@ public static class ImageExtensions {
           out float g,
           out float b,
           out float a) {
-        var leftX = (int) Math.Floor(x).Clamp(0, imageWidth);
-        var topY = (int) Math.Floor(y).Clamp(0, imageHeight);
-        var rightX = (int) (x + 1).Clamp(0, imageWidth);
-        var bottomY = (int) (y + 1).Clamp(0, imageHeight);
+        var leftX = (int) Math.Floor(x).Clamp(0, imageWidth - 1);
+        var topY = (int) Math.Floor(y).Clamp(0, imageHeight - 1);
+        var rightX = (int) (x + 1).Clamp(0, imageWidth - 1);
+        var bottomY = (int) (y + 1).Clamp(0, imageHeight - 1);
 
         var xF = x - leftX;
         var yF = y - topY;
