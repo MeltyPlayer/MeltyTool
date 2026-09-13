@@ -7,6 +7,7 @@ using f3dzex2.image;
 using f3dzex2.io;
 using f3dzex2.model;
 
+using fin.data.dictionaries;
 using fin.io;
 using fin.model;
 using fin.model.io;
@@ -34,7 +35,7 @@ public sealed class Dk64MapModelImporter
     using var mapBr = fileBundle.MapFile.OpenReadAsBinary(Endianness.BigEndian);
     var map = mapBr.ReadNew<Map>();
 
-    var mapSectionByMeshId = map.MapSections.ToDictionary(s => (uint) s.MeshId);
+    var mapSectionByMeshId = map.MapSections.ToListDictionary(s => (uint) s.MeshId);
 
     var displayListTuples
         = new List<(MapChunk mapChunk, long dlStart, int vertStartIndex)>();
@@ -60,13 +61,14 @@ public sealed class Dk64MapModelImporter
               mapBr.Position = currF3dexOffset + 4;
               var sectionId = mapBr.ReadUInt32();
 
-              if (mapSectionByMeshId.TryGetValue(
+              if (mapSectionByMeshId.TryGetList(
                       sectionId,
-                      out var mapSection)) {
+                      out var mapSections)) {
+                // TODO: What to do with the other sections?
                 displayListTuples.Add(
                     (mapChunk, currF3dexOffset - map.DlStart,
                      (mapChunk.VertexOffsetAndSize.Offset / 0x10) +
-                     mapSection.VertexOffsets[iDL]));
+                     mapSections[0].VertexOffsets[iDL]));
               }
             }
 
@@ -101,11 +103,12 @@ public sealed class Dk64MapModelImporter
     var opcodeParser = new F3dzex2OpcodeParser();
 
     foreach (var (mapChunk, dlStart, vertStartIndex) in displayListTuples) {
+      var vertexStart = (uint) (map.VertStart + vertStartIndex * 0x10);
       n64Memory.SetSegment(
           6,
           new SliceSegmentChunk {
-              OffsetInRom = (uint) (map.VertStart + vertStartIndex * 0x10),
-              Length = map.VertEnd - map.VertStart
+              OffsetInRom = vertexStart,
+              Length = map.VertEnd - vertexStart
           });
       n64Memory.SetSegment(
           7,
