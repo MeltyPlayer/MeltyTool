@@ -164,6 +164,9 @@ public sealed class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
 
   private readonly TmemAddressDictionary dpTmemTracker_ = new();
 
+  // Used by DK64 to determine when to deinterleave for some stupid reason.
+  public ushort Dxt { get; set; }
+
   public void GsDpLoadBlock(float uls,
                             float ult,
                             TileDescriptorIndex tileDescriptor,
@@ -177,6 +180,7 @@ public sealed class NoclipTmem(IN64Hardware n64Hardware) : ITmem {
     var tile = this.dpTileStates_[(byte) tileDescriptor];
     // Compute the texture size from lrs/dxt. This is required for mipmapping to work correctly
     // in B-K due to hackery.
+    this.Dxt = dxt;
     if (dxt != 0) {
       var numWordsTotal = texels + 1;
       var numWordsInLine = (1 << 11) / dxt;

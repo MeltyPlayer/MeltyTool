@@ -35,7 +35,8 @@ public sealed class Dk64MapModelImporter
     using var mapBr = fileBundle.MapFile.OpenReadAsBinary(Endianness.BigEndian);
     var map = mapBr.ReadNew<Map>();
 
-    var mapSectionByMeshId = map.MapSections.ToListDictionary(s => (uint) s.MeshId);
+    var mapSectionByMeshId
+        = map.MapSections.ToListDictionary(s => (uint) s.MeshId);
 
     var displayListTuples
         = new List<(MapChunk mapChunk, long dlStart, int vertStartIndex)>();
@@ -91,8 +92,9 @@ public sealed class Dk64MapModelImporter
     var n64Hardware = new N64Hardware<SlicedN64Memory>();
     var n64Memory
         = n64Hardware.Memory = new SlicedN64Memory(fileBundle.MapFile);
+    var tmem = new NoclipTmem(n64Hardware);
     var rdp = n64Hardware.Rdp = new Rdp {
-        Tmem = new NoclipTmem(n64Hardware),
+        Tmem = tmem
     };
     var rsp = n64Hardware.Rsp = new Rsp();
 
@@ -123,6 +125,8 @@ public sealed class Dk64MapModelImporter
                 = fileBundle.TexturesDirectory.AssertGetExistingFile(
                     $"texture{address}.bin");
             files.Add(textureFile);
+            // This is stupid.
+            n64Hardware.DeinterleaveImages = tmem.Dxt == 0;
             return textureFile.OpenRead();
           });
 
