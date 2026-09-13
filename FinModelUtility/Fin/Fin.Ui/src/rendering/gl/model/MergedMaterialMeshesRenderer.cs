@@ -14,7 +14,7 @@ public partial class ModelRenderer {
   private sealed class MergedMaterialMeshesRenderer : IDynamicModelRenderer {
     private readonly bool dynamic_;
     private readonly IReadOnlyTextureTransformManager textureTransformManager_;
-    private readonly IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager_;
+    private readonly IReadOnlyTextureSwapManager textureSwapManager_;
 
     private IGlBufferManager? bufferManager_;
     private IDynamicGlBufferManager? dynamicBufferManager_;
@@ -26,12 +26,12 @@ public partial class ModelRenderer {
     public MergedMaterialMeshesRenderer(
         IReadOnlyModel model,
         IReadOnlyTextureTransformManager textureTransformManager,
-        IReadOnlyTextureFlipbookSwapManager? textureFlipbookSwapManager,
+        IReadOnlyTextureSwapManager? textureSwapManager,
         bool dynamic = false) {
       this.Model = model;
       this.textureTransformManager_ = textureTransformManager;
-      this.textureFlipbookSwapManager_ = textureFlipbookSwapManager ??
-                                         new TextureFlipbookSwapManager(
+      this.textureSwapManager_ = textureSwapManager ??
+                                         new TextureSwapManager(
                                              model.MaterialManager.Textures);
       this.dynamic_ = dynamic;
     }
@@ -42,7 +42,7 @@ public partial class ModelRenderer {
         return;
       }
 
-      this.textureFlipbookSwapManager_.GenerateGlTexturesIfNull();
+      this.textureSwapManager_.GenerateGlTexturesIfNull();
 
       var modelRequirements = ModelRequirements.FromModel(this.Model);
 
@@ -59,7 +59,7 @@ public partial class ModelRenderer {
               this.bufferManager_,
               this.Model,
               this.textureTransformManager_,
-              this.textureFlipbookSwapManager_,
+              this.textureSwapManager_,
               modelRequirements,
               this.MeshVisibility);
     }

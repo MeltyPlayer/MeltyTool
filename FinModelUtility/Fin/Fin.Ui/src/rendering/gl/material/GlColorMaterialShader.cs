@@ -12,13 +12,13 @@ public sealed class GlColorMaterialShader(
     IModelRequirements modelRequirements,
     IReadOnlyColorMaterial colorMaterial,
     IReadOnlyTextureTransformManager textureTransformManager,
-    IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager)
+    IReadOnlyTextureSwapManager textureSwapManager)
     : BGlMaterialShader<IReadOnlyColorMaterial>(
         model,
         modelRequirements,
         colorMaterial,
         textureTransformManager,
-        textureFlipbookSwapManager) {
+        textureSwapManager) {
   private IShaderUniform<Vector4> diffuseLightColorUniform_;
 
   protected override void DisposeInternal() { }

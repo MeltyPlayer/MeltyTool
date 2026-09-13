@@ -10,13 +10,13 @@ public sealed class GlShaderMaterialShader(
     IModelRequirements modelRequirements,
     IReadOnlyShaderMaterial shaderMaterial,
     IReadOnlyTextureTransformManager textureTransformManager,
-    IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager)
+    IReadOnlyTextureSwapManager textureSwapManager)
     : BGlMaterialShader<IReadOnlyShaderMaterial>(
         model,
         modelRequirements,
         shaderMaterial,
         textureTransformManager,
-        textureFlipbookSwapManager) {
+        textureSwapManager) {
   protected override void DisposeInternal() { }
 
   protected override void Setup(IReadOnlyShaderMaterial material,

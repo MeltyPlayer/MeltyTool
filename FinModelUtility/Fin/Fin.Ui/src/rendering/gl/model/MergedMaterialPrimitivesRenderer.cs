@@ -37,7 +37,7 @@ public partial class ModelRenderer {
         IGlBufferManager bufferManager,
         IReadOnlyModel model,
         IReadOnlyTextureTransformManager textureTransformManager,
-        IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager,
+        IReadOnlyTextureSwapManager textureSwapManager,
         IModelRequirements modelRequirements,
         IReadOnlyMeshVisibilityDictionary? meshVisibility) {
       // Gathers up which meshes have visibility toggled on and off.
@@ -161,7 +161,7 @@ public partial class ModelRenderer {
                var mergedPrimitive = mergedPrimitives[i];
                var renderer = new MergedMaterialPrimitivesRenderer(
                    textureTransformManager,
-                   textureFlipbookSwapManager,
+                   textureSwapManager,
                    model,
                    modelRequirements,
                    visibilityMeshTuple,
@@ -186,7 +186,7 @@ public partial class ModelRenderer {
 
     public MergedMaterialPrimitivesRenderer(
         IReadOnlyTextureTransformManager textureTransformManager,
-        IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager,
+        IReadOnlyTextureSwapManager textureSwapManager,
         IReadOnlyModel model,
         IModelRequirements modelRequirements,
         (IReadOnlyMesh mesh, bool isVisibilityAnimated)? meshTuple,
@@ -204,7 +204,7 @@ public partial class ModelRenderer {
               modelRequirements,
               material,
               textureTransformManager,
-              textureFlipbookSwapManager);
+              textureSwapManager);
 
       this.bufferRenderer_ = bufferRenderer;
 

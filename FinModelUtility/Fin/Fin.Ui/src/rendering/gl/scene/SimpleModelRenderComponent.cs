@@ -41,14 +41,14 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
     this.AnimationPlaybackManager.IsPlaying = true;
 
     this.TextureTransformManager = new TextureTransformManager();
-    this.TextureFlipbookSwapManager =
-        new TextureFlipbookSwapManager(model.MaterialManager.Textures);
+    this.TextureSwapManager =
+        new TextureSwapManager(model.MaterialManager.Textures);
 
     this.modelRenderer_ =
         new ModelRenderer(model,
                           this.BoneTransformManager,
                           this.TextureTransformManager,
-                          this.TextureFlipbookSwapManager) {
+                          this.TextureSwapManager) {
             MeshVisibility = this.meshVisibility_,
         };
 
@@ -81,7 +81,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
 
   private void ReleaseUnmanagedResources_() {
     this.modelRenderer_.Dispose();
-    this.TextureFlipbookSwapManager.Dispose();
+    this.TextureSwapManager.Dispose();
   }
 
   public ISkeletonRenderer? SkeletonRenderer { get; }
@@ -116,7 +116,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
       this.TextureTransformManager.CalculateMatrices(
           model.MaterialManager.Textures,
           (animation, frame));
-      this.TextureFlipbookSwapManager.UpdateCurrentFlipbookSwaps(
+      this.TextureSwapManager.UpdateCurrentFlipbookSwaps(
           (animation, frame));
 
       this.meshVisibility_.Reset();
@@ -136,7 +136,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
       this.TextureTransformManager.CalculateMatrices(
           model.MaterialManager.Textures,
           null);
-      this.TextureFlipbookSwapManager.UpdateCurrentFlipbookSwaps(null);
+      this.TextureSwapManager.UpdateCurrentFlipbookSwaps(null);
     }
   }
 
@@ -159,7 +159,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   public IBoneTransformManager BoneTransformManager { get; }
   public SimpleBoneTransformView SimpleBoneTransformView { get; }
   public ITextureTransformManager TextureTransformManager { get; }
-  public ITextureFlipbookSwapManager TextureFlipbookSwapManager { get; }
+  public ITextureSwapManager TextureSwapManager { get; }
 
   public IReadOnlyModelAnimation? Animation {
     get;

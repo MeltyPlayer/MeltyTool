@@ -14,13 +14,13 @@ public sealed class GlFixedFunctionMaterialShader(
     IModelRequirements modelRequirements,
     IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
     IReadOnlyTextureTransformManager textureTransformManager,
-    IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager)
+    IReadOnlyTextureSwapManager textureSwapManager)
     : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
         model,
         modelRequirements,
         fixedFunctionMaterial,
         textureTransformManager,
-        textureFlipbookSwapManager) {
+        textureSwapManager) {
   private IShaderUniform<Vector4>? blendColorUniform_;
 
   private (IColorRegister, IShaderUniform<Vector3>)[]

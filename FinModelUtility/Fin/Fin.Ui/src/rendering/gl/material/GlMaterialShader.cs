@@ -12,45 +12,45 @@ public static class GlMaterialShader {
       IModelRequirements modelRequirements,
       IReadOnlyMaterial? material,
       IReadOnlyTextureTransformManager textureTransformManager,
-      IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager)
+      IReadOnlyTextureSwapManager textureSwapManager)
     => material.GetShaderType() switch {
         FinShaderType.FIXED_FUNCTION => new GlFixedFunctionMaterialShader(
             model,
             modelRequirements,
             Asserts.AsA<IReadOnlyFixedFunctionMaterial>(material),
             textureTransformManager,
-            textureFlipbookSwapManager),
+            textureSwapManager),
         FinShaderType.TEXTURE => new GlTextureMaterialShader(model,
           modelRequirements,
           Asserts.AsA<IReadOnlyTextureMaterial>(material),
           textureTransformManager,
-          textureFlipbookSwapManager),
+          textureSwapManager),
         FinShaderType.COLOR => new GlColorMaterialShader(model,
           modelRequirements,
           Asserts.AsA<IReadOnlyColorMaterial>(material),
           textureTransformManager,
-          textureFlipbookSwapManager),
+          textureSwapManager),
         FinShaderType.SHADER => new GlShaderMaterialShader(model,
           modelRequirements,
           Asserts.AsA<IReadOnlyShaderMaterial>(material),
           textureTransformManager,
-          textureFlipbookSwapManager),
+          textureSwapManager),
         FinShaderType.STANDARD => new GlStandardMaterialShader(model,
           modelRequirements,
           Asserts.AsA<IReadOnlyStandardMaterial>(material),
           textureTransformManager,
-          textureFlipbookSwapManager),
+          textureSwapManager),
         FinShaderType.HIDDEN => new GlHiddenMaterialShader(
             model,
             modelRequirements,
             textureTransformManager,
-            textureFlipbookSwapManager),
+            textureSwapManager),
         FinShaderType.NULL
             => new GlNullMaterialShader(
                 model,
                 modelRequirements,
                 textureTransformManager,
-                textureFlipbookSwapManager),
+                textureSwapManager),
         _ => throw new ArgumentOutOfRangeException()
     };
 }

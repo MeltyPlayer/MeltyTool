@@ -17,8 +17,8 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
 
   private readonly IReadOnlyModel model_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
-  private readonly IReadOnlyTextureFlipbookSwapManager
-      textureFlipbookSwapManager_;
+  private readonly IReadOnlyTextureSwapManager
+      textureSwapManager_;
   private readonly GlShaderProgram impl_;
 
   private readonly IShaderUniform<Vector3> cameraPositionUniform_;
@@ -31,11 +31,11 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
       IModelRequirements modelRequirements,
       TMaterial material,
       IReadOnlyTextureTransformManager? textureTransformManager,
-      IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager) {
+      IReadOnlyTextureSwapManager textureSwapManager) {
     this.model_ = model;
     this.Material = material;
     this.textureTransformManager_ = textureTransformManager;
-    this.textureFlipbookSwapManager_ = textureFlipbookSwapManager;
+    this.textureSwapManager_ = textureSwapManager;
 
     var shaderSource
         = this.GenerateShaderSource(model, modelRequirements, material);
@@ -118,6 +118,6 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
                                      fallbackGlTexture,
                                      this.model_.AnimationManager.Animations,
                                      this.textureTransformManager_,
-                                     this.textureFlipbookSwapManager_,
+                                     this.textureSwapManager_,
                                      this.impl_));
 }
