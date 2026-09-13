@@ -6,6 +6,7 @@ using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
 using fin.ui;
+using fin.ui.avalonia.controls;
 
 using ReactiveUI;
 
@@ -46,7 +47,8 @@ public class MaterialShadersPanelViewModel : BViewModel {
   }
 }
 
-public partial class MaterialShadersPanel : UserControl {
+public partial class MaterialShadersPanel
+    : BUserControl<MaterialShadersPanelViewModel> {
   public MaterialShadersPanel() {
     this.InitializeComponent();
   }
