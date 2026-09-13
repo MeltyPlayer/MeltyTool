@@ -68,5 +68,7 @@ public static partial class GlUtil {
     for (var i = 0; i < MaterialConstants.MAX_TEXTURES; ++i) {
       BindTexture(i, state.CurrentTextureBindings[i]);
     }
+
+    SetViewport(state.Viewport);
   }
 }

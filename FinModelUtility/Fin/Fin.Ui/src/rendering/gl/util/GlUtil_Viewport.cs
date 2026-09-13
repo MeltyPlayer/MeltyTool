@@ -14,6 +14,7 @@ public static partial class GlUtil {
       return;
     }
 
+    currentState_.Viewport = viewport;
     GL.Viewport(viewport);
   }
 }
