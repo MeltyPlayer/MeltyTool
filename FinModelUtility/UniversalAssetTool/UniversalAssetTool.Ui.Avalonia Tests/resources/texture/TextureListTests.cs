@@ -1,13 +1,10 @@
-﻿using Avalonia.Controls;
-using Avalonia.Headless.NUnit;
+﻿using Avalonia.Headless.NUnit;
 
 using fin.model.impl;
 using fin.util.asserts;
 
 using uni.ui.avalonia.helpers;
 using uni.ui.avalonia.resources.model;
-
-using Assert = NUnit.Framework.Assert;
 
 namespace uni.ui.avalonia.resources.texture;
 
