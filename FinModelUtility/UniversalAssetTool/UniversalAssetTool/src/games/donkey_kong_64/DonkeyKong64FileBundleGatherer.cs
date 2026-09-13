@@ -21,5 +21,14 @@ public sealed class DonkeyKong64FileBundleGatherer : BN64FileBundleGatherer {
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
       IMutablePercentageProgress mutablePercentageProgress,
-      IFileHierarchy fileHierarchy) { }
+      IFileHierarchy fileHierarchy) {
+    var root = fileHierarchy.Root;
+
+    var texturesDirectory = root.AssertGetExistingSubdir("textures").Impl;
+    foreach (var mapFile in root.AssertGetExistingSubdir("maps")
+                                .GetExistingFiles()) {
+      organizer.Add(
+          new Dk64MapModelFileBundle(mapFile.Impl, texturesDirectory));
+    }
+  }
 }

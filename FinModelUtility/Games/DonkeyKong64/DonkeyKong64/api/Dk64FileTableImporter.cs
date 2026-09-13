@@ -66,7 +66,7 @@ public sealed class Dk64FileTableImporter
       romBr.AssertUInt32(0x1F8B0800);
 
       texturesArchiveDir.AddFile(
-          $"texData{i}.bin",
+          $"texture{i}.bin",
           offset + 0xa,
           DecompressDataAtCurrentOffset_);
     }

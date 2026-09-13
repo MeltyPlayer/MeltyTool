@@ -4,6 +4,8 @@ using bar.api;
 
 using Celeste64.api;
 
+using dk64.api;
+
 using facade.api;
 
 using fin.model;
@@ -82,10 +84,12 @@ public sealed class GlobalModelImporter : IModelImporter<IModelFileBundle> {
                 celeste64MapModelFileBundle),
         CmbModelFileBundle cmbModelFileBundle
             => new CmbModelImporter().Import(cmbModelFileBundle),
-        DatModelFileBundle datModelFileBundle
-            => new DatModelImporter().Import(datModelFileBundle),
         D3dModelFileBundle modModelFileBundle
             => new D3dModelImporter().Import(modModelFileBundle),
+        DatModelFileBundle datModelFileBundle
+            => new DatModelImporter().Import(datModelFileBundle),
+        Dk64MapModelFileBundle dk64MapModelFileBundle
+            => new Dk64MapModelImporter().Import(dk64MapModelFileBundle),
         FacadeRoomModelFileBundle facadeRoomModelFileBundle
             => new FacadeRoomModelImporter().Import(facadeRoomModelFileBundle),
         GauntletDarkLegacyModelFileBundle animModelFileBundle
