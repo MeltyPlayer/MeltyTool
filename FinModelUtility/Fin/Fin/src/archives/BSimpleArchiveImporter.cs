@@ -20,6 +20,8 @@ public interface ISimpleArchiveDirectory : IArchiveDirectory2 {
   ISimpleArchiveDirectory AddSubdir(string name);
   void AddFile(string path, long position, long length);
 
+  void AddFile(string path, long position, Func<Stream, Stream> processor);
+
   void AddFile(string path,
                long position,
                long length,
@@ -94,10 +96,21 @@ public abstract class BSimpleArchiveImporter<TBundle>
 
     public void AddFile(string path,
                         long position,
+                        Func<Stream, Stream> processor) {
+      var (parentDir, fileName) = this.GetParentDirAndFileName_(path);
+      parentDir.filesImpl_[fileName] = new ProcessedArchiveFileWithoutLength(
+          archive,
+          fileName,
+          position,
+          processor);
+    }
+
+    public void AddFile(string path,
+                        long position,
                         long length,
                         Func<Stream, Stream> processor) {
       var (parentDir, fileName) = this.GetParentDirAndFileName_(path);
-      parentDir.filesImpl_[fileName] = new ProcessedArchiveFile(
+      parentDir.filesImpl_[fileName] = new ProcessedArchiveFileWithLength(
           archive,
           fileName,
           position,
@@ -160,7 +173,21 @@ public abstract class BSimpleArchiveImporter<TBundle>
     public Stream OpenRead() => archive.ReadStream.Substream(position, length);
   }
 
-  private sealed class ProcessedArchiveFile(
+  private sealed class ProcessedArchiveFileWithoutLength(
+      SimpleArchive archive,
+      string name,
+      long position,
+      Func<Stream, Stream> processor) : IArchiveFile2 {
+    public string Name => name;
+
+    public Stream OpenRead()
+      => processor(
+          archive.ReadStream.Substream(
+              position,
+              archive.ReadStream.Length - position));
+  }
+
+  private sealed class ProcessedArchiveFileWithLength(
       SimpleArchive archive,
       string name,
       long position,
