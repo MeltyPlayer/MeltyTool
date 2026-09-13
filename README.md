@@ -70,7 +70,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@LuigiBlood](https://github.com/LuigiBlood), whose [mfs_manager](https://github.com/LuigiBlood/mfs_manager) tool was heavily referenced to add support for extracting files from 64DD files.
 - [@LuizZak](https://github.com/LuizZak), whose [FastBitmap](https://github.com/LuizZak/FastBitmap) library was used to optimize working with bitmaps and inspired some optimizations in Fin's image processing methods.
 - [@M-1-RLG](https://github.com/M-1-RLG), aka M-1, as his [io_scene_cmb](https://github.com/M-1-RLG/io_scene_cmb) Blender plugin was used as the basis for the .cmb importer. He also provided [thorough documentation](https://github.com/M-1-RLG/010-Editor-Templates/tree/master/Grezzo) on each of Grezzo's formats.
-- [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/magcius/noclip.website) was referenced to add support for importing Beetle Adventure Racing models, .csab files, Paper Mario maps, and Paper Mario: The Thousand Year Door's animated group models.
+- [@magcius](https://github.com/magcius), aka Jasper, as their model viewer [noclip.website](https://github.com/magcius/noclip.website) was referenced to add support for importing Beetle Adventure Racing models, .csab files, Donkey Kong 64 maps, Paper Mario maps, and Paper Mario: The Thousand Year Door's animated group models.
 - [@markheath](https://github.com/markheath), whose [NAudio](https://github.com/naudio/naudio) library was used to load .wav files.
 - [Masusder](https://github.com/Masusder), whose [FModBankParser](https://github.com/Masusder/FModBankParser) library was used to load FMod .bank files.
 - Mega-Mario, whose [documentation](https://kuribo64.net/get.php?id=KBNyhM0kmNiuUBb3) was referenced to add support for parsing SM64DS models.
@@ -129,6 +129,8 @@ If you'd like to vote on new games or features that should be supported, please 
   - Ocarina of Time 3D (`ocarina_of_time_3d.[3ds/cci/cia]`)
 - .d3d (PC)
   - Game Maker
+- Donkey Kong 64 maps
+  - Donkey Kong 64 (`donkey_kong_64.z64`)	
 - .geo (PC)
   - Dead Space (Steam/Epic Games)
 - .glo (PC)
