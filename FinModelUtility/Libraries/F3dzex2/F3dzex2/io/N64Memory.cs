@@ -89,7 +89,8 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
       return false;
     }
 
-    return segments.Any(segment => offset - segment.OffsetInSegment < segment.Length);
+    return segments.Any(segment => offset - segment.OffsetInSegment <
+                                   segment.Length);
   }
 
   public bool IsSegmentCompressed(uint segmentIndex)
@@ -113,6 +114,15 @@ public abstract class BN64Memory(Endianness endianness = Endianness.BigEndian)
                            OffsetInSegment = offset,
                            Bytes = bytes,
                        });
+
+  public void SetJitSegment(
+      uint segmentIndex,
+      Func<uint, Stream> getStreamFromAddress)
+    => this.SetSegment(
+        segmentIndex,
+        new JitSegment {
+            GetStreamFromAddress = getStreamFromAddress,
+        });
 
   public void SetSegment(uint segmentIndex, ISegmentChunk segmentChunk) {
     this.segments_.ClearList(segmentIndex);
@@ -151,6 +161,7 @@ public sealed class SeparateN64Memory(
         if (offset != null) {
           br.Position = offset.Value - segmentChunk.OffsetInSegment;
         }
+
         return br;
       }
       default: throw new NotImplementedException();
@@ -211,6 +222,11 @@ public sealed class SlicedN64Memory(
         }
 
         return br;
+      }
+      case JitSegment jitSegment: {
+        return new SchemaBinaryReader(
+            jitSegment.GetStreamFromAddress(offset ?? 0),
+            this.Endianness);
       }
       default: throw new NotImplementedException();
     }

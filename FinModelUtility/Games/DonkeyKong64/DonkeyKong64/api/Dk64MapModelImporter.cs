@@ -113,7 +113,15 @@ public sealed class Dk64MapModelImporter
               OffsetInRom = map.DlStart,
               Length = map.DlEnd - map.DlStart
           });
-      // TODO: Need to set segment 1 for texture
+      n64Memory.SetJitSegment(
+          0,
+          address => {
+            var textureFile
+                = fileBundle.TexturesDirectory.AssertGetExistingFile(
+                    $"texture{address}.bin");
+            files.Add(textureFile);
+            return textureFile.OpenRead();
+          });
 
       rsp.GeometryMode = GeometryMode.G_SHADE | GeometryMode.G_LIGHTING;
       rdp.OtherModeL = 0x0C192078;

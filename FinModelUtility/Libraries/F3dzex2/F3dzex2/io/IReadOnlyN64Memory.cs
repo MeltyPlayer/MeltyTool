@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 using fin.compression;
 using fin.util.types;
@@ -53,6 +55,10 @@ public interface ISlicedN64Memory : ISeparateN64Memory {
                   uint offset,
                   uint length,
                   IArrayToArrayDecompressor? decompressor = null);
+
+  void SetJitSegment(
+      uint segmentIndex,
+      Func<uint, Stream> getStreamFromAddress);
 }
 
 [UnionCandidate]
@@ -72,4 +78,10 @@ public class BytesSegmentChunk : ISegmentChunk {
   public required uint OffsetInSegment { get; init; }
   public uint Length => (uint) this.Bytes.Length;
   public required byte[] Bytes { get; init; }
+}
+
+public class JitSegment : ISegmentChunk {
+  public uint OffsetInSegment => 0;
+  public uint Length => 0x01000000;
+  public required Func<uint, Stream> GetStreamFromAddress { get; init; }
 }
