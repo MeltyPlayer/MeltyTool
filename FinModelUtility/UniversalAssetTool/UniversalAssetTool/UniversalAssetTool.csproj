@@ -136,6 +136,7 @@
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
     <ProjectReference Include="..\..\Games\DonkeyKong64\DonkeyKong64\DonkeyKong64.csproj" />
     <ProjectReference Include="..\..\Games\PaperMario\PaperMario\PaperMario.csproj" />
+    <ProjectReference Include="..\..\Games\PokemonSnap\PokemonSnap\PokemonSnap.csproj" />
 
     <ProjectReference Include="..\..\Libraries\AngelStudios\AngelStudios\AngelStudios.csproj" />
     <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
