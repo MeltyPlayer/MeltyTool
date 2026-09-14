@@ -23,6 +23,7 @@ using marioartisttool.config;
 using marioartisttool.file_select;
 using marioartisttool.services;
 using marioartisttool.view;
+using marioartisttool.view.face;
 using marioartisttool.view.games.ball;
 using marioartisttool.ViewModels;
 
@@ -168,11 +169,16 @@ public partial class MainView : UserControl {
             shadowModelObj.AddComponent(new RotateTalentTickComponent());
           }
 
+          var expressionQueueManager = new ExpressionQueueManager();
+          characterObj.AddComponent(expressionQueueManager);
           characterObj.AddComponent(
-              new FaceFboTickComponent(
+              new RandomExpressionTickComponent(expressionQueueManager));
+          characterObj.AddComponent(
+              new RenderFaceToFboTickComponent(
                   model.MaterialManager.Textures
                        .Single(t => t.Name == "face0"),
                   modelRenderComponent.TextureSwapManager,
+                  expressionQueueManager,
                   expressions));
 
           this.currentModelFileBundle_ = bundle;

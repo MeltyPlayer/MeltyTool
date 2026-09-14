@@ -1,40 +1,39 @@
-﻿using System;
-using System.Drawing;
-using System.Numerics;
+﻿using System.Numerics;
 
-using fin.color;
 using fin.math;
 using fin.model;
 using fin.scene;
 using fin.ui.rendering.gl;
 using fin.ui.rendering.gl.texture;
 using fin.ui.rendering.gl.ubo;
-using fin.util.time;
 
 using marioartist.api;
 using marioartist.schema.talent_studio.face;
 
-namespace marioartisttool.view;
+namespace marioartisttool.view.face;
 
-public class FaceFboTickComponent : ISceneNodeTickComponent {
+public class RenderFaceToFboTickComponent : ISceneNodeTickComponent {
   private readonly IReadOnlyTexture faceTexture_;
   private readonly FaceRenderer faceRenderer_;
   private readonly ITextureSwapManager textureSwapManager_;
   private GlFbo? fbo_;
-  private readonly Expression[] expressions_;
+  private ExpressionQueueManager expressionQueueManager_;
+  private Expression[] expressions_;
 
   private ViewMatricesUbo viewMatricesUbo_;
 
   private (Expression expression, float weight)[] weightedExpressions_
       = new (Expression expression, float weight)[2];
 
-  public FaceFboTickComponent(
+  public RenderFaceToFboTickComponent(
       IReadOnlyTexture faceTexture,
       ITextureSwapManager textureSwapManager,
+      ExpressionQueueManager expressionQueueManager,
       Expression[] expressions) {
     this.faceTexture_ = faceTexture;
     this.faceRenderer_ = new(this.faceTexture_.Image);
     this.textureSwapManager_ = textureSwapManager;
+    this.expressionQueueManager_ = expressionQueueManager;
     this.expressions_ = expressions;
   }
 
@@ -53,11 +52,9 @@ public class FaceFboTickComponent : ISceneNodeTickComponent {
           this.fbo_.ColorTexture);
     }
 
-    var seconds = FrameTime.ElapsedTimeSinceApplicationOpened.TotalSeconds;
-    var fraction = .5f + .5f * MathF.Sin((float) (seconds * MathF.PI));
-
-    this.weightedExpressions_[0] = (this.expressions_[0], fraction);
-    this.weightedExpressions_[1] = (this.expressions_[1], 1 - fraction);
+    var fraction = this.expressionQueueManager_.Fraction;
+    this.weightedExpressions_[0] = (this.expressions_[(int) this.expressionQueueManager_.FromExpression], 1 - fraction);
+    this.weightedExpressions_[1] = (this.expressions_[(int) this.expressionQueueManager_.ToExpression], fraction);
 
     GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);
     GlTransform.PushMatrix();
