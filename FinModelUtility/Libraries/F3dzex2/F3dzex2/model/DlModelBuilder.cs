@@ -537,11 +537,14 @@ public sealed partial class DlModelBuilder {
 
               ApplyBlendMode_(n64Hardware, finMaterial);
 
-              finMaterial.SetDefaultAlphaCompare(rdp.ZMode switch {
-                  ZMode.ZMODE_OPA => TransparencyType.OPAQUE,
-                  ZMode.ZMODE_DEC => TransparencyType.MASK,
-                  _               => TransparencyType.TRANSPARENT,
-              });
+              finMaterial.SetDefaultAlphaCompare(
+                  n64Hardware.IgnoreZMode
+                      ? TransparencyType.TRANSPARENT
+                      : rdp.ZMode switch {
+                          ZMode.ZMODE_OPA => TransparencyType.OPAQUE,
+                          ZMode.ZMODE_DEC => TransparencyType.MASK,
+                          _               => TransparencyType.TRANSPARENT,
+                      });
 
               // Shamelessly stolen from:
               // https://github.com/magcius/noclip.website/blob/main/src/zelview/f3dzex.ts#L109

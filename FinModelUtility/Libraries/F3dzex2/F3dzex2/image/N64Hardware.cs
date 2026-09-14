@@ -7,6 +7,7 @@ public interface IN64Hardware {
   IRsp Rsp { get; }
   IRdp Rdp { get; }
   bool DeinterleaveImages { get; set; }
+  bool IgnoreZMode { get; set; }
 }
 
 public interface IN64Hardware<TMemory> : IN64Hardware
@@ -24,4 +25,5 @@ public sealed class N64Hardware<TMemory> : IN64Hardware<TMemory>
   public IRsp Rsp { get; set; }
   public IRdp Rdp { get; set; }
   public bool DeinterleaveImages { get; set; }
+  public bool IgnoreZMode { get; set; }
 }

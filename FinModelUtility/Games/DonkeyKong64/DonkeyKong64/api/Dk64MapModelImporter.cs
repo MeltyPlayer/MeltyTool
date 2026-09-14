@@ -1,5 +1,6 @@
 ﻿using dk64.schema.map;
 
+using f3dzex2.combiner;
 using f3dzex2.displaylist;
 using f3dzex2.displaylist.opcodes;
 using f3dzex2.displaylist.opcodes.f3dzex2;
@@ -89,7 +90,9 @@ public sealed class Dk64MapModelImporter
       }
     }
 
-    var n64Hardware = new N64Hardware<SlicedN64Memory>();
+    var n64Hardware = new N64Hardware<SlicedN64Memory>() {
+        IgnoreZMode = true
+    };
     var n64Memory
         = n64Hardware.Memory = new SlicedN64Memory(fileBundle.MapFile);
     var tmem = new NoclipTmem(n64Hardware);
@@ -133,8 +136,6 @@ public sealed class Dk64MapModelImporter
       rsp.GeometryMode = GeometryMode.G_SHADE | GeometryMode.G_LIGHTING;
       rdp.OtherModeL = 0x0C192078;
       /*rspState.gDPSetOtherModeH(OtherModeH_Layout.G_MDSFT_TEXTFILT, 2, TextFilt.G_TF_BILERP << OtherModeH_Layout.G_MDSFT_TEXTFILT);
-      // initially 2-cycle, though this can change
-      rspState.gDPSetOtherModeH(OtherModeH_Layout.G_MDSFT_CYCLETYPE, 2, OtherModeH_CycleType.G_CYC_2CYCLE << OtherModeH_Layout.G_MDSFT_CYCLETYPE);
       // some objects seem to assume this gets set, might rely on stage rendering first*/
       rdp.Tmem.GsDpSetTile(
           N64ColorFormat.RGBA,
@@ -149,6 +150,8 @@ public sealed class Dk64MapModelImporter
           0,
           0,
           0);
+      rdp.CycleType = CycleType.TWO_CYCLE;
+      rdp.ZMode = ZMode.ZMODE_XLU;
 
       var displayList = dlReader.ReadDisplayList(
           n64Memory,
