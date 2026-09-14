@@ -46,14 +46,13 @@ public static class TstltExpressionFboRenderer {
     for (var i = 0; i < expressions.Length; ++i) {
       var expression = expressions[i];
 
-      fbo.TargetFbo();
-      GlUtil.SetViewport(new Rectangle(0, 0, fbo.Width, fbo.Height));
-      GlUtil.ClearColorAndDepth();
+      fbo.InvokeAsDrawTarget(() => {
+        GlUtil.SetViewport(new Rectangle(0, 0, fbo.Width, fbo.Height));
+        GlUtil.ClearColorAndDepth();
 
-      faceRenderer.SetExpression(expression);
-      faceRenderer.Render();
-
-      fbo.UntargetFbo();
+        faceRenderer.SetExpression(expression);
+        faceRenderer.Render();
+      });
     }
 
     GlTransform.MatrixMode(TransformMatrixMode.PROJECTION);

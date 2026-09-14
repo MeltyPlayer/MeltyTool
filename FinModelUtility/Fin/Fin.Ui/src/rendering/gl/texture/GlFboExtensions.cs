@@ -45,15 +45,15 @@ public static class GlFboExtensions {
 
   private static unsafe void ReadPixelsIntoDst_(GlFbo fbo,
                                                 Rgba32* dst) {
-    fbo.TargetFbo();
-    GL.ReadPixels(0,
-                  0,
-                  fbo.Width,
-                  fbo.Height,
-                  PixelFormat.Rgba,
-                  PixelType.UnsignedByte,
-                  new IntPtr(dst));
-    fbo.UntargetFbo();
+    fbo.InvokeAsReadTarget(() => {
+      GL.ReadPixels(0,
+                    0,
+                    fbo.Width,
+                    fbo.Height,
+                    PixelFormat.Rgba,
+                    PixelType.UnsignedByte,
+                    new IntPtr(dst));
+    });
   }
 
   private static Span<Rgba32> GetRow_(Span<Rgba32> imageSpan,

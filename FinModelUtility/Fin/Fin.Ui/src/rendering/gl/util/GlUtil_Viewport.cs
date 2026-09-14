@@ -17,4 +17,6 @@ public static partial class GlUtil {
     currentState_.Viewport = viewport;
     GL.Viewport(viewport);
   }
+
+  public static Rectangle GetViewport() => currentState_.Viewport;
 }

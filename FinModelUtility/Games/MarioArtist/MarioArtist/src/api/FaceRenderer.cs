@@ -63,7 +63,8 @@ public class FaceRenderer : IRenderable {
 
     faceSkin.AddMesh()
             .AddTriangles(triangleVertices)
-            .SetMaterial(faceMaterial);
+            .SetMaterial(faceMaterial)
+            .SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
 
     this.impl_ = ModelRenderer.CreateDynamic(faceModel);
   }
@@ -83,7 +84,32 @@ public class FaceRenderer : IRenderable {
         var pin = expression.Pins[xI * Expression.HEIGHT + yI];
 
         pin = (pin - new Vector2(88, 24)) * this.conversionFactor_;
+        this.pinVertices_[xI, yI].SetLocalPosition(pin.X, pin.Y, 0);
+      }
+    }
 
+    this.impl_.UpdateBuffer();
+  }
+
+  public void SetWeightedExpression(
+      ReadOnlySpan<(Expression expression, float weight)> weightedExpressions) {
+    Span<Vector2> totalPositions
+        = stackalloc Vector2[Expression.WIDTH * Expression.HEIGHT];
+
+    foreach (var (expression, weight) in weightedExpressions) {
+      for (var xI = 0; xI < Expression.WIDTH; ++xI) {
+        for (var yI = 0; yI < Expression.HEIGHT; ++yI) {
+          var pin = expression.Pins[xI * Expression.HEIGHT + yI];
+          pin = (pin - new Vector2(88, 24)) * this.conversionFactor_;
+
+          totalPositions[yI * Expression.WIDTH + xI] += pin * weight;
+        }
+      }
+    }
+
+    for (var yI = 0; yI < Expression.HEIGHT; ++yI) {
+      for (var xI = 0; xI < Expression.WIDTH; ++xI) {
+        var pin = totalPositions[yI * Expression.WIDTH + xI];
         this.pinVertices_[xI, yI].SetLocalPosition(pin.X, pin.Y, 0);
       }
     }

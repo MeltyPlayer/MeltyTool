@@ -107,10 +107,11 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
   public const bool USE_GRANULAR_MESHES = false;
 
   public IModel Import(TstltModelFileBundle fileBundle)
-    => Import(fileBundle, out _);
+    => Import(fileBundle, out _, out _);
 
   public static IModel Import(TstltModelFileBundle fileBundle,
-                              out Gender gender) {
+                              out Gender gender,
+                              out Expression[] expressions) {
     using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
 
     var n64Hardware = new N64Hardware<SlicedN64Memory>();
@@ -158,7 +159,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
     skinChosenPart.ChosenColor0.Color = skinColor;
 
     br.Position = 0x9344;
-    var expressions = br.ReadNews<Expression>(6);
+    expressions = br.ReadNews<Expression>(6);
 
     br.Position = 0xb840;
     var headChosenPart0s = br.ReadNews<ChosenPart0>(5);

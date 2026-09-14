@@ -115,7 +115,10 @@ public partial class MainView : UserControl {
 
         try {
           var bundle = new TstltModelFileBundle(file);
-          var model = TstltModelImporter.Import(bundle, out var gender);
+          var model = TstltModelImporter.Import(
+              bundle,
+              out var gender,
+              out var expressions);
 
           var config = Config.INSTANCE;
           config.MostRecentFileName = file.FullPath;
@@ -164,6 +167,13 @@ public partial class MainView : UserControl {
             modelObj.AddComponent(new RotateTalentTickComponent());
             shadowModelObj.AddComponent(new RotateTalentTickComponent());
           }
+
+          characterObj.AddComponent(
+              new FaceFboTickComponent(
+                  model.MaterialManager.Textures
+                       .Single(t => t.Name == "face0"),
+                  modelRenderComponent.TextureSwapManager,
+                  expressions));
 
           this.currentModelFileBundle_ = bundle;
 

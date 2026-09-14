@@ -50,12 +50,11 @@ public sealed class GlTextTexture : IGlTexture {
     var height = (int) Math.Ceiling(size.Height);
     this.impl_ = new GlFbo(width, height);
 
-    this.impl_.TargetFbo();
-    GlUtil.SetViewport(new Rectangle(0, 0, width, height));
-    GlUtil.SetClearColor(Color.Transparent);
-    GlUtil.ClearColorAndDepth();
-    drawing.Draw();
-    this.impl_.UntargetFbo();
+    this.impl_.InvokeAsDrawTarget(() => {
+      GlUtil.SetClearColor(Color.Transparent);
+      GlUtil.ClearColorAndDepth();
+      drawing.Draw();
+    });
   }
 
   ~GlTextTexture() => this.ReleaseUnmanagedResources_();
@@ -72,7 +71,7 @@ public sealed class GlTextTexture : IGlTexture {
     this.impl_.Dispose();
   }
 
-  public int Id => this.impl_.ColorTextureId;
+  public int Id => this.impl_.ColorTexture.Id;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0) => this.impl_.Bind();
