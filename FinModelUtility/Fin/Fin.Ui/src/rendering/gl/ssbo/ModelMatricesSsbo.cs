@@ -1,22 +1,23 @@
 ﻿using System.Numerics;
 
 using fin.shaders.glsl;
+using fin.ui.rendering.gl.ssbo;
 using fin.ui.rendering.gl.ubo;
 
 namespace fin.ui.rendering.gl;
 
 public static partial class ModelMatricesBo {
-  private sealed class ModelMatricesUbo : IModelMatricesBo {
+  private sealed class ModelMatricesSsbo : IModelMatricesBo {
     private readonly int bufferSize_;
-    private readonly GlUbo impl_;
+    private readonly GlSsbo impl_;
 
-    public ModelMatricesUbo(int boneCount) {
+    public ModelMatricesSsbo(int boneCount) {
       this.bufferSize_ = (1 + (1 + boneCount)) * UboUtil.SIZE_OF_MATRIX4X4;
       this.impl_ = new(this.bufferSize_,
                        GlslConstants.UBO_CURRENT_MATRICES_BINDING_INDEX);
     }
 
-    ~ModelMatricesUbo() => this.ReleaseUnmanagedResources_();
+    ~ModelMatricesSsbo() => this.ReleaseUnmanagedResources_();
 
     public void Dispose() {
       this.ReleaseUnmanagedResources_();

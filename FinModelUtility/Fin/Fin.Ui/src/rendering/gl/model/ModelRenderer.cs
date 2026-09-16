@@ -44,11 +44,12 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
                          true);
 
 
-  private ModelMatricesUbo? matricesUbo_;
+  private IModelMatricesBo? matricesBo_;
   private readonly IReadOnlyModel model_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
-  public IEnumerable<IMaterialRenderer> MaterialRenderers => this.impl_.MaterialRenderers;
+  public IEnumerable<IMaterialRenderer> MaterialRenderers
+    => this.impl_.MaterialRenderers;
 
   /// <summary>
   ///   A renderer for a Fin model.
@@ -83,7 +84,7 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
 
   private void ReleaseUnmanagedResources_() {
     this.impl_.Dispose();
-    this.matricesUbo_?.Dispose();
+    this.matricesBo_?.Dispose();
     this.LightsUbo?.Dispose();
   }
 
@@ -120,11 +121,12 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
       this.boneMatrices_[boneIndex++] = inverseMatrix * localToWorldMatrix;
     }
 
-    this.matricesUbo_ ??= new(this.model_.Skin.BonesUsedByVertices.Count);
-    this.matricesUbo_.UpdateData(GlTransform.ModelMatrix, this.boneMatrices_);
+    this.matricesBo_
+        ??= ModelMatricesBo.New(this.model_.Skin.BonesUsedByVertices.Count);
+    this.matricesBo_.UpdateData(GlTransform.ModelMatrix, this.boneMatrices_);
   }
 
-  public void BindMatricesUbo() => this.matricesUbo_.Bind();
+  public void BindMatricesUbo() => this.matricesBo_.Bind();
 
   public void GenerateModelIfNull() => this.impl_.GenerateModelIfNull();
 
