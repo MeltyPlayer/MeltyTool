@@ -22,6 +22,27 @@ public partial interface IListDictionary<TKey, TValue> {
   new IEnumerable<TValue> Values { get; }
 }
 
+public static class ListDictionary {
+  public static ListDictionary<TKey, TValue> From<TKey, TValue>(
+      TKey key,
+      IReadOnlyList<TValue> values) {
+    var impl = new ListDictionary<TKey, TValue>();
+    impl.AddRange(key, values);
+    return impl;
+  }
+
+  public static ListDictionary<TKey, TValue> From<TKey, TValue>(
+      (TKey key, IReadOnlyList<TValue> values)? nullableTuple) {
+    var impl = new ListDictionary<TKey, TValue>();
+    if (nullableTuple != null) {
+      var tuple = nullableTuple.Value;
+      impl.AddRange(tuple.key, tuple.values);
+    }
+
+    return impl;
+  }
+}
+
 /// <summary>
 ///   An implementation for a dictionary of lists. Each value added for a key
 ///   will be stored in that key's corresponding list.

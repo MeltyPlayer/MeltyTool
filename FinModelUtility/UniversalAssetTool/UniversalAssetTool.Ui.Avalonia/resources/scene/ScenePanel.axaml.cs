@@ -13,6 +13,7 @@ using ReactiveUI;
 
 using uni.ui.avalonia.resources.model.materials;
 using uni.ui.avalonia.resources.scene.areas;
+using uni.ui.avalonia.resources.texture;
 
 namespace uni.ui.avalonia.resources.scene;
 
@@ -30,13 +31,22 @@ public class ScenePanelViewModel : BViewModel {
       this.AreasPanel = new AreasPanelViewModel { Scene = value, };
       this.FilesPanel = new FilesPanelViewModel(value);
 
+      var models = value.EnumerateAllDistinctModels().ToArray();
+
       this.MaterialsPanel = new MaterialsPanelViewModel {
           ModelsAndMaterials
-              = value.EnumerateAllDistinctModels()
-                     .ToListDictionary(
-                         m => m,
-                         m => (IEnumerable<IReadOnlyMaterial?>) m
-                             .MaterialManager.All),
+              = models
+                  .ToListDictionary(
+                      m => m,
+                      m => (IEnumerable<IReadOnlyMaterial?>) m
+                          .MaterialManager.All),
+      };
+      this.TexturesPanel = new TexturesPanelViewModel {
+          ModelsAndTextures
+              = models
+                  .ToListDictionary(
+                      m => m,
+                      m => (IEnumerable<IReadOnlyTexture>) m.MaterialManager.Textures),
       };
     }
   }
@@ -47,6 +57,11 @@ public class ScenePanelViewModel : BViewModel {
   }
 
   public MaterialsPanelViewModel MaterialsPanel {
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
+  public TexturesPanelViewModel TexturesPanel {
     get;
     private set => this.RaiseAndSetIfChanged(ref field, value);
   }

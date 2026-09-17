@@ -37,7 +37,7 @@ public class ModelPanelViewModel : BViewModel {
       this.FilesPanel = new FilesPanelViewModel(value);
       this.MaterialsPanel = new MaterialsPanelViewModel {
           ModelsAndMaterials
-              = value.MaterialManager.All.ToListDictionary(_ => value)
+              = ListDictionary.From(value, value.MaterialManager.All)
       };
       this.MeshesPanel = new MeshesPanelViewModel { Model = value };
       this.RegistersPanel = new RegistersPanelViewModel() {
@@ -45,7 +45,8 @@ public class ModelPanelViewModel : BViewModel {
       };
       this.SkeletonPanel = new SkeletonPanelViewModel { Model = value };
       this.TexturesPanel = new TexturesPanelViewModel {
-          ModelAndTextures = (value, value.MaterialManager.Textures),
+          ModelsAndTextures
+              = ListDictionary.From(value, value.MaterialManager.Textures)
       };
     }
   }

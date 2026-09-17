@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia;
+
+using fin.data.dictionaries;
 using fin.model;
 using fin.ui;
 using fin.ui.avalonia.controls;
@@ -25,8 +27,9 @@ public class MaterialTexturesPanelViewModel : BViewModel {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.TextureList = new TextureListViewModel
-          { ModelAndTextures = value };
+      this.TextureList = new TextureListViewModel {
+          ModelsAndTextures = ListDictionary.From(value)
+      };
     }
   }
 

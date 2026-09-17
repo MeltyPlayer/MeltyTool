@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia;
-using Avalonia.Controls;
 
+using fin.data.dictionaries;
 using fin.math;
 using fin.model;
 using fin.ui;
 using fin.ui.avalonia.controls;
-using fin.util.asserts;
 
 using ReactiveUI;
 
@@ -23,8 +22,8 @@ public sealed class NullTexturesPanelViewModelForDesigner
 public class EmptyTexturesPanelViewModelForDesigner
     : TexturesPanelViewModel {
   public EmptyTexturesPanelViewModelForDesigner() {
-    this.ModelAndTextures = (ModelDesignerUtil.CreateStubModel(),
-                             []);
+    this.ModelsAndTextures
+        = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
   }
 }
 
@@ -32,7 +31,11 @@ public sealed class PopulatedTexturesPanelViewModelForDesigner
     : TexturesPanelViewModel {
   public PopulatedTexturesPanelViewModelForDesigner() {
     var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
-    this.ModelAndTextures = (model, material.Textures.ToArray());
+
+    var modelsAndTextures = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
+    modelsAndTextures.AddRange(model, material.Textures);
+
+    this.ModelsAndTextures = modelsAndTextures;
   }
 }
 
@@ -47,12 +50,12 @@ public sealed class KeyValuePairViewModel(string key, string? value)
 }
 
 public class TexturesPanelViewModel : BViewModel {
-  public (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)? ModelAndTextures {
+  public IReadOnlyListDictionary<IReadOnlyModel, IReadOnlyTexture>
+      ModelsAndTextures {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.TextureList = new TextureListViewModel
-          { ModelAndTextures = value };
+      this.TextureList = new TextureListViewModel { ModelsAndTextures = value };
     }
   }
 
