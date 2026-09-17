@@ -74,10 +74,12 @@ public static partial class GlUtil {
     ResetEbo();
 
     for (var i = 0; i < MaterialConstants.MAX_TEXTURES; ++i) {
+      UnbindSampler(i);
       UnbindTexture(i);
     }
 
     // This index is used for normals
+    UnbindSampler(MaterialConstants.MAX_TEXTURES);
     UnbindTexture(MaterialConstants.MAX_TEXTURES);
   }
 }

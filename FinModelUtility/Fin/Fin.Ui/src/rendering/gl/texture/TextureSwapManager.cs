@@ -69,7 +69,7 @@ public sealed class TextureSwapManager : ITextureSwapManager {
     this.hasCreatedTextures_ = true;
     foreach (var finTexture in this.finTextures_) {
       var glTexture = this.glTextureByFinTexture_[finTexture]
-          = GlTexture.FromTexture(finTexture);
+          = GlTextureSamplerTuple.FromTexture(finTexture);
 
       if (this.overrideGlTextureByFinTexture_.TryGetValue(
               finTexture,

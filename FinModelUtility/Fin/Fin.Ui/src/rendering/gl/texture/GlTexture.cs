@@ -1,40 +1,26 @@
 ﻿using System.Buffers;
 using System.Runtime.CompilerServices;
 
-using fin.color;
 using fin.data;
 using fin.image;
 using fin.image.formats;
-using fin.math.floats;
 using fin.model;
-using fin.ui.rendering.gl.material;
 
 using OpenTK.Graphics.OpenGL4;
 
-using FinTextureMinFilter = fin.model.TextureMinFilter;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
-using TextureMagFilter = fin.model.TextureMagFilter;
-using TextureMinFilter = OpenTK.Graphics.OpenGL4.TextureMinFilter;
-
 
 namespace fin.ui.rendering.gl.texture;
 
 public record GlTextureParams {
+  public static GlTextureParams FromTexture(IReadOnlyTexture texture)
+    => new() {
+        Image = texture.Image,
+        MipmapImages = texture.MipmapImages,
+    };
+
   public required IReadOnlyImage Image { get; init; }
   public required IReadOnlyList<IReadOnlyImage> MipmapImages { get; init; }
-
-  public WrapMode WrapModeU { get; init; }
-  public WrapMode WrapModeV { get; init; }
-
-  public required FinTextureMinFilter MinFilter { get; init; }
-  public required TextureMagFilter MagFilter { get; init; }
-  public required IColor? BorderColor { get; init; }
-
-  public required float MinLod { get; init; }
-  public required float MaxLod { get; init; }
-  public required float LodBias { get; init; }
-
-  public required bool ThreePointFiltering { get; init; }
 }
 
 public sealed class GlTexture : IGlTexture {
@@ -56,24 +42,13 @@ public sealed class GlTexture : IGlTexture {
   private const int UNDEFINED_ID = -1;
   private readonly GlTextureParams? params_;
 
+  private bool canGenerateMipmaps_;
+
   public static GlTexture FromTexture(IReadOnlyTexture texture)
-    => cache_.GetAndIncrement(new GlTextureParams {
-        Image = texture.Image,
-        MipmapImages = texture.MipmapImages,
+    => FromParams(GlTextureParams.FromTexture(texture));
 
-        WrapModeU = texture.WrapModeU,
-        WrapModeV = texture.WrapModeV,
-
-        MinFilter = texture.MinFilter,
-        MagFilter = texture.MagFilter,
-        BorderColor = texture.BorderColor,
-
-        MinLod = texture.MinLod,
-        MaxLod = texture.MaxLod,
-        LodBias = texture.LodBias,
-
-        ThreePointFiltering = texture.ThreePointFiltering,
-    });
+  public static GlTexture FromParams(GlTextureParams prms)
+    => cache_.GetAndIncrement(prms);
 
   public GlTexture(IReadOnlyImage image) {
     GL.GenTextures(1, out int id);
@@ -81,109 +56,37 @@ public sealed class GlTexture : IGlTexture {
 
     var target = TextureTarget.Texture2D;
     GL.BindTexture(target, this.Id);
-    {
-      this.LoadImageIntoTexture_(image, 0);
-    }
+    GlUtil.BindTexture(0, this.Id);
+    this.LoadImageIntoTexture_(image, 0);
   }
 
   private GlTexture(GlTextureParams prms) {
     this.params_ = prms;
 
-    FinTextureMinFilter minFilter;
-    TextureMagFilter magFilter;
-    if (!prms.ThreePointFiltering) {
-      minFilter = prms.MinFilter;
-      magFilter = prms.MagFilter;
-    } else {
-      // TODO: This is just an assumption for now, what should this be?
-      minFilter = FinTextureMinFilter.NEAR;
-      magFilter = TextureMagFilter.NEAR;
-    }
-
     GL.GenTextures(1, out int id);
     this.Id = id;
 
     var target = TextureTarget.Texture2D;
-    GL.BindTexture(target, this.Id);
+    GlUtil.BindTexture(0, this.Id);
     {
       var mipmapImages = prms.MipmapImages;
 
       this.LoadMipmapImagesIntoTexture_(mipmapImages);
-
-      if (mipmapImages.Count == 1 &&
-          minFilter is FinTextureMinFilter.NEAR_MIPMAP_NEAR
-                       or FinTextureMinFilter.NEAR_MIPMAP_LINEAR
-                       or FinTextureMinFilter.LINEAR_MIPMAP_NEAR
-                       or FinTextureMinFilter.LINEAR_MIPMAP_LINEAR) {
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-      } else {
+      if (mipmapImages.Count > 1) {
         GL.TexParameter(target,
                         TextureParameterName.TextureMaxLevel,
                         mipmapImages.Count - 1);
+      } else {
+        this.canGenerateMipmaps_ = true;
       }
+    }
+  }
 
-      var finBorderColor = prms.BorderColor;
-      var hasBorderColor = finBorderColor != null;
-      GL.TexParameter(target,
-                      TextureParameterName.TextureWrapS,
-                      (int) ConvertFinWrapToGlWrap_(
-                          prms.WrapModeU,
-                          hasBorderColor));
-      GL.TexParameter(target,
-                      TextureParameterName.TextureWrapT,
-                      (int) ConvertFinWrapToGlWrap_(
-                          prms.WrapModeV,
-                          hasBorderColor));
-
-      if (hasBorderColor) {
-        var glBorderColor = new[] {
-            finBorderColor.Rf,
-            finBorderColor.Gf,
-            finBorderColor.Bf,
-            finBorderColor.Af
-        };
-
-        GL.TexParameter(target,
-                        TextureParameterName.TextureBorderColor,
-                        glBorderColor);
-      }
-
-      GL.TexParameter(
-          target,
-          TextureParameterName.TextureMinFilter,
-          (int) (minFilter switch {
-              FinTextureMinFilter.NEAR   => TextureMinFilter.Nearest,
-              FinTextureMinFilter.LINEAR => TextureMinFilter.Linear,
-              FinTextureMinFilter.NEAR_MIPMAP_NEAR => TextureMinFilter
-                  .NearestMipmapNearest,
-              FinTextureMinFilter.NEAR_MIPMAP_LINEAR => TextureMinFilter
-                  .NearestMipmapLinear,
-              FinTextureMinFilter.LINEAR_MIPMAP_NEAR => TextureMinFilter
-                  .LinearMipmapNearest,
-              FinTextureMinFilter.LINEAR_MIPMAP_LINEAR => TextureMinFilter
-                  .LinearMipmapLinear,
-          }));
-      GL.TexParameter(
-          target,
-          TextureParameterName.TextureMagFilter,
-          (int) (magFilter switch {
-              TextureMagFilter.NEAR => OpenTK.Graphics.OpenGL.TextureMagFilter
-                                             .Nearest,
-              TextureMagFilter.LINEAR => OpenTK.Graphics.OpenGL
-                                               .TextureMagFilter.Linear,
-              _ => throw new ArgumentOutOfRangeException()
-          }));
-      GL.TexParameter(target,
-                      TextureParameterName.TextureMinLod,
-                      prms.MinLod);
-      GL.TexParameter(target,
-                      TextureParameterName.TextureMaxLod,
-                      prms.MaxLod);
-      if (!prms.LodBias.IsRoughly0()) {
-        GL.TexParameter(target,
-                        TextureParameterName.TextureLodBias,
-                        prms.LodBias);
-      }
+  public void GenerateMipmapsIfHaventYet() {
+    if (this.canGenerateMipmaps_) {
+      this.canGenerateMipmaps_ = false;
+      GlUtil.BindTexture(0, this.Id);
+      GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
     }
   }
 
@@ -330,20 +233,4 @@ public sealed class GlTexture : IGlTexture {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0)
     => GlUtil.BindTexture(textureIndex, this.Id);
-
-  private static int ConvertFinWrapToGlWrap_(
-      WrapMode wrapMode,
-      bool hasBorderColor) =>
-      wrapMode switch {
-          WrapMode.CLAMP => hasBorderColor
-              ? (int) TextureWrapMode.ClampToBorder
-              : (int) TextureWrapMode.ClampToEdge,
-          WrapMode.REPEAT        => (int) TextureWrapMode.Repeat,
-          WrapMode.MIRROR_CLAMP  => (int) All.MirrorClampToEdge,
-          WrapMode.MIRROR_REPEAT => (int) All.MirroredRepeat,
-          _ => throw new ArgumentOutOfRangeException(
-              nameof(wrapMode),
-              wrapMode,
-              null)
-      };
 }

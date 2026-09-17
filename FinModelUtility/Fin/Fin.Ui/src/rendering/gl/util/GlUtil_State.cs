@@ -71,6 +71,7 @@ public static partial class GlUtil {
     BindEbo(state.CurrentEboId);
 
     for (var i = 0; i < MaterialConstants.MAX_TEXTURES; ++i) {
+      BindSampler(i, state.CurrentSamplerBindings[i]);
       BindTexture(i, state.CurrentTextureBindings[i]);
     }
 

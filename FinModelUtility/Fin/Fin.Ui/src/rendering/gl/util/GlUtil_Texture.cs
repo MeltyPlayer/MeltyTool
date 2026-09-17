@@ -26,8 +26,7 @@ public static partial class GlUtil {
     }
 
     GL.BindTexture(TextureTarget.Texture2D,
-                   currentState_.CurrentTextureBindings[textureIndex]
-                       = value);
+                   currentState_.CurrentTextureBindings[textureIndex] = value);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

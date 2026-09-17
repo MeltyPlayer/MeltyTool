@@ -53,7 +53,7 @@ public sealed class GlFixedFunctionMaterialShader(
           ? finTextures[i]
           : null;
       var glTexture = finTexture != null
-          ? GlTexture.FromTexture(finTexture)
+          ? GlTextureSamplerTuple.FromTexture(finTexture)
           : GlMaterialConstants.NULL_WHITE_TEXTURE;
 
       this.SetUpTexture($"texture{i}", i, finTexture, glTexture);
@@ -61,7 +61,7 @@ public sealed class GlFixedFunctionMaterialShader(
 
     var normalTexture = material.NormalTexture;
     if (normalTexture != null) {
-      var glTexture = GlTexture.FromTexture(normalTexture);
+      var glTexture = GlTextureSamplerTuple.FromTexture(normalTexture);
       this.SetUpTexture("normalTexture",
                         MaterialConstants.MAX_TEXTURES,
                         normalTexture,
