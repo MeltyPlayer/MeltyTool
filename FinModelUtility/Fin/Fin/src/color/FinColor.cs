@@ -98,6 +98,20 @@ public sealed class FinColor : IColor {
   public byte Bb { get; }
   public byte Ab { get; }
 
+  public override int GetHashCode() => this.ToBgraInt();
+
+  public override bool Equals(object? obj) {
+    if (ReferenceEquals(this, obj)) {
+      return true;
+    }
+
+    if (obj is IColor otherGeneric) {
+      return this.GetHashCode() == otherGeneric.GetHashCode();
+    }
+
+    return false;
+  }
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void SplitBgra(int bgra,
                                out byte r,

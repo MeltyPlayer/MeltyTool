@@ -8,9 +8,7 @@ public sealed class IndexedImage16(
     PixelFormat pixelFormat,
     IImage<L16> impl,
     IColor[] palette)
-    : BIndexedImage(pixelFormat,
-                    impl,
-                    palette) {
+    : BIndexedImage<L16>(pixelFormat, impl, palette) {
   public override unsafe void Access(IImage.AccessHandler accessHandler) {
     using var bytes = impl.UnsafeLock();
     var ptr = bytes.pixelScan0;

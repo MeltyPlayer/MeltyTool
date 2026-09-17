@@ -25,4 +25,14 @@ public partial struct Rgb24 : IColor, IBinaryConvertible {
 
   [Skip]
   public float Af => this.Ab / 255f;
+
+  public override int GetHashCode() => this.ToBgraInt();
+
+  public override bool Equals(object? obj) {
+    if (obj is IColor otherGeneric) {
+      return this.GetHashCode() == otherGeneric.GetHashCode();
+    }
+
+    return false;
+  }
 }
