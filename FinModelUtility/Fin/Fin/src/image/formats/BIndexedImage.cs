@@ -56,62 +56,70 @@ public abstract class BIndexedImage<TIndexPixel>(
       return true;
     }
 
-    if (obj is IImage otherGeneric) {
-      if (this.Width != otherGeneric.Width ||
-          this.Height != otherGeneric.Height) {
-        return false;
-      }
-
-      if (obj is BIndexedImage<TIndexPixel> otherSame) {
-        using var fastLock = this.LockIndex();
-        var span = fastLock.Bytes;
-
-        using var otherFastLock = otherSame.LockIndex();
-        var otherSpan = otherFastLock.Bytes;
-
-        return span.SequenceEqual(otherSpan) &&
-               this.Palette.SequenceEqual(otherSame.Palette);
-      }
-
-      bool match = true;
-      this.Access(thisAccessor => {
-        otherGeneric.Access(otherAccessor => {
-          for (var y = 0; y < this.Height; ++y) {
-            for (var x = 0; x < this.Width; ++x) {
-              thisAccessor(x,
-                           y,
-                           out var thisR,
-                           out var thisG,
-                           out var thisB,
-                           out var thisA);
-              otherAccessor(x,
-                            y,
-                            out var otherR,
-                            out var otherG,
-                            out var otherB,
-                            out var otherA);
-
-              if (thisR != otherR ||
-                  thisG != otherG ||
-                  thisB != otherB ||
-                  thisA != otherA) {
-                match = false;
-                return;
-              }
-            }
-          }
-        });
-      });
-
-      return match;
+    if (obj is IReadOnlyImage other) {
+      return this.Equals(other);
     }
 
     return false;
   }
 
+  public bool Equals(IReadOnlyImage? other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (this.Width != other.Width ||
+        this.Height != other.Height) {
+      return false;
+    }
+
+    if (other is BIndexedImage<TIndexPixel> otherSame) {
+      using var fastLock = this.LockIndex();
+      var span = fastLock.Bytes;
+
+      using var otherFastLock = otherSame.LockIndex();
+      var otherSpan = otherFastLock.Bytes;
+
+      return span.SequenceEqual(otherSpan) &&
+             this.Palette.SequenceEqual(otherSame.Palette);
+    }
+
+    bool match = true;
+    this.Access(thisAccessor => {
+      other.Access(otherAccessor => {
+        for (var y = 0; y < this.Height; ++y) {
+          for (var x = 0; x < this.Width; ++x) {
+            thisAccessor(x,
+                         y,
+                         out var thisR,
+                         out var thisG,
+                         out var thisB,
+                         out var thisA);
+            otherAccessor(x,
+                          y,
+                          out var otherR,
+                          out var otherG,
+                          out var otherB,
+                          out var otherA);
+
+            if (thisR != otherR ||
+                thisG != otherG ||
+                thisB != otherB ||
+                thisA != otherA) {
+              match = false;
+              return;
+            }
+          }
+        }
+      });
+    });
+
+    return match;
+  }
+
   private int? cachedHash_ = null;
 
-  public override unsafe int GetHashCode() {
+  public override int GetHashCode() {
     if (this.cachedHash_ != null) {
       return this.cachedHash_.Value;
     }
@@ -122,6 +130,7 @@ public abstract class BIndexedImage<TIndexPixel>(
     var hash = new FluentHash()
         .With((int) Crc32.HashToUInt32(span))
         .With(this.Palette);
+
     this.cachedHash_ = hash;
     return hash;
   }
