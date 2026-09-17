@@ -3,7 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:debug="clr-namespace:fin.ui.rendering;assembly=Fin.Ui"
-             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+             mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
              x:Class="uni.ui.avalonia.debug.DebugPanel"
              x:DataType="debug:DebugServiceViewModel">
   <Border BorderThickness="1 1 1 0"
@@ -11,7 +11,7 @@
           Background="#90000000"
           VerticalAlignment="Top">
     <Grid ColumnDefinitions="Auto *"
-          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto">
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto">
       <Grid.Styles>
         <Style Selector="Border">
           <Setter Property="BorderThickness" Value="0 0 0 1"/>
@@ -123,7 +123,7 @@
           Grid.Row="6" 
           Grid.Column="0">
         <TextBlock 
-            Classes="regular"
+            Classes="regular indented"
             Text="Vertex shader count" />
       </Border>
       <Border
@@ -138,7 +138,7 @@
           Grid.Row="7" 
           Grid.Column="0">
         <TextBlock 
-            Classes="regular"
+            Classes="regular indented"
             Text="Fragment shader count" />
       </Border>
       <Border
@@ -147,6 +147,51 @@
         <SelectableTextBlock 
             Classes="regular"
             Text="{Binding FragmentShaderCount}" />
+      </Border>
+
+      <Border
+          Grid.Row="8" 
+          Grid.Column="0">
+        <TextBlock 
+          Classes="regular"
+          Text="Fin texture count" />
+      </Border>
+      <Border
+          Grid.Row="8" 
+          Grid.Column="1">
+        <SelectableTextBlock 
+          Classes="regular"
+          Text="{Binding FinTextureCount}" />
+      </Border>
+
+      <Border
+          Grid.Row="9" 
+          Grid.Column="0">
+        <TextBlock 
+          Classes="regular indented"
+          Text="OpenGL texture count" />
+      </Border>
+      <Border
+          Grid.Row="9" 
+          Grid.Column="1">
+        <SelectableTextBlock 
+          Classes="regular"
+          Text="{Binding OpenGlTextureCount}" />
+      </Border>
+
+      <Border
+          Grid.Row="10" 
+          Grid.Column="0">
+        <TextBlock 
+          Classes="regular indented"
+          Text="Sampler count" />
+      </Border>
+      <Border
+          Grid.Row="10" 
+          Grid.Column="1">
+        <SelectableTextBlock 
+          Classes="regular"
+          Text="{Binding SamplerCount}" />
       </Border>
     </Grid>
   </Border>

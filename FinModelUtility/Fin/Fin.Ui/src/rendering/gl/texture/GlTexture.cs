@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 
 using fin.color;
+using fin.data;
 using fin.image;
 using fin.image.formats;
 using fin.math.floats;
@@ -39,13 +40,24 @@ public record GlTextureParams {
 public sealed class GlTexture : IGlTexture {
   // Intentionally separates params from texture, so we can share a single GL
   // texture between multiple Fin textures.
-  private static readonly Dictionary<GlTextureParams, GlTexture> cache_ = new();
+  private static ReferenceCountCacheDictionary<GlTextureParams, GlTexture>
+      cache_ = new(
+          prms => new GlTexture(prms),
+          (_, glTexture) => {
+            var id = glTexture.Id;
+            if (id != UNDEFINED_ID) {
+              GL.DeleteTextures(1, ref id);
+              glTexture.Id = id;
+              glTexture.IsDisposed = true;
+            }
+          },
+          count => DebugService.OpenGlTextureCount = count);
 
   private const int UNDEFINED_ID = -1;
   private readonly GlTextureParams? params_;
 
-  public static GlTexture FromTexture(IReadOnlyTexture texture) {
-    var prms = new GlTextureParams {
+  public static GlTexture FromTexture(IReadOnlyTexture texture)
+    => cache_.GetAndIncrement(new GlTextureParams {
         Image = texture.Image,
         MipmapImages = texture.MipmapImages,
 
@@ -61,15 +73,7 @@ public sealed class GlTexture : IGlTexture {
         LodBias = texture.LodBias,
 
         ThreePointFiltering = texture.ThreePointFiltering,
-    };
-
-    if (!cache_.TryGetValue(prms, out var glTexture)) {
-      glTexture = new GlTexture(prms);
-      cache_[prms] = glTexture;
-    }
-
-    return glTexture;
-  }
+    });
 
   public GlTexture(IReadOnlyImage image) {
     GL.GenTextures(1, out int id);
@@ -312,23 +316,13 @@ public sealed class GlTexture : IGlTexture {
   }
 
   private void ReleaseUnmanagedResources_() {
-    if (GlMaterialConstants.IsCommonTexture(this)) {
-      return;
-    }
-
     if (this.IsDisposed) {
       return;
     }
 
-    this.IsDisposed = true;
     if (this.params_ != null) {
-      cache_.Remove(this.params_);
+      cache_.DecrementAndMaybeDispose(this.params_);
     }
-
-    var id = this.Id;
-    GL.DeleteTextures(1, ref id);
-
-    this.Id = UNDEFINED_ID;
   }
 
   public int Id { get; private set; } = UNDEFINED_ID;

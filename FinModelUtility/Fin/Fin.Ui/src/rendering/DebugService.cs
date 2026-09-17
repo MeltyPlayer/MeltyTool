@@ -45,6 +45,21 @@ public class DebugServiceViewModel : BViewModel {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
+
+  public int FinTextureCount {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
+  public int OpenGlTextureCount {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
+  public int SamplerCount {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
 }
 
 [IocCandiate]
@@ -89,5 +104,20 @@ public static class DebugService {
   public static int FragmentShaderCount {
     get => ViewModel.FragmentShaderCount;
     set => ViewModel.FragmentShaderCount = value;
+  }
+
+  public static int FinTextureCount {
+    get => ViewModel.FinTextureCount;
+    set => ViewModel.FinTextureCount = value;
+  }
+
+  public static int OpenGlTextureCount {
+    get => ViewModel.OpenGlTextureCount;
+    set => ViewModel.OpenGlTextureCount = value;
+  }
+
+  public static int SamplerCount {
+    get => ViewModel.SamplerCount;
+    set => ViewModel.SamplerCount = value;
   }
 }

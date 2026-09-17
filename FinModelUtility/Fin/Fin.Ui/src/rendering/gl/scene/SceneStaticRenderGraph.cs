@@ -301,6 +301,10 @@ public sealed class SceneStaticRenderGraph : IRenderable {
                           .SelectMany(m => m.MaterialManager.All)
                           .Distinct()
                           .ToArray();
+    var uniqueTextures = uniqueMaterials
+                         .SelectMany(m => m.Textures)
+                         .Distinct()
+                         .ToArray();
 
     DebugService.RenderGraphElementCount = elements.Count;
     DebugService.ModelCount = uniqueModels.Length;
@@ -308,6 +312,7 @@ public sealed class SceneStaticRenderGraph : IRenderable {
     DebugService.OpaqueMaterialCount = uniqueMaterials.Count(m => m.GetTransparencyType() is TransparencyType.OPAQUE);
     DebugService.TransparentMaterialCount = DebugService.MaterialCount -
                                             DebugService.OpaqueMaterialCount;
+    DebugService.FinTextureCount = uniqueTextures.Length;
   }
 
   public void Render() {

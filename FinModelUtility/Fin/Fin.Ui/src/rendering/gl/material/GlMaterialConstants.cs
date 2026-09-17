@@ -22,9 +22,4 @@ public static class GlMaterialConstants {
     NULL_BLACK_TEXTURE =
         new GlTexture(FinImage.Create1x1FromColor(Color.Black));
   }
-
-  public static bool IsCommonTexture(IGlTexture texture)
-    => texture == NULL_WHITE_TEXTURE ||
-       texture == NULL_GRAY_TEXTURE ||
-       texture == NULL_BLACK_TEXTURE;
 }
