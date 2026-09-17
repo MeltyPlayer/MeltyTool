@@ -1,6 +1,8 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Headless.NUnit;
 
+using fin.data.dictionaries;
+using fin.model;
 using fin.model.impl;
 
 using uni.ui.avalonia.common.controls;
@@ -23,7 +25,10 @@ public class TexturesPanelTests {
     }
 
     var texturesPanel = TexturesPanel.Bootstrap(new TexturesPanelViewModel {
-        ModelAndTextures = (model, mm.Textures)
+        ModelsAndTextures
+            = ListDictionary.From<IReadOnlyModel, IReadOnlyTexture>(
+                model,
+                mm.Textures)
     });
 
     var groupBox = texturesPanel.Single<GroupBox>();
@@ -52,7 +57,10 @@ public class TexturesPanelTests {
     }
 
     var texturesPanel = TexturesPanel.Bootstrap(new TexturesPanelViewModel {
-        ModelAndTextures = (model, mm.Textures)
+        ModelsAndTextures
+            = ListDictionary.From<IReadOnlyModel, IReadOnlyTexture>(
+                model,
+                mm.Textures)
     });
 
     Assert.AreEqual(shouldShowEmptyState, texturesPanel.Any<EmptyState>());

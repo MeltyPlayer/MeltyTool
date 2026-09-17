@@ -1,5 +1,7 @@
 ﻿using Avalonia.Headless.NUnit;
 
+using fin.data.dictionaries;
+using fin.model;
 using fin.model.impl;
 using fin.util.asserts;
 
@@ -21,7 +23,10 @@ public class TextureListTests {
     }
 
     var textureList = TextureList.Bootstrap(new TextureListViewModel {
-        ModelAndTextures = (model, mm.Textures)
+        ModelsAndTextures
+            = ListDictionary.From<IReadOnlyModel, IReadOnlyTexture>(
+                model,
+                mm.Textures)
     });
 
     Asserts.SequenceEqual(
