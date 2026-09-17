@@ -15,31 +15,36 @@ public sealed class ReferenceCountCacheDictionary<TKey, TValue>(
     Action<int>? countChangedHandler = null)
     : IReferenceCountCacheDictionary<TKey, TValue>
     where TKey : notnull {
-  private readonly ConcurrentDictionary<TKey, (TValue value, int count)> impl_
+  private readonly ConcurrentDictionary<TKey, ValueAndCount> impl_
       = new();
 
   public TValue GetAndIncrement(TKey key) {
-    var valueAndCount = this.impl_.GetOrAdd(key, _ => (createHandler(key), 0));
-    valueAndCount.count++;
+    var valueAndCount
+        = this.impl_.GetOrAdd(key, _ => new(createHandler(key), 0));
+    valueAndCount.Count++;
 
-    if (valueAndCount.count == 1) {
+    if (valueAndCount.Count == 1) {
       countChangedHandler?.Invoke(this.impl_.Count);
     }
 
-    return valueAndCount.value;
+    return valueAndCount.Value;
   }
 
   public void DecrementAndMaybeDispose(TKey key) {
     if (this.impl_.TryGetValue(key, out var valueAndCount)) {
-      if (--valueAndCount.count <= 0) {
+      if (--valueAndCount.Count <= 0) {
         this.impl_.Remove(key, out _);
-        disposeHandler?.Invoke(key, valueAndCount.value);
+        disposeHandler?.Invoke(key, valueAndCount.Value);
 
         countChangedHandler?.Invoke(this.impl_.Count);
       }
     } else {
-      // TODO: Uh... what does this case mean???
-      ;
+      // TODO: This can happen because the extra renderers for single meshes
+      // clean up shaders redundantly.
     }
+  }
+
+  private record ValueAndCount(TValue Value, int Count) {
+    public int Count { get; set; } = Count;
   }
 }

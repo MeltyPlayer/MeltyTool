@@ -5,6 +5,7 @@ using fin.data;
 using fin.image;
 using fin.image.formats;
 using fin.model;
+using fin.util.hash;
 
 using OpenTK.Graphics.OpenGL4;
 
@@ -12,7 +13,7 @@ using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
 
 namespace fin.ui.rendering.gl.texture;
 
-public record GlTextureParams {
+public sealed record GlTextureParams {
   public static GlTextureParams FromTexture(IReadOnlyTexture texture)
     => new() {
         Image = texture.Image,
@@ -21,6 +22,24 @@ public record GlTextureParams {
 
   public required IReadOnlyImage Image { get; init; }
   public required IReadOnlyList<IReadOnlyImage> MipmapImages { get; init; }
+
+  public bool Equals(GlTextureParams? other) {
+    if (other == null) {
+      return false;
+    }
+
+    if (ReferenceEquals(this, other)) {
+      return true;
+    }
+
+    return this.Image.Equals(other.Image) &&
+           this.MipmapImages.SequenceEqual(other.MipmapImages);
+  }
+
+  public override int GetHashCode()
+    => FluentHash.Start()
+                 .With(this.Image)
+                 .With(this.MipmapImages);
 }
 
 public sealed class GlTexture : IGlTexture {
@@ -33,7 +52,7 @@ public sealed class GlTexture : IGlTexture {
             var id = glTexture.Id;
             if (id != UNDEFINED_ID) {
               GL.DeleteTextures(1, ref id);
-              glTexture.Id = id;
+              glTexture.Id = UNDEFINED_ID;
               glTexture.IsDisposed = true;
             }
           },

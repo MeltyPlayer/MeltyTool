@@ -2,8 +2,6 @@
 using fin.model;
 using fin.ui.rendering.gl.texture;
 
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
 using readOnly;
 
 

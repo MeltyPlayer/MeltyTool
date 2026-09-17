@@ -14,7 +14,7 @@ using TextureMinFilter = OpenTK.Graphics.OpenGL4.TextureMinFilter;
 
 namespace fin.ui.rendering.gl.texture;
 
-public record GlSamplerParams {
+public sealed record GlSamplerParams {
   public static GlSamplerParams FromTexture(IReadOnlyTexture texture)
     => new() {
         WrapModeU = texture.WrapModeU,

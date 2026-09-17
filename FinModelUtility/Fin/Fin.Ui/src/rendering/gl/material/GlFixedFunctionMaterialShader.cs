@@ -29,7 +29,13 @@ public sealed class GlFixedFunctionMaterialShader(
   private (IScalarRegister, IShaderUniform<float>)[]
       scalarRegistersAndUniforms_;
 
-  protected override void DisposeInternal() { }
+  private readonly List<IGlTexture> glTextures_ = [];
+
+  protected override void DisposeInternal() {
+    foreach (var texture in this.glTextures_) {
+      texture.Dispose();
+    }
+  }
 
   protected override void Setup(
       IReadOnlyFixedFunctionMaterial material,
@@ -55,6 +61,7 @@ public sealed class GlFixedFunctionMaterialShader(
       var glTexture = finTexture != null
           ? GlTextureSamplerTuple.FromTexture(finTexture)
           : GlMaterialConstants.NULL_WHITE_TEXTURE;
+      this.glTextures_.Add(glTexture);
 
       this.SetUpTexture($"texture{i}", i, finTexture, glTexture);
     }
@@ -62,6 +69,7 @@ public sealed class GlFixedFunctionMaterialShader(
     var normalTexture = material.NormalTexture;
     if (normalTexture != null) {
       var glTexture = GlTextureSamplerTuple.FromTexture(normalTexture);
+      this.glTextures_.Add(glTexture);
       this.SetUpTexture("normalTexture",
                         MaterialConstants.MAX_TEXTURES,
                         normalTexture,

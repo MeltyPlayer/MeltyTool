@@ -7,7 +7,7 @@ using TextureMinFilter = fin.model.TextureMinFilter;
 
 namespace fin.ui.rendering.gl.texture;
 
-public record GlTextureSamplerTupleParams {
+public sealed record GlTextureSamplerTupleParams {
   public required GlTextureParams TextureParams { get; init; }
   public required GlSamplerParams SamplerParams { get; init; }
 }
@@ -23,6 +23,7 @@ public sealed class GlTextureSamplerTuple : IGlTexture {
           (_, glTextureSamplerTuple) => {
             glTextureSamplerTuple.texture_.Dispose();
             glTextureSamplerTuple.sampler_.Dispose();
+            glTextureSamplerTuple.IsDisposed = true;
           });
 
   private readonly GlTextureSamplerTupleParams params_;
