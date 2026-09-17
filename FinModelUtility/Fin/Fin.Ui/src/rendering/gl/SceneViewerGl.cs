@@ -78,7 +78,7 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
   }
 
   public IAnimatableModel? FirstSceneModel
-    => this.Scene?.EnumerateAllAnimatableModels().FirstOrDefault();
+    => this.Scene?.EnumerateAllNonSkyboxAnimatableModels().FirstOrDefault();
 
   public IAnimationPlaybackManager? AnimationPlaybackManager
     => this.FirstSceneModel?.AnimationPlaybackManager;

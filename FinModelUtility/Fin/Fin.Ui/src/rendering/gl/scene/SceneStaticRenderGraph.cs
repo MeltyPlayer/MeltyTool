@@ -282,6 +282,7 @@ public sealed class SceneStaticRenderGraph : IRenderable {
     foreach (var element in this.opaqueElements_) {
       element.UpdateSortKey(camera, this.NearPlane, this.FarPlane, this.Scale);
     }
+
     Array.Sort(this.opaqueElements_, comparer_);
 
     this.transparentElements_
@@ -293,10 +294,17 @@ public sealed class SceneStaticRenderGraph : IRenderable {
               .Nonnull()
               .ToArray();
 
-    var uniqueModels = this.modelRenderComponents_
-                           .Select(m => m.Item2.Model)
-                           .Distinct()
-                           .ToArray();
+    var uniqueModels
+        = this.modelRenderComponents_
+              .Select(m => m.Item2.Model)
+              .Concat(
+                  this.scene_.Areas.Select(a => a.CustomSkyboxObject)
+                      .Nonnull()
+                      .SelectMany(n => n.EnumerateSelfAndDescendants())
+                      .SelectMany(n => n.EnumerateAllAnimatableModelsInSelf())
+                      .Select(m => m.Model))
+              .Distinct()
+              .ToArray();
     var uniqueMaterials = uniqueModels
                           .SelectMany(m => m.MaterialManager.All)
                           .Distinct()
@@ -305,14 +313,21 @@ public sealed class SceneStaticRenderGraph : IRenderable {
                          .SelectMany(m => m.Textures)
                          .Distinct()
                          .ToArray();
+    var backgroundImageCount
+        = this.scene_.Areas
+              .Select(a => a.Definition.BackgroundImage)
+              .Nonnull()
+              .Count();
 
     DebugService.RenderGraphElementCount = elements.Count;
     DebugService.ModelCount = uniqueModels.Length;
     DebugService.MaterialCount = uniqueMaterials.Length;
-    DebugService.OpaqueMaterialCount = uniqueMaterials.Count(m => m.GetTransparencyType() is TransparencyType.OPAQUE);
+    DebugService.OpaqueMaterialCount
+        = uniqueMaterials.Count(m => m.GetTransparencyType() is TransparencyType
+                                    .OPAQUE);
     DebugService.TransparentMaterialCount = DebugService.MaterialCount -
                                             DebugService.OpaqueMaterialCount;
-    DebugService.FinTextureCount = uniqueTextures.Length;
+    DebugService.FinTextureCount = uniqueTextures.Length + backgroundImageCount;
   }
 
   public void Render() {
@@ -332,6 +347,7 @@ public sealed class SceneStaticRenderGraph : IRenderable {
     foreach (var element in this.transparentElements_) {
       element.UpdateSortKey(camera, this.NearPlane, this.FarPlane, this.Scale);
     }
+
     this.SortTransparentElements_();
 
     var isSomethingSelected = this.selectedNode_ != null ||

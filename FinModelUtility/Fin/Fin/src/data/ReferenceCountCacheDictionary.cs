@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace fin.data;
 
 public interface IReferenceCountCacheDictionary<in TKey, out TValue> {
-  public TValue GetAndIncrement(TKey key);
-  public void DecrementAndMaybeDispose(TKey key);
+  TValue GetAndIncrement(TKey key);
+  void DecrementAndMaybeDispose(TKey key);
 }
 
 public sealed class ReferenceCountCacheDictionary<TKey, TValue>(
@@ -37,6 +37,9 @@ public sealed class ReferenceCountCacheDictionary<TKey, TValue>(
 
         countChangedHandler?.Invoke(this.impl_.Count);
       }
+    } else {
+      // TODO: Uh... what does this case mean???
+      ;
     }
   }
 }

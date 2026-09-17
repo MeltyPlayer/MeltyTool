@@ -18,7 +18,8 @@ public sealed class SceneMinMaxBoundsScaleCalculator
     var maxY = float.MinValue;
     var maxZ = float.MinValue;
 
-    foreach (var animatableModel in scene.EnumerateAllAnimatableModels()) {
+    foreach (var animatableModel in
+             scene.EnumerateAllNonSkyboxAnimatableModels()) {
       FactorInModel_(animatableModel.Model,
                      animatableModel.BoneTransformManager,
                      ref minX,

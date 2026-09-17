@@ -80,7 +80,7 @@ public sealed class MainViewModel : BViewModel {
           ContextService.SetCurrentFileBundle(fileBundle);
 
           var animatableModels
-              = sceneInstance.EnumerateAllAnimatableModels().ToArray();
+              = sceneInstance.EnumerateAllNonSkyboxAnimatableModels().ToArray();
           if (animatableModels.Length == 1) {
             var animatableModel = animatableModels.Single();
             var model = animatableModel.Model;
