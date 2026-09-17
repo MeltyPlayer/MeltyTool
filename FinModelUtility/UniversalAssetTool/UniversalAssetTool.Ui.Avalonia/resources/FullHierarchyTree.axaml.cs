@@ -11,6 +11,7 @@ using fin.model;
 using fin.scene;
 using fin.scene.components;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 using fin.util.enumerables;
 using fin.util.enums;
@@ -127,6 +128,8 @@ public class FullHierarchyTreeViewModel : BViewModel {
 
   public void ExpandCollapse(FullHierarchyTreeType type)
     => this.Source.ExpandCollapseRecursive(n => type.CheckFlag(n.Type));
+
+  public void ExpandAll() => this.Source.ExpandAll();
 }
 
 public interface IFullHierarchyNode {
@@ -316,7 +319,7 @@ public sealed class PrimitiveFullHierarchyNode(IReadOnlyPrimitive primitive)
   public IFullHierarchyNode[] Children => [];
 }
 
-public partial class FullHierarchyTree : UserControl {
+public partial class FullHierarchyTree : BUserControl<FullHierarchyTreeViewModel> {
   public FullHierarchyTree() {
     this.InitializeComponent();
   }

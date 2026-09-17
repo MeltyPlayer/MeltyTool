@@ -2,6 +2,7 @@ using Avalonia.Controls;
 
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 
 using ReactiveUI;
 
@@ -42,7 +43,7 @@ public class MeshesPanelViewModel : BViewModel {
   }
 }
 
-public partial class MeshesPanel : UserControl {
+public partial class MeshesPanel : BUserControl<MeshesPanelViewModel> {
   public MeshesPanel() {
     this.InitializeComponent();
   }

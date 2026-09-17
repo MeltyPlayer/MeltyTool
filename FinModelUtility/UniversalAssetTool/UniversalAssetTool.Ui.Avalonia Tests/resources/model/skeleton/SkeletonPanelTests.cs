@@ -1,12 +1,7 @@
 ﻿using System.Numerics;
 
-using Avalonia.Headless;
 using Avalonia.Headless.NUnit;
-using Avalonia.LogicalTree;
-using Avalonia.Threading;
-using Avalonia.VisualTree;
 
-using fin.math.xyz;
 using fin.model.impl;
 using fin.model.util;
 using fin.util.asserts;
@@ -42,11 +37,13 @@ public class SkeletonPanelTests {
 
     Asserts.SequenceEqual(
         [
-            (MaterialIconKind.CardsDiamondOutline, "foo"),
-            (MaterialIconKind.CardsDiamondOutline, "bar"),
-            (MaterialIconKind.CardsDiamondOutline, "abc"),
-            (MaterialIconKind.CardsDiamondOutline, "xyz"),
+            (MaterialIconKind.CardsDiamondOutline, "foo", [
+                (MaterialIconKind.CardsDiamondOutline, "bar"),
+            ]),
+            (MaterialIconKind.CardsDiamondOutline, "abc", [
+                (MaterialIconKind.CardsDiamondOutline, "xyz"),
+            ]),
         ],
-        skeletonPanel.Single<FullHierarchyTree>().GetAllIconsAndText());
+        skeletonPanel.Single<FullHierarchyTree>().GetVisibleIconsAndText());
   }
 }
