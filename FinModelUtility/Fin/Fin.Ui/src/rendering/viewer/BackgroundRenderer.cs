@@ -18,6 +18,7 @@ namespace fin.ui.rendering.viewer;
 
 public sealed class BackgroundRenderer : IRenderable, IDisposable {
   private IModelRenderer? impl_;
+  private TextureSwapManager? textureSwapManager_;
 
   private float prevCameraYawRadians_;
   private Vector2 prevCameraPosition_;
@@ -35,7 +36,10 @@ public sealed class BackgroundRenderer : IRenderable, IDisposable {
     GC.SuppressFinalize(this);
   }
 
-  private void ReleaseUnmanagedResources_() => this.impl_?.Dispose();
+  private void ReleaseUnmanagedResources_() {
+    this.impl_?.Dispose();
+    this.textureSwapManager_?.Dispose();
+  }
 
   public IReadOnlyImage? BackgroundImage {
     get;
@@ -121,6 +125,7 @@ public sealed class BackgroundRenderer : IRenderable, IDisposable {
     this.textureDirty_ = false;
 
     this.impl_?.Dispose();
+    this.textureSwapManager_?.Dispose();
     if (this.BackgroundImage == null) {
       return;
     }
@@ -185,7 +190,7 @@ public sealed class BackgroundRenderer : IRenderable, IDisposable {
 
     mesh.AddQuads(v0, v1, v2, v3).SetMaterial(material);
 
-    var textureSwapManager =
+    var textureSwapManager = this.textureSwapManager_ =
         new TextureSwapManager(model.MaterialManager.Textures);
     textureSwapManager.UpdateCurrentFlipbookSwaps(null);
     var modelRenderer = new ModelRenderer(model,
