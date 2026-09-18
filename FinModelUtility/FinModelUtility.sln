@@ -376,6 +376,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PokemonSnap", "PokemonSnap"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokemonSnap", "Games\PokemonSnap\PokemonSnap\PokemonSnap.csproj", "{9AF1BC0D-E499-4994-83A4-03BAB2C95E24}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DonkeyKong64 Tests", "Games\DonkeyKong64\DonkeyKong64 Tests\DonkeyKong64 Tests.csproj", "{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1288,6 +1290,14 @@ Global
 		{9AF1BC0D-E499-4994-83A4-03BAB2C95E24}.Release|x64.Build.0 = Release|x64
 		{9AF1BC0D-E499-4994-83A4-03BAB2C95E24}.Release|x86.ActiveCfg = Release|x86
 		{9AF1BC0D-E499-4994-83A4-03BAB2C95E24}.Release|x86.Build.0 = Release|x86
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Debug|x64.ActiveCfg = Debug|x64
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Debug|x64.Build.0 = Debug|x64
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Debug|x86.ActiveCfg = Debug|x86
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Debug|x86.Build.0 = Debug|x86
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Release|x64.ActiveCfg = Release|x64
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Release|x64.Build.0 = Release|x64
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Release|x86.ActiveCfg = Release|x86
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1457,6 +1467,7 @@ Global
 		{015B4CB1-2D65-4BC6-8A92-A87EF25149AD} = {1B92AD67-2458-433D-A960-1FDB99A1D6AE}
 		{F9C0EEDD-E266-41DD-BE0D-4619BCBDF7B3} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
 		{9AF1BC0D-E499-4994-83A4-03BAB2C95E24} = {F9C0EEDD-E266-41DD-BE0D-4619BCBDF7B3}
+		{8C228991-2C2E-4BE1-B064-4CDC6746FAAB} = {1B92AD67-2458-433D-A960-1FDB99A1D6AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
