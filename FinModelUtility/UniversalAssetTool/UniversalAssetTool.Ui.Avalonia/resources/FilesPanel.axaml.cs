@@ -1,8 +1,13 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
-using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 
+using CommunityToolkit.Mvvm.ComponentModel;
+
+using fin.config.avalonia.services;
 using fin.importers;
 using fin.io;
 using fin.ui;
@@ -11,6 +16,8 @@ using fin.util.linq;
 using fin.util.strings;
 
 using ReactiveUI;
+
+using uni.services;
 
 namespace uni.ui.avalonia.resources;
 
@@ -31,6 +38,8 @@ public class FilesPanelViewModel : BViewModel {
     if (files == null) {
       return;
     }
+
+    this.Files = files;
 
     IEnumerable<string> paths;
     if (resource.Files.WhereIs<IReadOnlyGenericFile, IFileHierarchyFile>()
@@ -55,6 +64,11 @@ public class FilesPanelViewModel : BViewModel {
     this.Paths = paths.Distinct().Order().ToArray();
   }
 
+  public IReadOnlySet<IReadOnlyGenericFile> Files {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
   public IReadOnlyList<string> Paths {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
@@ -64,5 +78,30 @@ public class FilesPanelViewModel : BViewModel {
 public partial class FilesPanel : BUserControl<FilesPanelViewModel> {
   public FilesPanel() {
     this.InitializeComponent();
+  }
+
+  private async void CopyAllToDirectory_(object? sender, RoutedEventArgs e) {
+    var storageProvider = TopLevelService.Instance.StorageProvider;
+
+    var selectedStorageFolders
+        = await storageProvider
+            .OpenFolderPickerAsync(new FolderPickerOpenOptions {
+                Title = "Select directory to copy files to",
+            });
+    if (selectedStorageFolders is not { Count: 1 }) {
+      return;
+    }
+
+    var selectedStorageFolder = selectedStorageFolders[0];
+    var outputDirectory
+        = new FinDirectory(selectedStorageFolder.Path.LocalPath);
+    outputDirectory.Create();
+
+    foreach (var file in this.ViewModel.Files) {
+      var outputFile = new FinFile(
+          Path.Join(outputDirectory.FullPath,
+                    FinIoStatic.GetName(file.DisplayFullPath)));
+      file.CopyTo(outputFile);
+    }
   }
 }

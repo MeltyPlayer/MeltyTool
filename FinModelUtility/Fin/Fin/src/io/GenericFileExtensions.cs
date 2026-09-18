@@ -73,7 +73,8 @@ public static class GenericFileExtensions {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static async Task<byte[]> ReadAllBytesAsync(this IReadOnlyGenericFile file) {
+  public static async Task<byte[]> ReadAllBytesAsync(
+      this IReadOnlyGenericFile file) {
     await using var s = file.OpenRead();
     using var ms = new MemoryStream();
     await s.CopyToAsync(ms);
@@ -97,6 +98,13 @@ public static class GenericFileExtensions {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static StreamWriter OpenWriteAsText(this IGenericFile file)
     => new(file.OpenWrite());
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static void CopyTo(this IReadOnlyGenericFile src, IGenericFile dst) {
+    using var srcStream = src.OpenRead();
+    using var dstStream = dst.OpenWrite();
+    srcStream.CopyTo(dstStream);
+  }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void WriteAllBytes(this IGenericFile file,

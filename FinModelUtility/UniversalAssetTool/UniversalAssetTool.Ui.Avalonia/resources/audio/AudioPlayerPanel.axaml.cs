@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.audio;
@@ -10,11 +8,9 @@ using fin.audio.io;
 using fin.audio.io.importers.ogg;
 using fin.data;
 using fin.io;
-using fin.services;
 using fin.ui;
 using fin.ui.avalonia.controls;
 using fin.ui.playback.al;
-using fin.util.asserts;
 using fin.util.enumerables;
 using fin.util.time;
 
