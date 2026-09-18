@@ -61,7 +61,7 @@ public class FilesPanelViewModel : BViewModel {
       paths = files.Select(file => file.DisplayFullPath);
     }
 
-    this.Paths = paths.Distinct().Order().ToArray();
+    this.Paths = [.. paths.Distinct().Order(StringUtil.NaturalSortInstance)];
   }
 
   public IReadOnlySet<IReadOnlyGenericFile> Files {
