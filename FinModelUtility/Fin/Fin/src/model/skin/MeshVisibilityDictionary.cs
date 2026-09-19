@@ -22,16 +22,19 @@ public sealed class MeshVisibilityDictionary
   private IndexableDictionary<IReadOnlyMesh, VisibilityNode> impl_;
 
   public MeshVisibilityDictionary(IReadOnlyModel model) {
-    this.rootVisibilityNode_ = new VisibilityNode(true, true);
+    var rootMeshes = model.Skin.RootMeshes;
+    this.rootVisibilityNode_ = new VisibilityNode(rootMeshes.Count, true, true);
     this.impl_ = new(model.Skin.Meshes.Count);
 
-    var meshQueue = new FinTuple2Queue<IReadOnlyMesh, VisibilityNode>(
-        model.Skin.RootMeshes.Select(m => (m, this.rootVisibilityNode_.AddChild(
-                                               m.DefaultDisplayState))));
-    while (meshQueue.TryDequeue(out var mesh, out var node)) {
+    var meshQueue = new FinTuple3Queue<IReadOnlyMesh, int, VisibilityNode>(
+        model.Skin.RootMeshes.Select((m, i) => (m, i, this.rootVisibilityNode_)));
+    while (meshQueue.TryDequeue(out var mesh, out var indexInParent, out var parentNode)) {
+      var subMeshes = mesh.SubMeshes;
+
+      var node = parentNode.SetChild(indexInParent, subMeshes.Count, mesh.DefaultDisplayState);
       this.impl_[mesh] = node;
-      meshQueue.Enqueue(mesh.SubMeshes.Select(m => (m, node.AddChild(
-                                                        m.DefaultDisplayState))));
+
+      meshQueue.Enqueue(mesh.SubMeshes.Select((m, i) => (m, i, node)));
     }
   }
 
@@ -43,11 +46,12 @@ public sealed class MeshVisibilityDictionary
   }
 
   private sealed class VisibilityNode(
+      int childCount,
       bool defaultLocalVisibility,
       bool defaultInheritedVisibility) {
     private bool inheritedVisibility_ = defaultInheritedVisibility;
     private bool localVisibility_ = defaultLocalVisibility;
-    private List<VisibilityNode> children_ = new();
+    private readonly VisibilityNode[] children_ = new VisibilityNode[childCount];
 
     public bool IsVisible => this.inheritedVisibility_ && this.LocalVisibility;
 
@@ -68,12 +72,13 @@ public sealed class MeshVisibilityDictionary
       }
     }
 
-    public VisibilityNode AddChild(MeshDisplayState childDefaultDisplayState) {
+    public VisibilityNode SetChild(int index, int childCount, MeshDisplayState childDefaultDisplayState) {
       var child = new VisibilityNode(
+          childCount,
           childDefaultDisplayState is not MeshDisplayState.HIDDEN,
           defaultLocalVisibility &&
           defaultInheritedVisibility);
-      children_.Add(child);
+      this.children_[index] = child;
       return child;
     }
 
