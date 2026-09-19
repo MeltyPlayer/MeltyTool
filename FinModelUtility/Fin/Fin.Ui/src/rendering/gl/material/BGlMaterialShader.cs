@@ -12,8 +12,7 @@ namespace fin.ui.rendering.gl.material;
 
 public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     where TMaterial : IReadOnlyMaterial {
-  private LinkedList<CachedTextureUniformData> cachedTextureUniformDatas_ =
-      [];
+  private List<CachedTextureUniformData> cachedTextureUniformDatas_;
 
   private readonly IReadOnlyModel model_;
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
@@ -36,6 +35,8 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     this.Material = material;
     this.textureTransformManager_ = textureTransformManager;
     this.textureSwapManager_ = textureSwapManager;
+
+    this.cachedTextureUniformDatas_ = [with(material.Textures.Count())];
 
     var shaderSource
         = this.GenerateShaderSource(model, modelRequirements, material);
@@ -111,7 +112,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
       int textureIndex,
       IReadOnlyTexture? finTexture,
       IGlTexture fallbackGlTexture)
-    => this.cachedTextureUniformDatas_.AddLast(
+    => this.cachedTextureUniformDatas_.Add(
         new CachedTextureUniformData(textureName,
                                      textureIndex,
                                      finTexture,
