@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RootNamespace>level5</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

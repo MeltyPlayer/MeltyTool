@@ -16,7 +16,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
         dotnet-quality: 'preview'
         include-prerelease: true 
 
@@ -41,7 +41,7 @@ jobs:
       working-directory: mesa
 
     - name: Copy Mesa files to VRML test directory
-      run: xcopy . "${{github.workspace}}\FinModelUtility\Formats\Vrml\Vrml Tests\bin\x64\Debug\net10.0"
+      run: xcopy . "${{github.workspace}}\FinModelUtility\Formats\Vrml\Vrml Tests\bin\x64\Debug\net11.0"
       working-directory: mesa
 
     - name: Test

@@ -2,9 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Celeste64_Tests</RootNamespace>
-    <LangVersion>latest</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <RootNamespace>Celeste64</RootNamespace>
   </PropertyGroup>

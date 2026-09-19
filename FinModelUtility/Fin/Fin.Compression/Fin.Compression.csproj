@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>fin.compression</RootNamespace>
   </PropertyGroup>
 
