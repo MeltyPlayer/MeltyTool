@@ -28,7 +28,8 @@ public sealed record GlSamplerParams {
         MaxLod = texture.MaxLod,
         LodBias = texture.LodBias,
 
-        ThreePointFiltering = texture.ThreePointFiltering,    };
+        ThreePointFiltering = texture.ThreePointFiltering,
+    };
 
   public WrapMode WrapModeU { get; init; }
   public WrapMode WrapModeV { get; init; }
@@ -61,7 +62,7 @@ public sealed class GlSampler : IGlSampler {
           count => DebugService.SamplerCount = count);
 
   private const int UNDEFINED_ID = -1;
-  private readonly GlSamplerParams? params_;
+  private readonly GlSamplerParams params_;
 
   public static GlSampler FromTexture(IReadOnlyTexture texture)
     => FromParams(GlSamplerParams.FromTexture(texture));
@@ -69,88 +70,52 @@ public sealed class GlSampler : IGlSampler {
   public static GlSampler FromParams(GlSamplerParams prms)
     => cache_.GetAndIncrement(prms);
 
-
   private GlSampler(GlSamplerParams prms) {
     this.params_ = prms;
-
-    FinTextureMinFilter minFilter;
-    TextureMagFilter magFilter;
-    if (!prms.ThreePointFiltering) {
-      minFilter = prms.MinFilter;
-      magFilter = prms.MagFilter;
-    } else {
-      // TODO: This is just an assumption for now, what should this be?
-      minFilter = FinTextureMinFilter.NEAR;
-      magFilter = TextureMagFilter.NEAR;
-    }
 
     GL.GenSamplers(1, out int id);
     this.Id = id;
 
-    {
-      var finBorderColor = prms.BorderColor;
-      var hasBorderColor = finBorderColor != null;
+    var openGlSamplerParams = GlSamplerUtil.GetOpenGlSamplerParams(prms);
+
+    GL.SamplerParameter(
+        id,
+        SamplerParameterName.TextureWrapS,
+        openGlSamplerParams.WrapS);
+    GL.SamplerParameter(
+        id,
+        SamplerParameterName.TextureWrapS,
+        openGlSamplerParams.WrapT);
+
+    if (openGlSamplerParams.BorderColor != null) {
       GL.SamplerParameter(
           id,
-          SamplerParameterName.TextureWrapS,
-          (int) ConvertFinWrapToGlWrap_(
-              prms.WrapModeU,
-              hasBorderColor));
-      GL.SamplerParameter(id,
-                          SamplerParameterName.TextureWrapT,
-                          (int) ConvertFinWrapToGlWrap_(
-                              prms.WrapModeV,
-                              hasBorderColor));
+          SamplerParameterName.TextureBorderColor,
+          openGlSamplerParams.BorderColor);
+    }
 
-      if (hasBorderColor) {
-        var glBorderColor = new[] {
-            finBorderColor.Rf,
-            finBorderColor.Gf,
-            finBorderColor.Bf,
-            finBorderColor.Af
-        };
+    GL.SamplerParameter(
+        id,
+        SamplerParameterName.TextureMinFilter,
+        (int) openGlSamplerParams.MinFilter);
+    GL.SamplerParameter(
+        id,
+        SamplerParameterName.TextureMagFilter,
+        (int) openGlSamplerParams.MagFilter);
 
-        GL.SamplerParameter(id,
-                            SamplerParameterName.TextureBorderColor,
-                            glBorderColor);
-      }
-
+    GL.SamplerParameter(
+        id,
+        SamplerParameterName.TextureMinLod,
+        openGlSamplerParams.MinLod);
+    GL.SamplerParameter(
+        id,
+        SamplerParameterName.TextureMaxLod,
+        openGlSamplerParams.MaxLod);
+    if (openGlSamplerParams.LodBias != null) {
       GL.SamplerParameter(
           id,
-          SamplerParameterName.TextureMinFilter,
-          (int) (minFilter switch {
-              FinTextureMinFilter.NEAR   => TextureMinFilter.Nearest,
-              FinTextureMinFilter.LINEAR => TextureMinFilter.Linear,
-              FinTextureMinFilter.NEAR_MIPMAP_NEAR => TextureMinFilter
-                  .NearestMipmapNearest,
-              FinTextureMinFilter.NEAR_MIPMAP_LINEAR => TextureMinFilter
-                  .NearestMipmapLinear,
-              FinTextureMinFilter.LINEAR_MIPMAP_NEAR => TextureMinFilter
-                  .LinearMipmapNearest,
-              FinTextureMinFilter.LINEAR_MIPMAP_LINEAR => TextureMinFilter
-                  .LinearMipmapLinear,
-          }));
-      GL.SamplerParameter(
-          id,
-          SamplerParameterName.TextureMagFilter,
-          (int) (magFilter switch {
-              TextureMagFilter.NEAR => OpenTK.Graphics.OpenGL.TextureMagFilter
-                                             .Nearest,
-              TextureMagFilter.LINEAR => OpenTK.Graphics.OpenGL
-                                               .TextureMagFilter.Linear,
-              _ => throw new ArgumentOutOfRangeException()
-          }));
-      GL.SamplerParameter(id,
-                          SamplerParameterName.TextureMinLod,
-                          prms.MinLod);
-      GL.SamplerParameter(id,
-                          SamplerParameterName.TextureMaxLod,
-                          prms.MaxLod);
-      if (!prms.LodBias.IsRoughly0()) {
-        GL.SamplerParameter(id,
-                            SamplerParameterName.TextureLodBias,
-                            prms.LodBias);
-      }
+          SamplerParameterName.TextureLodBias,
+          openGlSamplerParams.LodBias.Value);
     }
   }
 
@@ -178,20 +143,4 @@ public sealed class GlSampler : IGlSampler {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int samplerIndex = 0)
     => GlUtil.BindSampler(samplerIndex, this.Id);
-
-  private static int ConvertFinWrapToGlWrap_(
-      WrapMode wrapMode,
-      bool hasBorderColor) =>
-      wrapMode switch {
-          WrapMode.CLAMP => hasBorderColor
-              ? (int) TextureWrapMode.ClampToBorder
-              : (int) TextureWrapMode.ClampToEdge,
-          WrapMode.REPEAT        => (int) TextureWrapMode.Repeat,
-          WrapMode.MIRROR_CLAMP  => (int) All.MirrorClampToEdge,
-          WrapMode.MIRROR_REPEAT => (int) All.MirroredRepeat,
-          _ => throw new ArgumentOutOfRangeException(
-              nameof(wrapMode),
-              wrapMode,
-              null)
-      };
 }
