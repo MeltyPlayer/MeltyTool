@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
-    <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="12.2.1" />
+    <PackageReference Include="Avalonia.Controls.TreeDataGrid" Version="12.3.1" />
     <PackageReference Include="Avalonia.Desktop" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
@@ -15,11 +15,11 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Headless" Version="$(AvaloniaVersion)" />
     <PackageReference Include="ReactiveUI.Avalonia" Version="12.1.1" />
     <PackageReference Include="AvaloniaEdit.TextMate" Version="12.0.0" />
-    <PackageReference Include="Material.Avalonia" Version="3.18.0" />
+    <PackageReference Include="Material.Avalonia" Version="3.20.0" />
     <PackageReference Include="Material.Icons.Avalonia" Version="3.0.2" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Reactive" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
