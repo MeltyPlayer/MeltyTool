@@ -56,7 +56,7 @@ public static class UboUtil {
 
   public static void AppendMatrix4x4(Span<byte> buffer,
                                      ref int offset,
-                                     Matrix4x4 matrix4X4) {
+                                     in Matrix4x4 matrix4X4) {
     buffer.Slice(offset, SIZE_OF_MATRIX4X4).Cast<byte, Matrix4x4>()[0]
         = matrix4X4;
     offset += SIZE_OF_MATRIX4X4;

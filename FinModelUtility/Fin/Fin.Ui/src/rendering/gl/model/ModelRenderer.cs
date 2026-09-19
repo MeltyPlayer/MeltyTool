@@ -123,7 +123,7 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
 
     this.matricesBo_
         ??= ModelMatricesBo.New(this.model_.Skin.BonesUsedByVertices.Count);
-    this.matricesBo_.UpdateData(GlTransform.ModelMatrix, this.boneMatrices_);
+    this.matricesBo_.UpdateData(in GlTransform.ModelMatrix, this.boneMatrices_);
   }
 
   public void BindMatricesUbo() => this.matricesBo_.Bind();

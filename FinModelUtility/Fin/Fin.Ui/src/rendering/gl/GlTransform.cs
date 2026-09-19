@@ -23,19 +23,19 @@ public static class GlTransform {
 
   private static Matrix4x4Stack currentMatrix_ = modelMatrix_;
 
-  public static Matrix4x4 ModelMatrix {
+  public static ref Matrix4x4 ModelMatrix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => modelMatrix_.Top;
+    get => ref modelMatrix_.Top;
   }
 
-  public static Matrix4x4 ViewMatrix {
+  public static ref Matrix4x4 ViewMatrix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => viewMatrix_.Top;
+    get => ref viewMatrix_.Top;
   }
 
-  public static Matrix4x4 ProjectionMatrix {
+  public static ref Matrix4x4 ProjectionMatrix {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    get => projectionMatrix_.Top;
+    get => ref projectionMatrix_.Top;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -75,7 +75,7 @@ public static class GlTransform {
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void MultMatrix(in Matrix4x4 matrix)
-    => currentMatrix_.MultiplyInPlace(matrix);
+    => currentMatrix_.MultiplyInPlace(in matrix);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void Translate(double x, double y, double z)
@@ -178,7 +178,7 @@ public static class GlTransform {
 
     SetInMatrix(ref matrix, 3, 3, 1);
 
-    MultMatrix(matrix);
+    MultMatrix(in matrix);
     Translate(-eye);
   }
 

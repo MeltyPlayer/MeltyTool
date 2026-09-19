@@ -26,7 +26,7 @@ public static partial class ModelMatricesBo {
 
     private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-    public void UpdateData(Matrix4x4 modelMatrix,
+    public void UpdateData(in Matrix4x4 modelMatrix,
                            ReadOnlySpan<Matrix4x4> boneMatrices) {
       var offset = 0;
       Span<byte> buffer = stackalloc byte[this.bufferSize_];

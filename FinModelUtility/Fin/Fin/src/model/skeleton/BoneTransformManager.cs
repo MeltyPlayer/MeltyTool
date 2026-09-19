@@ -178,8 +178,8 @@ public sealed class BoneTransformManager : IBoneTransformManager {
         boneTransformView.TargetBone(bone);
         boneToWorldMatrix.Impl = BoneTransformUtils.CalculateBoneToWorldMatrix(
             boneTransformView,
-            parentMatrix,
-            modelMatrix);
+            in parentMatrix,
+            in modelMatrix);
       } else {
         boneToWorldMatrix.Impl = parentMatrix;
         boneToWorldMatrix.MultiplyInPlace(bone.Transform.LocalMatrix);
