@@ -9,6 +9,7 @@ namespace uni.games.donkey_kong_64;
 
 public sealed class DonkeyKong64FileBundleGatherer : BN64FileBundleGatherer {
   public override string Name => "donkey_kong_64";
+  public override string Title => "Donkey Kong 64";
 
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

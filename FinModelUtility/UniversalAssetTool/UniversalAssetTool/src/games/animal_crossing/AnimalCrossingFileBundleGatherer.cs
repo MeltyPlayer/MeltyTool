@@ -13,6 +13,7 @@ namespace uni.games.animal_crossing;
 public sealed class AnimalCrossingFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "animal_crossing";
+  public override string Title => "Animal Crossing";
 
   public override bool IsListed => false;
 

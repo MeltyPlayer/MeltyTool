@@ -9,6 +9,7 @@ namespace uni.games.paper_mario_the_thousand_year_door;
 public sealed class PaperMarioTheThousandYearDoorFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "paper_mario_the_thousand_year_door";
+  public override string Title => "Paper Mario: The Thousand-Year Door";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

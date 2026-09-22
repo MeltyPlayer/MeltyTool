@@ -6,6 +6,7 @@ namespace uni.games.doshin_the_giant;
 
 public sealed class DoshinTheGiantFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "doshin_the_giant";
+  public override string Title => "Doshin the Giant";
 
   public override bool IsListed => false;
 

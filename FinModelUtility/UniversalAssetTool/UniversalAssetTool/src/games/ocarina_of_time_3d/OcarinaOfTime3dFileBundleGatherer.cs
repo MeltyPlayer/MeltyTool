@@ -122,6 +122,7 @@ public sealed class OcarinaOfTime3dFileBundleGatherer : B3dsFileBundleGatherer {
         .Register("zelda_xc", new NoAnimationsModelSeparatorMethod());
 
   public override string Name => "ocarina_of_time_3d";
+  public override string Title => "The Legend of Zelda: Ocarina of Time 3D";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

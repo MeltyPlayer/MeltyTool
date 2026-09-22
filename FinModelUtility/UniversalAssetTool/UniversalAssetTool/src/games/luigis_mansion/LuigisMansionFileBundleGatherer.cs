@@ -8,6 +8,7 @@ namespace uni.games.luigis_mansion;
 
 public sealed class LuigisMansionFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "luigis_mansion";
+  public override string Title => "Luigi's Mansion";
 
   public override GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor

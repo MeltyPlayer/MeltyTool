@@ -7,6 +7,7 @@ namespace uni.games.dead_space_2;
 
 public sealed class DeadSpace2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "dead_space_2";
+  public string Title => "Dead Space 2";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

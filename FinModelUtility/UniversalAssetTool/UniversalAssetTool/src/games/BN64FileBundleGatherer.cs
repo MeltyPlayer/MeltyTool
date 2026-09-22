@@ -7,6 +7,7 @@ namespace uni.games;
 
 public abstract class BN64FileBundleGatherer : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.N64;
 
   public bool IsAvailable

@@ -11,6 +11,7 @@ namespace uni.games.midnight_club_2;
 
 public sealed class MidnightClub2FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "midnight_club_2";
+  public string Title => "Midnight Club II";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

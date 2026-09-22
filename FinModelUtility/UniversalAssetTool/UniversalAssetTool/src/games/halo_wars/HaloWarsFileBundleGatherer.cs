@@ -13,6 +13,7 @@ namespace uni.games.halo_wars;
 
 public sealed class HaloWarsFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "halo_wars";
+  public string Title => "Halo Wars";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

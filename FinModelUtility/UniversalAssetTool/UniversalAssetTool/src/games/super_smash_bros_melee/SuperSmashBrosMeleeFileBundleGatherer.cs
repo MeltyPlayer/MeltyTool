@@ -17,6 +17,7 @@ public sealed class SuperSmashBrosMeleeFileBundleGatherer
   private const string ANIMATION_SUFFIX = "AJ";
 
   public override string Name => "super_smash_bros_melee";
+  public override string Title => "Super Smash Bros. Melee";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

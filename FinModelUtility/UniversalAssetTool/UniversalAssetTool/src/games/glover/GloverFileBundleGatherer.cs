@@ -12,6 +12,7 @@ namespace uni.games.glover;
 
 public sealed class GloverFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "glover";
+  public string Title => "Glover";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

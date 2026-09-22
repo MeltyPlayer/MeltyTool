@@ -6,6 +6,7 @@ namespace uni.games.mario_kart_ds;
 
 public sealed class MarioKartDsFileBundleGatherer : BDsFileBundleGatherer {
   public override string Name => "mario_kart_ds";
+  public override string Title => "Mario Kart DS";
 
   public override bool IsListed => false;
 

@@ -51,6 +51,7 @@ public sealed class SuperMario64DsFileBundleGatherer : BDsFileBundleGatherer {
                   new PrimaryModelSeparatorMethod("yurei_mucho.bmd"));
 
   public override string Name => "super_mario_64_ds";
+  public override string Title => "Super Mario 64 DS";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

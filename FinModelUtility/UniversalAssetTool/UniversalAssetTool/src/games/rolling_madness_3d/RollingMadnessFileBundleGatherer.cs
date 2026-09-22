@@ -8,6 +8,7 @@ namespace uni.games.rolling_madness_3d;
 
 public sealed class RollingMadness3dFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "rolling_madness_3d";
+  public override string Title => "Rolling Madness 3D";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

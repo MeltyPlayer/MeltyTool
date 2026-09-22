@@ -9,6 +9,7 @@ namespace uni.games;
 public abstract class BGameCubeFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.GAMECUBE;
 
   public virtual bool IsListed => true;

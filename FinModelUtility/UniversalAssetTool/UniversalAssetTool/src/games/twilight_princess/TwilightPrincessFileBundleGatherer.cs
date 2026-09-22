@@ -12,6 +12,7 @@ namespace uni.games.twilight_princess;
 
 public sealed class TwilightPrincessFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "twilight_princess";
+  public override string Title => "The Legend of Zelda: Twilight Princess";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

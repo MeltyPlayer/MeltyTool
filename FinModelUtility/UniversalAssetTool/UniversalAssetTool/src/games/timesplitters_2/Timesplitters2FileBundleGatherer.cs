@@ -7,6 +7,7 @@ namespace uni.games.timesplitters_2;
 
 public sealed class Timesplitters2FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "timesplitters_2";
+  public override string Title => "TimeSplitters 2";
 
   public override bool IsListed => false;
 

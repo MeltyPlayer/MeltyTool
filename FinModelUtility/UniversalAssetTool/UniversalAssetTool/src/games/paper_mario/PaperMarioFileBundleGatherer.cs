@@ -9,6 +9,7 @@ namespace uni.games.paper_mario;
 
 public sealed class PaperMarioFileBundleGatherer : BN64FileBundleGatherer {
   public override string Name => "paper_mario";
+  public override string Title => "Paper Mario";
 
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

@@ -11,6 +11,7 @@ namespace uni.games.chibi_robo;
 
 public sealed class ChibiRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "chibi_robo";
+  public override string Title => "Chibi-Robo!";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

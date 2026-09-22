@@ -12,6 +12,7 @@ namespace uni.games.victory_heat_rally;
 
 public sealed class VictoryHeatRallyBundleGatherer : INamedFileBundleGatherer {
   public string Name => "victory_heat_rally";
+  public string Title => "Victory Heat Rally\r\n";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

@@ -10,6 +10,7 @@ namespace uni.games.beetle_adventure_racing;
 public sealed class BeetleAdventureRacingFileBundleGatherer
     : BN64FileBundleGatherer {
   public override string Name => "beetle_adventure_racing";
+  public override string Title => "Beetle Adventure Racing!";
 
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

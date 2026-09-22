@@ -10,6 +10,7 @@ namespace uni.games.the_labyrinth_plus_edition;
 public sealed class TheLabyrinthPlusEditionFileBundleGatherer
     : BPrereqsFileBundleGatherer {
   public override string Name => "the_labyrinth_plus_edition";
+  public override string Title => "The Labyrinth Plus! Edition";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

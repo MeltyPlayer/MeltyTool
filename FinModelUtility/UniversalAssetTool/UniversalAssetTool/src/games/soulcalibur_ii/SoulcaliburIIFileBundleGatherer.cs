@@ -6,6 +6,7 @@ namespace uni.games.soulcalibur_ii;
 
 public sealed class SoulcaliburIIFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "soulcalibur_ii";
+  public override string Title => "Soulcalibur II";
 
   public override bool IsListed => false;
 

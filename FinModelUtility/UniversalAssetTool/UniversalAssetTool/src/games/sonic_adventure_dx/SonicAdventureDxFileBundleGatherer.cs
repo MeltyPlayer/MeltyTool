@@ -19,6 +19,7 @@ public sealed class SonicAdventureDxFileBundleGatherer : BDesktopFileBundleGathe
   private IFileHierarchyDirectory systemDir_;
 
   public override string Name => "sonic_adventure_dx";
+  public override string Title => "Sonic Adventure DX";
 
   public override string SteamName => "Sonic Adventure DX";
   public override string? EpicName => null;

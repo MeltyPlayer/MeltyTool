@@ -17,6 +17,7 @@ namespace uni.games.wind_waker;
 
 public sealed class WindWakerFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "wind_waker";
+  public override string Title => "The Legend of Zelda: The Wind Waker";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

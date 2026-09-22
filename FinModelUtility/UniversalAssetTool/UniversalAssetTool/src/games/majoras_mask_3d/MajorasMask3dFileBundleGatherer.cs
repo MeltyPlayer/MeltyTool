@@ -46,6 +46,7 @@ public sealed class MajorasMask3dFileBundleGatherer : B3dsFileBundleGatherer {
         .Register("zelda2_boss04", new PrimaryModelSeparatorMethod("wort.cmb"));
 
   public override string Name => "majoras_mask_3d";
+  public override string Title => "The Legend of Zelda: Majora's Mask 3D";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

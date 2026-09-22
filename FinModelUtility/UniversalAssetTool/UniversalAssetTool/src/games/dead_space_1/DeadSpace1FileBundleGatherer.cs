@@ -8,6 +8,8 @@ namespace uni.games.dead_space_1;
 
 public sealed class DeadSpace1FileBundleGatherer : BDesktopFileBundleGatherer {
   public override string Name => "dead_space_1";
+  public override string Title => "Dead Space";
+
   public override string SteamName => "Dead Space";
   public override string EpicName => "Dead Space";
 

@@ -7,6 +7,7 @@ namespace uni.games.animal_crossing_wild_world;
 public sealed class AnimalCrossingWildWorldFileBundleGatherer
     : BDsFileBundleGatherer {
   public override string Name => "animal_crossing_wild_world";
+  public override string Title => "Animal Crossing: Wild World";
 
   public override bool IsListed => false;
 

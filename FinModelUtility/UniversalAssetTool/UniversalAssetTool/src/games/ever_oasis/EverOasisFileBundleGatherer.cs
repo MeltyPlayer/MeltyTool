@@ -12,6 +12,7 @@ namespace uni.games.ever_oasis;
 
 public sealed class EverOasisFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "ever_oasis";
+  public string Title => "Ever Oasis";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.THREE_DS;

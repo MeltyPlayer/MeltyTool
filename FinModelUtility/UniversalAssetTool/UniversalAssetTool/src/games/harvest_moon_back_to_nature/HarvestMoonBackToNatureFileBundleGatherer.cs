@@ -11,6 +11,7 @@ namespace uni.games.harvest_moon_back_to_nature;
 public sealed class HarvestMoonBackToNatureFileBundleGatherer
     : BPs1FileBundleGatherer {
   public override string Name => "harvest_moon_back_to_nature";
+  public override string Title => "Harvest Moon: Back to Nature";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

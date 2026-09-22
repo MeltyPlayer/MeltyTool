@@ -9,6 +9,7 @@ namespace uni.games.harvest_moon_64;
 
 public sealed class HarvestMoon64FileBundleGatherer : BN64FileBundleGatherer {
   public override string Name => "harvest_moon_64";
+  public override string Title => "Harvest Moon 64";
 
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

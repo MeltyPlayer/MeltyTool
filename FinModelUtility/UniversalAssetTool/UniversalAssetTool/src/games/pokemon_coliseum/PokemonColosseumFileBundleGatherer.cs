@@ -9,6 +9,7 @@ namespace uni.games.pokemon_colosseum;
 public sealed class PokemonColosseumFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "pokemon_colosseum";
+  public override string Title => "Pokémon Colosseum";
 
   public override bool IsListed => false;
 

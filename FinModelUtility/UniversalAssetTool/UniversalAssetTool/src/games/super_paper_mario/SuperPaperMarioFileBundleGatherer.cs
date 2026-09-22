@@ -9,6 +9,7 @@ namespace uni.games.super_paper_mario;
 public sealed class SuperPaperMarioFileBundleGatherer
     : BWiiFileBundleGatherer {
   public override string Name => "super_paper_mario";
+  public override string Title => "Super Paper Mario";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

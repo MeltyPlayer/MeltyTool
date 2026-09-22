@@ -8,6 +8,7 @@ namespace uni.games;
 
 public abstract class BPs1FileBundleGatherer : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.PS1;
 
   public bool IsAvailable

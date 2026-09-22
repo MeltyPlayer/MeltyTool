@@ -7,6 +7,7 @@ namespace uni.games.pokemon_heartgold;
 public sealed class PokemonHeartgoldFileBundleGatherer
     : BDsFileBundleGatherer {
   public override string Name => "pokemon_heartgold";
+  public override string Title => "Pokémon HeartGold";
 
   public override bool IsListed => false;
 

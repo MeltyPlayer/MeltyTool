@@ -17,6 +17,7 @@ public sealed class Pikmin1FileBundleGatherer : BGameCubeFileBundleGatherer {
                     @"\dataDir\pikis");
 
   public override string Name => "pikmin_1";
+  public override string Title => "Pikmin";
 
   public override GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Empty();

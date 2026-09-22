@@ -10,6 +10,7 @@ namespace uni.games.unity;
 
 public sealed class UnityFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "unity";
+  public string Title => "Unity";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

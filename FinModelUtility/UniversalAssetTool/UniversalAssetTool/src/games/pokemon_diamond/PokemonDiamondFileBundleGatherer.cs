@@ -7,6 +7,7 @@ namespace uni.games.pokemon_diamond;
 public sealed class PokemonDiamondFileBundleGatherer
     : BDsFileBundleGatherer {
   public override string Name => "pokemon_diamond";
+  public override string Title => "Pokémon Diamond";
 
   public override bool IsListed => false;
 

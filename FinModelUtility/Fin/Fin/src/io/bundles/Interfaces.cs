@@ -52,6 +52,7 @@ public enum FileBundleGathererPlatform {
 
 public interface INamedFileBundleGatherer : IFileBundleGatherer {
   string Name { get; }
+  string Title { get; }
 
   FileBundleGathererPlatform Platform { get; }
 

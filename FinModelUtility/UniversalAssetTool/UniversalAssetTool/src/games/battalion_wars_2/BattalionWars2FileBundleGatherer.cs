@@ -1,5 +1,4 @@
-﻿using fin.config;
-using fin.io;
+﻿using fin.io;
 using fin.io.archive;
 using fin.io.bundles;
 using fin.util.progress;
@@ -14,6 +13,7 @@ namespace uni.games.battalion_wars_2;
 public sealed class BattalionWars2FileBundleGatherer
     : BWiiFileBundleGatherer {
   public override string Name => "battalion_wars_2";
+  public override string Title => "Battalion Wars 2";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

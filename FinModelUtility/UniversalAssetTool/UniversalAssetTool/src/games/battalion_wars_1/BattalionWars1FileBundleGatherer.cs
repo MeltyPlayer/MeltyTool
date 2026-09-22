@@ -13,6 +13,7 @@ namespace uni.games.battalion_wars_1;
 
 public sealed class BattalionWars1FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "battalion_wars_1";
+  public override string Title => "Battalion Wars";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

@@ -16,6 +16,7 @@ namespace uni.games.mario_kart_double_dash;
 public sealed class MarioKartDoubleDashFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "mario_kart_double_dash";
+  public override string Title => "Mario Kart: Double Dash";
 
   public override GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor

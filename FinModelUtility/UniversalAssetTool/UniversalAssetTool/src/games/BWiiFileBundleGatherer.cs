@@ -9,6 +9,7 @@ namespace uni.games;
 public abstract class BWiiFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.WII;
 
   public bool IsAvailable

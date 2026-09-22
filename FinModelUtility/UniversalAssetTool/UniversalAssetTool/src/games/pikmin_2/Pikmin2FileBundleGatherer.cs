@@ -14,6 +14,7 @@ namespace uni.games.pikmin_2;
 
 public sealed class Pikmin2FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "pikmin_2";
+  public override string Title => "Pikmin 2";
 
   public override GcnFileHierarchyExtractor.Options Options 
     => GcnFileHierarchyExtractor.Options.Standard()

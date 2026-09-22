@@ -8,6 +8,7 @@ namespace uni.games.custom_robo;
 
 public sealed class CustomRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "custom_robo";
+  public override string Title => "Custom Robo";
 
   public override bool IsListed => false;
 

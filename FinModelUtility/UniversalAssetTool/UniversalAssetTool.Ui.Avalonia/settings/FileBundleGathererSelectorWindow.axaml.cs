@@ -48,6 +48,8 @@ public class FileBundleGathererSelectorWindowViewModelForDesigner
       FileBundleGathererPlatform Platform,
       bool IsAvailable)
       : INamedFileBundleGatherer {
+    public string Title => this.Name;
+
     public void GatherFileBundles(
         IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress)

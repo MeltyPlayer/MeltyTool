@@ -14,6 +14,7 @@ namespace uni.games.ocarina_of_time;
 
 public sealed class OcarinaOfTimeFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "ocarina_of_time";
+  public string Title => "The Legend of Zelda: Ocarina of Time";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.N64;

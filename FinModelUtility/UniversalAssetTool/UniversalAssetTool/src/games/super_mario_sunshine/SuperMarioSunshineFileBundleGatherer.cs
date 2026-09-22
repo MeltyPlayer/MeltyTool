@@ -12,6 +12,7 @@ namespace uni.games.super_mario_sunshine;
 public sealed class SuperMarioSunshineFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "super_mario_sunshine";
+  public override string Title => "Super Mario Sunshine";
 
   public override GcnFileHierarchyExtractor.Options Options 
     => GcnFileHierarchyExtractor.Options.Standard()

@@ -9,6 +9,7 @@ namespace uni.games.gauntlet_dark_legacy;
 public sealed class GauntletDarkLegacyFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "gauntlet_dark_legacy";
+  public override string Title => "Gauntlet Dark Legacy";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

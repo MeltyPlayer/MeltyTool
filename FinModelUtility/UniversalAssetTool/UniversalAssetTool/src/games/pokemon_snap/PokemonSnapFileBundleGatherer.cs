@@ -9,6 +9,7 @@ namespace uni.games.pokemon_snap;
 
 public sealed class PokemonSnapFileBundleGatherer : BN64FileBundleGatherer {
   public override string Name => "pokemon_snap";
+  public override string Title => "Pokémon Snap";
 
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,

@@ -8,6 +8,7 @@ namespace uni.games.nddemo;
 
 public sealed class NddemoFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "nddemo";
+  public override string Title => "NDDEMO";
 
   public override bool IsListed => false;
 
