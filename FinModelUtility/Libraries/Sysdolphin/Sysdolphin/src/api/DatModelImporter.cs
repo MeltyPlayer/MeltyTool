@@ -33,7 +33,8 @@ using sysdolphin.schema.texture;
 
 namespace sysdolphin.api;
 
-public sealed class DatModelImporter : IModelImporter<DatModelFileBundle> {
+public sealed class DatModelImporter
+    : IModelImporter<DatModelImporter, DatModelFileBundle> {
   public IModel Import(DatModelFileBundle modelFileBundle)
     => this.Import(modelFileBundle, out _, out _, out _, out _, out _);
 

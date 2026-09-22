@@ -4,8 +4,7 @@ namespace uni.games.halo_wars;
 
 public sealed class HaloWarsMassExporter : IMassExporter {
   public void ExportAll()
-    => ExporterUtil.ExportAllOfTypeForCli(new HaloWarsFileBundleGatherer(),
-                                          new XtdModelImporter());
+    => ExporterUtil.ExportAllForCli(new HaloWarsFileBundleGatherer());
 
   /*new HaloWarsTools.Program().Run(
       DirectoryConstants.ROMS_DIRECTORY.GetSubdir("halo_wars", true).FullName,

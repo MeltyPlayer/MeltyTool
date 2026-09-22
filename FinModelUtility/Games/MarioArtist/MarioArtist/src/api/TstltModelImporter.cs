@@ -52,7 +52,7 @@ public record TstltModelFileBundle(
     IReadOnlyTreeFile MainFile,
     IReadOnlyTreeDirectory? AnimationsDirectory = null,
     IReadOnlyTreeFile? RomFile = null)
-    : IModelFileBundle;
+    : IModelFileBundle<TstltModelFileBundle, TstltModelImporter>;
 
 public enum JointIndex {
   // Head bones
@@ -98,7 +98,8 @@ public enum JointIndex {
   FOOT_1 = 29,
 }
 
-public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
+public sealed class TstltModelImporter
+    : IModelImporter<TstltModelImporter, TstltModelFileBundle> {
   public const int HARDCODED_MESH_SET_ID = -1;
   public const bool INCLUDE_FACE = true;
 

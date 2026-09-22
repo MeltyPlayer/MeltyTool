@@ -29,7 +29,7 @@ namespace UoT.api {
     LINK_ANIMETION = 7,
   }
 
-  public sealed class OotModelImporter : IModelImporter<OotModelFileBundle> {
+  public sealed class OotModelImporter : IModelImporter<OotModelImporter, OotModelFileBundle> {
     public IModel Import(OotModelFileBundle modelFileBundle) {
       var zFile = modelFileBundle.ZFile;
       var isLink = zFile.FileName is "object_link_boy"

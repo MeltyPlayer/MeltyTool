@@ -8,6 +8,8 @@ public record SonicAdventureModelFileBundle(
     IReadOnlyTreeFile ModelFile,
     uint ModelFileKey,
     uint ModelFileOffset,
-    IReadOnlyTreeFile TextureFile) : IModelFileBundle {
+    IReadOnlyTreeFile TextureFile)
+    : IModelFileBundle<SonicAdventureModelFileBundle,
+        SonicAdventureModelFileImporter> {
   public IReadOnlyTreeFile MainFile => this.ModelFile;
 }

@@ -9,7 +9,7 @@ using visceral.api;
 namespace visceral;
 
 public sealed class GeoModelGoldenTests
-    : BModelGoldenTests<GeoModelFileBundle, GeoModelImporter> {
+    : BModelGoldenTests<GeoModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

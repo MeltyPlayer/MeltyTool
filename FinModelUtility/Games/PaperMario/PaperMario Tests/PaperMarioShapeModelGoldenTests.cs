@@ -9,7 +9,7 @@ using pm.api;
 namespace pm;
 
 public sealed class PaperMarioShapeModelGoldenTests
-    : BModelGoldenTests<PaperMarioShapeModelFileBundle, PaperMarioShapeModelImporter> {
+    : BModelGoldenTests<PaperMarioShapeModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

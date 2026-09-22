@@ -22,7 +22,7 @@ namespace dk64.api;
 public sealed record Dk64MapModelFileBundle(
     IReadOnlyTreeFile MapFile,
     IReadOnlyTreeDirectory TexturesDirectory)
-    : IModelFileBundle {
+    : IModelFileBundle<Dk64MapModelFileBundle, Dk64MapModelImporter> {
   public IReadOnlyTreeFile MainFile => this.MapFile;
 }
 
@@ -31,7 +31,7 @@ public sealed record Dk64MapModelFileBundle(
 ///   https://github.com/magcius/noclip.website/blob/main/src/DonkeyKong64/scenes.ts#L715
 /// </summary>
 public sealed class Dk64MapModelImporter
-    : IModelImporter<Dk64MapModelFileBundle> {
+    : IModelImporter<Dk64MapModelImporter, Dk64MapModelFileBundle> {
   public IModel Import(Dk64MapModelFileBundle fileBundle) {
     using var mapBr = fileBundle.MapFile.OpenReadAsBinary(Endianness.BigEndian);
     var map = mapBr.ReadNew<Map>();

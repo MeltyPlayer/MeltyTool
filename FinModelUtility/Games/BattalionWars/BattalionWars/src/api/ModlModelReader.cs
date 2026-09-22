@@ -28,7 +28,7 @@ using schema.binary;
 
 namespace modl.api;
 
-public sealed class ModlModelImporter : IModelImporter<ModlModelFileBundle> {
+public sealed class ModlModelImporter : IModelImporter<ModlModelImporter, ModlModelFileBundle> {
   public IModel Import(ModlModelFileBundle modelFileBundle)
     => this.Import(modelFileBundle,
                    modelFileBundle.ModlFile,

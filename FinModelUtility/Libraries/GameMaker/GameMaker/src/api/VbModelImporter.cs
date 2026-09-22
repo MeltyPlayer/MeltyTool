@@ -11,11 +11,12 @@ using gm.schema.vb;
 
 namespace gm.api;
 
-public record VbModelFileBundle(IReadOnlyTreeFile VbFile) : IModelFileBundle {
+public record VbModelFileBundle(IReadOnlyTreeFile VbFile)
+    : IModelFileBundle<VbModelFileBundle, VbModelImporter> {
   public IReadOnlyTreeFile MainFile => this.VbFile;
 }
 
-public sealed class VbModelImporter : IModelImporter<VbModelFileBundle> {
+public sealed class VbModelImporter : IModelImporter<VbModelImporter, VbModelFileBundle> {
   public IModel Import(VbModelFileBundle modelFileBundle) {
     var vbFile = modelFileBundle.VbFile;
     var vb = vbFile.ReadNew<Vb>();

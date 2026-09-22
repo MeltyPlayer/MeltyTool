@@ -74,11 +74,6 @@ public sealed class HaloWarsOptions : IMassExporterOptions<HaloWarsMassExporter>
       HelpText = "Export models en-masse from Harvest Moon 64.")]
 public sealed class HarvestMoon64Options : IMassExporterOptions<HarvestMoon64MassExporter>;
 
-[Verb("luigis_mansion",
-      HelpText = "Export models en-masse from Luigi's Mansion.")]
-public sealed class LuigisMansionOptions
-    : IMassExporterOptions<LuigisMansionMassExporter>;
-
 [Verb("luigis_mansion_3d",
       HelpText = "Export models en-masse from Luigi's Mansion 3D.")]
 public sealed class LuigisMansion3dOptions

@@ -25,7 +25,8 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace fin.model.io.importers.assimp;
 
-public sealed class AssimpModelImporter : IModelImporter<AssimpModelFileBundle> {
+public sealed class AssimpModelImporter
+    : IModelImporter<AssimpModelImporter, AssimpModelFileBundle> {
   public IModel Import(AssimpModelFileBundle modelFileBundle) {
     var tuple = this.ImportScene(modelFileBundle);
     using var ctx = tuple.Item1;

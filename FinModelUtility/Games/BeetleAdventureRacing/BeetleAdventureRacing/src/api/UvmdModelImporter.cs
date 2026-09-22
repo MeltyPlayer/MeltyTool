@@ -33,10 +33,10 @@ using UvtxData
 public sealed record UvmdModelFileBundle(
     IReadOnlyTreeFile MainFile,
     IReadOnlyTreeDirectory RootDirectory)
-    : IModelFileBundle;
+    : IModelFileBundle<UvmdModelFileBundle, UvmdModelFileImporter>;
 
 public sealed class UvmdModelFileImporter
-    : IModelImporter<UvmdModelFileBundle> {
+    : IModelImporter<UvmdModelFileImporter, UvmdModelFileBundle> {
   public IModel Import(UvmdModelFileBundle fileBundle)
     => Import(fileBundle, true);
 

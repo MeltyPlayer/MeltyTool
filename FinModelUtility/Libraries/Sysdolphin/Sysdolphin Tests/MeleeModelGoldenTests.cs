@@ -9,7 +9,7 @@ using sysdolphin.api;
 namespace sysdolphin;
 
 public sealed class MeleeModelGoldenTests
-    : BModelGoldenTests<MeleeModelFileBundle, MeleeModelImporter> {
+    : BModelGoldenTests<MeleeModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

@@ -9,7 +9,6 @@ using fin.model;
 using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
-using fin.model.io.importers;
 using fin.model.processing;
 using fin.util.asserts;
 using fin.util.progress;
@@ -33,7 +32,7 @@ public enum ExportResult {
 
 public static class ExporterUtil {
   static ExporterUtil() {
-    logger_ = Logging.Create("exportor");
+    logger_ = Logging.Create("exporter");
   }
 
   private static readonly ILogger logger_;
@@ -137,41 +136,15 @@ public static class ExporterUtil {
     return organizer.List;
   }
 
-  public static void ExportAllForCli<T>(
-      IFileBundleGatherer gatherer,
-      IModelImporter<T> reader)
-      where T : IModelFileBundle
+  public static void ExportAllForCli(
+      IFileBundleGatherer gatherer)
     => ExportAllForCli_(
-        gatherer.GatherFileBundles(),
-        reader,
+        gatherer.GatherFileBundles().OfType<IModelFileBundle>(),
         Config.Instance.Exporter.General.ExportedFormats,
         false);
-
-  public static void ExportAllOfTypeForCli<TSubType>(
-      IFileBundleGatherer gatherer,
-      IModelImporter<TSubType> reader)
-      where TSubType : IModelFileBundle
-    => ExportAllForCli_(
-        gatherer.GatherFileBundles().OfType<TSubType>(),
-        reader,
-        Config.Instance.Exporter.General.ExportedFormats,
-        false);
-
-  private static void ExportAllForCli_<T>(
-      IEnumerable<IFileBundle> fileBundles,
-      IModelImporter<T> reader,
-      IReadOnlySet<ExportedFormat> formats,
-      bool overwriteExistingFiles)
-      where T : IModelFileBundle
-    => ExportAllForCli_(
-        fileBundles.OfType<T>(),
-        reader,
-        formats,
-        overwriteExistingFiles);
 
   private static void ExportAllForCli_<T>(
       IEnumerable<T> modelFileBundles,
-      IModelImporter<T> reader,
       IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFiles)
       where T : IModelFileBundle {
@@ -181,7 +154,6 @@ public static class ExporterUtil {
 
     foreach (var modelFileBundle in bundlesArray) {
       Export(modelFileBundle,
-             reader,
              formats,
              overwriteExistingFiles);
     }
@@ -190,7 +162,6 @@ public static class ExporterUtil {
 
   public static ExportResultTuple[] ExportAll<T>(
       IEnumerable<IFileBundle> fileBundles,
-      IModelImporter<T> reader,
       IProgress<(float, T?)> progress,
       CancellationTokenSource cancellationTokenSource,
       IReadOnlySet<ExportedFormat> formats,
@@ -211,7 +182,6 @@ public static class ExporterUtil {
       progress.Report((i * 1f / fileBundleArray.Length, modelFileBundle));
       results[i] = Export(
           modelFileBundle,
-          reader,
           formats,
           overwriteExistingFiles);
     }
@@ -223,12 +193,11 @@ public static class ExporterUtil {
 
   public static ExportResultTuple Export<T>(
       T modelFileBundle,
-      IModelImporter<T> reader,
       IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFile)
       where T : IModelFileBundle
     => Export(modelFileBundle,
-              () => reader.ImportAndProcess(modelFileBundle),
+              () => modelFileBundle.ImportAndProcess(),
               formats,
               overwriteExistingFile);
 

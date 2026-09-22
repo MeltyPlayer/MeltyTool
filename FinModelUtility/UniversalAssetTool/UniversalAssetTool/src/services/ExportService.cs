@@ -94,7 +94,6 @@ public static class ExportService {
 
         var results = ExporterUtil.ExportAll(
             modelFileBundles,
-            new GlobalModelImporter(),
             Progress,
             CancellationToken,
             Config.Instance.Exporter.General.ExportedFormats,

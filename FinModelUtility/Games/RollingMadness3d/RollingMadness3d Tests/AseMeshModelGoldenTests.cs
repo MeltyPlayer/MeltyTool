@@ -9,7 +9,7 @@ using rollingMadness.api;
 namespace rollingMadness;
 
 public sealed class AseMeshModelGoldenTests
-    : BModelGoldenTests<AseMeshModelFileBundle, AseMeshModelImporter> {
+    : BModelGoldenTests<AseMeshModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

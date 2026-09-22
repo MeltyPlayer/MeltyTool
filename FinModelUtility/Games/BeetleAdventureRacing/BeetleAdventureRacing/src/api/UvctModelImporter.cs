@@ -14,10 +14,10 @@ namespace bar.api;
 public sealed record UvctModelFileBundle(
     IReadOnlyTreeFile MainFile,
     IReadOnlyTreeDirectory RootDirectory)
-    : IModelFileBundle;
+    : IModelFileBundle<UvctModelFileBundle, UvctModelFileImporter>;
 
 public sealed class UvctModelFileImporter
-    : IModelImporter<UvctModelFileBundle> {
+    : IModelImporter<UvctModelFileImporter, UvctModelFileBundle> {
   public IModel Import(UvctModelFileBundle fileBundle) {
     var fileChunks
         = fileBundle.MainFile.ReadNew<FileChunks>(Endianness.BigEndian);

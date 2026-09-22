@@ -10,7 +10,7 @@ using ttyd.api;
 namespace ttyd;
 
 public sealed class TtydModelGoldenTests
-    : BModelGoldenTests<TtydModelFileBundle, TtydModelImporter> {
+    : BModelGoldenTests<TtydModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

@@ -10,8 +10,7 @@ using gdl.api;
 namespace gdl;
 
 public sealed class GauntletDarkLegacyModelGoldenTests
-    : BModelGoldenTests<GauntletDarkLegacyModelFileBundle,
-        GauntletDarkLegacyModelImporter> {
+    : BModelGoldenTests<GauntletDarkLegacyModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

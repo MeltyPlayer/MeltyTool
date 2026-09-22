@@ -17,12 +17,13 @@ namespace rollingMadness.api;
 
 public record AseMeshModelFileBundle(
     IReadOnlyTreeFile AseMeshFile,
-    IReadOnlyTreeDirectory TextureDirectory) : IModelFileBundle {
+    IReadOnlyTreeDirectory TextureDirectory)
+    : IModelFileBundle<AseMeshModelFileBundle, AseMeshModelImporter> {
   public IReadOnlyTreeFile MainFile => this.AseMeshFile;
 }
 
 public sealed class AseMeshModelImporter
-    : IModelImporter<AseMeshModelFileBundle> {
+    : IModelImporter<AseMeshModelImporter, AseMeshModelFileBundle> {
   public IModel Import(AseMeshModelFileBundle fileBundle) {
     var aseMesh = fileBundle.AseMeshFile.ReadNew<AseMesh>();
 

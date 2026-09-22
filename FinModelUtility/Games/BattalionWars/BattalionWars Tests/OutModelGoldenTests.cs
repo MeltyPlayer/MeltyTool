@@ -10,7 +10,7 @@ using modl.api;
 namespace modl;
 
 public sealed class OutModelGoldenTests
-    : BModelGoldenTests<OutModelFileBundle, OutModelImporter> {
+    : BModelGoldenTests<OutModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

@@ -25,7 +25,8 @@ using sm64ds.schema.gx;
 
 namespace sm64ds.api;
 
-public sealed class Sm64dsModelImporter : IModelImporter<Sm64dsModelFileBundle> {
+public sealed class Sm64dsModelImporter
+    : IModelImporter<Sm64dsModelImporter, Sm64dsModelFileBundle> {
   public IModel Import(Sm64dsModelFileBundle fileBundle) {
     var bmdFile = fileBundle.BmdFile;
 

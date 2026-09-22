@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace marioartist;
 
 public sealed class Ma3d1ModelGoldenTests
-    : BModelGoldenTests<Ma3d1ModelFileBundle, Ma3d1ModelLoader> {
+    : BModelGoldenTests<Ma3d1ModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

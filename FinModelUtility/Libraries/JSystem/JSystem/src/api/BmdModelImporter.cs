@@ -35,7 +35,8 @@ namespace jsystem.api;
 
 using MkdsNode = MA.Node;
 
-public sealed class BmdModelImporter : IModelImporter<BmdModelFileBundle> {
+public sealed class BmdModelImporter
+    : IModelImporter<BmdModelImporter, BmdModelFileBundle> {
   public IModel Import(BmdModelFileBundle modelFileBundle) {
     var logger = Logging.Create<BmdModelImporter>();
 

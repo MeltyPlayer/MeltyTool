@@ -9,7 +9,7 @@ using dk64.api;
 namespace dk64;
 
 public sealed class Dk64MapModelGoldenTests
-    : BModelGoldenTests<Dk64MapModelFileBundle, Dk64MapModelImporter> {
+    : BModelGoldenTests<Dk64MapModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

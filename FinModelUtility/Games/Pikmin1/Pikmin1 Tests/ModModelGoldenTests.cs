@@ -11,7 +11,7 @@ using pikmin1.api;
 namespace pikmin1;
 
 public sealed class ModModelGoldenTests
-    : BModelGoldenTests<ModModelFileBundle, ModModelImporter> {
+    : BModelGoldenTests<ModModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

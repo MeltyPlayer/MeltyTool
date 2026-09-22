@@ -12,9 +12,9 @@ using fin.util.sets;
 using marioartist.schema.polygon_studio;
 
 public sealed record Ma3d1ModelFileBundle(IReadOnlyTreeFile MainFile)
-    : IModelFileBundle;
+    : IModelFileBundle<Ma3d1ModelFileBundle, Ma3d1ModelLoader>;
 
-public sealed class Ma3d1ModelLoader : IModelImporter<Ma3d1ModelFileBundle> {
+public sealed class Ma3d1ModelLoader : IModelImporter<Ma3d1ModelLoader, Ma3d1ModelFileBundle> {
   public IModel Import(Ma3d1ModelFileBundle fileBundle) {
     var ma3d1 = fileBundle.MainFile.ReadNew<Ma3d1>();
 

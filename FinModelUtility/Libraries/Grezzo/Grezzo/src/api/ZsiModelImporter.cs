@@ -15,7 +15,7 @@ using schema.binary;
 namespace grezzo.api;
 
 // TODO: Have a way to convert the scene to a model instead?
-public sealed class ZsiModelImporter : IModelImporter<ZsiModelFileBundle> {
+public sealed class ZsiModelImporter : IModelImporter<ZsiModelImporter, ZsiModelFileBundle> {
   private readonly CmbModelBuilder cmbModelBuilder_ = new();
 
   public IModel Import(ZsiModelFileBundle fileBundle) {

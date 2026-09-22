@@ -12,12 +12,12 @@ using gm.api;
 namespace mk3d.api;
 
 public sealed record Mk3dKartModelFileBundle(IReadOnlyTreeFile PlaceholderFile)
-    : IModelFileBundle {
+    : IModelFileBundle<Mk3dKartModelFileBundle, Mk3dKartModelImporter> {
   public IReadOnlyTreeFile MainFile => this.PlaceholderFile;
 }
 
 public sealed class Mk3dKartModelImporter
-    : IModelImporter<Mk3dKartModelFileBundle> {
+    : IModelImporter<Mk3dKartModelImporter, Mk3dKartModelFileBundle> {
   public IModel Import(Mk3dKartModelFileBundle fileBundle) {
     var rootDir = fileBundle.PlaceholderFile.AssertGetParent();
 

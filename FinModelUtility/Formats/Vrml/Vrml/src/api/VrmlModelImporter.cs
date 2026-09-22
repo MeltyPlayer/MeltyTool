@@ -38,7 +38,7 @@ namespace vrml.api;
 
 using IndexedFaceGroup = (int coordIndex, int? texCoordIndex, int? colorIndex);
 
-public sealed class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
+public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlModelFileBundle> {
   public IModel Import(VrmlModelFileBundle fileBundle) {
     var wrlFile = fileBundle.WrlFile;
     using var wrlFileStream = wrlFile.OpenRead();

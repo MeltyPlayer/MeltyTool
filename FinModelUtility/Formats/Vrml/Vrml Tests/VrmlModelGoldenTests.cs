@@ -12,7 +12,7 @@ using vrml.api;
 namespace vrml;
 
 public sealed class VrmlModelGoldenTests
-    : BModelGoldenTests<VrmlModelFileBundle, VrmlModelImporter> {
+    : BModelGoldenTests<VrmlModelFileBundle> {
   [OneTimeSetUp]
   public void OneTimeSetUp() {
     // Initialize plugin

@@ -20,8 +20,7 @@ public static class ModelService {
 
           if (fileBundle is IModelFileBundle modelFileBundle) {
             try {
-              var model
-                  = new GlobalModelImporter().ImportAndProcess(modelFileBundle);
+              var model = modelFileBundle.ImportAndProcess();
               OpenModel(fileTreeLeafNode, model);
             } catch (Exception e) {
               FailToOpenModel(fileBundle, e);

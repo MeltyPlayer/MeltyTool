@@ -83,7 +83,7 @@ public static class FileBundleExportService {
 
     ExporterUtil.Export(
         modelFileBundle,
-        () => new GlobalModelImporter().ImportAndProcess(modelFileBundle),
+        () => modelFileBundle.ImportAndProcess(),
         outputDirectory,
         outputExportFormat.AsSet(),
         true,

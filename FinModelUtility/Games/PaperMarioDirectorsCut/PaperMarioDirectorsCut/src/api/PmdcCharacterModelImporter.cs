@@ -13,7 +13,8 @@ using fin.model.util;
 
 namespace pmdc.api;
 
-public sealed class PmdcCharacterModelFileBundle : IModelFileBundle {
+public sealed class PmdcCharacterModelFileBundle
+    : IModelFileBundle<PmdcCharacterModelFileBundle, PmdcCharacterModelImporter> {
   public required IReadOnlyTreeFile[] AnimationImageFiles { get; init; }
   public required IReadOnlyTreeDirectory CharactersDirectory { get; init; }
 
@@ -26,7 +27,7 @@ public sealed class PmdcCharacterModelFileBundle : IModelFileBundle {
 }
 
 public sealed class PmdcCharacterModelImporter
-    : IModelImporter<PmdcCharacterModelFileBundle> {
+    : IModelImporter<PmdcCharacterModelImporter, PmdcCharacterModelFileBundle> {
   public IModel Import(PmdcCharacterModelFileBundle bundle) {
     var model = new ModelImpl() {
         FileBundle = bundle,

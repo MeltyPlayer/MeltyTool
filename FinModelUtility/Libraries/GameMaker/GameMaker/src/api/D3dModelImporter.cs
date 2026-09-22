@@ -16,7 +16,8 @@ using gm.schema.d3d;
 
 namespace gm.api;
 
-public sealed class D3dModelFileBundle : IModelFileBundle {
+public sealed class D3dModelFileBundle
+    : IModelFileBundle<D3dModelFileBundle, D3dModelImporter> {
   public required IReadOnlyTreeFile D3dFile { get; init; }
 
   public IReadOnlyTreeFile? TextureFile { get; init; }
@@ -31,7 +32,8 @@ public sealed class D3dModelFileBundle : IModelFileBundle {
   public WrapMode TextureWrapMode { get; init; }
 }
 
-public sealed class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
+public sealed class D3dModelImporter
+    : IModelImporter<D3dModelImporter, D3dModelFileBundle> {
   public IModel Import(D3dModelFileBundle modelFileBundle) {
     var d3dFile = modelFileBundle.D3dFile;
     var fileSet = new HashSet<IReadOnlyGenericFile>();

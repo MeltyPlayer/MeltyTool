@@ -10,13 +10,15 @@ using gm.schema.omd;
 
 namespace gm.api;
 
-public sealed class OmdModelFileBundle : IModelFileBundle {
+public sealed class OmdModelFileBundle
+    : IModelFileBundle<OmdModelFileBundle, OmdModelImporter> {
   public required IReadOnlyTreeFile OmdFile { get; init; }
   public Action<IModel>? Mutator { get; init; }
   public IReadOnlyTreeFile MainFile => this.OmdFile;
 }
 
-public sealed class OmdModelImporter : IModelImporter<OmdModelFileBundle> {
+public sealed class OmdModelImporter
+    : IModelImporter<OmdModelImporter, OmdModelFileBundle> {
   public IModel Import(OmdModelFileBundle modelFileBundle) {
     var omdFile = modelFileBundle.OmdFile;
     var omd = omdFile.ReadNewFromText<Omd>();

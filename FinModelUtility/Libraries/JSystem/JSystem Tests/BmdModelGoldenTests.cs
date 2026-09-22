@@ -11,7 +11,7 @@ namespace jsystem;
 
 [TestFixtureSource(nameof(GetGoldenDirectories_))]
 public sealed class BmdModelGoldenTests
-    : BModelGoldenTests<BmdModelFileBundle, BmdModelImporter> {
+    : BModelGoldenTests<BmdModelFileBundle> {
   private readonly IFileHierarchyDirectory goldenDirectory_;
   private readonly BMD bmd_;
 

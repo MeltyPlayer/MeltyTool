@@ -11,7 +11,9 @@ public interface IVrmlFileBundle : IFileBundle {
   IReadOnlyTreeFile IFileBundle.MainFile => this.WrlFile;
 }
 
-public sealed class VrmlModelFileBundle : IVrmlFileBundle, IModelFileBundle {
+public sealed class VrmlModelFileBundle
+    : IVrmlFileBundle,
+      IModelFileBundle<VrmlModelFileBundle, VrmlModelImporter> {
   public string? GameName { get; }
   public required IReadOnlyTreeFile WrlFile { get; init; }
 }

@@ -9,7 +9,7 @@ using grezzo.api;
 namespace grezzo;
 
 public sealed class CmbModelGoldenTests
-    : BModelGoldenTests<CmbModelFileBundle, CmbModelImporter> {
+    : BModelGoldenTests<CmbModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

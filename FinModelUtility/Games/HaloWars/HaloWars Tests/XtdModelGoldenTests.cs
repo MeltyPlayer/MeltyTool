@@ -9,7 +9,7 @@ using hw.api;
 namespace hw;
 
 public sealed class XtdModelGoldenTests
-    : BModelGoldenTests<XtdModelFileBundle, XtdModelImporter> {
+    : BModelGoldenTests<XtdModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

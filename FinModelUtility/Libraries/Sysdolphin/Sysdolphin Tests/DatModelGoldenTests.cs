@@ -9,7 +9,7 @@ using sysdolphin.api;
 namespace sysdolphin;
 
 public sealed class DatModelGoldenTests
-    : BModelGoldenTests<DatModelFileBundle, DatModelImporter> {
+    : BModelGoldenTests<DatModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

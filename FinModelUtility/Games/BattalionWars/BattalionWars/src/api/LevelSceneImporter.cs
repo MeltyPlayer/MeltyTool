@@ -5,7 +5,7 @@ using modl.schema.xml;
 
 namespace modl.api;
 
-public sealed class BwSceneFileBundle : IBattalionWarsFileBundle, ISceneFileBundle {
+public sealed class BwSceneFileBundle : ISceneFileBundle {
   public IReadOnlyTreeFile MainFile => this.MainXmlFile;
 
   public required GameVersion GameVersion { get; init; }

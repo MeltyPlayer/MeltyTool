@@ -2,15 +2,13 @@
 
 using fin.io;
 using fin.model.io;
-using fin.model.io.importers;
 
 namespace fin.model.processing;
 
 public static class ModelProcessing {
-  public static IModel ImportAndProcess<T>(this IModelImporter<T> modelImporter,
-                                           T fileBundle)
+  public static IModel ImportAndProcess<T>(this T fileBundle)
       where T : IModelFileBundle {
-    var model = modelImporter.Import(fileBundle);
+    var model = fileBundle.Import();
     ProcessAfterLoad(model);
     return model;
   }

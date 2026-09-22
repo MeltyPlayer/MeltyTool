@@ -27,20 +27,6 @@ public sealed class Program {
               ApplicationConfiguration.Initialize();
               Application.Run(new UniversalAssetToolForm());
             },
-            () => {
-              var swallowDir = new FinDirectory(
-                  "C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\MeltyTool\\cli\\roms\\pikmin_1\\extracted\\dataDir\\tekis\\swallow");
-
-              var model = new GlobalModelImporter().Import(
-                  new ModModelFileBundle {
-                      ModFile = swallowDir.AssertGetExistingFile("swallow.mod"),
-                      AnmFile = swallowDir.AssertGetExistingFile("swallow.anm"),
-                  });
-
-              new AssimpDirectExporter().ExportModel(new ModelExporterParams {
-                Model = model,
-                OutputFile = new FinFile("C:\\Users\\Ryan\\Documents\\CSharpWorkspace\\MeltyTool\\cli\\out\\test\\test.fbx"),
-              });
-            });
+            () => { });
   }
 }

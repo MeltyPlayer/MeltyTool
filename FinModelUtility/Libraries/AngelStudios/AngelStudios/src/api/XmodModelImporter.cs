@@ -12,7 +12,8 @@ using PrimitiveType = xmod.schema.xmod.PrimitiveType;
 
 namespace xmod.api;
 
-public sealed class XmodModelImporter : IModelImporter<XmodModelFileBundle> {
+public sealed class XmodModelImporter
+    : IModelImporter<XmodModelImporter, XmodModelFileBundle> {
   public IModel Import(XmodModelFileBundle modelFileBundle) {
     var files = modelFileBundle.XmodFile.AsFileSet();
     var finModel = new ModelImpl {

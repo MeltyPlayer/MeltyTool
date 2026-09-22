@@ -30,7 +30,7 @@ namespace pm.api;
 public sealed record PaperMarioShapeModelFileBundle(
     IReadOnlyTreeFile ShapeFile,
     IReadOnlyTreeDirectory AssetsDirectory)
-    : IModelFileBundle {
+    : IModelFileBundle<PaperMarioShapeModelFileBundle, PaperMarioShapeModelImporter> {
   public IReadOnlyTreeFile MainFile => this.ShapeFile;
 }
 
@@ -39,7 +39,7 @@ public sealed record PaperMarioShapeModelFileBundle(
 ///   https://github.com/magcius/noclip.website/blob/main/src/PaperMario64/tools/extractor.ts
 /// </summary>
 public sealed class PaperMarioShapeModelImporter
-    : IModelImporter<PaperMarioShapeModelFileBundle> {
+    : IModelImporter<PaperMarioShapeModelImporter, PaperMarioShapeModelFileBundle> {
   public IModel Import(PaperMarioShapeModelFileBundle fileBundle)
     => Import(fileBundle, fileBundle.ShapeFile, fileBundle.AssetsDirectory, []);
 

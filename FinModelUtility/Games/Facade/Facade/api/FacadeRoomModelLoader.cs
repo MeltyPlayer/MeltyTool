@@ -21,7 +21,7 @@ namespace facade.api;
 public sealed record FacadeRoomModelFileBundle(
     IReadOnlyTreeFile MainFile,
     IReadOnlyTreeDirectory PrereqsDirectory)
-    : IModelFileBundle;
+    : IModelFileBundle<FacadeRoomModelFileBundle, FacadeRoomModelImporter>;
 
 /// <summary>
 ///   The models are unfortunately hardcoded in the game's logic. They're
@@ -29,7 +29,7 @@ public sealed record FacadeRoomModelFileBundle(
 ///   These calls have been replicated here.
 /// </summary>
 public sealed class FacadeRoomModelImporter
-    : IModelImporter<FacadeRoomModelFileBundle> {
+    : IModelImporter<FacadeRoomModelImporter, FacadeRoomModelFileBundle> {
   public IModel Import(FacadeRoomModelFileBundle fileBundle)
     => new FacadeRoomModelBuilder(fileBundle).Model;
 }

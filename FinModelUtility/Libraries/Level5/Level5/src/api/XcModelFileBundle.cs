@@ -5,7 +5,7 @@ using fin.util.enumerables;
 
 namespace level5.api;
 
-public sealed class XcModelFileBundle : IModelFileBundle {
+public sealed class XcModelFileBundle : IModelFileBundle<XcModelFileBundle, XcModelImporter> {
   public string? HumanReadableName { get; set; }
 
   public IReadOnlyTreeFile MainFile

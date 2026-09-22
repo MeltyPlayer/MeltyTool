@@ -8,4 +8,8 @@
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="schema\" />
+  </ItemGroup>
+
 </Project>

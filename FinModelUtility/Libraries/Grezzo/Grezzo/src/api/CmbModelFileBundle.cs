@@ -11,7 +11,7 @@ public sealed class CmbModelFileBundle(
     IReadOnlyList<IReadOnlyTreeFile>? csabFiles,
     IReadOnlyList<IReadOnlyTreeFile>? ctxbFiles,
     IReadOnlyList<IReadOnlyTreeFile>? shpaFiles)
-    : IModelFileBundle {
+    : IModelFileBundle<CmbModelFileBundle, CmbModelImporter> {
   public CmbModelFileBundle(IReadOnlyTreeFile cmbFile) :
       this(cmbFile, null, null, null) { }
 

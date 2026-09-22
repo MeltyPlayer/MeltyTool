@@ -26,7 +26,8 @@ using schema.binary;
 
 namespace modl.api;
 
-public sealed class OutModelImporter : IModelImporter<OutModelFileBundle> {
+public sealed class OutModelImporter
+    : IModelImporter<OutModelImporter, OutModelFileBundle> {
   public IModel Import(OutModelFileBundle modelFileBundle)
     => modelFileBundle.TextureDirectories != null
         ? this.ImportModel(modelFileBundle,
@@ -92,39 +93,41 @@ public sealed class OutModelImporter : IModelImporter<OutModelFileBundle> {
         isBw2 ? br.ReadNew<Bw2Terrain>() : br.ReadNew<Bw1Terrain>();
 
     var files = outFile.AsSet();
-    var finModel = new ModelImpl<OneColor2UvVertexImpl>(
-        (index, position) => new OneColor2UvVertexImpl(index, position)) {
-        FileBundle = modelFileBundle,
-        Files = files
-    };
+    var finModel
+        = new ModelImpl<OneColor2UvVertexImpl>((index, position)
+                                                   => new OneColor2UvVertexImpl(
+                                                       index,
+                                                       position)) {
+            FileBundle = modelFileBundle,
+            Files = files
+        };
 
     var textureDirectories = textureDirectoriesEnumerable.ToArray();
-    var lazyImageDictionary = new LazyDictionary<string, IImage>(
-        imageName => {
-          if (imageName == "Dummy") {
-            return FinImage.Create1x1FromColor(Color.Magenta);
-          }
+    var lazyImageDictionary = new LazyDictionary<string, IImage>(imageName => {
+      if (imageName == "Dummy") {
+        return FinImage.Create1x1FromColor(Color.Magenta);
+      }
 
-          var textureFile =
-              textureDirectories
-                  .SelectMany(
-                      dir => dir.GetFilesWithNameRecursive(
-                          $"{imageName}.texr"))
-                  .FirstOrDefault();
+      var textureFile =
+          textureDirectories
+              .SelectMany(dir => dir.GetFilesWithNameRecursive(
+                              $"{imageName}.texr"))
+              .FirstOrDefault();
 
-          if (textureFile == null) {
-            return FinImage.Create1x1FromColor(Color.Magenta);
-          }
+      if (textureFile == null) {
+        return FinImage.Create1x1FromColor(Color.Magenta);
+      }
 
-          files.Add(textureFile);
-          var texr = isBw2
-              ? (ITexr) textureFile.ReadNew<Gtxd>()
-              : textureFile.ReadNew<Text>();
-          return texr.Image;
-        });
+      files.Add(textureFile);
+      var texr = isBw2
+          ? (ITexr) textureFile.ReadNew<Gtxd>()
+          : textureFile.ReadNew<Text>();
+      return texr.Image;
+    });
 
-    var textureDictionary = new LazyDictionary<(int, string), ITexture?>(
-        uvIndexAndTextureName => {
+    var textureDictionary
+        = new LazyDictionary<(int, string), ITexture?>(uvIndexAndTextureName
+            => {
           var (uvIndex, textureName) = uvIndexAndTextureName;
 
           if (textureName == "Dummy") {

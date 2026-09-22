@@ -6,7 +6,7 @@ namespace glo.api;
 public sealed class GloModelFileBundle(
     IReadOnlyTreeFile gloFile,
     IReadOnlyList<IReadOnlyTreeDirectory> textureDirectories)
-    : IModelFileBundle {
+    : IModelFileBundle<GloModelFileBundle, GloModelImporter> {
   public IReadOnlyTreeFile MainFile => this.GloFile;
 
   public IReadOnlyTreeFile GloFile { get; } = gloFile;

@@ -147,7 +147,7 @@ public partial class UniversalAssetToolForm : Form {
     }
 
     // TODO: Merge models in a scene instead!
-    var model = new GlobalModelImporter().ImportAndProcess(modelBundle);
+    var model = modelBundle.ImportAndProcess();
 
     var allSupportedExportFormats = AssimpUtil.SupportedExportFormats
                                               .OrderBy(ef => ef.Description)

@@ -22,14 +22,14 @@ using schema.binary;
 namespace hm64.api;
 
 public sealed record Hm64MapModelFileBundle(IReadOnlyTreeFile MainFile)
-    : IModelFileBundle;
+    : IModelFileBundle<Hm64MapModelFileBundle, Hm64MapModelImporter>;
 
 /// <summary>
 ///   Shamelessly stolen from:
 ///   https://github.com/harvestwhisperer/hm64-decomp/blob/master/tools/modding/map/blender_import.py
 /// </summary>
 public sealed class Hm64MapModelImporter
-    : IModelImporter<Hm64MapModelFileBundle> {
+    : IModelImporter<Hm64MapModelImporter, Hm64MapModelFileBundle> {
   public IModel Import(Hm64MapModelFileBundle fileBundle) {
     var finModel = new ModelImpl {
         FileBundle = fileBundle,

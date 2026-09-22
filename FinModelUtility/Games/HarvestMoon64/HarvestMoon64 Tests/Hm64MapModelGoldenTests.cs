@@ -9,7 +9,7 @@ using hm64.api;
 namespace hm64;
 
 public sealed class Hm64MapModelGoldenTests
-    : BModelGoldenTests<Hm64MapModelFileBundle, Hm64MapModelImporter> {
+    : BModelGoldenTests<Hm64MapModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

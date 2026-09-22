@@ -2,6 +2,7 @@
 
 namespace fin.model.io.importers;
 
-public interface IModelImporter<in TModelFileBundle>
+public interface IModelImporter<TSelf, in TModelFileBundle>
     : I3dImporter<IModel, TModelFileBundle>
-    where TModelFileBundle : IModelFileBundle;
+    where TSelf : IModelImporter<TSelf, TModelFileBundle>, new()
+    where TModelFileBundle : IModelFileBundle<TModelFileBundle, TSelf>;

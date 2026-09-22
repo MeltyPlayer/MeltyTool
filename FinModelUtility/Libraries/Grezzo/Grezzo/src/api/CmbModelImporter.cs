@@ -16,7 +16,8 @@ using schema.binary;
 
 namespace grezzo.api;
 
-public sealed class CmbModelImporter : IModelImporter<CmbModelFileBundle> {
+public sealed class CmbModelImporter
+    : IModelImporter<CmbModelImporter, CmbModelFileBundle> {
   public IModel Import(CmbModelFileBundle modelFileBundle) {
       var cmbFile = modelFileBundle.CmbFile;
       var csabFiles = modelFileBundle.CsabFiles;

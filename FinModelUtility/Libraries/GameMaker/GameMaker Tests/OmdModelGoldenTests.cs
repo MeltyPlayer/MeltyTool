@@ -9,7 +9,7 @@ using gm.api;
 namespace gm;
 
 public sealed class OmdModelGoldenTests
-    : BModelGoldenTests<OmdModelFileBundle, OmdModelImporter> {
+    : BModelGoldenTests<OmdModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

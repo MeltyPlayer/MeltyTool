@@ -19,7 +19,9 @@ using schema.binary;
 
 namespace gdl.api;
 
-public sealed class GauntletDarkLegacyWorldModelFileBundle : IModelFileBundle {
+public sealed class GauntletDarkLegacyWorldModelFileBundle
+    : IModelFileBundle<GauntletDarkLegacyWorldModelFileBundle,
+        GauntletDarkLegacyWorldModelImporter> {
   public required IReadOnlyTreeFile WorldsFile { get; init; }
   public required IReadOnlyTreeFile ObjectsFile { get; init; }
   public required IReadOnlyTreeFile AnimFile { get; init; }
@@ -31,7 +33,8 @@ public sealed class GauntletDarkLegacyWorldModelFileBundle : IModelFileBundle {
 }
 
 public sealed class GauntletDarkLegacyWorldModelImporter
-    : IModelImporter<GauntletDarkLegacyWorldModelFileBundle> {
+    : IModelImporter<GauntletDarkLegacyWorldModelImporter,
+        GauntletDarkLegacyWorldModelFileBundle> {
   public IModel Import(GauntletDarkLegacyWorldModelFileBundle fileBundle) {
     var objects = fileBundle.ObjectsFile.ReadNew<Objects>();
     var anim = fileBundle.AnimFile.ReadNew<Anim>();

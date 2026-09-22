@@ -10,7 +10,7 @@ using tlpe.api;
 namespace tlpe;
 
 public sealed class ScbModelGoldenTests
-    : BModelGoldenTests<ScbModelFileBundle, ScbModelImporter> {
+    : BModelGoldenTests<ScbModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(
