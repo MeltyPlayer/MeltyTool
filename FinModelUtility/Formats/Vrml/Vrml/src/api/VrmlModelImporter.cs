@@ -347,14 +347,14 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
         var scaleOrientation = transform.ScaleOrientation;
         if (scaleOrientation != null &&
             scaleOrientation != Quaternion.Identity) {
-          finBone = finBone.AddChild(
-              SystemMatrix4x4Util.FromRotation(scaleOrientation.Value));
+          finBone = finBone.AddChild(Vector3.Zero);
+          finBone.Transform.SetRotation(scaleOrientation.Value);
         }
 
         var scale = transform.Scale;
         if (scale != null && !scale.Value.IsRoughly1()) {
-          finBone = finBone.AddChild(
-              SystemMatrix4x4Util.FromScale(scale.Value));
+          finBone = finBone.AddChild(Vector3.Zero);
+          finBone.Transform.SetScale(scale.Value);
         }
 
         if (scaleOrientation != null &&
