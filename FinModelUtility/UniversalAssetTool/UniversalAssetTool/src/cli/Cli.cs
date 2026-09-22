@@ -1,14 +1,31 @@
-﻿using CommandLine;
+﻿using System.ComponentModel;
+using System.Reflection;
+using System.Reflection.Emit;
+
+using CommandLine;
+using CommandLine.Text;
 
 using fin.io;
+using fin.io.bundles;
 using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
 using fin.model.processing;
+using fin.util.asserts;
 using fin.util.types;
 
+using uni.games;
 
 namespace uni.cli;
+
+public interface IMassExporterOptions {
+  void ExportAll();
+}
+
+public class MassExporterOptions<TGatherer> : IMassExporterOptions
+    where TGatherer : INamedFileBundleGatherer, new() {
+  public void ExportAll() => ExporterUtil.ExportAllForCli(new TGatherer());
+}
 
 public static class Cli {
   public static void Run(string[] args,
@@ -16,12 +33,44 @@ public static class Cli {
                          Action? runDebug = null) {
     IEnumerable<Error>? errors = null;
 
-    var massExporterOptionTypes
-        = TypesUtil.GetAllImplementationTypes<IMassExporterOptions>();
+    var massExporterOptionsModule
+        = AssemblyBuilder
+          .DefineDynamicAssembly(
+              new AssemblyName("MassExporterOptionsAssembly"),
+              AssemblyBuilderAccess.Run)
+          .DefineDynamicModule("MassExporterOptionsModule");
 
-    var plugins = PluginUtil.Plugins;
+    var massExporterOptions
+        = TypesUtil.GetAllImplementationTypes<INamedFileBundleGatherer>()
+                   .Select(fbgType => fbgType.GetConstructor([])
+                                             .AssertNonnull()
+                                             .Invoke(null)
+                                             .AssertAsA<
+                                                 INamedFileBundleGatherer>())
+                   .Where(fbg => fbg.IsListed)
+                   .Select(fbg => {
+                     var name = fbg.Name;
+                     var title = fbg.Title;
+                     
+                     var typeBuilder = massExporterOptionsModule.DefineType(
+                         $"MassExporterOptions_{name}",
+                         TypeAttributes.Public | TypeAttributes.Class,
+                         typeof(MassExporterOptions<>).MakeGenericType(
+                             fbg.GetType()));
 
-    var verbTypes = massExporterOptionTypes
+                     var verbAttributeType = typeof(VerbAttribute);
+                     typeBuilder.SetCustomAttribute(
+                         new CustomAttributeBuilder(
+                             verbAttributeType.GetConstructor([typeof(string), typeof(bool), typeof(string[])]).AssertNonnull(),
+                             [name, false, null],
+                             [verbAttributeType.GetProperty("HelpText").AssertNonnull()],
+                             [$"Export models en-masse from {title}{(title.EndsWith('.') || title.EndsWith('!') ? "" : ".")}"]));
+
+                     var type = typeBuilder.CreateType();
+
+                     return type;
+                   });
+    var verbTypes = massExporterOptions
                     .Concat([
                         typeof(UiOptions),
                         typeof(ListPluginOptions),
@@ -30,10 +79,11 @@ public static class Cli {
                     ])
                     .ToArray();
 
+    var plugins = PluginUtil.Plugins;
     Parser.Default
           .ParseArguments(args, verbTypes)
           .WithParsed((IMassExporterOptions extractorOptions)
-                          => extractorOptions.CreateMassExporter().ExportAll())
+                          => extractorOptions.ExportAll())
           .WithParsed((UiOptions _) => {
             ConsoleUtil.ShowConsole();
             launchUi();
@@ -46,11 +96,10 @@ public static class Cli {
           .WithParsed((ConvertOptions convertOptions) => {
             var inputFiles =
                 convertOptions.Inputs
-                              .Select(
-                                  input
-                                      => (
-                                          IReadOnlySystemFile)
-                                      new FinFile(input))
+                              .Select(input
+                                          => (
+                                              IReadOnlySystemFile)
+                                          new FinFile(input))
                               .ToArray();
             var outputFile =
                 new FinFile(convertOptions.Output);
@@ -67,7 +116,7 @@ public static class Cli {
               }
             }
 
-            var supportedOutputFileTypes = new[] {".gltf", ".glb", ".fbx"};
+            var supportedOutputFileTypes = new[] { ".gltf", ".glb", ".fbx" };
             if (!supportedOutputFileTypes.Contains(outputFile.FileType)) {
               issues.Add(
                   $"The output file type must one of the following: {string.Join(", ", supportedOutputFileTypes)}");
@@ -85,8 +134,8 @@ public static class Cli {
             IModelImporterPlugin? bestMatch = null;
             if (issues.Count == 0) {
               bestMatch =
-                  plugins.FirstOrDefault(
-                      plugin => plugin.SupportsFiles(inputFiles));
+                  plugins.FirstOrDefault(plugin => plugin.SupportsFiles(
+                                             inputFiles));
 
               if (bestMatch == null) {
                 needsHelpGettingBestMatch = true;
