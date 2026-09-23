@@ -42,7 +42,7 @@ public class FilesPanelViewModel : BViewModel {
     this.Files = files;
 
     IEnumerable<string> paths;
-    if (resource.Files.WhereIs<IReadOnlyGenericFile, IFileHierarchyFile>()
+    if (resource.Files.WhereIs<IReadOnlyStandaloneFile, IFileHierarchyFile>()
                 .TryGetFirst(out var fileHierarchyFile)) {
       var hierarchy = fileHierarchyFile.Hierarchy;
 
@@ -64,7 +64,7 @@ public class FilesPanelViewModel : BViewModel {
     this.Paths = [.. paths.Distinct().Order(StringUtil.NaturalSortInstance)];
   }
 
-  public IReadOnlySet<IReadOnlyGenericFile> Files {
+  public IReadOnlySet<IReadOnlyStandaloneFile> Files {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }

@@ -36,7 +36,7 @@ public sealed class D3dModelImporter
     : IModelImporter<D3dModelImporter, D3dModelFileBundle> {
   public IModel Import(D3dModelFileBundle modelFileBundle) {
     var d3dFile = modelFileBundle.D3dFile;
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
 
     var (finModel, finRootBone)
         = CreateModel((modelFileBundle, fileSet));
@@ -53,7 +53,7 @@ public sealed class D3dModelImporter
   public static void AddToModel(
       D3dModelFileBundle modelFileBundle,
       IModel<ISkin<Normal1Color1UvVertexImpl>> finModel,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       IBone finRootBone,
       bool flipNormals = false) {
     var d3dFile = modelFileBundle.D3dFile;
@@ -109,7 +109,7 @@ public sealed class D3dModelImporter
   }
 
   public static (IModel<ISkin<Normal1Color1UvVertexImpl>>, IBone) CreateModel(
-      (IFileBundle fileBundle, IReadOnlySet<IReadOnlyGenericFile> files)?
+      (IFileBundle fileBundle, IReadOnlySet<IReadOnlyStandaloneFile> files)?
           modelMetadata = null) {
     var finModel =
         new ModelImpl<Normal1Color1UvVertexImpl>((index, position)

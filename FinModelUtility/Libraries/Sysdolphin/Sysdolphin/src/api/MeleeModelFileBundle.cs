@@ -11,7 +11,7 @@ public sealed class MeleeModelFileBundle
   public IReadOnlyTreeFile? AnimationDatFile { get; init; }
   public IReadOnlyTreeFile? FighterDatFile { get; init; }
 
-  public IEnumerable<IReadOnlyGenericFile> Files
+  public IEnumerable<IReadOnlyStandaloneFile> Files
     => this.MainFile.Yield()
            .ConcatIfNonnull(this.AnimationDatFile)
            .ConcatIfNonnull(this.FighterDatFile);

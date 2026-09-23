@@ -174,7 +174,7 @@ public sealed class SlicedN64Memory(
     Endianness endianness = Endianness.BigEndian)
     : BN64Memory(endianness), ISlicedN64Memory {
   public SlicedN64Memory(
-      IReadOnlyGenericFile file,
+      IReadOnlyStandaloneFile file,
       Endianness endianness = Endianness.BigEndian) :
       this(file.ReadAllBytes(), endianness) { }
 

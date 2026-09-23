@@ -43,7 +43,7 @@ public sealed class GauntletDarkLegacyModelImporter
 
     return ImportImpl(
         fileBundle,
-        new HashSet<IReadOnlyGenericFile>([
+        new HashSet<IReadOnlyStandaloneFile>([
             fileBundle.ObjectsFile,
             fileBundle.AnimFile,
             fileBundle.TexturesFile,
@@ -58,10 +58,10 @@ public sealed class GauntletDarkLegacyModelImporter
 
   public static IModel ImportImpl(
       GauntletDarkLegacyModelFileBundle fileBundle,
-      IReadOnlySet<IReadOnlyGenericFile> files,
+      IReadOnlySet<IReadOnlyStandaloneFile> files,
       Objects objects,
       Anim anim,
-      IReadOnlyGenericFile texturesFile,
+      IReadOnlyStandaloneFile texturesFile,
       Dictionary<int, IReadOnlyImage> textureImageCache,
       string? rootObjectName,
       MbFlags worldObjectMbFlags) {

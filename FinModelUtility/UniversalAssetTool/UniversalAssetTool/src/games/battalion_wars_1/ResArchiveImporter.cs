@@ -22,7 +22,7 @@ public sealed class ResArchiveImporter
     : BSimpleArchiveImporter<ResArchiveFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       ResArchiveFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

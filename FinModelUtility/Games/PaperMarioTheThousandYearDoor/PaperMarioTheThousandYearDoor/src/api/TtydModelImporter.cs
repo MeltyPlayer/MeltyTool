@@ -50,7 +50,7 @@ public sealed class TtydModelImporter
 
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
-        Files = new HashSet<IReadOnlyGenericFile>(
+        Files = new HashSet<IReadOnlyStandaloneFile>(
             textureFile != null ? [modelFile, textureFile] : [modelFile])
     };
 

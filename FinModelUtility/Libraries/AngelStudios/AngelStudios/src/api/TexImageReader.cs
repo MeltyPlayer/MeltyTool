@@ -19,7 +19,7 @@ using SixLabors.ImageSharp.PixelFormats;
 namespace xmod.api;
 
 public sealed class TexImageReader {
-  public IImage ReadImage(IReadOnlyGenericFile texFile) {
+  public IImage ReadImage(IReadOnlyStandaloneFile texFile) {
     using var br = new SchemaBinaryReader(texFile.OpenRead());
     var width = br.ReadUInt16();
     var height = br.ReadUInt16();

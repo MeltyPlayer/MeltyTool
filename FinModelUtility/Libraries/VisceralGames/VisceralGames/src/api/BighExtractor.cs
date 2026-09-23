@@ -15,8 +15,8 @@ namespace visceral.api;
 public sealed class BighExtractor {
   private readonly ILogger logger_ = Logging.Create<BighExtractor>();
 
-  public void Extract(IReadOnlyGenericFile bighFile,
-                      IReadOnlyGenericFile filelistFile,
+  public void Extract(IReadOnlyStandaloneFile bighFile,
+                      IReadOnlyStandaloneFile filelistFile,
                       ISystemDirectory outputDir) {
     this.logger_.LogInformation(
         $"Extracting BIGH {bighFile.DisplayFullPath}...");

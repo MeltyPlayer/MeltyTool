@@ -21,7 +21,7 @@ public sealed record PaperMarioMapSceneFileBundle(
     : ISceneFileBundle {
   public IReadOnlyTreeFile MainFile => this.MapFile;
 
-  public IEnumerable<IReadOnlyGenericFile> Files => [
+  public IEnumerable<IReadOnlyStandaloneFile> Files => [
       this.AreaFile,
       this.MapFile,
       this.RomOverlayFile,

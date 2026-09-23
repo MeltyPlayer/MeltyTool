@@ -23,7 +23,7 @@ public sealed class PmdcCharacterModelFileBundle
   public ReadOnlySpan<char> DisplayFullPath
     => this.MainFile.AssertGetParent().FullPath;
 
-  public IEnumerable<IReadOnlyGenericFile> Files => this.AnimationImageFiles;
+  public IEnumerable<IReadOnlyStandaloneFile> Files => this.AnimationImageFiles;
 }
 
 public sealed class PmdcCharacterModelImporter

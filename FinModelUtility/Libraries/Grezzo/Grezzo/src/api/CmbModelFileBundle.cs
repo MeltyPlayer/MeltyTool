@@ -21,7 +21,7 @@ public sealed class CmbModelFileBundle(
 
   public IReadOnlyTreeFile MainFile => this.CmbFile;
 
-  public IEnumerable<IReadOnlyGenericFile> Files
+  public IEnumerable<IReadOnlyStandaloneFile> Files
     => this.CmbFile.Yield()
            .ConcatIfNonnull(this.CsabFiles)
            .ConcatIfNonnull(this.CtxbFiles)

@@ -60,7 +60,7 @@ public sealed partial class DlModelBuilder {
   /// </summary>
   public DlModelBuilder(IN64Hardware n64Hardware,
                         IFileBundle? fileBundle = null,
-                        IReadOnlySet<IReadOnlyGenericFile>? files = null) {
+                        IReadOnlySet<IReadOnlyStandaloneFile>? files = null) {
     this.n64Hardware_ = n64Hardware;
     this.Model
         = new ModelImpl<Normal1Color2UvVertexImpl>((index, position) => new
@@ -68,7 +68,7 @@ public sealed partial class DlModelBuilder {
                                                            index,
                                                            position)) {
             FileBundle = fileBundle,
-            Files = files ?? new HashSet<IReadOnlyGenericFile>(),
+            Files = files ?? new HashSet<IReadOnlyStandaloneFile>(),
         };
 
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);

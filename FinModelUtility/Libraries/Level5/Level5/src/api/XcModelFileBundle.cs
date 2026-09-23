@@ -12,7 +12,7 @@ public sealed class XcModelFileBundle : IModelFileBundle<XcModelFileBundle, XcMo
     => this.ModelDirectory.AssertGetParent()
            .AssertGetExistingFile($"{this.ModelDirectory.Name}.xc");
 
-  public IEnumerable<IReadOnlyGenericFile> Files
+  public IEnumerable<IReadOnlyStandaloneFile> Files
     => this.MainFile.Yield()
            .Concat(this.ModelDirectory.GetExistingFiles())
            .ConcatIfNonnull(

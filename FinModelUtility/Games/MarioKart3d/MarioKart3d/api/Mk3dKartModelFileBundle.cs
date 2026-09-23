@@ -28,7 +28,7 @@ public sealed class Mk3dKartModelImporter
         "tires",
     };
 
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
     var (finModel, finRootBone) = D3dModelImporter.CreateModel((fileBundle, fileSet));
 
     foreach (var modelName in modelNames) {

@@ -7,11 +7,11 @@ namespace fin.importers;
 
 public interface IResource {
   IFileBundle FileBundle { get; }
-  IReadOnlySet<IReadOnlyGenericFile> Files { get; }
+  IReadOnlySet<IReadOnlyStandaloneFile> Files { get; }
 }
 
 public interface IResourceCreator<out TResource> where TResource : IResource {
-  TResource Create(IFileBundle fileBundle, ISet<IReadOnlyGenericFile> files);
+  TResource Create(IFileBundle fileBundle, ISet<IReadOnlyStandaloneFile> files);
 }
 
 public interface IImporter<out TResource, in TFileBundle>

@@ -17,7 +17,7 @@ public static class ModelDesignerUtil {
   public static IReadOnlyModel CreateStubModel() {
     var model = new ModelImpl {
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>([
+        Files = new HashSet<IReadOnlyStandaloneFile>([
             new FinFile(@"C:\Users\Foo\Documents\Bar\123.txt"),
             new FinFile(@"C:\Users\Foo\Documents\Bar\123_model.model"),
             new FinFile(@"C:\Users\Foo\Documents\Bar\123_animation.anim"),

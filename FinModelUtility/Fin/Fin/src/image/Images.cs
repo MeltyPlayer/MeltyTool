@@ -44,7 +44,7 @@ public static class FinImage {
                                                         otherExtension));
   }
 
-  public static IImage FromFile(IReadOnlyGenericFile file) {
+  public static IImage FromFile(IReadOnlyStandaloneFile file) {
     try {
       using var stream = file.OpenRead();
       return FromStream(stream);
@@ -53,7 +53,7 @@ public static class FinImage {
     }
   }
 
-  public static IImage[] FromGifFile(IReadOnlyGenericFile file) {
+  public static IImage[] FromGifFile(IReadOnlyStandaloneFile file) {
     try {
       using var stream = file.OpenRead();
       return FromGifStream(stream);
@@ -63,7 +63,7 @@ public static class FinImage {
   }
 
   public static async Task<IImage[]>
-      FromGifFileAsync(IReadOnlyGenericFile file) {
+      FromGifFileAsync(IReadOnlyStandaloneFile file) {
     await using var stream = file.OpenRead();
     return await FromGifStreamAsync(stream);
   }

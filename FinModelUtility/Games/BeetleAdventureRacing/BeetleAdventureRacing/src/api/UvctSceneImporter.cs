@@ -44,7 +44,7 @@ public sealed class UvctSceneFileImporter
 
   public static ISceneNode? AddToScene(
       UvctSceneFileBundle fileBundle,
-      HashSet<IReadOnlyGenericFile> files,
+      HashSet<IReadOnlyStandaloneFile> files,
       ILazyDictionary<short, IReadOnlyModel> lazyUvmdModelDictionary,
       ISceneNode rootNode) {
     var fileChunks

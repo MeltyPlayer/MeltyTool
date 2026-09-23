@@ -18,7 +18,7 @@ public sealed class PokemonSnapFileTableImporter
     : BSimpleArchiveImporter<PokemonSnapRomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       PokemonSnapRomFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

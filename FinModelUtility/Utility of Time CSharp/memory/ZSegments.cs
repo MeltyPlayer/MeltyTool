@@ -31,7 +31,7 @@ namespace UoT.memory {
       this.Others = new ReadOnlyCollection<ZOtherData>(others);
     }
 
-    public static ZSegments InitializeFromFile(IGenericFile romFile) {
+    public static ZSegments InitializeFromFile(IStandaloneFile romFile) {
       using var br =
           new SchemaBinaryReader(romFile.OpenRead(), Endianness.BigEndian);
 

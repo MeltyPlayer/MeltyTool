@@ -23,7 +23,7 @@ public interface IAudioManager<TPcm> : IFinDisposable
 
   ILoadedAudioBuffer<TPcm> CreateLoadedAudioBuffer(
       IFileBundle fileBundle,
-      IReadOnlySet<IReadOnlyGenericFile> files);
+      IReadOnlySet<IReadOnlyStandaloneFile> files);
 
   IJitAudioDataSource<TPcm> CreateJitAudioDataSource(
       AudioChannelsType audioChannelsType,

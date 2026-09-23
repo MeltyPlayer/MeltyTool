@@ -20,7 +20,7 @@ public sealed class BarFileTableImporter
     : BSimpleArchiveImporter<BarRomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       BarRomFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

@@ -20,7 +20,7 @@ public sealed partial class PaperMarioFileTableImporter
     : BSimpleArchiveImporter<PaperMarioRomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       PaperMarioRomFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

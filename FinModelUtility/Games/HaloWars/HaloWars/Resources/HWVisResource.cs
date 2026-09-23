@@ -33,7 +33,7 @@ public sealed class HWVisResource : HWXmlResource {
     this.Scene = new SceneImpl {
         // TODO: Fix this
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>(),
+        Files = new HashSet<IReadOnlyStandaloneFile>(),
     };
 
     var visModels = new List<VisModel>();

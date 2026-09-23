@@ -36,7 +36,7 @@ public sealed class Mtn2 {
     public int End { get; set; }
   }
 
-  public void Open(IReadOnlyGenericFile mtn2File) {
+  public void Open(IReadOnlyStandaloneFile mtn2File) {
     var endianness = Endianness.LittleEndian;
     using var r = mtn2File.OpenReadAsBinary(endianness);
     r.Position = 0x08;

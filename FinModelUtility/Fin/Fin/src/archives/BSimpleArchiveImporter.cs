@@ -35,7 +35,7 @@ public abstract class BSimpleArchiveImporter<TBundle>
     where TBundle : IArchiveFileBundle2 {
   protected abstract void BuildHierarchyAndGetFileStream(
       TBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream);
@@ -63,7 +63,7 @@ public abstract class BSimpleArchiveImporter<TBundle>
 
   private sealed class SimpleArchive : IArchive2 {
     public required IFileBundle FileBundle { get; init; }
-    public required IReadOnlySet<IReadOnlyGenericFile> Files { get; init; }
+    public required IReadOnlySet<IReadOnlyStandaloneFile> Files { get; init; }
 
     public IArchiveDirectory2 Root { get; set; }
     public Stream BaseStream { get; set; }

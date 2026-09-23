@@ -14,7 +14,7 @@ namespace uni.ui.avalonia.resources;
 public class FilesPanelTests {
   [AvaloniaTest]
   public void TestSortsFilesByName() {
-    var files = new HashSet<IReadOnlyGenericFile>();
+    var files = new HashSet<IReadOnlyStandaloneFile>();
 
     var root = new FinRootDirectory("game", new FinDirectory("root"));
 

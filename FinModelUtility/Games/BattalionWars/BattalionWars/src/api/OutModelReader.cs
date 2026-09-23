@@ -67,7 +67,7 @@ public sealed class OutModelImporter
 
   public IModel ImportModel(
       OutModelFileBundle modelFileBundle,
-      IReadOnlyGenericFile outFile,
+      IReadOnlyStandaloneFile outFile,
       IEnumerable<IReadOnlyTreeDirectory> textureDirectoriesEnumerable,
       GameVersion gameVersion,
       out IBwTerrain bwTerrain,

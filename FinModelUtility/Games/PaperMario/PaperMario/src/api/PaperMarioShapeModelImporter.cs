@@ -47,7 +47,7 @@ public sealed class PaperMarioShapeModelImporter
       IFileBundle fileBundle,
       IReadOnlyTreeFile shapeFile,
       IReadOnlyTreeDirectory assetsDirectory,
-      HashSet<IReadOnlyGenericFile> files) {
+      HashSet<IReadOnlyStandaloneFile> files) {
     files.Add(shapeFile);
 
     using var shapeBr = shapeFile.OpenReadAsBinary(Endianness.BigEndian);

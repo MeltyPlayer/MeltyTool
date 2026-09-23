@@ -29,7 +29,7 @@ public sealed class XmodModelImporter
   public void ImportInto(
       XmodModelFileBundle modelFileBundle,
       ModelImpl finModel,
-      ISet<IReadOnlyGenericFile> files,
+      ISet<IReadOnlyStandaloneFile> files,
       IReadOnlyDictionary<int, IReadOnlyBone>? finBoneById) {
     var xmod = modelFileBundle.XmodFile.ReadNewFromText<Xmod>();
 

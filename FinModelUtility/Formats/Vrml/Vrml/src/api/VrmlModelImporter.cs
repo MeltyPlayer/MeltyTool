@@ -50,7 +50,7 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
   public static IModel Import(IGroupNode vrmlScene,
                               IReadOnlyDictionary<string, INode> definitions,
                               IVrmlFileBundle fileBundle,
-                              HashSet<IReadOnlyGenericFile> fileSet) {
+                              HashSet<IReadOnlyStandaloneFile> fileSet) {
     var orientationInterpolatorNodes = new HashSet<OrientationInterpolatorNode>();
     var positionInterpolatorNodes = new HashSet<PositionInterpolatorNode>();
     var routeNodes = new HashSet<RouteNode>();

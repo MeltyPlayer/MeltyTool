@@ -9,5 +9,5 @@ public sealed class DatModelFileBundle
   public IReadOnlyTreeFile MainFile => this.DatFile;
   public required IReadOnlyTreeFile DatFile { get; init; }
 
-  public IEnumerable<IReadOnlyGenericFile> Files => this.MainFile.Yield();
+  public IEnumerable<IReadOnlyStandaloneFile> Files => this.MainFile.Yield();
 }

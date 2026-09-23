@@ -43,5 +43,5 @@ public sealed class BnkFileIdsDictionary : IReadOnlyFileIdsDictionary {
   public bool TryToLookUpBnks(uint id, out IEnumerable<IReadOnlyTreeFile> bnks)
     => this.impl_.TryToLookUpFiles(id, out bnks);
 
-  public void Save(IGenericFile fileIdsFile) => this.impl_.Save(fileIdsFile);
+  public void Save(IStandaloneFile fileIdsFile) => this.impl_.Save(fileIdsFile);
 }

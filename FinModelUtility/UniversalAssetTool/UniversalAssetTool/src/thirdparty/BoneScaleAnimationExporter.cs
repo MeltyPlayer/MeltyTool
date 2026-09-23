@@ -6,7 +6,7 @@ using fin.model;
 namespace uni.thirdparty;
 
 public sealed class BoneScaleAnimationExporter {
-  public void Export(IGenericFile luaFile, IReadOnlyModel model) {
+  public void Export(IStandaloneFile luaFile, IReadOnlyModel model) {
       var animations = model.AnimationManager.Animations;
       if (animations.Count == 0) {
         return;

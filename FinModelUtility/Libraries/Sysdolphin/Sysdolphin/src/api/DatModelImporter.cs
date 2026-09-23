@@ -40,7 +40,7 @@ public sealed class DatModelImporter
 
   public unsafe IModel Import(
       DatModelFileBundle modelFileBundle,
-      out HashSet<IReadOnlyGenericFile> files,
+      out HashSet<IReadOnlyStandaloneFile> files,
       out DatSubfile datSubfile,
       out IReadOnlyDictionary<JObj, IReadOnlyBone> outFinBoneByJObj,
       out IReadOnlyList<(JObj jObj,

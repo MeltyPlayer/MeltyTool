@@ -52,7 +52,7 @@ public sealed class ModlModelImporter : IModelImporter<ModlModelImporter, ModlMo
 
     var files = modlFile.Yield()
                         .ConcatIfNonnull(animFiles)
-                        .ToHashSet<IReadOnlyGenericFile>();
+                        .ToHashSet<IReadOnlyStandaloneFile>();
     var model = new ModelImpl<Normal1Color1UvVertexImpl>(
         (index, position) => new Normal1Color1UvVertexImpl(index, position)) {
         FileBundle = modelFileBundle,
@@ -67,7 +67,7 @@ public sealed class ModlModelImporter : IModelImporter<ModlModelImporter, ModlMo
     var levelDir = modlFile.AssertGetParent();
     var baseLevelDir = levelDir.AssertGetParent();
 
-    var texrFilesByName = new Dictionary<string, IReadOnlyGenericFile>();
+    var texrFilesByName = new Dictionary<string, IReadOnlyStandaloneFile>();
     foreach (var texrFile in new[] { levelDir, baseLevelDir }.SelectMany(d => d.GetFilesWithFileType(".texr", true))) {
       texrFilesByName.TryAdd(texrFile.NameWithoutExtension.ToString(), texrFile);
     }

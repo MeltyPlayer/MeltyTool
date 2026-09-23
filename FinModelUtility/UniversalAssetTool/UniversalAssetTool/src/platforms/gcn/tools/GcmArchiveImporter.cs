@@ -18,7 +18,7 @@ public partial class GcmArchiveImporter
     : BSimpleArchiveImporter<GcmArchiveFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       GcmArchiveFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

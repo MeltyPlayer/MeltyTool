@@ -25,7 +25,7 @@ public sealed record HdtFileBundle(
 public sealed class HdtImporter : BSimpleArchiveImporter<HdtFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       HdtFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

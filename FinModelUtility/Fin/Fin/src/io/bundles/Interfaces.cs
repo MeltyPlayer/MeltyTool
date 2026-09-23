@@ -12,7 +12,7 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
 
   IReadOnlyTreeFile MainFile { get; }
 
-  IEnumerable<IReadOnlyGenericFile> Files {
+  IEnumerable<IReadOnlyStandaloneFile> Files {
     get { yield return this.MainFile; }
   }
 

@@ -8,7 +8,7 @@ namespace pikmin1.api {
   public sealed class ModModelFileBundle
       : IModelFileBundle<ModModelFileBundle, ModModelImporter> {
     public IReadOnlyTreeFile MainFile => this.ModFile;
-    public IEnumerable<IReadOnlyGenericFile> Files
+    public IEnumerable<IReadOnlyStandaloneFile> Files
       => this.ModFile.Yield().ConcatIfNonnull(this.AnmFile);
 
     public required IReadOnlyTreeFile ModFile { get; init; }

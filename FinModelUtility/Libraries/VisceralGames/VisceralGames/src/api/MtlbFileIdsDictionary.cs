@@ -39,5 +39,5 @@ public sealed class MtlbFileIdsDictionary : IReadOnlyFileIdsDictionary {
 
   public IReadOnlyTreeDirectory BaseDirectory { get; }
   public IEnumerable<IReadOnlyTreeFile> this[uint id] => this.impl_[id];
-  public void Save(IGenericFile fileIdsFile) => this.impl_.Save(fileIdsFile);
+  public void Save(IStandaloneFile fileIdsFile) => this.impl_.Save(fileIdsFile);
 }

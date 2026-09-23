@@ -12,7 +12,7 @@ public partial class SceneImpl : IScene {
 
   public static IScene CreateForViewer() => new SceneImpl {
       FileBundle = null,
-      Files = new HashSet<IReadOnlyGenericFile>(),
+      Files = new HashSet<IReadOnlyStandaloneFile>(),
   };
 
   public void Dispose() {
@@ -33,5 +33,5 @@ public partial class SceneImpl : IScene {
   public ILighting CreateLighting() => this.Lighting = new LightingImpl();
 
   public required IFileBundle FileBundle { get; init; }
-  public required IReadOnlySet<IReadOnlyGenericFile> Files { get; init; }
+  public required IReadOnlySet<IReadOnlyStandaloneFile> Files { get; init; }
 }

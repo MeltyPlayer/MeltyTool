@@ -21,7 +21,7 @@ public sealed class Hm64FileTableImporter(
     : BSimpleArchiveImporter<Hm64RomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       Hm64RomFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

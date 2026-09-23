@@ -22,7 +22,7 @@ public sealed class Dk64FileTableImporter
 
   protected override void BuildHierarchyAndGetFileStream(
       Dk64RomFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {

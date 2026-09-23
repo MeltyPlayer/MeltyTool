@@ -334,7 +334,7 @@ public sealed class LevelXmlParser {
   }
 
   private void AddObjects_(
-      ISet<IReadOnlyGenericFile> files,
+      ISet<IReadOnlyStandaloneFile> files,
       ISceneArea sceneArea,
       IReadOnlyTreeFile levelXmlFile,
       GameVersion gameVersion,

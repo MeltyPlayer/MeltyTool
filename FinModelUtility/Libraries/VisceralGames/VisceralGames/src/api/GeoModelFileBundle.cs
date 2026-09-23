@@ -8,7 +8,7 @@ public sealed class GeoModelFileBundle : IModelFileBundle<GeoModelFileBundle, Ge
   public IReadOnlyTreeFile? MainFile
     => this.RcbFile ?? this.GeoFiles.First();
 
-  public IEnumerable<IReadOnlyGenericFile> Files
+  public IEnumerable<IReadOnlyStandaloneFile> Files
     => this.GeoFiles
            .ConcatIfNonnull(this.RcbFile);
 

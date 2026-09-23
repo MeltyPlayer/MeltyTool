@@ -5,7 +5,7 @@ using readOnly;
 namespace fin.io;
 
 [GenerateReadOnly]
-public partial interface IGenericFile {
+public partial interface IStandaloneFile {
   new string DisplayFullPath { get; }
 
   [Const]

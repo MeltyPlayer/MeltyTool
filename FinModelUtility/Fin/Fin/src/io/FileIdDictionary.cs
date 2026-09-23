@@ -12,7 +12,7 @@ public partial interface IFileIdDictionary {
   new IReadOnlyTreeFile this[uint id] { get; set; }
 
   [Const]
-  new void Save(IGenericFile fileIdsFile);
+  new void Save(IStandaloneFile fileIdsFile);
 }
 
 public partial class FileIdDictionary : IFileIdDictionary {
@@ -20,7 +20,7 @@ public partial class FileIdDictionary : IFileIdDictionary {
   private readonly Dictionary<uint, string> impl_;
 
   public FileIdDictionary(IReadOnlyTreeDirectory baseDirectory,
-                          IReadOnlyGenericFile fileIdsFile) {
+                          IReadOnlyStandaloneFile fileIdsFile) {
     this.baseDirectory_ = baseDirectory;
     this.impl_ = fileIdsFile.ReadNew<FileIds>()
                             .Pairs.ToDictionary(pair => pair.Id,
@@ -38,7 +38,7 @@ public partial class FileIdDictionary : IFileIdDictionary {
         = value.AssertGetPathRelativeTo(this.baseDirectory_);
   }
 
-  public void Save(IGenericFile fileIdsFile)
+  public void Save(IStandaloneFile fileIdsFile)
     => fileIdsFile.Write(
         new FileIds {
             Pairs = this.impl_

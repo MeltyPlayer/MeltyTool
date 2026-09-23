@@ -23,7 +23,7 @@ public sealed class ZsiModelImporter : IModelImporter<ZsiModelImporter, ZsiModel
 
     var zsi = zsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
 
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
         Files = fileBundle.Files.ToHashSet(),
@@ -44,7 +44,7 @@ public sealed class ZsiModelImporter : IModelImporter<ZsiModelImporter, ZsiModel
 
   private void AddZsiMesh_(ZsiModelFileBundle fileBundle,
                            ModelImpl finModel,
-                           ISet<IReadOnlyGenericFile> fileSet,
+                           ISet<IReadOnlyStandaloneFile> fileSet,
                            Zsi zsi) {
     foreach (var meshHeader in zsi.MeshHeaders) {
       foreach (var meshEntry in meshHeader.MeshEntries) {

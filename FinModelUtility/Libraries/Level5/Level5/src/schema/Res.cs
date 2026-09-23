@@ -50,7 +50,7 @@ public sealed class Resource {
   }
 
   [Unknown]
-  public Resource(IReadOnlyGenericFile file) {
+  public Resource(IReadOnlyStandaloneFile file) {
     var data = file.ReadAllBytes();
     data = new Level5Decompressor().Decompress(data);
     using (var r = new SchemaBinaryReader(new MemoryStream(data),
