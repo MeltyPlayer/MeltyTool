@@ -5,6 +5,8 @@
 // ReSharper disable InconsistentNaming
 // ReSharper disable ArrangeThisQualifier
 
+using schema.binary;
+
 namespace jagex.schema;
 
 public sealed class Model : Animable {
@@ -46,17 +48,17 @@ public sealed class Model : Animable {
 			return;
 		}
 		Stream stream = new Stream(abyte0);
-		stream.currentOffset = abyte0.Length - 18;
+		stream.Position = abyte0.Length - 18;
 		Class21 class21_1 = aClass21Array1661[j] = new Class21();
 		class21_1.aByteArray368 = abyte0;
 		class21_1.anInt369 = stream.readUnsignedWord();
 		class21_1.anInt370 = stream.readUnsignedWord();
-		class21_1.anInt371 = stream.readUnsignedByte();
-		int k = stream.readUnsignedByte();
-		int l = stream.readUnsignedByte();
-		int i1 = stream.readUnsignedByte();
-		int j1 = stream.readUnsignedByte();
-		int k1 = stream.readUnsignedByte();
+		class21_1.anInt371 = stream.ReadByte();
+		int k = stream.ReadByte();
+		int l = stream.ReadByte();
+		int i1 = stream.ReadByte();
+		int j1 = stream.ReadByte();
+		int k1 = stream.ReadByte();
 		int l1 = stream.readUnsignedWord();
 		int i2 = stream.readUnsignedWord();
 		int j2 = stream.readUnsignedWord();
@@ -177,21 +179,21 @@ public sealed class Model : Animable {
 			anIntArray1656 = new int[anInt1630];
 		}
 		anIntArray1640 = new int[anInt1630];
-		Stream stream = new Stream(class21.aByteArray368);
-		stream.currentOffset = class21.anInt372;
-		Stream stream_1 = new Stream(class21.aByteArray368);
-		stream_1.currentOffset = class21.anInt373;
-		Stream stream_2 = new Stream(class21.aByteArray368);
-		stream_2.currentOffset = class21.anInt374;
-		Stream stream_3 = new Stream(class21.aByteArray368);
-		stream_3.currentOffset = class21.anInt375;
-		Stream stream_4 = new Stream(class21.aByteArray368);
-		stream_4.currentOffset = class21.anInt376;
+		IBinaryReader stream = new SchemaBinaryReader(class21.aByteArray368, Endianness.BigEndian);
+		stream.Position = class21.anInt372;
+        IBinaryReader stream_1 = new SchemaBinaryReader(class21.aByteArray368, Endianness.BigEndian);
+		stream_1.Position = class21.anInt373;
+        IBinaryReader stream_2 = new SchemaBinaryReader(class21.aByteArray368, Endianness.BigEndian);
+		stream_2.Position = class21.anInt374;
+        IBinaryReader stream_3 = new SchemaBinaryReader(class21.aByteArray368, Endianness.BigEndian);
+		stream_3.Position = class21.anInt375;
+        IBinaryReader stream_4 = new SchemaBinaryReader(class21.aByteArray368, Endianness.BigEndian);
+		stream_4.Position = class21.anInt376;
 		int k = 0;
 		int l = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < anInt1626; j1++) {
-			int k1 = stream.readUnsignedByte();
+			int k1 = stream.ReadByte();
 			int i2 = 0;
 			if ((k1 & 1) != 0) {
 				i2 = stream_1.method421();
@@ -211,39 +213,39 @@ public sealed class Model : Animable {
 			l = anIntArray1628[j1];
 			i1 = anIntArray1629[j1];
 			if (anIntArray1655 != null) {
-				anIntArray1655[j1] = stream_4.readUnsignedByte();
+				anIntArray1655[j1] = stream_4.ReadByte();
 			}
 		}
 
-		stream.currentOffset = class21.anInt379;
-		stream_1.currentOffset = class21.anInt380;
-		stream_2.currentOffset = class21.anInt381;
-		stream_3.currentOffset = class21.anInt382;
-		stream_4.currentOffset = class21.anInt383;
+		stream.Position = class21.anInt379;
+		stream_1.Position = class21.anInt380;
+		stream_2.Position = class21.anInt381;
+		stream_3.Position = class21.anInt382;
+		stream_4.Position = class21.anInt383;
 		for (int l1 = 0; l1 < anInt1630; l1++) {
 			anIntArray1640[l1] = stream.readUnsignedWord();
 			if (anIntArray1637 != null) {
-				anIntArray1637[l1] = stream_1.readUnsignedByte();
+				anIntArray1637[l1] = stream_1.ReadByte();
 			}
 			if (anIntArray1638 != null) {
-				anIntArray1638[l1] = stream_2.readUnsignedByte();
+				anIntArray1638[l1] = stream_2.ReadByte();
 			}
 			if (anIntArray1639 != null) {
-				anIntArray1639[l1] = stream_3.readUnsignedByte();
+				anIntArray1639[l1] = stream_3.ReadByte();
 			}
 			if (anIntArray1656 != null) {
-				anIntArray1656[l1] = stream_4.readUnsignedByte();
+				anIntArray1656[l1] = stream_4.ReadByte();
 			}
 		}
 
-		stream.currentOffset = class21.anInt377;
-		stream_1.currentOffset = class21.anInt378;
+		stream.Position = class21.anInt377;
+		stream_1.Position = class21.anInt378;
 		int j2 = 0;
 		int l2 = 0;
 		int j3 = 0;
 		int k3 = 0;
 		for (int l3 = 0; l3 < anInt1630; l3++) {
-			int i4 = stream_1.readUnsignedByte();
+			int i4 = stream_1.ReadByte();
 			if (i4 == 1) {
 				j2 = stream.method421() + k3;
 				k3 = j2;
@@ -283,7 +285,7 @@ public sealed class Model : Animable {
 			}
 		}
 
-		stream.currentOffset = class21.anInt384;
+		stream.Position = class21.anInt384;
 		for (int j4 = 0; j4 < anInt1642; j4++) {
 			anIntArray1643[j4] = stream.readUnsignedWord();
 			anIntArray1644[j4] = stream.readUnsignedWord();
@@ -615,7 +617,7 @@ public sealed class Model : Animable {
 			}
 			aClass33Array1425 = new Class33[anInt1626];
 			for (int j1 = 0; j1 < anInt1626; j1++) {
-				Class33 class33 = super.aClass33Array1425[j1] = new Class33();
+				Class33 class33 = aClass33Array1425[j1] = new Class33();
 				Class33 class33_1 = model.aClass33Array1425[j1];
 				class33.anInt602 = class33_1.anInt602;
 				class33.anInt603 = class33_1.anInt603;
@@ -989,8 +991,8 @@ public sealed class Model : Animable {
 			for (int l1 = 0; l1 < i1; l1++) {
 				int i3 = ai[l1];
 				if (i3 < anIntArrayArray1657.Length) {
-					int ai2[] = anIntArrayArray1657[i3];
-					for (int element : ai2) {
+					int[] ai2 = anIntArrayArray1657[i3];
+					foreach (int element in ai2) {
 						int k5 = element;
 						anIntArray1627[k5] -= anInt1681;
 						anIntArray1628[k5] -= anInt1682;
@@ -1033,8 +1035,8 @@ public sealed class Model : Animable {
 			for (int i2 = 0; i2 < i1; i2++) {
 				int j3 = ai[i2];
 				if (j3 < anIntArrayArray1657.Length) {
-					int ai3[] = anIntArrayArray1657[j3];
-					for (int element : ai3) {
+					int[] ai3 = anIntArrayArray1657[j3];
+					foreach (int element in ai3) {
 						int l5 = element;
 						anIntArray1627[l5] -= anInt1681;
 						anIntArray1628[l5] -= anInt1682;
@@ -1056,8 +1058,8 @@ public sealed class Model : Animable {
 			for (int j2 = 0; j2 < i1; j2++) {
 				int k3 = ai[j2];
 				if (k3 < anIntArrayArray1658.Length) {
-					int ai4[] = anIntArrayArray1658[k3];
-					for (int element : ai4) {
+					int[] ai4 = anIntArrayArray1658[k3];
+					foreach (int element in ai4) {
 						int i6 = element;
 						anIntArray1639[i6] += j * 8;
 						if (anIntArray1639[i6] < 0) {
@@ -1140,10 +1142,10 @@ public sealed class Model : Animable {
 			anIntArray1635 = new int[anInt1630];
 			anIntArray1636 = new int[anInt1630];
 		}
-		if (super.aClass33Array1425 == null) {
-			super.aClass33Array1425 = new Class33[anInt1626];
+		if (aClass33Array1425 == null) {
+			aClass33Array1425 = new Class33[anInt1626];
 			for (int l1 = 0; l1 < anInt1626; l1++) {
-				super.aClass33Array1425[l1] = new Class33();
+				aClass33Array1425[l1] = new Class33();
 			}
 
 		}
@@ -1173,17 +1175,17 @@ public sealed class Model : Animable {
 			i5 = i5 * 256 / k5;
 			j5 = j5 * 256 / k5;
 			if (anIntArray1637 == null || (anIntArray1637[i2] & 1) == 0) {
-				Class33 class33_2 = super.aClass33Array1425[j2];
+				Class33 class33_2 = aClass33Array1425[j2];
 				class33_2.anInt602 += l4;
 				class33_2.anInt603 += i5;
 				class33_2.anInt604 += j5;
 				class33_2.anInt605++;
-				class33_2 = super.aClass33Array1425[l2];
+				class33_2 = aClass33Array1425[l2];
 				class33_2.anInt602 += l4;
 				class33_2.anInt603 += i5;
 				class33_2.anInt604 += j5;
 				class33_2.anInt605++;
-				class33_2 = super.aClass33Array1425[i3];
+				class33_2 = aClass33Array1425[i3];
 				class33_2.anInt602 += l4;
 				class33_2.anInt603 += i5;
 				class33_2.anInt604 += j5;
@@ -1199,7 +1201,7 @@ public sealed class Model : Animable {
 		} else {
 			aClass33Array1660 = new Class33[anInt1626];
 			for (int k2 = 0; k2 < anInt1626; k2++) {
-				Class33 class33 = super.aClass33Array1425[k2];
+				Class33 class33 = aClass33Array1425[k2];
 				Class33 class33_1 = aClass33Array1660[k2] = new Class33();
 				class33_1.anInt602 = class33.anInt602;
 				class33_1.anInt603 = class33.anInt603;
@@ -1222,31 +1224,31 @@ public sealed class Model : Animable {
 			int j2 = anIntArray1633[j1];
 			if (anIntArray1637 == null) {
 				int i3 = anIntArray1640[j1];
-				Class33 class33 = super.aClass33Array1425[k1];
+				Class33 class33 = aClass33Array1425[k1];
 				int k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
 				anIntArray1634[j1] = method481(i3, k2, 0);
-				class33 = super.aClass33Array1425[i2];
+				class33 = aClass33Array1425[i2];
 				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
 				anIntArray1635[j1] = method481(i3, k2, 0);
-				class33 = super.aClass33Array1425[j2];
+				class33 = aClass33Array1425[j2];
 				k2 = i + (k * class33.anInt602 + l * class33.anInt603 + i1 * class33.anInt604) / (j * class33.anInt605);
 				anIntArray1636[j1] = method481(i3, k2, 0);
 			} else if ((anIntArray1637[j1] & 1) == 0) {
 				int j3 = anIntArray1640[j1];
 				int k3 = anIntArray1637[j1];
-				Class33 class33_1 = super.aClass33Array1425[k1];
+				Class33 class33_1 = aClass33Array1425[k1];
 				int l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
 				anIntArray1634[j1] = method481(j3, l2, k3);
-				class33_1 = super.aClass33Array1425[i2];
+				class33_1 = aClass33Array1425[i2];
 				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
 				anIntArray1635[j1] = method481(j3, l2, k3);
-				class33_1 = super.aClass33Array1425[j2];
+				class33_1 = aClass33Array1425[j2];
 				l2 = i + (k * class33_1.anInt602 + l * class33_1.anInt603 + i1 * class33_1.anInt604) / (j * class33_1.anInt605);
 				anIntArray1636[j1] = method481(j3, l2, k3);
 			}
 		}
 
-		super.aClass33Array1425 = null;
+		aClass33Array1425 = null;
 		aClass33Array1660 = null;
 		anIntArray1655 = null;
 		anIntArray1656 = null;
@@ -1334,8 +1336,7 @@ public sealed class Model : Animable {
 		}
 	}
 
-	@Override
-	public void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
+	public override void method443(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2) {
 		int j2 = l1 * i1 - j1 * l >> 16;
 		int k2 = k1 * j + j2 * k >> 16;
 		int l2 = anInt1650 * k >> 16;

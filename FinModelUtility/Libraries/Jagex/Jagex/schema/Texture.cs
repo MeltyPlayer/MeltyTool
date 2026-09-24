@@ -139,7 +139,7 @@ public sealed class Texture : DrawingArea {
 		}
 		anIntArrayArray1479[i] = ai;
 		Background background = aBackgroundArray1474s[i];
-		int ai1[] = anIntArrayArray1483[i];
+		int[] ai1 = anIntArrayArray1483[i];
 		if (lowMem) {
 			aboolArray1475[i] = false;
 			for (int i1 = 0; i1 < 4096; i1++) {
@@ -184,7 +184,7 @@ public sealed class Texture : DrawingArea {
 	}
 
 	public static void method372(double d) {
-		d += Math.random() * 0.029999999999999999D - 0.014999999999999999D;
+		d += Random.Shared.NextDouble() * 0.029999999999999999D - 0.014999999999999999D;
 		int j = 0;
 		for (int k = 0; k < 512; k++) {
 			double d1 = k / 8 / 64D + 0.0078125D;
