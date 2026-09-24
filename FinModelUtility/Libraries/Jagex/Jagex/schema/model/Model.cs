@@ -1,15 +1,25 @@
-﻿using fin.schema.vector;
+﻿using System.Numerics;
+
+using fin.schema.vector;
+using fin.util.enums;
 
 using schema.binary;
 using schema.binary.attributes;
 
 namespace jagex.schema.model;
 
+public enum FacePriority : byte {
+  TYPE_1 = 1,
+  TYPE_2 = 2,
+  TYPE_3 = 3,
+  TYPE_4 = 4,
+}
+
 [Flags]
 public enum VertexFlags : byte {
-  HAS_X_OFFSET,
-  HAS_Y_OFFSET,
-  HAS_Z_OFFSET,
+  HAS_X = 1 << 0,
+  HAS_Y = 1 << 1,
+  HAS_Z = 1 << 2,
 }
 
 /// <summary>
@@ -24,7 +34,7 @@ public sealed partial class Model : IBinaryConvertible {
   public VertexFlags[] VertexFlags { get; set; }
 
   [RSequenceLengthSource(nameof(Header.FaceCount))]
-  public byte[] FacePriorities { get; set; }
+  public FacePriority[] FacePriorities { get; set; }
 
   [RIfBoolean(nameof(Header.HasFaceAlphas))]
   [RSequenceLengthSource(nameof(Header.FaceCount))]
@@ -46,7 +56,7 @@ public sealed partial class Model : IBinaryConvertible {
   [RSequenceLengthSource(nameof(Header.FaceCount))]
   public byte[]? FaceTextures { get; set; }
 
-  [RSequenceLengthSource(nameof(Header.FaceTypeCount))]
+  [RSequenceLengthSource(nameof(Header.FaceTypeLength))]
   public byte[] FaceTypes { get; set; }
 
   [RSequenceLengthSource(nameof(Header.FaceCount))]
@@ -55,13 +65,66 @@ public sealed partial class Model : IBinaryConvertible {
   [RSequenceLengthSource(nameof(Header.TexturedTriangleCount))]
   public Vector2s[] FaceIndices { get; set; }
 
-  [RSequenceLengthSource(nameof(Header.VertexXCount))]
-  public byte[] VertexXs { get; set; }
+  [Skip]
+  public Vector3[] Vertices { get; set; }
 
-  [RSequenceLengthSource(nameof(Header.VertexYCount))]
-  public byte[] VertexYs { get; set; }
+  [ReadLogic]
+  private void ReadVertices_(IBinaryReader br) {
+    var baseOffset = br.Position;
+    var vertexXValues
+        = this.ReadVertexAxis_(br, jagex.schema.model.VertexFlags.HAS_X);
 
-  [RSequenceLengthSource(nameof(Header.VertexZCount))]
-  public byte[] VertexZs { get; set; }
+    br.Position = baseOffset + this.Header.VertexXLength;
+    baseOffset = br.Position;
+    var vertexYValues
+        = this.ReadVertexAxis_(br, jagex.schema.model.VertexFlags.HAS_Y);
 
+    br.Position = baseOffset + this.Header.VertexYLength;
+    var vertexZValues
+        = this.ReadVertexAxis_(br, jagex.schema.model.VertexFlags.HAS_Z);
+
+    this.Vertices = new Vector3[this.Header.VertexCount];
+
+    var previousVertex = Vector3.Zero;
+    for (var i = 0; i < this.Vertices.Length; ++i) {
+      var delta = new Vector3(
+          vertexXValues[i],
+          vertexYValues[i],
+          vertexZValues[i]);
+
+      previousVertex = this.Vertices[i] = previousVertex + delta;
+    }
+  }
+
+  private short[] ReadVertexAxis_(
+      IBinaryReader br,
+      VertexFlags check) {
+    var values = new short[this.Header.VertexCount];
+    for (var i = 0; i < values.Length; ++i) {
+      var vertexFlag = this.VertexFlags[i];
+      if (!vertexFlag.CheckFlag(check)) {
+        continue;
+      }
+
+      values[i] = ReadSigned_(br);
+    }
+
+    return values;
+  }
+
+  /// <summary>
+  ///   Shamelessly stolen from:
+  ///   https://github.com/Ddemon26/2006Scape/blob/master/2006Scape%20Client/src/main/java/Stream.java#L195
+  /// </summary>
+  private static short ReadSigned_(IBinaryReader br) {
+    var tmpOffset = br.Position;
+
+    var peek = br.ReadByte();
+    if (peek < 128) {
+      return (short) (peek - 64);
+    }
+
+    br.Position = tmpOffset;
+    return (short) (br.ReadUInt16() - 49152);
+  }
 }

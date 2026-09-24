@@ -28,9 +28,8 @@ public sealed partial class ModelHeader : IBinaryConvertible {
   [IntegerFormat(SchemaIntegerType.BYTE)]
   public bool HasVertexSkins { get; set; }
 
-  public ushort VertexXCount { get; set; }
-  public ushort VertexYCount { get; set; }
-  public ushort VertexZCount { get; set; }
-
-  public ushort FaceTypeCount { get; set; }
+  public ushort VertexXLength { get; set; }
+  public ushort VertexYLength { get; set; }
+  public ushort VertexZLength { get; set; }
+  public ushort FaceTypeLength { get; set; }
 }
