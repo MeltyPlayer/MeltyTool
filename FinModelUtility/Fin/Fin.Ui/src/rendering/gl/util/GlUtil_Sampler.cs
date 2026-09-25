@@ -14,7 +14,7 @@ public partial record GlState {
 public static partial class GlUtil {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static void BindSampler(int samplerIndex, int value) {
-    if (currentState_.CurrentTextureBindings[samplerIndex] == value) {
+    if (currentState_.CurrentSamplerBindings[samplerIndex] == value) {
       return;
     }
 

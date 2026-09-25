@@ -36,10 +36,10 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     this.textureTransformManager_ = textureTransformManager;
     this.textureSwapManager_ = textureSwapManager;
 
-    this.cachedTextureUniformDatas_ = [with(material.Textures.Count())];
+    this.cachedTextureUniformDatas_ = [with(material?.Textures.Count() ?? 0)];
 
     var shaderSource
-        = this.GenerateShaderSource(model, modelRequirements, material);
+        = this.GenerateShaderSource(model, modelRequirements, material!);
     this.impl_ = GlShaderProgram.FromShaders(
         shaderSource.VertexShaderSource,
         shaderSource.FragmentShaderSource);
@@ -52,7 +52,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
     this.cameraPositionUniform_ = this.impl_.GetUniformVec3(
         GlslConstants.UNIFORM_CAMERA_POSITION_NAME);
 
-    this.Setup(material, this.impl_);
+    this.Setup(material!, this.impl_);
   }
 
   ~BGlMaterialShader() => this.Dispose();
