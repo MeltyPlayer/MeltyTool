@@ -169,8 +169,20 @@ public sealed class GltfSkinBuilder {
             var pointPrimitive
                 = gltfMeshBuilder.UsePrimitive(materialBuilder, 1);
             var verticesInPrimitive = primitive.Vertices;
-            for (var v = 0; v < verticesInPrimitive.Count; v += 4) {
-              pointPrimitive.AddPoint(vertexToBuilder[verticesInPrimitive[v]]);
+            foreach (var v in verticesInPrimitive) {
+              pointPrimitive.AddPoint(vertexToBuilder[v]);
+            }
+
+            break;
+          }
+          case PrimitiveType.LINES: {
+            var linePrimitive
+                = gltfMeshBuilder.UsePrimitive(materialBuilder, 2);
+            var verticesInPrimitive = primitive.Vertices;
+            for (var v = 0; v < verticesInPrimitive.Count; v += 2) {
+              linePrimitive.AddLine(
+                  vertexToBuilder[verticesInPrimitive[v]],
+                  vertexToBuilder[verticesInPrimitive[v + 1]]);
             }
 
             break;

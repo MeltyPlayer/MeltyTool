@@ -10,14 +10,13 @@ using fin.util.asserts;
 namespace fin.model.io;
 
 public interface IModelFileBundle : I3dFileBundle {
+  FileBundleType IFileBundle.Type => FileBundleType.MODEL;
   IModel Import();
 }
 
 public interface IModelFileBundle<TSelf, TImporter> : IModelFileBundle
     where TSelf : IModelFileBundle<TSelf, TImporter>
     where TImporter : IModelImporter<TImporter, TSelf>, new() {
-  FileBundleType IFileBundle.Type => FileBundleType.MODEL;
-
   static TImporter CreateImporter() => new();
   IModel IModelFileBundle.Import() => CreateImporter().Import(this.AssertAsA<TSelf>());
 }
