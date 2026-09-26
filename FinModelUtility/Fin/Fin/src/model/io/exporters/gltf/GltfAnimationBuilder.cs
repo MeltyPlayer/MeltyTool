@@ -182,24 +182,28 @@ public sealed class GltfAnimationBuilder {
 
     if (animation.HasAnyMeshTracks) {
       foreach (var (finMesh, gltfNode) in gltfNodeByFinMesh) {
-        var finMeshTracks = animation.MeshTracks[finMesh];
+        if (!animation.MeshTracks.TryGetValue(finMesh, out var finMeshTracks)) {
+          continue;
+        }
 
         var displayStates = finMeshTracks.DisplayStates;
-        if (displayStates.HasAnyData) {
-          visibilityKeyframes.Clear();
-          foreach (var keyframe in displayStates.Definitions) {
-            if (keyframe.ValueOut is MeshDisplayState.HIDDEN) {
-              visibilityKeyframes[keyframe.Frame] = false;
-            } else if (keyframe.ValueOut is MeshDisplayState.VISIBLE) {
-              visibilityKeyframes[keyframe.Frame] = true;
-            }
-          }
+        if (!(displayStates?.HasAnyData ?? false)) {
+          continue;
+        }
 
-          if (visibilityKeyframes.Count > 0) {
-            gltfAnimation.CreateVisibilityChannel(
-                gltfNode,
-                visibilityKeyframes);
+        visibilityKeyframes.Clear();
+        foreach (var keyframe in displayStates.Definitions) {
+          if (keyframe.ValueOut is MeshDisplayState.HIDDEN) {
+            visibilityKeyframes[keyframe.Frame] = false;
+          } else if (keyframe.ValueOut is MeshDisplayState.VISIBLE) {
+            visibilityKeyframes[keyframe.Frame] = true;
           }
+        }
+
+        if (visibilityKeyframes.Count > 0) {
+          gltfAnimation.CreateVisibilityChannel(
+              gltfNode,
+              visibilityKeyframes);
         }
       }
     }
