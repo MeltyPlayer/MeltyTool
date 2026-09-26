@@ -84,7 +84,7 @@ public sealed class GlSampler : IGlSampler {
         openGlSamplerParams.WrapS);
     GL.SamplerParameter(
         id,
-        SamplerParameterName.TextureWrapS,
+        SamplerParameterName.TextureWrapT,
         openGlSamplerParams.WrapT);
 
     if (openGlSamplerParams.BorderColor != null) {
