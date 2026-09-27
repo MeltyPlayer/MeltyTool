@@ -41,13 +41,14 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
 
 public enum FileBundleGathererPlatform {
   DESKTOP,
-  SNES,
-  PS1,
-  N64,
-  GAMECUBE,
+  DREAMCAST,
   DS,
-  WII,
+  GAMECUBE,
+  N64,
+  PS1,
+  SNES,
   THREE_DS,
+  WII,
 }
 
 public interface INamedFileBundleGatherer : IFileBundleGatherer {

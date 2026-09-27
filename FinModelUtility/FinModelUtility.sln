@@ -384,6 +384,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jagex", "Libraries\Jagex\Ja
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Facade Tests", "Games\Facade\Facade Tests\Facade Tests.csproj", "{ABB05AA9-2DBE-44FD-918A-ED6FE579E580}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SwordOfTheBerserkGutsRage", "SwordOfTheBerserkGutsRage", "{DD5092FE-FAA7-41F5-B7B5-66C09F013FE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwordOfTheBerserkGutsRage", "Games\SwordOfTheBerserkGutsRage\SwordOfTheBerserkGutsRage\SwordOfTheBerserkGutsRage.csproj", "{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -1320,6 +1324,14 @@ Global
 		{ABB05AA9-2DBE-44FD-918A-ED6FE579E580}.Release|x64.Build.0 = Release|x64
 		{ABB05AA9-2DBE-44FD-918A-ED6FE579E580}.Release|x86.ActiveCfg = Release|x86
 		{ABB05AA9-2DBE-44FD-918A-ED6FE579E580}.Release|x86.Build.0 = Release|x86
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Debug|x64.ActiveCfg = Debug|x64
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Debug|x64.Build.0 = Debug|x64
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Debug|x86.ActiveCfg = Debug|x86
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Debug|x86.Build.0 = Debug|x86
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Release|x64.ActiveCfg = Release|x64
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Release|x64.Build.0 = Release|x64
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Release|x86.ActiveCfg = Release|x86
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1493,6 +1505,8 @@ Global
 		{49CE4795-8007-4AC9-ACF7-43256C72843A} = {10A1E3E0-0E8F-495E-B38B-B678BFBBF043}
 		{E8C3AB30-BCD1-4ED9-A53D-5658131B65DD} = {49CE4795-8007-4AC9-ACF7-43256C72843A}
 		{ABB05AA9-2DBE-44FD-918A-ED6FE579E580} = {016E2E5D-9E4D-46C7-B123-D025F53B9821}
+		{DD5092FE-FAA7-41F5-B7B5-66C09F013FE7} = {B0CB1025-E553-478F-AB51-B6D44312A46B}
+		{5B41E521-3840-4F7E-AE50-B3FA3D60ADE9} = {DD5092FE-FAA7-41F5-B7B5-66C09F013FE7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CFECBD7-FE88-4CC9-8E1B-6F7805F4F45A}
