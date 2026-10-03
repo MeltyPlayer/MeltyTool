@@ -590,17 +590,9 @@ public sealed partial class DlModelBuilder {
     };
 
     if (doAdditiveBlending && !useCoverageInsteadOfAlpha) {
-      finMaterial.SetBlending(
-          BlendEquation.ADD,
-          BlendFactor.SRC_ALPHA,
-          BlendFactor.ONE_MINUS_SRC_ALPHA,
-          LogicOp.UNDEFINED);
+      finMaterial.SetSimpleBlending(SimpleBlendMode.NORMAL);
     } else {
-      finMaterial.SetBlending(
-          BlendEquation.ADD,
-          BlendFactor.ONE,
-          BlendFactor.ZERO,
-          LogicOp.UNDEFINED);
+      finMaterial.SetSimpleBlending(SimpleBlendMode.NONE);
     }
   }
 

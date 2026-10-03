@@ -3,6 +3,7 @@ using System.Linq;
 
 using fin.data.lazy;
 using fin.model;
+using fin.model.util;
 
 using grezzo.schema.cmb;
 using grezzo.schema.cmb.mats;
@@ -129,10 +130,7 @@ public sealed class CmbFixedFunctionMaterial {
         // TODO: Fix these
         switch (cmbMaterial.blendMode) {
           case BlendMode.BlendNone: {
-            finMaterial.SetBlending(FinBlendEquation.ADD,
-                                    FinBlendFactor.ONE,
-                                    FinBlendFactor.ZERO,
-                                    LogicOp.UNDEFINED);
+            finMaterial.SetSimpleBlending(SimpleBlendMode.NONE);
             break;
           }
           case BlendMode.Blend: {
