@@ -4,6 +4,8 @@ using fin.util.progress;
 
 namespace uni.games.soulcalibur_ii;
 
+// https://wiki.dolphin-emu.org/index.php?title=GRSEAF
+[GameIDs("GRSEAF", "GRSJAF", "GRSPAF")]
 public sealed class SoulcaliburIIFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "soulcalibur_ii";
   public override string Title => "Soulcalibur II";

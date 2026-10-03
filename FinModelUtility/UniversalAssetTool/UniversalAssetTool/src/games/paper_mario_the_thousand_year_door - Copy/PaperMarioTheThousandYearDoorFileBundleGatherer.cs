@@ -6,6 +6,8 @@ using ttyd.api;
 
 namespace uni.games.paper_mario_the_thousand_year_door;
 
+// https://wiki.dolphin-emu.org/index.php?title=G8ME01
+[GameIDs("G8ME01", "G8MJ01", "G8MK01", "G8MP01")]
 public sealed class PaperMarioTheThousandYearDoorFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "paper_mario_the_thousand_year_door";

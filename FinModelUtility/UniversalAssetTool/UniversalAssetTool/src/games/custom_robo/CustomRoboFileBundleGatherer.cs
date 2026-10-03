@@ -6,6 +6,8 @@ using ssm.api;
 
 namespace uni.games.custom_robo;
 
+// https://wiki.dolphin-emu.org/index.php?title=GXCE01
+[GameIDs("GXCE01", "GXCJ01")]
 public sealed class CustomRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "custom_robo";
   public override string Title => "Custom Robo";

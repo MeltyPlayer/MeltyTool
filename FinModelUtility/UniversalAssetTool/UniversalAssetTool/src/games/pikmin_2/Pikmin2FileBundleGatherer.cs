@@ -12,6 +12,8 @@ using uni.platforms.gcn;
 
 namespace uni.games.pikmin_2;
 
+// https://wiki.dolphin-emu.org/index.php?title=GPVE01
+[GameIDs("GPVE01", "GPVJ01", "GPVP01")]
 public sealed class Pikmin2FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "pikmin_2";
   public override string Title => "Pikmin 2";

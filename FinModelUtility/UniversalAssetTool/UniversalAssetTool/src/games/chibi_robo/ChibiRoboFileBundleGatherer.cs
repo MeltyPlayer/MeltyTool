@@ -9,6 +9,8 @@ using fin.io;
 
 namespace uni.games.chibi_robo;
 
+// https://wiki.dolphin-emu.org/index.php?title=GGTE01
+[GameIDs("GGTE01", "GGTJ01", "GGTP01")]
 public sealed class ChibiRoboFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "chibi_robo";
   public override string Title => "Chibi-Robo!";

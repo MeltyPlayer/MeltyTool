@@ -9,6 +9,8 @@ using uni.platforms.gcn;
 
 namespace uni.games.super_mario_sunshine;
 
+// https://wiki.dolphin-emu.org/index.php?title=GMSE01
+[GameIDs("GMSE01", "GMSJ01", "GMSK01", "GMSP01")]
 public sealed class SuperMarioSunshineFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "super_mario_sunshine";
