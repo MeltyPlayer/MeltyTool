@@ -1,12 +1,9 @@
 ﻿using berserkDc.api;
 
 using fin.archives;
-using fin.io;
 using fin.io.archive;
 using fin.io.bundles;
 using fin.util.progress;
-
-using sonicadventure.api;
 
 namespace uni.games.sonic_adventure_dx;
 
@@ -42,6 +39,11 @@ public sealed class SwordOfTheBerserkGutsRageFileBundleGatherer
 
     if (didExtractAnything) {
       fileHierarchy.RefreshRootAndUpdateCache();
+    }
+
+    foreach (var pacFile in
+             fileHierarchy.Root.FilesWithExtensionRecursive(".pac")) {
+      organizer.Add(new PacModelFileBundle(pacFile.Impl));
     }
   }
 }
