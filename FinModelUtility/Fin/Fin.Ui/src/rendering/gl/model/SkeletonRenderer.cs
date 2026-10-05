@@ -24,8 +24,7 @@ public interface ISkeletonRenderer : IRenderable {
 /// <summary>
 ///   A renderer for a Fin model's skeleton.
 /// </summary>
-public sealed class SkeletonRenderer
-    : ISkeletonRenderer {
+public sealed class SkeletonRenderer : ISkeletonRenderer {
   private static readonly IModelRenderer BONE_RENDERER_= GenerateBoneRenderer();
 
   private static readonly Color UNSELECTED_BONE = Color.Blue;
