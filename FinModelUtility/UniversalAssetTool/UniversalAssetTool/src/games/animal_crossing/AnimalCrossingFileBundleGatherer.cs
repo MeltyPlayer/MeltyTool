@@ -10,6 +10,8 @@ using uni.platforms.gcn.tools;
 
 namespace uni.games.animal_crossing;
 
+// https://wiki.dolphin-emu.org/index.php?title=GAFE01
+[GameIDs("GAFE01", "GAFJ01", "GAFP01", "GAFU01")]
 public sealed class AnimalCrossingFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "animal_crossing";

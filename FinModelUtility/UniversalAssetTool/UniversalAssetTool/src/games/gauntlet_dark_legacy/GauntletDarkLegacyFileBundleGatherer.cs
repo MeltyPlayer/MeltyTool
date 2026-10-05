@@ -6,6 +6,8 @@ using gdl.api;
 
 namespace uni.games.gauntlet_dark_legacy;
 
+// https://wiki.dolphin-emu.org/index.php?title=GUNE5D
+[GameIDs("GUNE5D", "GUNP5D")]
 public sealed class GauntletDarkLegacyFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "gauntlet_dark_legacy";

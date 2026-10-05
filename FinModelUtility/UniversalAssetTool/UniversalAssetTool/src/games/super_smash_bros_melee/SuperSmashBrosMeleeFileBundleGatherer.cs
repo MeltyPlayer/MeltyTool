@@ -8,6 +8,8 @@ using ssm.api;
 
 namespace uni.games.super_smash_bros_melee;
 
+// https://wiki.dolphin-emu.org/index.php?title=GALE01
+[GameIDs("GALE01", "GALJ01", "GALP01")]
 public sealed class SuperSmashBrosMeleeFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   private const string STAGE_PREFIX = "Gr";

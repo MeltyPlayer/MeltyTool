@@ -14,7 +14,12 @@ public abstract class BGameCubeFileBundleGatherer
 
   public virtual bool IsListed => true;
   public bool IsAvailable
-    => GcnFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
+    => GcnFileHierarchyExtractor.HasRomOrExtractedDirectory(
+        this.Name,
+        this.GameIDs_);
+
+  private IReadOnlySet<string> GameIDs_
+    => field ??= this.GetSupportedGameIDs().ToHashSet();
 
   public virtual GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Standard();
@@ -29,6 +34,7 @@ public abstract class BGameCubeFileBundleGatherer
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
             this.Name,
+            this.GameIDs_,
             this.Options,
             out var fileHierarchy)) {
       return;

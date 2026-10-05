@@ -13,6 +13,8 @@ using uni.platforms.gcn;
 
 namespace uni.games.mario_kart_double_dash;
 
+// https://wiki.dolphin-emu.org/index.php?title=GM4E01
+[GameIDs("GM4E01", "GM4J01", "GM4K01", "GM4P01")]
 public sealed class MarioKartDoubleDashFileBundleGatherer
     : BGameCubeFileBundleGatherer {
   public override string Name => "mario_kart_double_dash";

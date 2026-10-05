@@ -15,6 +15,8 @@ using jsystem.api;
 
 namespace uni.games.wind_waker;
 
+// https://wiki.dolphin-emu.org/index.php?title=GZLE01
+[GameIDs("GZLE01", "GZLJ01", "GZLK01", "GZLP01")]
 public sealed class WindWakerFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "wind_waker";
   public override string Title => "The Legend of Zelda: The Wind Waker";

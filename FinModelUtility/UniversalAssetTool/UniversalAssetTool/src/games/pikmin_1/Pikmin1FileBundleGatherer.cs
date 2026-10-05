@@ -10,6 +10,8 @@ using uni.util.io;
 
 namespace uni.games.pikmin_1;
 
+// https://wiki.dolphin-emu.org/index.php?title=GPIE01
+[GameIDs("GPIE01", "GPIJ01", "GPIP01")]
 public sealed class Pikmin1FileBundleGatherer : BGameCubeFileBundleGatherer {
   private readonly IModelSeparator separator_
       = new ModelSeparator(directory => directory.LocalPath)

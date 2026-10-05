@@ -1,4 +1,8 @@
-﻿using fin.archives;
+﻿using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
+
+using fin.archives;
 using fin.common;
 using fin.compression;
 using fin.config;
@@ -18,6 +22,15 @@ public sealed class GcnFileHierarchyExtractor {
   private readonly Yay0Dec yay0Dec_ = new();
   private readonly Yaz0Dec yaz0Dec_ = new();
 
+  // List of supported file types for GameCube ROMs
+  private static readonly string[] ROM_FILE_TYPES
+      = [".ciso", ".nkit.iso", ".iso", ".gcm"];
+
+  private const int CISO_HEADER_SIZE = 0x8000;
+  private const int DISC_HEADER_SIZE = 0x20;
+  private const int DISC_MAGIC_OFFSET = 0x1C;
+  private static readonly byte[] GCN_DISC_MAGIC = [0xC2, 0x33, 0x9F, 0x3D];
+
   public bool TryToExtractFromGame(
       string gameName,
       out IFileHierarchy fileHierarchy)
@@ -28,36 +41,105 @@ public sealed class GcnFileHierarchyExtractor {
   public bool TryToExtractFromGame(
       string gameName,
       Options options,
+      out IFileHierarchy fileHierarchy)
+    => this.TryToExtractFromGame(gameName,
+                                 ImmutableHashSet<string>.Empty,
+                                 options,
+                                 out fileHierarchy);
+
+  public bool TryToExtractFromGame(
+      string gameName,
+      IReadOnlySet<string> gameIDs,
+      Options options,
       out IFileHierarchy fileHierarchy) {
-    if (!TryToFindRom(gameName, out var romFile)) {
+    if (!TryToFindRom(gameName, gameIDs, out IReadOnlyTreeFile? romFile)) {
       fileHierarchy = null;
       return false;
     }
 
-    fileHierarchy = this.ExtractFromRom_(romFile, options);
+    fileHierarchy = this.ExtractFromRom_(gameName, romFile, options);
     return true;
   }
 
-  public static bool HasRomOrExtractedDirectory(string gameName)
-    => TryToFindRom(gameName, out _) ||
-       ExtractorUtil.HasBeenExtracted(gameName);
+  public static bool HasRomOrExtractedDirectory(
+      string gameName,
+      IReadOnlySet<string> gameIDs)
+    => ExtractorUtil.HasBeenExtracted(gameName) ||
+       TryToFindRom(gameName, gameIDs, out _);
 
   public static bool TryToFindRom(
       string gameName,
-      out IReadOnlyTreeFile romFile)
-    => DirectoryConstants.ROMS_DIRECTORY
-                         .TryToGetExistingFileWithFileType(
-                             gameName,
-                             out romFile,
-                             ".ciso",
-                             ".nkit.iso",
-                             ".iso",
-                             ".gcm");
+      IReadOnlySet<string> gameIDs,
+      [NotNullWhen(true)] out IReadOnlyTreeFile? romFile) {
+    // First look for a ROM with the expected game name
+    if (DirectoryConstants.ROMS_DIRECTORY.TryToGetExistingFileWithFileType(
+            gameName,
+            out ISystemFile? namedRomFile,
+            ROM_FILE_TYPES)) {
+      romFile = namedRomFile;
+      return true;
+    }
+
+    // Fall back to the first ROM with one of the expected game IDs, in
+    // case it wasn't renamed properly.
+    romFile = gameIDs.Count == 0
+        ? null
+        : DirectoryConstants.ROMS_DIRECTORY
+                            .GetExistingFiles()
+                            .WithFileTypes(ROM_FILE_TYPES)
+                            .FirstOrDefault(
+                                f => TryToReadGameId_(f, out string? gameID) &&
+                                     gameIDs.Contains(gameID));
+    return romFile != null;
+  }
+
+  // Reads the 6-character game ID from the ROM's disc header. This is the 
+  // same ID that Dolphin shows if you right-click -> Properties.
+  private static bool TryToReadGameId_(
+      IReadOnlySystemFile romFile,
+      [NotNullWhen(true)] out string? gameID) {
+    gameID = null;
+
+    try {
+      using Stream stream = romFile.OpenRead();
+      Span<byte> magic = stackalloc byte[4];
+      if (stream.ReadAtLeast(magic, magic.Length, false) < magic.Length) {
+        // File isn't big enough
+        return false;
+      }
+
+      long headerOffset = magic.SequenceEqual("CISO"u8) ? CISO_HEADER_SIZE : 0;
+      if (stream.Length < headerOffset + DISC_HEADER_SIZE) {
+        // File isn't big enough
+        return false;
+      }
+
+      stream.Position = headerOffset;
+      Span<byte> header = stackalloc byte[DISC_HEADER_SIZE];
+      stream.ReadExactly(header);
+
+      if (!header.Slice(DISC_MAGIC_OFFSET, GCN_DISC_MAGIC.Length)
+                 .SequenceEqual(GCN_DISC_MAGIC)) {
+        // File isn't a GameCube ROM
+        return false;
+      }
+
+      gameID = Encoding.ASCII.GetString(header[..6]);
+      return true;
+    } catch (IOException) {
+      return false;
+    } catch (UnauthorizedAccessException) {
+      return false;
+    }
+  }
 
   public IFileHierarchy ExtractFromRom_(
+      string gameName,
       IReadOnlyTreeFile romFile,
       Options options) {
-    var directory = ExtractorUtil.GetOrCreateExtractedDirectory(romFile);
+    // Uses the game name rather than the ROM's file name, since the ROM may
+    // have been found via its game ID instead.
+    ISystemDirectory directory = ExtractorUtil.GetOrCreateExtractedDirectory(gameName);
     if (new GcmArchiveImporter().ExtractInto(
             new GcmArchiveFileBundle(romFile),
             directory) ==
@@ -66,8 +148,7 @@ public sealed class GcnFileHierarchyExtractor {
     }
 
     var fileHierarchy
-        = ExtractorUtil.GetFileHierarchy(romFile.NameWithoutExtension,
-                                         directory);
+        = ExtractorUtil.GetFileHierarchy(gameName, directory);
     var hasChanged = false;
 
     // Decompresses all of the archives,

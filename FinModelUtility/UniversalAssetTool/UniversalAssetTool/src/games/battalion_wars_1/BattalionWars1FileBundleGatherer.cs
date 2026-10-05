@@ -11,6 +11,8 @@ using uni.util.io;
 
 namespace uni.games.battalion_wars_1;
 
+// https://wiki.dolphin-emu.org/index.php?title=G8WE01
+[GameIDs("G8WE01", "G8WJ01", "G8WP01")]
 public sealed class BattalionWars1FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "battalion_wars_1";
   public override string Title => "Battalion Wars";
