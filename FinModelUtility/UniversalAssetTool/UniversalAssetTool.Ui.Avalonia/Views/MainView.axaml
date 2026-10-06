@@ -39,7 +39,8 @@
       <Setter Property="Opacity" Value=".25" />
     </Style>
 
-    <Style Selector="views|MainView:fileSelectorHover > Grid > DockPanel > Grid > SplitView">
+    <Style Selector="views|MainView:fileSelectorHover > Grid > DockPanel > Grid > SplitView,
+                     views|MainView:fileSelectorPinned > Grid > DockPanel > Grid > SplitView">
       <Setter Property="IsPaneOpen" Value="True" />
     </Style>
     <Style Selector="views|MainView:not(:fileSelectorHover) Border#FileSelectorPanel Border.ExtraHitTestMargin">
@@ -49,8 +50,23 @@
       <Setter Property="IsVisible" Value="True" />
     </Style>
 
-    <Style Selector="views|MainView:infoPanelHover > Grid > DockPanel > Grid > SplitView > SplitView">
+    <Style Selector="views|MainView:infoPanelHover > Grid > DockPanel > Grid > SplitView > SplitView,
+                     views|MainView:infoPanelPinned > Grid > DockPanel > Grid > SplitView > SplitView">
       <Setter Property="IsPaneOpen" Value="True" />
+    </Style>
+
+    <!-- Keep the toolbar text clear of pinned sidebars (pane width + 8). -->
+    <Style Selector="Grid#FileBundleToolbarContainer">
+      <Setter Property="Margin" Value="40 5" />
+    </Style>
+    <Style Selector="views|MainView:fileSelectorPinned Grid#FileBundleToolbarContainer">
+      <Setter Property="Margin" Value="308 5 40 5" />
+    </Style>
+    <Style Selector="views|MainView:infoPanelPinned Grid#FileBundleToolbarContainer">
+      <Setter Property="Margin" Value="40 5 408 5" />
+    </Style>
+    <Style Selector="views|MainView:fileSelectorPinned:infoPanelPinned Grid#FileBundleToolbarContainer">
+      <Setter Property="Margin" Value="308 5 408 5" />
     </Style>
 
     <Style Selector=".Toolbars buttons|ContrastableIconButton">
@@ -109,9 +125,9 @@
           </SplitView>
         </SplitView>
 
-        <Grid ZIndex="-5"
-              ColumnDefinitions="* Auto"
-              Margin="40 5">
+        <Grid x:Name="FileBundleToolbarContainer"
+              ZIndex="-5"
+              ColumnDefinitions="* Auto">
           <toolbars:FileBundleToolbar
               DataContext="{Binding FileBundleToolbar}" />
           <debug:DebugPanel Grid.Column="1" />
@@ -125,8 +141,7 @@
               x:Name="SceneViewerGlPanel"
               IsTabStop="True"
               TabIndex="0"
-              Focusable="True"
-              ShowGrid="True" />
+              Focusable="True" />
       </Panel>
 
       <Panel MaxWidth="500"
