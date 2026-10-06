@@ -29,16 +29,19 @@ public sealed class SettingsViewModel
   private static Config Config_ => Config.Instance;
 
   public event Action? OnClose;
+  public static event Action? OnSettingsChanged;
 
   public override void Reset() {
     base.Reset();
     Config.ReloadSettings();
+    OnSettingsChanged?.Invoke();
     this.OnClose?.Invoke();
   }
 
   public override void Save() {
     base.Save();
     Config.SaveSettings();
+    OnSettingsChanged?.Invoke();
     this.OnClose?.Invoke();
   }
 
@@ -221,5 +224,23 @@ public sealed class SettingsViewModel
   public ScaleSourceType ViewerModelScaleSource {
     get => Config_.Viewer.ViewerModelScaleSource;
     set => Config_.Viewer.ViewerModelScaleSource = value;
+  }
+
+  [property: Config(
+    Category = GROUP_VIEWER,
+    Header = "Pin file selector sidebar",
+    Description = "Whether to keep the file selector sidebar open when the mouse leaves it.")]
+  public bool PinFileSelectorSidebar {
+    get => Config_.Viewer.PinFileSelectorSidebar;
+    set => Config_.Viewer.PinFileSelectorSidebar = value;
+  }
+
+  [property: Config(
+  Category = GROUP_VIEWER,
+  Header = "Pin info sidebar",
+  Description = "Whether to keep the info sidebar open when the mouse leaves it.")]
+  public bool PinInfoSidebar {
+    get => Config_.Viewer.PinInfoSidebar;
+    set => Config_.Viewer.PinInfoSidebar = value;
   }
 }
