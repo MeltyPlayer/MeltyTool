@@ -3,3 +3,4 @@
 
 FinModelUtility/ModelPluginWrappers/lib/** linguist-vendored
 FinModelUtility/ModelPluginWrappers/blender/** linguist-vendored
+goldens/** export-ignore
