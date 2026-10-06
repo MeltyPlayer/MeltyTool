@@ -7,7 +7,6 @@ using System.Text;
 using fin.data.indexable;
 using fin.math;
 using fin.model;
-using fin.util.enums;
 using fin.image.util;
 using fin.model.util;
 using fin.ui.rendering.gl;
@@ -38,7 +37,7 @@ public static class TextureTransformTypeExtensions {
     => lhs | rhs;
 }
 
-public static class GlslUtil {
+public static partial class GlslUtil {
   public static FinShaderType
       GetShaderType(this IReadOnlyMaterial? material) {
     if (DebugFlags.ENABLE_FIXED_FUNCTION_SHADER &&

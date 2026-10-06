@@ -20,7 +20,7 @@ public sealed class NullShaderSourceGlsl(
            #version {GlslConstants.FRAGMENT_SHADER_VERSION}
            {GlslConstants.FLOAT_PRECISION}
 
-           out vec4 fragColor;
+           out vec4 ${GlslConstants.UNIFORM_FRAG_COLOR_NAME};
            """);
 
       var hasColors = shaderRequirements.UsedColors.AnyTrue();
@@ -43,6 +43,6 @@ public sealed class NullShaderSourceGlsl(
 
   public void AppendFragmentMain(IndentedStringBuilder sb) {
     sb.AppendLine(
-        $"fragColor = {(shaderRequirements.UsedColors.AnyTrue() ? $"{GlslConstants.IN_VERTEX_COLOR_NAME}0" : "vec4(1)")};");
+        $"${GlslConstants.UNIFORM_FRAG_COLOR_NAME} = {(shaderRequirements.UsedColors.AnyTrue() ? $"{GlslConstants.IN_VERTEX_COLOR_NAME}0" : "vec4(1)")};");
   }
 }

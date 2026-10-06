@@ -33,6 +33,9 @@ public static class GlslConstants {
   public const string UNIFORM_HAS_SPECULAR_NAME = "hasSpecular";
   public const string UNIFORM_SHININESS_NAME = "shininess";
 
+  public const string UNIFORM_FRAG_COLOR_NAME = "fragColor";
+  public const string UNIFORM_IS_SELECTED_NAME = "isSelected";
+
   public const string IN_UV_NAME = "uv";
   public const string IN_VERTEX_COLOR_NAME = "vertexColor";
   public const string IN_SPHERICAL_REFLECTION_UV_NAME = "sphericalReflectionUv";
