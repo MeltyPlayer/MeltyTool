@@ -3,9 +3,11 @@ using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 using fin.model;
 using fin.scene;
@@ -18,6 +20,8 @@ using fin.util.enums;
 
 using Material.Icons;
 using Material.Icons.Avalonia;
+
+using ReactiveUI;
 
 using uni.ui.avalonia.resources.scene;
 
@@ -48,7 +52,7 @@ public class FullHierarchyTreeViewModel : BViewModel {
       IReadOnlyScene scene,
       FullHierarchyTreeType type = FullHierarchyTreeType.ALL)
     => new(scene.Areas.Select(a => new AreaFullHierarchyNode(a, type))
-                .ToArray());
+      .ToArray());
 
   public static FullHierarchyTreeViewModel FromModel(
       IReadOnlyModel model,
@@ -65,10 +69,34 @@ public class FullHierarchyTreeViewModel : BViewModel {
                 "Name",
                 new TreeDataGridTemplateColumn {
                     Width = GridLength.Star,
-                    CellTemplate = new FuncDataTemplate<IFullHierarchyNode>((_, _) => {
-                      var stackPanel = new StackPanel {
-                          Orientation = Orientation.Horizontal,
+                    CellTemplate = new FuncDataTemplate<IFullHierarchyNode>((node, _) => {
+                      StackPanel stackPanel = new() {
+                        Orientation = Orientation.Horizontal,
                       };
+
+                      if (node is MeshFullHierarchyNode) {
+                        // Add visibility toggle for meshes only - can expand to other node types in the future
+                        // Scaled down so the default checkbox fits in a single row.
+                        var checkbox = new CheckBox {
+                          MinWidth = 0,
+                          MinHeight = 0,
+                          Padding = new Thickness(0, 0, 2, 0),
+                          [!ToggleButton.IsCheckedProperty]
+                                = new Binding(nameof(MeshFullHierarchyNode.IsVisible)) {
+                                  Mode = BindingMode.TwoWay
+                                }
+                        };
+
+                        // Prevent double clicks on the checkbox from expanding the row
+                        checkbox.DoubleTapped += (_, e) => e.Handled = true;
+
+                        stackPanel.Children.Add(new LayoutTransformControl {
+                          LayoutTransform = new ScaleTransform(.8, .8), // Checkboxes are too tall for a row at full scale - scale them down to 80%
+                          VerticalAlignment = VerticalAlignment.Center,
+                          Child = checkbox
+                        });
+                      }
+
                       stackPanel.Children.AddRange([
                           new MaterialIcon {
                               Height = regularFontSize,
@@ -84,6 +112,7 @@ public class FullHierarchyTreeViewModel : BViewModel {
                                   = new Binding(nameof(IFullHierarchyNode.Name)),
                           }
                       ]);
+
                       return stackPanel;
                     })
                 },
@@ -268,12 +297,21 @@ public sealed class BoneFullHierarchyNode(
 public sealed class MeshFullHierarchyNode(
     IReadOnlyMesh mesh,
     IFullHierarchyNode[] children)
-    : IFullHierarchyNode {
+    : BViewModel, IFullHierarchyNode {
   public IReadOnlyMesh Mesh => mesh;
   public string Name => mesh.Name ?? $"Mesh {mesh.Index}";
   public MaterialIconKind Icon => MaterialIconKind.ShapeOutline;
   public FullHierarchyTreeType Type => FullHierarchyTreeType.BONES;
   public IFullHierarchyNode[] Children => children;
+
+  private bool isVisible_ = mesh.DefaultDisplayState != MeshDisplayState.HIDDEN;
+  public bool IsVisible {
+    get => isVisible_;
+    set {
+      this.RaiseAndSetIfChanged(ref  isVisible_, value);
+      MeshVisibilityService.SetVisibility(mesh, value);
+    }
+  }
 
   public MeshFullHierarchyNode(
       IReadOnlyMesh mesh,

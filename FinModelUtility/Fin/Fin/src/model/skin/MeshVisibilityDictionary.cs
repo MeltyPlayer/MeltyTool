@@ -13,13 +13,20 @@ namespace fin.model.skin;
 public partial interface IMeshVisibilityDictionary {
   void Reset();
 
-  bool this[IReadOnlyMesh mesh] { get; set; }
+  bool this[IReadOnlyMesh mesh] { get; }
+
+  bool AnyUserHidden { get; }
+
+  void SetLocalVisibility(IReadOnlyMesh mesh, bool isVisible);
+  void SetUserVisibility(IReadOnlyMesh mesh, bool isVisible);
 }
 
 public sealed class MeshVisibilityDictionary
     : IMeshVisibilityDictionary {
   private readonly VisibilityNode rootVisibilityNode_;
   private IndexableDictionary<IReadOnlyMesh, VisibilityNode> impl_;
+
+  private int userHiddenCount_;
 
   public MeshVisibilityDictionary(IReadOnlyModel model) {
     var rootMeshes = model.Skin.RootMeshes;
@@ -38,11 +45,25 @@ public sealed class MeshVisibilityDictionary
     }
   }
 
-  public void Reset() => this.rootVisibilityNode_.Reset();
+  public void Reset() {
+    this.rootVisibilityNode_.Reset(true);
+  }
 
-  public bool this[IReadOnlyMesh mesh] {
-    get => this.impl_[mesh].IsVisible;
-    set => this.impl_[mesh].LocalVisibility = value;
+  public bool this[IReadOnlyMesh mesh] => this.impl_[mesh].IsVisible;
+
+  public bool AnyUserHidden => this.userHiddenCount_ > 0;
+
+  public void SetLocalVisibility(IReadOnlyMesh mesh, bool isVisible) {
+    this.impl_[mesh].LocalVisibility = isVisible;
+  }
+
+  public void SetUserVisibility(IReadOnlyMesh mesh, bool isVisible) {
+    VisibilityNode node = this.impl_[mesh];
+
+    if (node.UserVisibility != isVisible) {
+      node.UserVisibility = isVisible;
+      this.userHiddenCount_ += isVisible ? -1 : 1;
+    }
   }
 
   private sealed class VisibilityNode(
@@ -51,24 +72,36 @@ public sealed class MeshVisibilityDictionary
       bool defaultInheritedVisibility) {
     private bool inheritedVisibility_ = defaultInheritedVisibility;
     private bool localVisibility_ = defaultLocalVisibility;
+
+    // The user-specified visibility for this node
+    private bool userVisibility_ = true;
     private readonly VisibilityNode[] children_ = new VisibilityNode[childCount];
 
-    public bool IsVisible => this.inheritedVisibility_ && this.LocalVisibility;
+    public bool IsVisible => this.inheritedVisibility_ && this.localVisibility_ && this.userVisibility_;
+
+    public bool UserVisibility {
+      get => this.userVisibility_;
+      set {
+        this.userVisibility_ = value;
+        this.UpdateChildrenInheritedVisibility_();
+      }
+    }
 
     public bool LocalVisibility {
       get => this.localVisibility_;
       set {
         this.localVisibility_ = value;
-        this.SetInheritedVisibility_(this.IsVisible);
+        this.UpdateChildrenInheritedVisibility_();
       }
     }
 
-    public void Reset() {
-      this.inheritedVisibility_ = defaultInheritedVisibility;
+    public void Reset(bool newInheritedVisibility) {
+      this.inheritedVisibility_ = newInheritedVisibility;
       this.localVisibility_ = defaultLocalVisibility;
 
-      foreach (var child in this.children_) {
-        child.Reset();
+      bool isVisible = this.IsVisible;
+      foreach (VisibilityNode child in this.children_) {
+        child.Reset(isVisible);
       }
     }
 
@@ -88,8 +121,13 @@ public sealed class MeshVisibilityDictionary
       }
 
       this.inheritedVisibility_ = inheritedVisibility;
-      foreach (var child in this.children_) {
-        child.SetInheritedVisibility_(this.IsVisible);
+      this.UpdateChildrenInheritedVisibility_();
+    }
+
+    private void UpdateChildrenInheritedVisibility_() {
+      bool isVisible = this.IsVisible;
+      foreach (VisibilityNode child in this.children_) {
+        child.SetInheritedVisibility_(isVisible);
       }
     }
   }
