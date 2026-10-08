@@ -27,7 +27,8 @@ public sealed class GlNullMaterialShader(
                                 ShaderRequirements.FromModelAndMaterial(
                                     model,
                                     modelRequirements,
-                                    material));
+                                    material),
+                                true);
 
   protected override void Setup(IReadOnlyMaterial? material,
                                 GlShaderProgram shaderProgram) { }

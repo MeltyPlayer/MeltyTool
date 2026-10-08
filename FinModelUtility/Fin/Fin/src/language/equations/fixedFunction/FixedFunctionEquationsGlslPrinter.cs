@@ -12,7 +12,9 @@ using fin.util.strings;
 
 namespace fin.language.equations.fixedFunction;
 
-public sealed class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
+public sealed class FixedFunctionEquationsGlslPrinter(
+    IReadOnlyModel model,
+    bool isSelectable) {
   private readonly IReadOnlyList<IReadOnlyModelAnimation> animations_
       = model.AnimationManager.Animations;
 
@@ -269,7 +271,7 @@ public sealed class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                   $$"""
                     vec4 individualLightDiffuseColors[{{MaterialConstants.MAX_LIGHTS}}];
                     vec4 individualLightSpecularColors[{{MaterialConstants.MAX_LIGHTS}}];
-                    
+
                     for (int i = 0; i < {{MaterialConstants.MAX_LIGHTS}}; ++i) {
                       vec4 diffuseLightColor = vec4(0);
                       vec4 specularLightColor = vec4(0);
@@ -279,7 +281,7 @@ public sealed class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
                       individualLightDiffuseColors[i] = diffuseLightColor;
                       individualLightSpecularColors[i] = specularLightColor;
                     }
-                    
+
                     """);
             }
 
@@ -313,10 +315,15 @@ public sealed class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
           if (material.GetTransparencyType() == TransparencyType.TRANSPARENT) {
             sb.AppendLine(
-                "fragColor = vec4(colorComponent, alphaComponent);");
+                $"{GlslConstants.UNIFORM_FRAG_COLOR_NAME} = vec4(colorComponent, alphaComponent);");
           } else {
-            sb.AppendLine("fragColor = vec4(colorComponent, 1);");
+            sb.AppendLine(
+                $"{GlslConstants.UNIFORM_FRAG_COLOR_NAME} = vec4(colorComponent, 1);");
           }
+
+          GlslUtil.MaybeAppendSelectedColorMutation(
+              sb,
+              isSelectable);
 
           var alphaOpValue =
               DetermineAlphaOpValue_(
@@ -333,12 +340,12 @@ public sealed class FixedFunctionEquationsGlslPrinter(IReadOnlyModel model) {
 
             var alphaCompareText0 =
                 GetAlphaCompareText_(material.AlphaCompareType0,
-                                          "alphaComponent",
-                                          material.AlphaReference0);
+                                     "alphaComponent",
+                                     material.AlphaReference0);
             var alphaCompareText1 =
                 GetAlphaCompareText_(material.AlphaCompareType1,
-                                          "alphaComponent",
-                                          material.AlphaReference1);
+                                     "alphaComponent",
+                                     material.AlphaReference1);
 
             switch (alphaOpValue) {
               case AlphaOpValue.ONLY_0_REQUIRED: {

@@ -304,14 +304,13 @@ public sealed class MeshFullHierarchyNode(
   public FullHierarchyTreeType Type => FullHierarchyTreeType.BONES;
   public IFullHierarchyNode[] Children => children;
 
-  private bool isVisible_ = mesh.DefaultDisplayState != MeshDisplayState.HIDDEN;
   public bool IsVisible {
-    get => isVisible_;
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref  isVisible_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
       MeshVisibilityService.SetVisibility(mesh, value);
     }
-  }
+  } = mesh.DefaultDisplayState != MeshDisplayState.HIDDEN;
 
   public MeshFullHierarchyNode(
       IReadOnlyMesh mesh,

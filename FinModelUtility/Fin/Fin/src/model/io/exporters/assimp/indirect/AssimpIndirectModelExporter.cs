@@ -92,7 +92,7 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
       var finMaterial = finMaterials[i];
       var materialName = finMaterial.Name?.ReplaceInvalidFilenameCharacters();
 
-      var shaderSource = finMaterial.ToShaderSource(model, modelRequirements);
+      var shaderSource = finMaterial.ToShaderSource(model, modelRequirements, false);
       var vertexShaderFile = new FinFile(
           Path.Combine(outputDirectory.FullPath,
                        $"{materialName}.vertex.glsl"));

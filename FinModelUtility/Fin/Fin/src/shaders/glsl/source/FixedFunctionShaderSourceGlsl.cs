@@ -7,13 +7,14 @@ public sealed class FixedFunctionShaderSourceGlsl(
     IReadOnlyModel model,
     IModelRequirements modelRequirements,
     IReadOnlyFixedFunctionMaterial material,
-    IShaderRequirements shaderRequirements)
+    IShaderRequirements shaderRequirements,
+    bool isSelectable)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; }
-    = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
+    = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
 
   public string FragmentShaderSource { get; } =
-    new FixedFunctionEquationsGlslPrinter(model).Print(
+    new FixedFunctionEquationsGlslPrinter(model, isSelectable).Print(
         material,
         shaderRequirements);
 }

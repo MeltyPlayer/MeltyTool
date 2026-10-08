@@ -13,6 +13,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
   
   private readonly bool hasLighting_;
   private readonly bool hasColor_;
+  private readonly bool isSelectable_;
 
   private readonly IReadOnlyTexture? diffuseTexture_;
   private readonly Color? diffuseColor_;
@@ -25,9 +26,10 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
       IReadOnlyModel model,
       IModelRequirements modelRequirements,
       IReadOnlyStandardMaterial material,
-      IShaderRequirements shaderRequirements) {
+      IShaderRequirements shaderRequirements,
+      bool isSelectable) {
     this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
 
     this.material_ = material;
 
@@ -40,6 +42,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
     sb.AppendLine();
 
     this.hasColor_ = shaderRequirements.UsedColors.AnyTrue();
+    this.isSelectable_ = isSelectable;
 
     this.diffuseTexture_ = material.DiffuseTexture;
     this.diffuseColor_ = material.DiffuseColor;
@@ -252,6 +255,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
+    GlslUtil.MaybeAppendSelectedColorMutation(sb, this.isSelectable_);
     GlslUtil.AppendAlphaDiscard(sb, this.material_);
   }
 }

@@ -10,6 +10,7 @@ using fin.model;
 using fin.image.util;
 using fin.model.util;
 using fin.ui.rendering.gl;
+using fin.util.enums;
 using fin.util.strings;
 
 namespace fin.shaders.glsl;
@@ -61,9 +62,11 @@ public static partial class GlslUtil {
   }
 
   // TODO: Only include uvs/colors as needed
-  public static string GetVertexSrc(IReadOnlyModel model,
-                                    IModelRequirements modelRequirements,
-                                    IShaderRequirements shaderRequirements) {
+  public static string GetVertexSrc(
+      IReadOnlyModel model,
+      IModelRequirements modelRequirements,
+      IShaderRequirements shaderRequirements,
+      bool isSelectable) {
     var usedUvs = shaderRequirements.UsedUvs;
     var usedColors = shaderRequirements.UsedColors;
 
@@ -78,15 +81,36 @@ public static partial class GlslUtil {
 
     var numBones = modelRequirements.NumBones;
 
-    vertexSrc.AppendLine($"""
-                          #version {GlslConstants.VERTEX_SHADER_VERSION}
+    vertexSrc.AppendLine(
+        $"""
+         #version {GlslConstants.VERTEX_SHADER_VERSION}
 
-                          {GetMatricesHeaders(model)}
+         {GetMatricesHeaders(model)}
+         """);
 
-                          uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
+    if (isSelectable) {
+      vertexSrc.Append(
+          $$"""
+            layout (std140, binding = {{GlslConstants.UBO_GLOBAL_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_GLOBAL_MATRICES_NAME}} {
+              int selectedMeshId;
+              int selectedMaterialId;
+            
+              int primitiveToMaterialId[{{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}}];
+              int primitiveToMeshId[{{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}}];
+            };
 
-                          layout(location = {location++}) in vec3 in_Position;
-                          """);
+            """);
+    }
+
+    vertexSrc.AppendLine(
+        $"uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};");
+
+    if (isSelectable) {
+      vertexSrc.AppendLine("in int gl_PrimitiveID;");
+    }
+
+    vertexSrc.AppendLine(
+        $"layout(location = {location++}) in vec3 in_Position;");
 
     if (hasNormals) {
       vertexSrc.AppendLine(
@@ -168,115 +192,128 @@ public static partial class GlslUtil {
       }
     }
 
-    vertexSrc.Append($$"""
-
-                       void main() {
-                         mat4 mvpMatrix = {{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}} * {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-
-                       """);
-
-    if (modelRequirements.NumBones > 0) {
-      switch (numBones) {
-        case 1: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds] * in_BoneWeights;
-               """);
-          break;
-        }
-        case 2: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y;
-               """);
-          break;
-        }
-        case 3: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z;
-               """);
-          break;
-        }
-        case 4: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
-               """);
-          break;
-        }
-        default: throw new NotImplementedException();
-      }
-
-      vertexSrc.AppendLine(
-          $"""
-
-
-             mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
-             mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
-
-             gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
-
-             vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
-           """);
-
-      if (hasNormals) {
-        vertexSrc.AppendLine(
-            "  vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;");
-      }
-
-      if (hasTangents) {
-        vertexSrc.AppendLine(
-            "  tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;");
-      }
-
-      if (hasBinormals) {
-        vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
-      }
-    } else {
-      vertexSrc.AppendLine(
-          $"""
-
-             gl_Position = mvpMatrix * vec4(in_Position, 1);
-
-             vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
-           """);
-
-      if (hasNormals) {
-        vertexSrc.AppendLine(
-            $"  vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
-      }
-
-      if (hasTangents) {
-        vertexSrc.AppendLine(
-            $"  tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;");
-      }
-
-      if (hasBinormals) {
-        vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
-      }
+    if (isSelectable) {
+      vertexSrc.AppendLine("out bool isSelected;");
     }
 
-    for (var i = 0; i < usedUvs.Length; ++i) {
-      if (usedUvs[i]) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_UV_NAME}{i} = in_Uv{i};");
-      }
-    }
+    vertexSrc.AppendBlock(
+        "void main()",
+        () => {
+          vertexSrc.AppendLine(
+              $"mat4 mvpMatrix = {GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME} * {GlslConstants.UNIFORM_MODEL_MATRIX_NAME};");
 
-    for (var i = 0; i < usedColors.Length; ++i) {
-      if (usedColors[i]) {
-        vertexSrc.AppendLine(
-            $"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Color{i};");
-      }
-    }
+          if (modelRequirements.NumBones > 0) {
+            switch (numBones) {
+              case 1: {
+                vertexSrc.AppendLine(
+                    $"mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds] * in_BoneWeights;");
+                break;
+              }
+              case 2: {
+                vertexSrc.AppendLine(
+                    $"""
+                     mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y;
+                     """);
+                break;
+              }
+              case 3: {
+                vertexSrc.AppendLine(
+                    $"""
+                     mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z;
+                     """);
+                break;
+              }
+              case 4: {
+                vertexSrc.AppendLine(
+                    $"""
+                     mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
+                     """);
+                break;
+              }
+              default: throw new NotImplementedException();
+            }
 
-    vertexSrc.AppendLine("}");
+            vertexSrc.AppendLine(
+                $"""
+
+
+                 mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
+                 mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
+
+                 gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
+
+                 vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
+                 """);
+
+            if (hasNormals) {
+              vertexSrc.AppendLine(
+                  "vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;");
+            }
+
+            if (hasTangents) {
+              vertexSrc.AppendLine(
+                  "tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;");
+            }
+
+            if (hasBinormals) {
+              vertexSrc.AppendLine(
+                  "binormal = cross(vertexNormal, tangent);");
+            }
+          } else {
+            vertexSrc.AppendLine(
+                $"""
+
+                 gl_Position = mvpMatrix * vec4(in_Position, 1);
+
+                 vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
+                 """);
+
+            if (hasNormals) {
+              vertexSrc.AppendLine(
+                  $"vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
+            }
+
+            if (hasTangents) {
+              vertexSrc.AppendLine(
+                  $"tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;");
+            }
+
+            if (hasBinormals) {
+              vertexSrc.AppendLine(
+                  "binormal = cross(vertexNormal, tangent);");
+            }
+          }
+
+          for (var i = 0; i < usedUvs.Length; ++i) {
+            if (usedUvs[i]) {
+              vertexSrc.AppendLine(
+                  $"{GlslConstants.IN_UV_NAME}{i} = in_Uv{i};");
+            }
+          }
+
+          for (var i = 0; i < usedColors.Length; ++i) {
+            if (usedColors[i]) {
+              vertexSrc.AppendLine(
+                  $"{GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Color{i};");
+            }
+          }
+
+          if (isSelectable) {
+            vertexSrc.AppendLine(
+                """
+                
+                int materialId = primitiveToMaterialId[gl_PrimitiveID];
+                int meshId = primitiveToMeshId[gl_PrimitiveID];
+                isSelected = materialId == selectedMaterialId || meshId == selectedMeshId;
+                """);
+          }
+        });
 
     return vertexSrc.ToString();
   }

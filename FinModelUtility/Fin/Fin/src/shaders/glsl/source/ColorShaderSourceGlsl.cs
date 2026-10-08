@@ -8,18 +8,21 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
   private readonly IReadOnlyMaterial material_;
   private readonly bool hasColors_;
   private readonly bool hasLighting_;
+  private readonly bool isSelectable_;
 
   public ColorShaderSourceGlsl(IReadOnlyModel model,
                                IModelRequirements modelRequirements,
                                IReadOnlyMaterial material,
-                               IShaderRequirements shaderRequirements) {
+                               IShaderRequirements shaderRequirements,
+                               bool isSelectable) {
     this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
 
     this.material_ = material;
     this.hasColors_ = shaderRequirements.UsedColors.AnyTrue();
     var hasNormals = shaderRequirements.HasNormals;
     this.hasLighting_ = !material.IgnoreLights && hasNormals;
+    this.isSelectable_ = isSelectable;
 
     var sb = new IndentedStringBuilder();
     sb.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
@@ -102,6 +105,7 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
+    GlslUtil.MaybeAppendSelectedColorMutation(sb, this.isSelectable_);
     GlslUtil.AppendAlphaDiscard(sb, this.material_);
   }
 }

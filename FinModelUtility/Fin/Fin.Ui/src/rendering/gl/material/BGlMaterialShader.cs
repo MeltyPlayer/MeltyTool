@@ -72,7 +72,7 @@ public abstract class BGlMaterialShader<TMaterial> : IGlMaterialShader
   protected virtual IShaderSourceGlsl GenerateShaderSource(
       IReadOnlyModel model,
       IModelRequirements modelRequirements,
-      TMaterial material) => material.ToShaderSource(model, modelRequirements);
+      TMaterial material) => material.ToShaderSource(model, modelRequirements, true);
 
   protected abstract void Setup(TMaterial material,
                                 GlShaderProgram shaderProgram);

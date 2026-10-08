@@ -7,10 +7,11 @@ namespace fin.shaders.glsl.source;
 public sealed class NullShaderSourceGlsl(
     IReadOnlyModel model,
     IModelRequirements modelRequirements,
-    IShaderRequirements shaderRequirements)
+    IShaderRequirements shaderRequirements,
+    bool isSelectable)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; } =
-    GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
+    GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
 
   public string FragmentShaderSource {
     get {
@@ -44,5 +45,6 @@ public sealed class NullShaderSourceGlsl(
   public void AppendFragmentMain(IndentedStringBuilder sb) {
     sb.AppendLine(
         $"${GlslConstants.UNIFORM_FRAG_COLOR_NAME} = {(shaderRequirements.UsedColors.AnyTrue() ? $"{GlslConstants.IN_VERTEX_COLOR_NAME}0" : "vec4(1)")};");
+    GlslUtil.MaybeAppendSelectedColorMutation(sb, isSelectable);
   }
 }

@@ -28,7 +28,8 @@ public class MaterialShadersPanelViewModel : BViewModel {
       var (model, material) = field;
       var shaderSource
           = material.ToShaderSource(model,
-                                    ModelRequirements.FromModel(model));
+                                    ModelRequirements.FromModel(model),
+                                    true);
       this.VertexShaderSource = shaderSource.VertexShaderSource;
       this.FragmentShaderSource = shaderSource.FragmentShaderSource;
     }

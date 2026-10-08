@@ -10,6 +10,7 @@ namespace fin.shaders.glsl.source;
 public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
   private readonly IReadOnlyMaterial material_;
   private readonly IReadOnlyList<IReadOnlyModelAnimation> animations_;
+  private readonly bool isSelectable_;
 
   private readonly bool hasLighting_;
   private readonly bool hasColors_;
@@ -18,14 +19,17 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
   private readonly IReadOnlyTexture? diffuseTexture_;
   private readonly int uvIndex_;
 
-  public TextureShaderSourceGlsl(IReadOnlyModel model,
-                                 IModelRequirements modelRequirements,
-                                 IReadOnlyTextureMaterial material,
-                                 IShaderRequirements shaderRequirements) {
+  public TextureShaderSourceGlsl(
+      IReadOnlyModel model,
+      IModelRequirements modelRequirements,
+      IReadOnlyTextureMaterial material,
+      IShaderRequirements shaderRequirements,
+      bool isSelectable) {
     this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
 
     this.animations_ = model.AnimationManager.Animations;
+    this.isSelectable_ = isSelectable;
 
     this.material_ = material;
 
@@ -125,6 +129,9 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
            """);
     }
 
+    GlslUtil.MaybeAppendSelectedColorMutation(
+        sb,
+        this.isSelectable_);
     GlslUtil.AppendAlphaDiscard(sb, this.material_);
   }
 }
