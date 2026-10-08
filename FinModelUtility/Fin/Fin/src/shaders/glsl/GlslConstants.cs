@@ -25,8 +25,8 @@ public static class GlslConstants {
   public const int UBO_LIGHTS_BINDING_INDEX = 3;
   public const string UBO_LIGHTS_NAME = "Lights";
 
-  public const int UBO_SELECTION_BINDING_INDEX = 4;
-  public const string UBO_SELECTION_NAME = "Selection";
+  public const int UBO_PRIMITIVE_METADATA_BINDING_INDEX = 4;
+  public const string UBO_PRIMITIVE_METADATA_NAME = "PrimitiveMetadataSsbo";
 
   public const string UNIFORM_CAMERA_POSITION_NAME = "cameraPosition";
 

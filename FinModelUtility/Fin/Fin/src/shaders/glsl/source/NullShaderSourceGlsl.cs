@@ -24,7 +24,7 @@ public sealed class NullShaderSourceGlsl(
            out vec4 {GlslConstants.UNIFORM_FRAG_COLOR_NAME};
            """);
 
-      GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
+      GlslUtil.MaybeAppendPrimitiveMetadataHeader(sb, isSelectable);
 
       var hasColors = shaderRequirements.UsedColors.AnyTrue();
       if (hasColors) {

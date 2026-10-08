@@ -44,7 +44,7 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
 
-    GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
+    GlslUtil.MaybeAppendPrimitiveMetadataHeader(sb, isSelectable);
 
     sb.AppendLine(
         """

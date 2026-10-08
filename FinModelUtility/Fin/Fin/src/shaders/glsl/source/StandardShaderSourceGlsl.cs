@@ -112,7 +112,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
       needsNewline = true;
     }
 
-    GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
+    GlslUtil.MaybeAppendPrimitiveMetadataHeader(sb, isSelectable);
 
     if (needsNewline) {
       sb.AppendLine();

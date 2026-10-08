@@ -161,7 +161,7 @@ public sealed partial class GlBufferManager {
             _ => throw new ArgumentOutOfRangeException()
         };
 
-    private SelectionSsbo? selectionSsbo_;
+    private PrimitiveMetadataSsbo? selectionSsbo_;
 
     ~GlBufferRenderer() => this.ReleaseUnmanagedResources_();
 
@@ -176,7 +176,7 @@ public sealed partial class GlBufferManager {
     }
 
     public void Render() {
-      this.selectionSsbo_ ??= new SelectionSsbo(primitives);
+      this.selectionSsbo_ ??= new PrimitiveMetadataSsbo(primitives);
       this.selectionSsbo_.Bind();
 
       GlUtil.SetFlipFaces(isFlipped);

@@ -203,9 +203,6 @@ public sealed class SceneStaticRenderGraph : IRenderable {
   private ISkeletonRenderer[] skeletonRenderers_;
 
   private IReadOnlyBone? selectedBone_;
-  private IReadOnlySceneNode? selectedNode_;
-  private IReadOnlyMesh? selectedMesh_;
-  private IReadOnlySet<IReadOnlyMaterial>? selectedMaterials_;
 
   public float Scale { get; set; }
   public float NearPlane { get; set; }
@@ -216,12 +213,6 @@ public sealed class SceneStaticRenderGraph : IRenderable {
 
     SelectedBoneService.OnBoneSelected += selectedBone
         => this.selectedBone_ = selectedBone;
-    SelectedNodeService.OnNodeSelected += selectedNode
-        => this.selectedNode_ = selectedNode;
-    SelectedMeshService.OnMeshSelected += selectedMesh
-        => this.selectedMesh_ = selectedMesh;
-    SelectedMaterialsService.OnMaterialsSelected += selectedMaterials
-        => this.selectedMaterials_ = selectedMaterials;
   }
 
   ~SceneStaticRenderGraph() => this.ReleaseUnmanagedResources_();
@@ -350,45 +341,14 @@ public sealed class SceneStaticRenderGraph : IRenderable {
 
     this.SortTransparentElements_();
 
-    var isSomethingSelected = this.selectedNode_ != null ||
-                              this.selectedMesh_ != null ||
-                              (this.selectedMaterials_?.Any() ?? false);
-
-    /*if (isSomethingSelected) {
-      foreach (var element in this.elements_) {
-        var prms = element.Params;
-        if (prms.IsSelected || this.selectedNode_ == prms.Node.Definition) {
-          GlUtil.RenderOutline(() => RenderParams_(prms));
-        }
-      }
-    }*/
-
     foreach (var element in this.opaqueElements_) {
       var prms = element.Params;
       RenderParams_(prms);
     }
 
-    if (isSomethingSelected) {
-      foreach (var element in this.opaqueElements_) {
-        var prms = element.Params;
-        if (prms.IsSelected || this.selectedNode_ == prms.Node.Definition) {
-          GlUtil.RenderHighlight(() => RenderParams_(prms));
-        }
-      }
-    }
-
     foreach (var element in this.transparentElements_) {
       var prms = element.Params;
       RenderParams_(prms);
-    }
-
-    if (isSomethingSelected) {
-      foreach (var element in this.transparentElements_) {
-        var prms = element.Params;
-        if (prms.IsSelected || this.selectedNode_ == prms.Node.Definition) {
-          GlUtil.RenderHighlight(() => RenderParams_(prms));
-        }
-      }
     }
 
     if (this.selectedBone_ != null) {
