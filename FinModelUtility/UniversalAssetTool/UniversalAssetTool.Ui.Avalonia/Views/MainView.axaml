@@ -96,8 +96,8 @@
                 <Border Classes="ExtraHitTestMargin"
                         DockPanel.Dock="Right"
                         Background="Transparent"
-                        Width="32"
-                        Margin="0 0 -32 0"
+                        Width="64"
+                        Margin="0 0 -64 0"
                         VerticalAlignment="Stretch" />
                 <progress:ProgressPanel DataContext="{Binding FileBundleTreeAsyncPanelViewModel}">
                   <progress:ProgressPanel.DataTemplate>
