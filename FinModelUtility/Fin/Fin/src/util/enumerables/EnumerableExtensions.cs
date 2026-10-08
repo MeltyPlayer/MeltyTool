@@ -76,6 +76,19 @@ public static class EnumerableExtensions {
     }
   }
 
+  public static IEnumerable<T> Collapsed<T>(this IEnumerable<T> enumerable) {
+    var hasPrevious = false;
+    T previous = default!;
+    foreach (var current in enumerable) {
+      if (hasPrevious && previous.Equals(current)) {
+        continue;
+      }
+
+      yield return current;
+      previous = current;
+    }
+  }
+
   public static IEnumerable<T> WhereNonnull<T>(
       this IEnumerable<T?> enumerable)
     => enumerable.Select(v => (v != null, v))

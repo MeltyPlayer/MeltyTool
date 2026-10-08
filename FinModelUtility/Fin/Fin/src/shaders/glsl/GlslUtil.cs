@@ -65,8 +65,7 @@ public static partial class GlslUtil {
   public static string GetVertexSrc(
       IReadOnlyModel model,
       IModelRequirements modelRequirements,
-      IShaderRequirements shaderRequirements,
-      bool isSelectable) {
+      IShaderRequirements shaderRequirements) {
     var usedUvs = shaderRequirements.UsedUvs;
     var usedColors = shaderRequirements.UsedColors;
 
@@ -88,26 +87,8 @@ public static partial class GlslUtil {
          {GetMatricesHeaders(model)}
          """);
 
-    if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
-      vertexSrc.Append(
-          $$"""
-            layout (std140, binding = {{GlslConstants.UBO_GLOBAL_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_GLOBAL_MATRICES_NAME}} {
-              int selectedMeshId;
-              int selectedMaterialId;
-            
-              int primitiveToMaterialId[{{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}}];
-              int primitiveToMeshId[{{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}}];
-            };
-
-            """);
-    }
-
     vertexSrc.AppendLine(
         $"uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};");
-
-    if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
-      vertexSrc.AppendLine("in int gl_PrimitiveID;");
-    }
 
     vertexSrc.AppendLine(
         $"layout(location = {location++}) in vec3 in_Position;");
@@ -190,10 +171,6 @@ public static partial class GlslUtil {
         vertexSrc.AppendLine(
             $"out vec4 {GlslConstants.IN_VERTEX_COLOR_NAME}{i};");
       }
-    }
-
-    if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
-      vertexSrc.AppendLine("out bool isSelected;");
     }
 
     vertexSrc.AppendBlock(
@@ -302,16 +279,6 @@ public static partial class GlslUtil {
               vertexSrc.AppendLine(
                   $"{GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Color{i};");
             }
-          }
-
-          if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
-            vertexSrc.AppendLine(
-                """
-                
-                int materialId = primitiveToMaterialId[gl_PrimitiveID];
-                int meshId = primitiveToMeshId[gl_PrimitiveID];
-                isSelected = materialId == selectedMaterialId || meshId == selectedMeshId;
-                """);
           }
         });
 

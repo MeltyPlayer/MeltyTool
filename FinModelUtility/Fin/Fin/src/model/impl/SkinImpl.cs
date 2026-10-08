@@ -110,14 +110,16 @@ public partial class ModelImpl<TVertex> {
     }
 
     private sealed class PrimitiveImpl(
+        IMesh mesh,
         PrimitiveType type,
         IReadOnlyList<IReadOnlyVertex> vertices)
-        : BPrimitiveImpl(type, vertices);
+        : BPrimitiveImpl(mesh, type, vertices);
 
     private sealed class LinesPrimitiveImpl(
+        IMesh mesh,
         PrimitiveType primitiveType,
         IReadOnlyList<IReadOnlyVertex> vertices)
-        : BPrimitiveImpl(primitiveType, vertices), ILinesPrimitive {
+        : BPrimitiveImpl(mesh, primitiveType, vertices), ILinesPrimitive {
       public float LineWidth { get; private set; }
 
       public ILinesPrimitive SetLineWidth(float width) {
@@ -126,8 +128,8 @@ public partial class ModelImpl<TVertex> {
       }
     }
 
-    private sealed class PointsPrimitiveImpl(IReadOnlyList<IReadOnlyVertex> vertices)
-        : BPrimitiveImpl(PrimitiveType.POINTS, vertices), IPointsPrimitive {
+    private sealed class PointsPrimitiveImpl(IMesh mesh, IReadOnlyList<IReadOnlyVertex> vertices)
+        : BPrimitiveImpl(mesh, PrimitiveType.POINTS, vertices), IPointsPrimitive {
       public float Radius { get; private set; }
 
       public IPointsPrimitive SetRadius(float radius) {
@@ -137,11 +139,13 @@ public partial class ModelImpl<TVertex> {
     }
 
     private abstract class BPrimitiveImpl(
+        IMesh mesh,
         PrimitiveType type,
         IReadOnlyList<IReadOnlyVertex> vertices)
         : IPrimitive {
       public required int Index { get; init; }
 
+      public IMesh Mesh => mesh;
       public PrimitiveType Type { get; } = type;
       public IReadOnlyList<IReadOnlyVertex> Vertices { get; } = vertices;
 

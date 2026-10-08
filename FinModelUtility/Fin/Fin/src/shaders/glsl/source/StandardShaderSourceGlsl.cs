@@ -29,7 +29,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
       IShaderRequirements shaderRequirements,
       bool isSelectable) {
     this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     this.material_ = material;
 
@@ -111,6 +111,8 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
       needsNewline = true;
     }
+
+    GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
 
     if (needsNewline) {
       sb.AppendLine();

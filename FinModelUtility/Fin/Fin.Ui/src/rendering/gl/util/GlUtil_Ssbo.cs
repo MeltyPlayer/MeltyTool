@@ -4,7 +4,7 @@ namespace fin.ui.rendering.gl;
 
 public partial record GlState {
   public int CurrentSsboDataId { get; set; }
-  public int[] CurrentSsboBufferBaseIdByIndex { get; } = [0, 0, 0, 0];
+  public int[] CurrentSsboBufferBaseIdByIndex { get; } = [0, 0, 0, 0, 0];
 }
 
 public static partial class GlUtil {
@@ -19,10 +19,11 @@ public static partial class GlUtil {
   }
 
   public static void ResetSsboBufferBase() {
-    BindSsboBufferBase(0, 0);
-    BindSsboBufferBase(1, 0);
-    BindSsboBufferBase(2, 0);
-    BindSsboBufferBase(3, 0);
+    for (var i = 0;
+         i < currentState_.CurrentSsboBufferBaseIdByIndex.Length;
+         ++i) {
+      BindSsboBufferBase(i, 0);
+    }
   }
 
   public static void BindSsboBufferBase(int bindingIndex, int ssboId) {

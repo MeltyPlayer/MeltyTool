@@ -91,6 +91,8 @@ public sealed class FixedFunctionEquationsGlslPrinter(
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
 
+    GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
+
     var dependsOnIndividualTextures =
         Enumerable
             .Range(0, MaterialConstants.MAX_TEXTURES)

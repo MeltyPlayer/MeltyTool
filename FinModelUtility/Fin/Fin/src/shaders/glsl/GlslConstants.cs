@@ -25,6 +25,9 @@ public static class GlslConstants {
   public const int UBO_LIGHTS_BINDING_INDEX = 3;
   public const string UBO_LIGHTS_NAME = "Lights";
 
+  public const int UBO_SELECTION_BINDING_INDEX = 4;
+  public const string UBO_SELECTION_NAME = "Selection";
+
   public const string UNIFORM_CAMERA_POSITION_NAME = "cameraPosition";
 
   public const string UNIFORM_BONE_MATRICES_NAME = "boneMatrices";
@@ -34,7 +37,6 @@ public static class GlslConstants {
   public const string UNIFORM_SHININESS_NAME = "shininess";
 
   public const string UNIFORM_FRAG_COLOR_NAME = "fragColor";
-  public const string UNIFORM_IS_SELECTED_NAME = "isSelected";
 
   public const string IN_UV_NAME = "uv";
   public const string IN_VERTEX_COLOR_NAME = "vertexColor";

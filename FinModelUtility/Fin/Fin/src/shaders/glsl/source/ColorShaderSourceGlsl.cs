@@ -16,7 +16,7 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
                                IShaderRequirements shaderRequirements,
                                bool isSelectable) {
     this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     this.material_ = material;
     this.hasColors_ = shaderRequirements.UsedColors.AnyTrue();
@@ -43,6 +43,8 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
       sb.AppendLine($"uniform bool {GlslConstants.UNIFORM_HAS_SPECULAR_NAME};");
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
+
+    GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
 
     sb.AppendLine(
         """

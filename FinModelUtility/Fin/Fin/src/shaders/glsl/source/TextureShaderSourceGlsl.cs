@@ -26,7 +26,7 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
       IShaderRequirements shaderRequirements,
       bool isSelectable) {
     this.VertexShaderSource
-        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
+        = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     this.animations_ = model.AnimationManager.Animations;
     this.isSelectable_ = isSelectable;
@@ -66,6 +66,8 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
       sb.AppendLine($"uniform bool {GlslConstants.UNIFORM_HAS_SPECULAR_NAME};");
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
+
+    GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
 
     sb.AppendLine(
         """

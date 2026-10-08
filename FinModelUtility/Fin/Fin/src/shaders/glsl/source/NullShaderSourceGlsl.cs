@@ -11,7 +11,7 @@ public sealed class NullShaderSourceGlsl(
     bool isSelectable)
     : IShaderSourceGlsl {
   public string VertexShaderSource { get; } =
-    GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements, isSelectable);
+    GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
   public string FragmentShaderSource {
     get {
@@ -23,6 +23,8 @@ public sealed class NullShaderSourceGlsl(
 
            out vec4 {GlslConstants.UNIFORM_FRAG_COLOR_NAME};
            """);
+
+      GlslUtil.MaybeAppendSelectedHeader(sb, isSelectable);
 
       var hasColors = shaderRequirements.UsedColors.AnyTrue();
       if (hasColors) {

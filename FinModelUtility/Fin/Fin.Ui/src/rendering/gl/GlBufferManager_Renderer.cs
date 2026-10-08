@@ -1,6 +1,7 @@
 ﻿using fin.math;
 using fin.model;
 using fin.ui.rendering.gl.model;
+using fin.util.enumerables;
 
 using Nito.Disposables;
 
@@ -92,9 +93,14 @@ public sealed partial class GlBufferManager {
         }
       }
 
+      var primitives = mergedPrimitive.Vertices.Select(v => v.Item1)
+                                      .Collapsed()
+                                      .ToArray();
+
       if (isArray) {
         renderers[i] = new GlBufferRenderer(
             this.VaoId,
+            primitives,
             mergedPrimitive.PrimitiveType,
             mergedPrimitive.IsFlipped,
             null,
@@ -104,6 +110,7 @@ public sealed partial class GlBufferManager {
       } else {
         renderers[i] = new GlBufferRenderer(
             this.VaoId,
+            primitives,
             mergedPrimitive.PrimitiveType,
             mergedPrimitive.IsFlipped,
             eboId,
@@ -136,6 +143,7 @@ public sealed partial class GlBufferManager {
 
   public sealed class GlBufferRenderer(
       int vaoId,
+      IReadOnlyList<IReadOnlyPrimitive> primitives,
       FinPrimitiveType primitiveType,
       bool isFlipped,
       int? eboId,
@@ -153,6 +161,8 @@ public sealed partial class GlBufferManager {
             _ => throw new ArgumentOutOfRangeException()
         };
 
+    private SelectionSsbo? selectionSsbo_;
+
     ~GlBufferRenderer() => this.ReleaseUnmanagedResources_();
 
     public void Dispose() {
@@ -160,9 +170,15 @@ public sealed partial class GlBufferManager {
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() => eboDisposable?.Dispose();
+    private void ReleaseUnmanagedResources_() {
+      this.selectionSsbo_?.Dispose();
+      eboDisposable?.Dispose();
+    }
 
     public void Render() {
+      this.selectionSsbo_ ??= new SelectionSsbo(primitives);
+      this.selectionSsbo_.Bind();
+
       GlUtil.SetFlipFaces(isFlipped);
       GlUtil.BindVao(vaoId);
 

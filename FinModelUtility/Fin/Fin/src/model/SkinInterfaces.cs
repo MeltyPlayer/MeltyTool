@@ -172,6 +172,7 @@ public partial interface IPointsPrimitive : IPrimitive {
 
 [GenerateReadOnly]
 public partial interface IPrimitive : IIndexable {
+  new IMesh Mesh { get; }
   new PrimitiveType Type { get; }
   new IReadOnlyList<IReadOnlyVertex> Vertices { get; }
 
