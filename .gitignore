@@ -379,3 +379,6 @@ cli/roms/*/cache/**
 !FinModelUtility/**/goldens/**
 cli/ui/music/**
 !cli/ui/music/PUT UI BACKGROUND MUSIC HERE.txt
+
+# Halo Wars KSoft binaries
+_bin/

@@ -65,6 +65,11 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
         this.SkeletonRenderer.SelectedBone
             = this.isBoneSelected_ ? selectedBone : null;
       };
+
+      // Only single models have per-mesh renderers, which hiding meshes
+      // relies on.
+      MeshVisibilityService.OnMeshVisibilityChanged
+          += this.OnMeshVisibilityChanged_;
     }
 
     this.needsToAlwaysUpdateMatrices_
@@ -75,8 +80,18 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   ~SimpleModelRenderComponent() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
+    MeshVisibilityService.OnMeshVisibilityChanged -= this.OnMeshVisibilityChanged_;
     this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
+  }
+
+  private void OnMeshVisibilityChanged_(IReadOnlyMesh mesh, bool isVisible) {
+    // The service is global, so ignore meshes from other models.
+    if (!this.meshes_.Contains(mesh)) {
+      return;
+    }
+
+    this.meshVisibility_.SetUserVisibility(mesh, isVisible);
   }
 
   private void ReleaseUnmanagedResources_() {
@@ -128,8 +143,9 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
             continue;
           }
 
-          this.meshVisibility_[meshTracks.Mesh]
-              = displayState is not MeshDisplayState.HIDDEN;
+          this.meshVisibility_.SetLocalVisibility(
+              meshTracks.Mesh,
+              displayState is not MeshDisplayState.HIDDEN);
         }
       }
     } else {

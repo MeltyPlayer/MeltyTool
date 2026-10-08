@@ -88,7 +88,7 @@ public partial class ModelRenderer {
           }
 
           // Need to always include this to support rendering meshes when
-          // selected in the viewer.
+          // selected or when other meshes are hidden in the viewer.
           if (SceneTypeService.IsASingleModel) {
             var visibilityMeshMaterialTuple
                 = (primitive.Material, (mesh, isVisibilityAnimated));
@@ -236,8 +236,15 @@ public partial class ModelRenderer {
     public bool IsSelected => this.isMaterialSelected_ || this.isMeshSelected_;
 
     public void Render() {
+      // Merged renderers can't hide individual meshes, so while the user has
+      // any meshes hidden, draw the per-mesh renderers instead.
+      var anyUserHidden = this.MeshVisibility?.AnyUserHidden ?? false;
+      if (this.Mesh == null && anyUserHidden) {
+        return;
+      }
+
       var isSelected = this.IsSelected;
-      if (this.renderOnlyWhenSelected_ && !isSelected) {
+      if (this.renderOnlyWhenSelected_ && !isSelected && !anyUserHidden) {
         return;
       }
 
