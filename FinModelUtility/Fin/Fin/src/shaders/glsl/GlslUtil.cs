@@ -88,7 +88,7 @@ public static partial class GlslUtil {
          {GetMatricesHeaders(model)}
          """);
 
-    if (isSelectable) {
+    if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
       vertexSrc.Append(
           $$"""
             layout (std140, binding = {{GlslConstants.UBO_GLOBAL_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_GLOBAL_MATRICES_NAME}} {
@@ -105,7 +105,7 @@ public static partial class GlslUtil {
     vertexSrc.AppendLine(
         $"uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};");
 
-    if (isSelectable) {
+    if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
       vertexSrc.AppendLine("in int gl_PrimitiveID;");
     }
 
@@ -192,7 +192,7 @@ public static partial class GlslUtil {
       }
     }
 
-    if (isSelectable) {
+    if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
       vertexSrc.AppendLine("out bool isSelected;");
     }
 
@@ -304,7 +304,7 @@ public static partial class GlslUtil {
             }
           }
 
-          if (isSelectable) {
+          if (ENABLE_SELECTION_VIA_SHADER && isSelectable) {
             vertexSrc.AppendLine(
                 """
                 

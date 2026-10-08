@@ -114,7 +114,7 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
   public void AppendFragmentMain(IndentedStringBuilder sb) {
     sb.AppendLine(
-        $"${GlslConstants.UNIFORM_FRAG_COLOR_NAME} = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{this.uvIndex_}", this.diffuseTexture_, this.animations_)}" +
+        $"{GlslConstants.UNIFORM_FRAG_COLOR_NAME} = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{this.uvIndex_}", this.diffuseTexture_, this.animations_)}" +
         (this.hasColors_ ? " * vertexColor0" : "") +
         (this.hasDiffuseColor_ ? " * diffuseColor" : "") +
         ";");
@@ -125,7 +125,7 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
            // Have to renormalize because the vertex normals can become distorted when interpolated.
            vec3 fragNormal = normalize(vertexNormal);
-           ${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = mix(${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, ${GlslConstants.UNIFORM_FRAG_COLOR_NAME}, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
+           {GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = mix({GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, {GlslConstants.UNIFORM_FRAG_COLOR_NAME}, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
            """);
     }
 

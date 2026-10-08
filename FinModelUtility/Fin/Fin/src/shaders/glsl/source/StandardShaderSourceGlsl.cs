@@ -241,7 +241,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
 
       // TODO: Is this right?
       sb.AppendLine(
-          $"${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = mix(${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, ${GlslConstants.UNIFORM_FRAG_COLOR_NAME}, {(this.specularTexture_ != null ? $"{GlslUtil.ReadColorFromTexture("specularTexture", "uv0", this.specularTexture_, this.animations_)}" : "vec4(1)")}{(this.ambientOcclusionTexture_ != null ? ", ambientOcclusionColor.r" : "")}).rgb, {GlslConstants.UNIFORM_USE_LIGHTING_NAME});");
+          $"{GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = mix({GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, {GlslConstants.UNIFORM_FRAG_COLOR_NAME}, {(this.specularTexture_ != null ? $"{GlslUtil.ReadColorFromTexture("specularTexture", "uv0", this.specularTexture_, this.animations_)}" : "vec4(1)")}{(this.ambientOcclusionTexture_ != null ? ", ambientOcclusionColor.r" : "")}).rgb, {GlslConstants.UNIFORM_USE_LIGHTING_NAME});");
     }
 
     if (this.emissiveTexture_ != null) {
@@ -250,8 +250,8 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
           $"vec4 emissiveColor = {GlslUtil.ReadColorFromTexture("emissiveTexture", $"{GlslConstants.IN_UV_NAME}{this.emissiveTexture_?.UvIndex ?? 0}", this.emissiveTexture_, this.animations_)};");
       sb.AppendLine(
           $"""
-           ${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb += emissiveColor.rgb;
-           ${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = min(${GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, 1.0);
+           {GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb += emissiveColor.rgb;
+           {GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = min({GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, 1.0);
            """);
     }
 
