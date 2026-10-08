@@ -16,7 +16,7 @@ public static partial class GlslUtil {
             layout (std430, binding = {{GlslConstants.UBO_PRIMITIVE_METADATA_BINDING_INDEX}}) readonly buffer {{GlslConstants.UBO_PRIMITIVE_METADATA_NAME}} {
               int isPrimitiveSelected[];
             };
-
+            
             """);
     }  }
 
