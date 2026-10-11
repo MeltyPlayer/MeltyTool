@@ -9,27 +9,27 @@ namespace jagex.schema.model;
 /// </summary>
 [BinarySchema]
 public sealed partial class ModelHeader : IBinaryConvertible {
-  public ushort VertexCount { get; set; }
-  public ushort FaceCount { get; set; }
-  public byte TexturedTriangleCount { get; set; }
+  public ushort VertexCount { get; private set; }
+  public ushort FaceCount { get; private set; }
+  public byte TexturedTriangleCount { get; private set; }
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool HasFaceLabels { get; set; }
+  public bool HasFaceLabels { get; private set; }
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool HasFaceAlphas { get; set; }
+  public bool HasFaceAlphas { get; private set; }
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool HasFaceTextures { get; set; }
+  public bool HasFaceTextures { get; private set; }
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool HasVertexLabels { get; set; }
+  public bool HasVertexLabels { get; private set; }
 
   [IntegerFormat(SchemaIntegerType.BYTE)]
-  public bool HasVertexSkins { get; set; }
+  public bool HasVertexSkins { get; private set; }
 
-  public ushort VertexXLength { get; set; }
-  public ushort VertexYLength { get; set; }
-  public ushort VertexZLength { get; set; }
-  public ushort FaceTypeLength { get; set; }
+  public ushort VertexXLength { get; private set; }
+  public ushort VertexYLength { get; private set; }
+  public ushort VertexZLength { get; private set; }
+  public ushort FaceTypeLength { get; private set; }
 }
