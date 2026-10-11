@@ -8,7 +8,7 @@ namespace ssm.schema;
 public partial class Ssm : IBinaryDeserializable {
   public uint HeaderLengthMinus16 { get; set; }
   public uint DataOffset { get; set; }
-  public uint DspCount { get; set; }
+  private uint DspCount { get; set; }
   public uint StartIndex { get; set; }
 
   [RSequenceLengthSource(nameof(DspCount))]

@@ -10,7 +10,7 @@ namespace gdl.schema.anim;
 [BinarySchema]
 [Endianness(Endianness.LittleEndian)]
 public sealed partial class Anim : IBinaryDeserializable {
-  public ushort ATreeCount { get; set; }
+  private ushort ATreeCount { get; set; }
   public ushort Version { get; set; }
   public uint ATreeInfoPointer { get; set; }
   public uint EffectCount { get; set; }

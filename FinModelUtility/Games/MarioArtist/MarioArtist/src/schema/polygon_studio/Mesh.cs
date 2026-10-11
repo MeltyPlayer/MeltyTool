@@ -10,9 +10,9 @@ public enum ShadeType {
 
 [BinarySchema]
 public sealed partial class Mesh : IBinaryDeserializable {
-  public uint VertexCount { get; set; }
+  private uint VertexCount { get; set; }
   public uint FaceCount { get; set; }
-  public uint TriangleCount { get; set; }
+  private uint TriangleCount { get; set; }
   public ShadeType ShadeType { get; set; }
   public int VertexDefinitionsOffset { get; set; }
   public uint VertexDefinitionsSize { get; set; }

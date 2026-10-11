@@ -13,7 +13,7 @@ namespace bar.schema;
 /// </summary>
 [BinarySchema]
 public sealed partial class Uvtx : IBinaryDeserializable {
-  public ushort TexelDataSize { get; set; }
+  private ushort TexelDataSize { get; set; }
   public ushort DlCommandCount { get; set; }
 
   public Vector2 TexScrollAnim0Velocity { get; set; }

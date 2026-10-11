@@ -16,7 +16,7 @@ public partial class BinaryResource : IBinaryDeserializable {
   private uint unk2;
 
   [WLengthOfSequence(nameof(Chunks))]
-  public ushort NumChunks { get; set; }
+  private ushort NumChunks { get; set; }
 
   [Skip]
   private uint LengthOfUnk3_ => this.HeaderSize - 18;

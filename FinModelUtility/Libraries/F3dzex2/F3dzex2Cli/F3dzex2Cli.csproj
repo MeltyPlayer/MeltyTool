@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.21" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\F3dzex2\F3dzex2.csproj" />
   </ItemGroup>
 

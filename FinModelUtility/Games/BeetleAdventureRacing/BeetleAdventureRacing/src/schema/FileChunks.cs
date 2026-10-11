@@ -10,7 +10,6 @@ namespace bar.schema;
 ///   Shamelessly stolen from:
 ///   https://github.com/magcius/noclip.website/blob/main/src/BeetleAdventureRacing/Filesystem.ts#L123
 /// </summary>
-[BinarySchema]
 public sealed partial class FileChunks : IBinaryDeserializable {
   public IReadOnlyList<UvFileChunk> Chunks { get; set; }
 

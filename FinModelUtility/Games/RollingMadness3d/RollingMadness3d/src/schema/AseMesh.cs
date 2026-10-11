@@ -27,7 +27,6 @@ public sealed partial class AseMesh : IBinaryConvertible {
   public Triangle[] Triangles { get; set; }
 }
 
-[BinarySchema]
 public sealed partial class AseString : IBinaryConvertible {
   public string Value { get; set; }
 

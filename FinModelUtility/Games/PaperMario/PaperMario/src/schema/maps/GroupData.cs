@@ -14,7 +14,7 @@ public sealed partial class GroupData : IBinaryDeserializable {
   public uint ModelMatrixRamAddress { get; set; }
   public uint Unk0 { get; set; }
   public uint Unk1 { get; set; }
-  public uint NumChildren { get; set; }
+  private uint NumChildren { get; set; }
   public uint ChildrenTableRamAddress { get; set; }
 
   [Skip]

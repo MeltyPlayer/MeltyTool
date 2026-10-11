@@ -1,4 +1,5 @@
 ﻿using schema.binary;
+using schema.binary.attributes;
 
 namespace pikmin1.schema.mod;
 

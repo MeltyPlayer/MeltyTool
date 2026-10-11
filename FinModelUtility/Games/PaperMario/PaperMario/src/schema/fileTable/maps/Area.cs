@@ -9,7 +9,7 @@ namespace pm.schema.fileTable.maps;
 /// </summary>
 [BinarySchema]
 public sealed partial class Area : IBinaryConvertible {
-  public uint MapCount { get; set; }
+  private uint MapCount { get; set; }
   public uint MapTableRamAddress { get; set; }
   public uint AreaNameRamAddress { get; set; }
   public uint AreaNameSjisRamAddress  { get; set; }

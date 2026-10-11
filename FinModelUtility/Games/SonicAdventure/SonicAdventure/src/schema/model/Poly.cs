@@ -20,7 +20,7 @@ public sealed partial class QuadsPoly : IPoly {
 [BinarySchema]
 public sealed partial class TriangleStripPoly : IPoly {
   [WLengthOfSequence(nameof(VertexIndices))]
-  public byte NumStrips { get; set; }
+  public byte NumStrips { get; private set; }
 
   public byte Direction { get; set; }
 

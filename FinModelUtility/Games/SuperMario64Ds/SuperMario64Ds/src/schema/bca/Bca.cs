@@ -10,10 +10,10 @@ namespace sm64ds.schema.bca;
 /// </summary>
 [BinarySchema]
 public sealed partial class Bca : IBinaryDeserializable {
-  public ushort NumBones { get; set; }
+  private ushort NumBones { get; set; }
   public ushort NumFrames { get; set; }
 
-  [NumberFormat(SchemaNumberType.UINT32)]
+  [IntegerFormat(SchemaIntegerType.UINT32)]
   public bool Looped { get; set; }
 
   public uint ScaleValuesOffset { get; set; }

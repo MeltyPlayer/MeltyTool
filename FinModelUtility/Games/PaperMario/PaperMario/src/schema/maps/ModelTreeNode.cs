@@ -21,7 +21,7 @@ public sealed partial class ModelTreeNode : IBinaryDeserializable {
 
   public InternalType Type { get; set; }
   public uint DisplayDataRamAddress { get; set; }
-  public uint NumProperties { get; set; }
+  private uint NumProperties { get; set; }
   public uint PropertyTableRamAddress { get; set; }
   public uint GroupDataRamAddress { get; set; }
 

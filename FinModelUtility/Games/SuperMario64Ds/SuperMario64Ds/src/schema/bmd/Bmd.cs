@@ -11,19 +11,19 @@ namespace sm64ds.schema.bmd;
 public sealed partial class Bmd : IBinaryConvertible {
   public int ScaleFactor { get; set; }
 
-  public uint BoneCount { get; set; }
+  private uint BoneCount { get; set; }
   public uint BonesOffset { get; set; }
 
-  public uint DisplayListCount { get; set; }
+  private uint DisplayListCount { get; set; }
   public uint DisplayListsOffset { get; set; }
 
-  public uint TextureCount { get; set; }
+  private uint TextureCount { get; set; }
   public uint TexturesOffset { get; set; }
 
-  public uint TexturePaletteCount { get; set; }
+  private uint TexturePaletteCount { get; set; }
   public uint TexturePalettesOffset { get; set; }
 
-  public uint MaterialCount { get; set; }
+  private uint MaterialCount { get; set; }
   public uint MaterialsOffset { get; set; }
 
   private uint boneMapOffset_;
