@@ -85,13 +85,11 @@ public static partial class GlslUtil {
          #version {GlslConstants.VERTEX_SHADER_VERSION}
 
          {GetMatricesHeaders(model)}
+         
+         uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
+         
+         layout(location = {location++}) in vec3 in_Position;
          """);
-
-    vertexSrc.AppendLine(
-        $"uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};");
-
-    vertexSrc.AppendLine(
-        $"layout(location = {location++}) in vec3 in_Position;");
 
     if (hasNormals) {
       vertexSrc.AppendLine(
@@ -173,6 +171,7 @@ public static partial class GlslUtil {
       }
     }
 
+    vertexSrc.AppendLine();
     vertexSrc.AppendBlock(
         "void main()",
         () => {
@@ -281,6 +280,7 @@ public static partial class GlslUtil {
             }
           }
         });
+    vertexSrc.AppendLine();
 
     return vertexSrc.ToString();
   }

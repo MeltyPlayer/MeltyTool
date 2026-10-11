@@ -21,6 +21,7 @@ public sealed class SkinExtensionsTests {
     public required VertexOrder VertexOrder { get; init; }
     public required IReadOnlyList<IReadOnlyVertex> Vertices { get; init; }
 
+    public IReadOnlyMesh Mesh => throw new NotImplementedException();
     public IReadOnlyMaterial? Material => throw new NotImplementedException();
     public uint InversePriority => throw new NotImplementedException();
   }
