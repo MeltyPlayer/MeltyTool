@@ -6,6 +6,7 @@ using Avalonia.Rendering;
 using Avalonia.Threading;
 
 using fin.config;
+using fin.ui.rendering;
 using fin.ui.rendering.gl;
 
 namespace fin.ui.avalonia.gl;
@@ -18,6 +19,9 @@ public abstract class BGlPanel : Panel, ICustomHitTest {
       var initGl = () => {
         this.InitGl();
         this.OnInit?.Invoke();
+
+        DebugService.VendorName = GlUtil.GetVendor();
+        DebugService.RendererName = GlUtil.GetRenderer();
       };
       var renderGl = this.RenderGl;
       var teardownGl = this.TeardownGl;

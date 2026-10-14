@@ -24,6 +24,8 @@ public sealed class SwordOfTheBerserkGutsRageFileBundleGatherer
       return;
     }
 
+    return;
+
     var extractedDir = ExtractorUtil.GetOrCreateExtractedDirectory(this.Name);
     var fileHierarchy = ExtractorUtil.GetFileHierarchy(this.Name, extractedDir);
 

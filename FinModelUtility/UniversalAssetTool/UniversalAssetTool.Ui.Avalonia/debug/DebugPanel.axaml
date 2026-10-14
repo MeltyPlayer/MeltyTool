@@ -2,197 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:debug="clr-namespace:fin.ui.rendering;assembly=Fin.Ui"
              mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="300"
-             x:Class="uni.ui.avalonia.debug.DebugPanel"
-             x:DataType="debug:DebugServiceViewModel">
-  <Border BorderThickness="1 1 1 0"
+             x:Class="uni.ui.avalonia.debug.DebugPanel">
+  <Border x:Name="Host"
+          BorderThickness="1 1 1 0"
           BorderBrush="{StaticResource BorderBrush}"
           Background="#90000000"
           VerticalAlignment="Top">
-    <Grid ColumnDefinitions="Auto *"
-          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto">
-      <Grid.Styles>
-        <Style Selector="Border">
-          <Setter Property="BorderThickness" Value="0 0 0 1"/>
-          <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        </Style>
-        <Style Selector="TextBlock, SelectableTextBlock">
-          <Setter Property="Foreground" Value="White" />
-          <Setter Property="Margin" Value="7 3"/>
-        </Style>
-        <Style Selector="TextBlock.indented">
-          <Setter Property="Padding" Value="8 0 0 0"/>
-        </Style>
-        <Style Selector="SelectableTextBlock">
-          <Setter Property="HorizontalAlignment" Value="Right" />
-        </Style>
-      </Grid.Styles>
-
-      <Border
-          Grid.Row="0" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular"
-            Text="Render graph element count" />
-      </Border>
-      <Border
-          Grid.Row="0" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding RenderGraphElementCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="1" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular"
-            Text="Model count" />
-      </Border>
-      <Border
-          Grid.Row="1" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding ModelCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="2" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular"
-            Text="Material count" />
-      </Border>
-      <Border
-          Grid.Row="2" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding MaterialCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="3" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular indented"
-            Text="Opaque material count" />
-      </Border>
-      <Border
-          Grid.Row="3" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding OpaqueMaterialCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="4" 
-          Grid.Column="0">
-        <TextBlock 
-          Classes="regular indented"
-          Text="Transparent material count" />
-      </Border>
-      <Border
-        Grid.Row="4" 
-        Grid.Column="1">
-        <SelectableTextBlock 
-          Classes="regular"
-          Text="{Binding TransparentMaterialCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="5" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular"
-            Text="Program count" />
-      </Border>
-      <Border
-         Grid.Row="5" 
-         Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding ProgramCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="6" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular indented"
-            Text="Vertex shader count" />
-      </Border>
-      <Border
-          Grid.Row="6" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding VertexShaderCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="7" 
-          Grid.Column="0">
-        <TextBlock 
-            Classes="regular indented"
-            Text="Fragment shader count" />
-      </Border>
-      <Border
-          Grid.Row="7" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-            Classes="regular"
-            Text="{Binding FragmentShaderCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="8" 
-          Grid.Column="0">
-        <TextBlock 
-          Classes="regular"
-          Text="Fin texture count" />
-      </Border>
-      <Border
-          Grid.Row="8" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-          Classes="regular"
-          Text="{Binding FinTextureCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="9" 
-          Grid.Column="0">
-        <TextBlock 
-          Classes="regular indented"
-          Text="OpenGL texture count" />
-      </Border>
-      <Border
-          Grid.Row="9" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-          Classes="regular"
-          Text="{Binding OpenGlTextureCount}" />
-      </Border>
-
-      <Border
-          Grid.Row="10" 
-          Grid.Column="0">
-        <TextBlock 
-          Classes="regular indented"
-          Text="Sampler count" />
-      </Border>
-      <Border
-          Grid.Row="10" 
-          Grid.Column="1">
-        <SelectableTextBlock 
-          Classes="regular"
-          Text="{Binding SamplerCount}" />
-      </Border>
-    </Grid>
+    <Border.Styles>
+      <Style Selector="Border">
+        <Setter Property="BorderThickness" Value="0 0 0 1"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+      </Style>
+      <Style Selector="TextBlock, SelectableTextBlock">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Margin" Value="7 3"/>
+      </Style>
+      <Style Selector="TextBlock.indented">
+        <Setter Property="Padding" Value="8 0 0 0"/>
+      </Style>
+      <Style Selector="SelectableTextBlock">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+      </Style>
+    </Border.Styles>
   </Border>
 </UserControl>

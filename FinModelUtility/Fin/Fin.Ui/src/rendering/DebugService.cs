@@ -5,6 +5,16 @@ using ReactiveUI;
 namespace fin.ui.rendering;
 
 public class DebugServiceViewModel : BViewModel {
+  public string VendorName {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+  
+  public string RendererName {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
   public int RenderGraphElementCount {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
@@ -65,6 +75,16 @@ public class DebugServiceViewModel : BViewModel {
 [IocCandiate]
 public static class DebugService {
   public static DebugServiceViewModel ViewModel { get; } = new();
+
+  public static string VendorName {
+    get => ViewModel.VendorName;
+    set => ViewModel.VendorName = value;
+  }
+
+  public static string RendererName {
+    get => ViewModel.RendererName;
+    set => ViewModel.RendererName = value;
+  }
 
   public static int RenderGraphElementCount {
     get => ViewModel.RenderGraphElementCount;
