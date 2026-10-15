@@ -56,32 +56,6 @@ public sealed partial class GlShaderProgram : IShaderProgram {
                 GL.AttachShader(programId, fragmentShaderId);
                 GL.LinkProgram(programId);
 
-                // TODO: Doing this here is slow, causes CPU/GPU stall!
-                if (ASSERT_LINK) {
-                  GL.GetProgram(
-                      programId,
-                      GetProgramParameterName.LinkStatus,
-                      out var linkStatus);
-
-                  if (linkStatus == 0) {
-                    var errorSb
-                        = new StringBuilder("Failed to link shader program: ");
-
-                    GL.GetProgram(
-                        programId,
-                        GetProgramParameterName.InfoLogLength,
-                        out var infoLogLength);
-                    GL.GetProgramInfoLog(
-                        programId,
-                        infoLogLength,
-                        out _,
-                        out var linkError);
-                    errorSb.Append(linkError);
-
-                    Asserts.Fail(errorSb.ToString());
-                  }
-                }
-
                 return new CachedShaderProgram {
                     ProgramId = programId,
                     VertexShaderSource = vertexSrc,
@@ -167,10 +141,40 @@ public sealed partial class GlShaderProgram : IShaderProgram {
   public string FragmentShaderSource
     => this.cachedShaderProgram_.FragmentShaderSource;
 
+  private bool hasBeenChecked_ = false;
 
   public void Use() {
     if (this.isDisposed_) {
       return;
+    }
+
+    if (!this.hasBeenChecked_) {
+      this.hasBeenChecked_ = true;
+
+      if (ASSERT_LINK) {
+        GL.GetProgram(
+            this.ProgramId,
+            GetProgramParameterName.LinkStatus,
+            out var linkStatus);
+
+        if (linkStatus == 0) {
+          var errorSb
+              = new StringBuilder("Failed to link shader program: ");
+
+          GL.GetProgram(
+              this.ProgramId,
+              GetProgramParameterName.InfoLogLength,
+              out var infoLogLength);
+          GL.GetProgramInfoLog(
+              this.ProgramId,
+              infoLogLength,
+              out _,
+              out var linkError);
+          errorSb.Append(linkError);
+
+          Asserts.Fail(errorSb.ToString());
+        }
+      }
     }
 
     this.cachedUniforms_ ??= this.cachedUniformsByName_.Values.ToArray();
