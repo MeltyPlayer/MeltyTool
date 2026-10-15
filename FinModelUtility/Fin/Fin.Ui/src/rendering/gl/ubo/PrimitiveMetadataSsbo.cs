@@ -45,33 +45,30 @@ public sealed class PrimitiveMetadataSsbo {
 
   private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-  private void UpdateData_() {
-    var offset = 0;
-    Span<byte> buffer = stackalloc byte[this.bufferSize_];
-
-    foreach (var primitive in this.primitives_) {
-      var isSelectedByMaterial =
-          primitive.Material != null &&
-          (this.selectedMaterials_?.Contains(primitive.Material) ?? false);
-      var isSelectedByMesh
-          = ReferenceEquals(primitive.Mesh, this.selectedMesh_);
-      for (var i = 0; i < GetSubPrimitiveCount_(primitive); ++i) {
-        UboUtil.AppendBool(
-            buffer,
-            ref offset,
-            isSelectedByMaterial || isSelectedByMesh);
+  private void UpdateData_()
+    => this.impl_.UpdateData(buffer => {
+      var offset = 0;
+      foreach (var primitive in this.primitives_) {
+        var isSelectedByMaterial =
+            primitive.Material != null &&
+            (this.selectedMaterials_?.Contains(primitive.Material) ?? false);
+        var isSelectedByMesh
+            = ReferenceEquals(primitive.Mesh, this.selectedMesh_);
+        for (var i = 0; i < GetSubPrimitiveCount_(primitive); ++i) {
+          UboUtil.AppendBool(
+              buffer,
+              ref offset,
+              isSelectedByMaterial || isSelectedByMesh);
+        }
       }
-    }
-
-    this.impl_.UpdateDataIfChanged(buffer);
-  }
+    });
 
   public void Bind() {
     if (this.isDirty_) {
       this.isDirty_ = false;
       this.UpdateData_();
     }
-    
+
     this.impl_.Bind();
   }
 

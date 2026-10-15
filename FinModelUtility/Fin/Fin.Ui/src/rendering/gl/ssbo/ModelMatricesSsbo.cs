@@ -26,18 +26,16 @@ public static partial class ModelMatricesBo {
 
     private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-    public void UpdateData(in Matrix4x4 modelMatrix,
-                           ReadOnlySpan<Matrix4x4> boneMatrices) {
-      var offset = 0;
-      Span<byte> buffer = stackalloc byte[this.bufferSize_];
+    public void UpdateData(Matrix4x4 modelMatrix,
+                           Matrix4x4[] boneMatrices)
+      => this.impl_.UpdateData(buffer => {
+        var offset = 0;
 
-      // TODO: Merge model/view/projection matrices with bone matrices here
-      // rather than in the shader
-      UboUtil.AppendMatrix4x4(buffer, ref offset, modelMatrix);
-      UboUtil.AppendMatrix4x4s(buffer, ref offset, boneMatrices);
-
-      this.impl_.UpdateDataIfChanged(buffer);
-    }
+        // TODO: Merge model/view/projection matrices with bone matrices here
+        // rather than in the shader
+        UboUtil.AppendMatrix4x4(buffer, ref offset, modelMatrix);
+        UboUtil.AppendMatrix4x4s(buffer, ref offset, boneMatrices);
+      });
 
     public void Bind() => this.impl_.Bind();
   }
