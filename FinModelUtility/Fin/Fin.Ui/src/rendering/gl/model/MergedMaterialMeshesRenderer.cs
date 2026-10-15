@@ -48,10 +48,10 @@ public partial class ModelRenderer {
 
       if (!this.dynamic_) {
         this.bufferManager_
-            = GlBufferManager.CreateStatic(this.Model, modelRequirements);
+            = GlVertexBufferManager.CreateStatic(this.Model, modelRequirements);
       } else {
         this.bufferManager_ = this.dynamicBufferManager_
-            = GlBufferManager.CreateDynamic(this.Model, modelRequirements);
+            = GlVertexBufferManager.CreateDynamic(this.Model, modelRequirements);
       }
 
       this.materialRenderers_

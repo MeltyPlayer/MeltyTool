@@ -1,5 +1,10 @@
-﻿using fin.math;
+﻿using System.Runtime.InteropServices;
+
+using CommunityToolkit.HighPerformance;
+
+using fin.math;
 using fin.model;
+using fin.ui.rendering.gl.buffers;
 using fin.ui.rendering.gl.model;
 using fin.util.enumerables;
 
@@ -19,7 +24,7 @@ public partial interface IGlBufferManager {
 
 public interface IGlBufferRenderer : IRenderable;
 
-public sealed partial class GlBufferManager {
+public sealed partial class GlVertexBufferManager {
   private const DrawElementsType INDEX_TYPE = DrawElementsType.UnsignedInt;
 
   public IGlBufferRenderer[] CreateRenderers(
@@ -38,16 +43,14 @@ public sealed partial class GlBufferManager {
 
     IGlBufferRenderer[] renderers
         = new IGlBufferRenderer[mergedPrimitives.Count];
-    var eboDisposable = new Disposable(null);
 
     GlUtil.BindVao(this.VaoId);
-    GL.GenBuffers(1, out int eboId);
 
     var eboIndices = new List<int>();
     var eboInstanceCount = 0;
-    for (var i = 0; i < mergedPrimitives.Count; ++i) {
-      var mergedPrimitive = mergedPrimitives[i];
-
+    var mergedPrimitivesMetadata
+        = new List<(MergedPrimitive, int vertexOffset, int vertexCount, bool isArray)>(mergedPrimitives.Count);
+    foreach (var mergedPrimitive in mergedPrimitives) {
       bool isArray;
       int vertexOffset, vertexCount;
 
@@ -93,6 +96,28 @@ public sealed partial class GlBufferManager {
         }
       }
 
+      mergedPrimitivesMetadata.Add((mergedPrimitive, vertexOffset, vertexCount, isArray));
+    }
+
+    IGlBuffer? ebo = null;
+    var eboDisposable = new Disposable(null);
+    if (eboIndices.Count > 0) {
+      ebo = GlBuffer.CreateStaticBuffer(
+          BufferTarget.ElementArrayBuffer,
+          CollectionsMarshal.AsSpan(eboIndices).AsBytes());
+
+      var count = eboInstanceCount;
+      eboDisposable.Add(() => {
+        if (--count == 0) {
+          ebo.Dispose();
+        }
+      });
+    }
+
+    for (var i = 0; i < mergedPrimitivesMetadata.Count; ++i) {
+      var (mergedPrimitive, vertexOffset, vertexCount, isArray) =
+          mergedPrimitivesMetadata[i];
+
       var primitives = mergedPrimitive.Vertices.Select(v => v.Item1)
                                       .Collapsed()
                                       .ToArray();
@@ -113,29 +138,12 @@ public sealed partial class GlBufferManager {
             primitives,
             mergedPrimitive.PrimitiveType,
             mergedPrimitive.IsFlipped,
-            eboId,
+            ebo,
             eboDisposable,
             vertexOffset,
             vertexCount
         );
       }
-    }
-
-    if (eboIndices.Count == 0) {
-      GL.DeleteBuffers(1, ref eboId);
-    } else {
-      GL.BindBuffer(BufferTarget.ElementArrayBuffer, eboId);
-      GL.BufferData(BufferTarget.ElementArrayBuffer,
-                    new IntPtr(sizeof(int) * eboIndices.Count),
-                    eboIndices.ToArray(),
-                    BufferUsageHint.StaticDraw);
-
-      var count = eboInstanceCount;
-      eboDisposable.Add(() => {
-        if (--count == 0) {
-          GL.DeleteBuffers(1, ref eboId);
-        }
-      });
     }
 
     return renderers;
@@ -146,7 +154,7 @@ public sealed partial class GlBufferManager {
       IReadOnlyList<IReadOnlyPrimitive> primitives,
       FinPrimitiveType primitiveType,
       bool isFlipped,
-      int? eboId,
+      IReadOnlyGlBuffer? ebo,
       IDisposable? eboDisposable,
       int vertexOffset,
       int vertexCount) : IGlBufferRenderer {
@@ -182,8 +190,8 @@ public sealed partial class GlBufferManager {
       GlUtil.SetFlipFaces(isFlipped);
       GlUtil.BindVao(vaoId);
 
-      if (eboId != null) {
-        GlUtil.BindEbo(eboId.Value);
+      if (ebo != null) {
+        GlUtil.BindEbo(ebo.Id);
 
         GlUtil.ValidateCurrentProgram();
         GL.DrawElements(

@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace fin.ui.rendering.gl;
 
-public sealed partial class GlBufferManager {
+public sealed partial class GlVertexBufferManager {
   private sealed class VertexArrayObject : IDisposable {
     private readonly IReadOnlyModel model;
     private readonly IModelRequirements modelRequirements;

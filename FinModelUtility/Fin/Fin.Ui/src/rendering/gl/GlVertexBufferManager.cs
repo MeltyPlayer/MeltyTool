@@ -14,7 +14,7 @@ public interface IDynamicGlBufferManager : IGlBufferManager {
   void UpdateBuffer();
 }
 
-public sealed partial class GlBufferManager : IDynamicGlBufferManager {
+public sealed partial class GlVertexBufferManager : IDynamicGlBufferManager {
   private readonly IReadOnlyModel model_;
   private readonly IModelRequirements modelRequirements_;
   private readonly BufferUsageHint bufferType_;
@@ -25,18 +25,18 @@ public sealed partial class GlBufferManager : IDynamicGlBufferManager {
   public static IGlBufferManager CreateStatic(
       IReadOnlyModel model,
       IModelRequirements modelRequirements)
-    => new GlBufferManager(model,
+    => new GlVertexBufferManager(model,
                            modelRequirements,
                            BufferUsageHint.StaticDraw);
 
   public static IDynamicGlBufferManager CreateDynamic(
       IReadOnlyModel model,
       IModelRequirements modelRequirements)
-    => new GlBufferManager(model,
+    => new GlVertexBufferManager(model,
                            modelRequirements,
                            BufferUsageHint.DynamicDraw);
 
-  private GlBufferManager(IReadOnlyModel model,
+  private GlVertexBufferManager(IReadOnlyModel model,
                           IModelRequirements modelRequirements,
                           BufferUsageHint bufferType) {
     this.model_ = model;
@@ -46,7 +46,7 @@ public sealed partial class GlBufferManager : IDynamicGlBufferManager {
         (this.model_, this.modelRequirements_, bufferType));
   }
 
-  ~GlBufferManager() => this.ReleaseUnmanagedResources_();
+  ~GlVertexBufferManager() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
     this.ReleaseUnmanagedResources_();
