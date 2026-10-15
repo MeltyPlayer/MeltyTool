@@ -20,7 +20,9 @@ public static partial class GlUtil {
     }
 
     currentState_ = state;
-    context?.MakeCurrent();
+    if (context is { IsCurrent: false }) {
+      context.MakeCurrent();
+    }
   }
 
   public static void SwitchContext(object? any) {
