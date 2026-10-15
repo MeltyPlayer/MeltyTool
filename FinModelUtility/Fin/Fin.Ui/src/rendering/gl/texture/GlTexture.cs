@@ -99,6 +99,21 @@ public sealed class GlTexture : IGlTexture {
         this.canGenerateMipmaps_ = true;
       }
     }
+
+    switch (prms.Image) {
+      case La16Image: {
+        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.Green]);
+        break;
+      }
+      case L8Image: {
+        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.One]);
+        break;
+      }
+      case I8Image: {
+        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.Red]);
+        break;
+      }
+    }
   }
 
   public void GenerateMipmapsIfHaventYet() {
@@ -143,38 +158,36 @@ public sealed class GlTexture : IGlTexture {
                             fastLock.byteScan0);
         break;
       }
-      // TODO: Luminance/LuminanceAlpha is not supported in OpenGL ES. Implement support for R/RG instead
-      /*
       case La16Image la16Image: {
         using var fastLock = la16Image.UnsafeLock();
         PassBytesIntoImage_(level,
-                            TextureComponentCount.LuminanceAlpha,
+                            PixelInternalFormat.Rg16,
                             imageWidth,
                             imageHeight,
-                            PixelFormat.LuminanceAlpha,
+                            PixelFormat.Rg,
                             fastLock.byteScan0);
         break;
       }
       case L8Image l8Image: {
         using var fastLock = l8Image.UnsafeLock();
         PassBytesIntoImage_(level,
-                            TextureComponentCount.Luminance,
+                            PixelInternalFormat.R8,
                             imageWidth,
                             imageHeight,
-                            PixelFormat.Luminance,
+                            PixelFormat.Red,
                             fastLock.byteScan0);
         break;
       }
       case I8Image i8Image: {
         using var fastLock = i8Image.UnsafeLock();
         PassBytesIntoImage_(level,
-                            TextureComponentCount.LuminanceAlpha,
+                            PixelInternalFormat.R8,
                             imageWidth,
                             imageHeight,
-                            PixelFormat.LuminanceAlpha,
+                            PixelFormat.Red,
                             fastLock.byteScan0);
         break;
-      }*/
+      }
       default: {
         using var rentedBytes = pool_.Rent(4 * imageWidth * imageHeight);
         image.Access(getHandler => {
