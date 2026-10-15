@@ -1,4 +1,5 @@
 ﻿using fin.ui.rendering.gl.buffers;
+using fin.util.spans;
 
 using OpenTK.Graphics.OpenGL4;
 
@@ -24,9 +25,8 @@ public sealed class GlSsbo : IDisposable {
 
   private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-  public void UpdateData(
-      IFixedSizeMutableGlBuffer.UpdateBuffer updateBuffer)
-    => this.impl_.UpdateData(updateBuffer);
+  public WriteOnlySpan<byte> Buffer => this.impl_.Buffer;
+  public void Flush() => this.impl_.Flush();
 
   public void Bind()
     => GlUtil.BindSsboBufferBase(this.bindingIndex_, this.impl_.Id);

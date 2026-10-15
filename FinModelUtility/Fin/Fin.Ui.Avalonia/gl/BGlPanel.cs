@@ -13,6 +13,7 @@ namespace fin.ui.avalonia.gl;
 
 public abstract class BGlPanel : Panel, ICustomHitTest {
   public event Action? OnInit;
+  private Window? window_;
 
   protected BGlPanel() {
     Dispatcher.UIThread.InvokeAsync(async () => {
@@ -28,7 +29,11 @@ public abstract class BGlPanel : Panel, ICustomHitTest {
 
       if (FinConfig.PreferGlNativeInterop) {
         OpenGlVersionService.Init(false);
-        if (await SharpDxInteropControl.TryToAddTo(this, initGl, renderGl, teardownGl)) {
+        if (await SharpDxInteropControl.TryToAddTo(
+                this,
+                initGl,
+                renderGl,
+                teardownGl)) {
           return;
         }
       }
@@ -36,7 +41,6 @@ public abstract class BGlPanel : Panel, ICustomHitTest {
       OpenGlVersionService.Init(true);
       this.Children.Add(new OpenTkControl(initGl, renderGl, teardownGl));
     });
-
   }
 
   protected abstract void InitGl();
@@ -46,10 +50,8 @@ public abstract class BGlPanel : Panel, ICustomHitTest {
   public bool HitTest(Point point) => this.Bounds.Contains(point);
 
   protected void GetBoundsForGlViewport(out int width, out int height) {
-    var scaling = 1f;
-    if (TopLevel.GetTopLevel(this) is Window window) {
-      scaling = (float) window.RenderScaling;
-    }
+    this.window_ ??= TopLevel.GetTopLevel(this) as Window;
+    var scaling = (float) (this.window_?.RenderScaling ?? 1);
 
     var bounds = this.Bounds;
     width = (int) (scaling * bounds.Width);

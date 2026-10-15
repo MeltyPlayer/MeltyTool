@@ -15,9 +15,8 @@ public partial interface IGlBuffer : IDisposable {
 }
 
 public interface IFixedSizeMutableGlBuffer : IGlBuffer {
-  delegate void UpdateBuffer(WriteOnlySpan<byte> buffer);
-
-  void UpdateData(UpdateBuffer updateBuffer);
+  WriteOnlySpan<byte> Buffer { get; }
+  void Flush();
 }
 
 public static class GlBuffer {
@@ -76,7 +75,6 @@ public static class GlBuffer {
 
   private class ModernFixedSizeMutableGlBufferImpl
       : BGlBufferImpl, IFixedSizeMutableGlBuffer {
-    private readonly byte[] previousData_;
     private readonly byte* bufferPtr_;
     private readonly int bufferLength_;
 
@@ -88,7 +86,6 @@ public static class GlBuffer {
       GL.CreateBuffers(1, out int id);
       this.Id = id;
 
-      this.previousData_ = new byte[size];
       this.bufferLength_ = size;
 
       GL.NamedBufferStorage(
@@ -96,31 +93,25 @@ public static class GlBuffer {
           size,
           0,
           BufferStorageFlags.MapWriteBit |
-          BufferStorageFlags.MapPersistentBit);
+          BufferStorageFlags.MapPersistentBit |
+          BufferStorageFlags.MapCoherentBit);
 
       this.bufferPtr_ = (byte*) GL.MapNamedBuffer(
           this.Id,
           BufferAccess.WriteOnly);
     }
 
-    public unsafe void UpdateData(UpdateBuffer updateBuffer) {
-      Span<byte> scratchBuffer = stackalloc byte[this.bufferLength_];
-      updateBuffer(scratchBuffer);
+    public unsafe WriteOnlySpan<byte> Buffer
+      => new(this.bufferPtr_, this.bufferLength_);
 
-      if (scratchBuffer.SequenceEqual(this.previousData_)) {
-        return;
-      }
-
-      var writeOnlySpan
-          = new WriteOnlySpan<byte>(this.bufferPtr_, this.bufferLength_);
-      scratchBuffer.CopyTo(writeOnlySpan);
-    }
+    public void Flush() { }
   }
 
   private class LegacyFixedSizeMutableGlBufferImpl
       : BGlBufferImpl, IFixedSizeMutableGlBuffer {
     private readonly byte[] previousData_;
-    
+    private readonly byte[] buffer_;
+
     public override int Id { get; }
 
     public LegacyFixedSizeMutableGlBufferImpl(
@@ -138,20 +129,21 @@ public static class GlBuffer {
       this.previousData_ = new byte[size];
     }
 
-    public void UpdateData(UpdateBuffer updateBuffer) {
-      Span<byte> scratchBuffer = stackalloc byte[this.previousData_.Length];
-      updateBuffer(scratchBuffer);
+    public WriteOnlySpan<byte> Buffer => this.buffer_;
 
-      if (scratchBuffer.SequenceEqual(this.previousData_)) {
+    public void Flush() {
+      if (this.previousData_.SequenceEqual(this.buffer_)) {
         return;
       }
 
-      fixed (byte* scratchPtr = &scratchBuffer[0]) {
+      this.buffer_.CopyTo(this.previousData_);
+
+      fixed (byte* scratchPtr = &this.buffer_[0]) {
         GL.BindBuffer(this.Target, this.Id);
         GL.BufferSubData(
             this.Target,
             0,
-            scratchBuffer.Length,
+            this.buffer_.Length,
             (nint) scratchPtr);
       }
     }

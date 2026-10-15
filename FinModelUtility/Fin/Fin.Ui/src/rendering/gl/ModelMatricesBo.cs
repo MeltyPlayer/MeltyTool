@@ -3,8 +3,8 @@
 namespace fin.ui.rendering.gl;
 
 public interface IModelMatricesBo : IDisposable {
-  void UpdateData(Matrix4x4 modelMatrix,
-                  Matrix4x4[] boneMatrices);
+  void UpdateData(in Matrix4x4 modelMatrix,
+                  ReadOnlySpan<Matrix4x4> boneMatrices);
 
   void Bind();
 }
