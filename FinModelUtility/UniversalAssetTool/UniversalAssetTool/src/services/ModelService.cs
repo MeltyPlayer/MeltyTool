@@ -1,12 +1,10 @@
 ﻿using fin.io.bundles;
-using fin.io.web;
 using fin.model;
 using fin.model.io;
 using fin.model.processing;
 using fin.services;
 using fin.util.types;
 
-using uni.api;
 using uni.ui.winforms.common.fileTreeView;
 
 namespace uni.services;
@@ -19,12 +17,14 @@ public static class ModelService {
           LoadingStatusService.IsLoading = true;
 
           if (fileBundle is IModelFileBundle modelFileBundle) {
-            try {
-              var model = modelFileBundle.ImportAndProcess();
-              OpenModel(fileTreeLeafNode, model);
-            } catch (Exception e) {
-              FailToOpenModel(fileBundle, e);
-            }
+            Task.Run(() => {
+              try {
+                var model = modelFileBundle.ImportAndProcess();
+                OpenModel(fileTreeLeafNode, model);
+              } catch (Exception e) {
+                FailToOpenModel(fileBundle, e);
+              }
+            });
           }
 
           LoadingStatusService.IsLoading = false;

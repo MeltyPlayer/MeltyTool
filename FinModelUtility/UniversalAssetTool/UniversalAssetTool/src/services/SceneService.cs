@@ -1,4 +1,5 @@
-﻿using fin.io.bundles;
+﻿using fin.image;
+using fin.io.bundles;
 using fin.scene;
 using fin.services;
 using fin.ui.rendering;
@@ -18,12 +19,14 @@ public static class SceneService {
             SceneTypeService.IsASingleModel = false;
             LoadingStatusService.IsLoading = true;
 
-            try {
-              var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-              OpenScene(fileTreeLeafNode, scene);
-            } catch (Exception e) {
-              FailToOpenScene(fileBundle, e);
-            }
+            Task.Run(() => {
+              try {
+                var scene = new GlobalSceneImporter().Import(sceneFileBundle);
+                OpenScene(fileTreeLeafNode, scene);
+              } catch (Exception e) {
+                FailToOpenScene(fileBundle, e);
+              }
+            });
 
             LoadingStatusService.IsLoading = false;
           }
