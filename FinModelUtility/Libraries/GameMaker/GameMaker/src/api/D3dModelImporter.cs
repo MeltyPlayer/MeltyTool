@@ -78,6 +78,8 @@ public sealed class D3dModelImporter
             .Select((frameImage, i) => {
               var frameTexture = finMaterialManager.CreateTexture(
                   frameImage.RemoveTopLeftBackgroundColor());
+              frameImage.Dispose();
+
               frameTexture.Name =
                   frameImages.Length > 0 ? $"{name}_{i}" : name;
               frameTexture.WrapModeU = frameTexture.WrapModeV =

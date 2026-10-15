@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Numerics;
 
 using fin.image.formats;
 using fin.math;
-
-using readOnly;
 
 using SixLabors.ImageSharp.PixelFormats;
 

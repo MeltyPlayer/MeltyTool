@@ -19,7 +19,13 @@ public static class AvaloniaBitmapUtil {
   private static readonly ConcurrentDictionary<IReadOnlyImage, Bitmap>
       imageCache_ = new();
 
-  public static void ClearCache() => imageCache_.Clear();
+  public static void ClearCache() {
+    foreach (var bitmap in imageCache_.Values) {
+      bitmap.Dispose();
+    }
+
+    imageCache_.Clear();
+  }
 
   public static Bitmap AsAvaloniaImage(this IReadOnlyTexture texture)
     => AsAvaloniaImage(texture.Image);

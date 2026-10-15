@@ -370,7 +370,9 @@ file class FacadeRoomModelBuilder {
 
             var image = FinImage.FromFile(textureFile);
             if (removeBackground) {
+              var originalImage = image;
               image = image.RemoveBackgroundColor(Color.White);
+              originalImage.Dispose();
             }
 
             var (textureMaterial, _)
