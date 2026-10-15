@@ -3,6 +3,7 @@
 public partial class GlShaderProgram {
   private Dictionary<string, BShaderUniform> cachedUniformsByName_ = new();
 
+  // TODO: Slow, use explicit location instead
   private int GetUniformLocation_(string name)
     => this.cachedShaderProgram_.GetUniformLocation(name);
 

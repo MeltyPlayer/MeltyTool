@@ -56,6 +56,7 @@ public sealed partial class GlShaderProgram : IShaderProgram {
                 GL.AttachShader(programId, fragmentShaderId);
                 GL.LinkProgram(programId);
 
+                // TODO: Doing this here is slow, causes CPU/GPU stall!
                 if (ASSERT_LINK) {
                   GL.GetProgram(
                       programId,
