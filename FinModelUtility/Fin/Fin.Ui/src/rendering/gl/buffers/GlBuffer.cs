@@ -4,8 +4,6 @@ using OpenTK.Graphics.OpenGL4;
 
 using readOnly;
 
-using static fin.ui.rendering.gl.buffers.IFixedSizeMutableGlBuffer;
-
 namespace fin.ui.rendering.gl.buffers;
 
 [GenerateReadOnly]
@@ -119,6 +117,7 @@ public static class GlBuffer {
         int size) : base(target) {
       var id = this.Id = GL.GenBuffer();
       this.previousData_ = new byte[size];
+      this.buffer_ = new byte[size];
 
       GL.BindBuffer(target, id);
       GL.BufferData(target,
@@ -138,14 +137,12 @@ public static class GlBuffer {
 
       this.buffer_.CopyTo(this.previousData_);
 
-      fixed (byte* scratchPtr = &this.buffer_[0]) {
-        GL.BindBuffer(this.Target, this.Id);
-        GL.BufferSubData(
-            this.Target,
-            0,
-            this.buffer_.Length,
-            (nint) scratchPtr);
-      }
+      GL.BindBuffer(this.Target, this.Id);
+      GL.BufferSubData(
+          this.Target,
+          0,
+          this.buffer_.Length,
+          this.buffer_);
     }
   }
 }
