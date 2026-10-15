@@ -14,6 +14,8 @@ public sealed class PrimitiveMetadataSsbo {
   private readonly int bufferSize_;
   private readonly GlSsbo impl_;
 
+  private bool isDirty_ = true;
+
   public PrimitiveMetadataSsbo(IReadOnlyList<IReadOnlyPrimitive> primitives) {
     this.primitives_ = primitives;
 
@@ -24,13 +26,13 @@ public sealed class PrimitiveMetadataSsbo {
     SelectedMaterialsService.OnMaterialsSelected
         += selectedMaterials => {
           this.selectedMaterials_ = selectedMaterials;
-          this.UpdateData_();
+          this.isDirty_ = true;
         };
 
     SelectedMeshService.OnMeshSelected
         += selectedMesh => {
           this.selectedMesh_ = selectedMesh;
-          this.UpdateData_();
+          this.isDirty_ = true;
         };
   }
 
@@ -64,7 +66,14 @@ public sealed class PrimitiveMetadataSsbo {
     this.impl_.UpdateDataIfChanged(buffer);
   }
 
-  public void Bind() => this.impl_.Bind();
+  public void Bind() {
+    if (this.isDirty_) {
+      this.isDirty_ = false;
+      this.UpdateData_();
+    }
+    
+    this.impl_.Bind();
+  }
 
   private static int GetSubPrimitiveCount_(IReadOnlyPrimitive primitive)
     => primitive.Type switch {
