@@ -40,6 +40,10 @@ public static partial class GlUtil {
          userParam) => {
           var message = Marshal.PtrToStringAnsi(messagePtr);
 
+          if (severity == DebugSeverity.DebugSeverityNotification) {
+            return;
+          }
+
           if (type == DebugType.DebugTypeError) {
             throw new Exception(message);
           }

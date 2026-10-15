@@ -6,7 +6,6 @@ using Avalonia.Controls;
 
 using fin.ui.avalonia.util;
 using fin.ui.rendering;
-using fin.ui.rendering.gl;
 
 using ReactiveUI;
 
