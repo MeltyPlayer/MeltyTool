@@ -64,7 +64,7 @@ public partial class ModelRenderer {
           new RenderPriorityOrderedSet<VisibilityMeshMaterialTuple>();
       var primitivesByMaterial
           = new ListDictionary<VisibilityMeshMaterialTuple, IReadOnlyPrimitive>(
-              new NullFriendlyDictionary<VisibilityMeshMaterialTuple,
+              new SimpleDictionary<VisibilityMeshMaterialTuple,
                   List<IReadOnlyPrimitive>>());
 
       foreach (var mesh in model.Skin.Meshes) {
