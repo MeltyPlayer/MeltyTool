@@ -74,7 +74,7 @@ public class GlFence {
     this.impl_ = GL.FenceSync(
         SyncCondition.SyncGpuCommandsComplete,
         WaitSyncFlags.None);
-    //GL.Flush();
+    GL.Flush();
   }
 
   public void AddOwner() => ++this.ownerCount_;

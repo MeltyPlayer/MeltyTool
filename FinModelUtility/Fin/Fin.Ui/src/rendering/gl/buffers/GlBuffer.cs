@@ -29,7 +29,7 @@ public static partial class GlBuffer {
   public static IFixedSizeMutableGlBuffer CreateFixedSizeMutableBuffer(
       BufferTarget target,
       int size)
-    => OpenGlFeatureService.SupportsNamedBufferStorage
+    => false && OpenGlFeatureService.SupportsNamedBufferStorage
         ? new ModernFixedSizeMutableGlBufferImpl(target, size)
         : new LegacyFixedSizeMutableGlBufferImpl(target, size);
 

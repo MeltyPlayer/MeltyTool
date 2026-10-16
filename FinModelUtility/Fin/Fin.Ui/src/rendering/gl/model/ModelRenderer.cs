@@ -16,7 +16,7 @@ namespace fin.ui.rendering.gl.model;
 ///   NOTE: This will only be valid in the GL context this was first rendered in!
 /// </summary>
 public sealed partial class ModelRenderer : IDynamicModelRenderer {
-  private readonly IReadOnlyList<IReadOnlyBone> bonesUsedByVertices_;
+  private readonly IReadOnlyBone[] bonesUsedByVertices_;
   private readonly Matrix4x4[] boneMatrices_;
   private readonly MergedMaterialMeshesRenderer impl_;
 
@@ -66,7 +66,7 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
     this.boneTransformManager_ = boneTransformManager;
 
     this.bonesUsedByVertices_ = model.Skin.BonesUsedByVertices.ToArray();
-    this.boneMatrices_ = new Matrix4x4[1 + this.bonesUsedByVertices_.Count];
+    this.boneMatrices_ = new Matrix4x4[1 + this.bonesUsedByVertices_.Length];
     this.boneMatrices_[0] = Matrix4x4.Identity;
 
     this.impl_ = new MergedMaterialMeshesRenderer(model,
@@ -110,15 +110,18 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
   public void UpdateMatricesUbo() {
     var boneIndex = 1;
     // Intentionally looping by index to avoid allocating an enumerator.
-    for (var i = 0; i < this.bonesUsedByVertices_.Count; ++i) {
-      var bone = this.bonesUsedByVertices_[i];
-      var localToWorldMatrix =
-          this.boneTransformManager_?.GetLocalToWorldMatrix(bone).Impl ??
-          Matrix4x4.Identity;
-      var inverseMatrix =
-          this.boneTransformManager_?.GetInverseBindMatrix(bone).Impl ??
-          Matrix4x4.Identity;
-      this.boneMatrices_[boneIndex++] = inverseMatrix * localToWorldMatrix;
+    if (this.boneTransformManager_ == null) {
+      foreach (var bone in this.bonesUsedByVertices_) {
+        this.boneMatrices_[boneIndex++] = Matrix4x4.Identity;
+      }
+    } else {
+      foreach (var bone in this.bonesUsedByVertices_) {
+        var localToWorldMatrix =
+            this.boneTransformManager_.GetLocalToWorldMatrix(bone).Impl;
+        var inverseMatrix =
+            this.boneTransformManager_.GetInverseBindMatrix(bone).Impl;
+        this.boneMatrices_[boneIndex++] = inverseMatrix * localToWorldMatrix;
+      }
     }
 
     this.matricesBo_

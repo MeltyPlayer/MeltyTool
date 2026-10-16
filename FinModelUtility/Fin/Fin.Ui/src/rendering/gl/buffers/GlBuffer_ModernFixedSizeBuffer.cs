@@ -11,7 +11,7 @@ public static partial class GlBuffer {
     private readonly byte[] previousData_;
     private readonly byte[] scratchBuffer_;
 
-    private const int BUFFER_COUNT_ = 5;
+    private const int BUFFER_COUNT_ = 3;
     private readonly int bufferLength_;
     private readonly int bufferLengthPadded_;
 
