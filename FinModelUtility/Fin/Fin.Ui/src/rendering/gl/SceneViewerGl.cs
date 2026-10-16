@@ -114,7 +114,8 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
   public IOrthoRenderable? BackdropRenderer { get; set; } = new SkyboxRenderer();
 
   public void Render() {
-    FrameTime.MarkStartOfFrame();
+    GlUtil.MarkStartOfFrame();
+
     this.singleArea_?.CustomSkyboxObject?.Tick();
     this.Scene?.Tick();
 
@@ -190,7 +191,7 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
     this.RenderSkybox_();
     this.RenderScene_();
 
-    FrameTime.MarkEndOfFrameForFpsDisplay();
+    GlUtil.MarkEndOfFrame();
   }
 
   private void RenderSkybox_() {

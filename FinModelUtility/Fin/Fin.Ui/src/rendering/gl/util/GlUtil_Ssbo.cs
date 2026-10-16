@@ -1,39 +1,41 @@
-﻿using OpenTK.Graphics.OpenGL4;
+﻿using fin.ui.rendering.gl.buffers;
+
+using OpenTK.Graphics.OpenGL4;
 
 namespace fin.ui.rendering.gl;
 
 public partial record GlState {
-  public int CurrentSsboDataId { get; set; }
-  public int[] CurrentSsboBufferBaseIdByIndex { get; } = [0, 0, 0, 0, 0];
+  public IGlBuffer?[] CurrentSsboBufferBaseIdByIndex { get; } = [
+      null, null, null, null, null
+  ];
 }
 
 public static partial class GlUtil {
-  public static void ResetSsboData() => BindSsboData(0);
-
-  public static void BindSsboData(int ssboId) {
-    if (currentState_.CurrentUboDataId == ssboId) {
-      return;
-    }
-
-    GL.BindBuffer(BufferTarget.ShaderStorageBuffer, ssboId);
-  }
-
   public static void ResetSsboBufferBase() {
     for (var i = 0;
          i < currentState_.CurrentSsboBufferBaseIdByIndex.Length;
          ++i) {
-      BindSsboBufferBase(i, 0);
+      BindSsboBufferBase(i, null);
     }
   }
 
-  public static void BindSsboBufferBase(int bindingIndex, int ssboId) {
-    if (currentState_.CurrentSsboBufferBaseIdByIndex[bindingIndex] == ssboId) {
+  public static void BindSsboBufferBase(int bindingIndex, IGlBuffer? buffer) {
+    if (currentState_.CurrentSsboBufferBaseIdByIndex[bindingIndex] == buffer) {
       return;
     }
 
-    currentState_.CurrentSsboBufferBaseIdByIndex[bindingIndex] = ssboId;
-    GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer,
-                      bindingIndex,
-                      ssboId);
+    currentState_.CurrentSsboBufferBaseIdByIndex[bindingIndex] = buffer;
+    if (buffer == null) {
+      GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer,
+                        bindingIndex,
+                        0);
+    } else {
+      GL.BindBufferRange(
+          BufferRangeTarget.ShaderStorageBuffer,
+          bindingIndex,
+          buffer.Id,
+          buffer.GpuRangeOffset,
+          buffer.GpuRangeLength);
+    }
   }
 }

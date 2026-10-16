@@ -59,7 +59,6 @@ public static partial class GlUtil {
              state.DepthModeAndCompareType.Item2);
     SetFlipFaces(state.FlipFaces);
 
-    BindSsboData(state.CurrentSsboDataId);
     for (var i = 0; i < state.CurrentSsboBufferBaseIdByIndex.Length; ++i) {
       BindSsboBufferBase(i, state.CurrentSsboBufferBaseIdByIndex[i]);
     }

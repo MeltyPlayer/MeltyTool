@@ -10,14 +10,17 @@ namespace fin.ui.rendering.gl.buffers;
 public partial interface IGlBuffer : IDisposable {
   int Id { get; }
   BufferTarget Target { get; }
+
+  int GpuRangeOffset { get; }
+  int GpuRangeLength { get; }
 }
 
 public interface IFixedSizeMutableGlBuffer : IGlBuffer {
-  WriteOnlySpan<byte> Buffer { get; }
-  void Flush();
+  Span<byte> CpuBuffer { get; }
+  void FlushToGpu();
 }
 
-public static class GlBuffer {
+public static partial class GlBuffer {
   public static IGlBuffer CreateStaticBuffer(
       BufferTarget target,
       ReadOnlySpan<byte> data)
@@ -34,6 +37,9 @@ public static class GlBuffer {
     public abstract int Id { get; }
     public BufferTarget Target => target;
 
+    public abstract int GpuRangeOffset { get; }
+    public abstract int GpuRangeLength { get; }
+
     ~BGlBufferImpl() => this.ReleaseUnmanagedResources_();
 
     public void Dispose() {
@@ -41,14 +47,25 @@ public static class GlBuffer {
       GC.SuppressFinalize(this);
     }
 
-    private void ReleaseUnmanagedResources_() => GL.DeleteBuffer(this.Id);
+    private void ReleaseUnmanagedResources_() {
+      this.DisposeImpl();
+      GL.DeleteBuffer(this.Id);
+    }
+
+    protected virtual void DisposeImpl() { }
   }
 
   private sealed class StaticGlBufferImpl : BGlBufferImpl {
     public override int Id { get; }
 
+    public override int GpuRangeOffset { get; }
+    public override int GpuRangeLength { get; }
+
     public unsafe StaticGlBufferImpl(BufferTarget target,
                                      ReadOnlySpan<byte> data) : base(target) {
+      this.GpuRangeOffset = 0;
+      this.GpuRangeLength = data.Length;
+
       fixed (byte* ptr = &data[0]) {
         if (OpenGlFeatureService.SupportsNamedBufferStorage) {
           GL.CreateBuffers(1, out int id);
@@ -71,40 +88,6 @@ public static class GlBuffer {
     }
   }
 
-  private class ModernFixedSizeMutableGlBufferImpl
-      : BGlBufferImpl, IFixedSizeMutableGlBuffer {
-    private readonly byte* bufferPtr_;
-    private readonly int bufferLength_;
-
-    public override int Id { get; }
-
-    public unsafe ModernFixedSizeMutableGlBufferImpl(
-        BufferTarget target,
-        int size) : base(target) {
-      GL.CreateBuffers(1, out int id);
-      this.Id = id;
-
-      this.bufferLength_ = size;
-
-      GL.NamedBufferStorage(
-          id,
-          size,
-          0,
-          BufferStorageFlags.MapWriteBit |
-          BufferStorageFlags.MapPersistentBit |
-          BufferStorageFlags.MapCoherentBit);
-
-      this.bufferPtr_ = (byte*) GL.MapNamedBuffer(
-          this.Id,
-          BufferAccess.WriteOnly);
-    }
-
-    public unsafe WriteOnlySpan<byte> Buffer
-      => new(this.bufferPtr_, this.bufferLength_);
-
-    public void Flush() { }
-  }
-
   private class LegacyFixedSizeMutableGlBufferImpl
       : BGlBufferImpl, IFixedSizeMutableGlBuffer {
     private readonly byte[] previousData_;
@@ -112,9 +95,15 @@ public static class GlBuffer {
 
     public override int Id { get; }
 
+    public override int GpuRangeOffset { get; }
+    public override int GpuRangeLength { get; }
+
     public LegacyFixedSizeMutableGlBufferImpl(
         BufferTarget target,
         int size) : base(target) {
+      this.GpuRangeOffset = 0;
+      this.GpuRangeLength = size;
+
       var id = this.Id = GL.GenBuffer();
       this.previousData_ = new byte[size];
       this.buffer_ = new byte[size];
@@ -128,9 +117,9 @@ public static class GlBuffer {
       this.previousData_ = new byte[size];
     }
 
-    public WriteOnlySpan<byte> Buffer => this.buffer_;
+    public Span<byte> CpuBuffer => this.buffer_;
 
-    public void Flush() {
+    public void FlushToGpu() {
       if (this.previousData_.SequenceEqual(this.buffer_)) {
         return;
       }

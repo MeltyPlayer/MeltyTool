@@ -25,9 +25,10 @@ public sealed class GlSsbo : IDisposable {
 
   private void ReleaseUnmanagedResources_() => this.impl_.Dispose();
 
-  public WriteOnlySpan<byte> Buffer => this.impl_.Buffer;
-  public void Flush() => this.impl_.Flush();
+  public Span<byte> Buffer => this.impl_.CpuBuffer;
+  public void Flush() => this.impl_.FlushToGpu();
 
-  public void Bind()
-    => GlUtil.BindSsboBufferBase(this.bindingIndex_, this.impl_.Id);
+  public void Bind() {
+    GlUtil.BindSsboBufferBase(this.bindingIndex_, this.impl_);
+  }
 }
