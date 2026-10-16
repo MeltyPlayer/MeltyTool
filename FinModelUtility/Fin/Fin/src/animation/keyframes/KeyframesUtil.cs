@@ -85,20 +85,24 @@ public static class KeyframesUtil {
 
     int lastLower = -1;
 
-    while (lowI <= highI) {
-      var midI = lowI + ((highI - lowI) >> 1);
-      var midFrame = keyframes[midI].Frame;
+    unsafe {
+      fixed (TKeyframe* ptr = &keyframes[0]) {
+        while (lowI <= highI) {
+          var midI = lowI + ((highI - lowI) >> 1);
+          var midFrame = ptr[midI].Frame;
 
-      if (midFrame.IsRoughly(frame)) {
-        return midI;
-      }
+          if (midFrame == frame) {
+            return midI;
+          }
 
-      // 2. Direct comparisons narrow down bounds cleanly
-      if (midFrame < frame) {
-        lastLower = midI;
-        lowI = midI + 1;
-      } else {
-        highI = midI - 1;
+          // 2. Direct comparisons narrow down bounds cleanly
+          if (midFrame < frame) {
+            lastLower = midI;
+            lowI = midI + 1;
+          } else {
+            highI = midI - 1;
+          }
+        }
       }
     }
 
@@ -121,11 +125,11 @@ public static class KeyframesUtil {
       out TKeyframe followingKeyframe,
       out float normalizedFrame) where TKeyframe : IKeyframe {
     if (!keyframes.TryGetPrecedingKeyframe(frame,
-                                      sharedConfig,
-                                      individualConfig,
-                                      out precedingKeyframe,
-                                      out var precedingKeyframeIndex,
-                                      out normalizedFrame)) {
+                                           sharedConfig,
+                                           individualConfig,
+                                           out precedingKeyframe,
+                                           out var precedingKeyframeIndex,
+                                           out normalizedFrame)) {
       if (sharedConfig.Looping) {
         if (keyframes.Length == 1) {
           precedingKeyframe = keyframes[0];
