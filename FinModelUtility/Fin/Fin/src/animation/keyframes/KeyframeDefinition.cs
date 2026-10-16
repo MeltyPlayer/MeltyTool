@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace fin.animation.keyframes;
 
-public readonly record struct KeyframeDefinition<T>(
+public sealed record KeyframeDefinition<T>(
     int Frame,
     T Value,
     string FrameType = "")

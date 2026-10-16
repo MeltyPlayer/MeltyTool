@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.animation.interpolation;
 
 using static fin.animation.keyframes.KeyframesUtil;
@@ -37,13 +39,14 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
   public void Add(TKeyframe keyframe) => this.impl_.AddKeyframe(keyframe);
 
   public bool TryGetAtFrame(float frame, out T value) {
-    switch (this.impl_.TryGetPrecedingAndFollowingKeyframes(
-                frame,
-                sharedConfig,
-                this.IndividualConfig,
-                out var precedingKeyframe,
-                out var followingKeyframe,
-                out var normalizedFrame)) {
+    switch (this.impl_.AsSpan()
+                .TryGetPrecedingAndFollowingKeyframes(
+                    frame,
+                    sharedConfig,
+                    this.IndividualConfig,
+                    out var precedingKeyframe,
+                    out var followingKeyframe,
+                    out var normalizedFrame)) {
       case InterpolationDataType.PRECEDING_AND_FOLLOWING:
         value = interpolator.Interpolate(precedingKeyframe,
                                          followingKeyframe,
@@ -72,13 +75,14 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe,
       out float normalizedFrame)
-    => this.impl_.TryGetPrecedingAndFollowingKeyframes(
-        frame,
-        sharedConfig,
-        this.IndividualConfig,
-        out precedingKeyframe,
-        out followingKeyframe,
-        out normalizedFrame);
+    => this.impl_.AsSpan()
+           .TryGetPrecedingAndFollowingKeyframes(
+               frame,
+               sharedConfig,
+               this.IndividualConfig,
+               out precedingKeyframe,
+               out followingKeyframe,
+               out normalizedFrame);
 
   public void GetAllFrames(Span<T> dst) {
     T defaultValue = default!;

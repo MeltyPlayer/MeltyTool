@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System;
+using System.Collections.Generic;
 
 using fin.animation.interpolation;
 using fin.math;
-using fin.util.lists;
+using fin.math.floats;
 
 namespace fin.animation.keyframes;
 
@@ -31,7 +31,7 @@ public static class KeyframesUtil {
   }
 
   public static bool TryGetPrecedingKeyframe<TKeyframe>(
-      this List<TKeyframe> impl,
+      this ReadOnlySpan<TKeyframe> keyframes,
       float frame,
       ISharedInterpolationConfig sharedConfig,
       IIndividualInterpolationConfig individualConfig,
@@ -39,7 +39,7 @@ public static class KeyframesUtil {
       out int keyframeIndex,
       out float normalizedFrame) where TKeyframe : IKeyframe {
     // Short-circuits early if there are no frames.
-    if (impl.Count == 0) {
+    if (keyframes.Length == 0) {
       keyframe = default;
       keyframeIndex = 0;
       normalizedFrame = 0;
@@ -54,47 +54,55 @@ public static class KeyframesUtil {
                              sharedConfig.AnimationLength);
     }
 
-    var index
-        = impl.BinarySearch<TKeyframe, float, KeyframeFrameComparer<TKeyframe>>(
-            new KeyframeFrameComparer<TKeyframe>(frame));
+    var index = BinarySearchForPrecedingKeyframe_(keyframes, frame);
 
-    // If index is negative then the exact value wasn't found in the list. It
-    // will instead be the bitwise complement of the next element that's larger.
-    if (index < 0) {
-      index = ~index;
-
-      // Subtract one because we want to find the previous frame.
-      index -= 1;
-
-      // If index is negative after subtracting, then no frames are smaller.
-      if (index < 0) {
-        // If not looping, short-circuits early.
-        if (!looping) {
-          keyframe = default;
-          keyframeIndex = 0;
-          normalizedFrame = 0;
-          return false;
-        }
-
-        // Otherwise, wraps back around to the last frame.
-        index = impl.Count - 1;
+    // If index is -1, no frames are smaller.
+    if (index == -1) {
+      // If not looping, short-circuits early.
+      if (!looping) {
+        keyframe = default;
+        keyframeIndex = 0;
+        normalizedFrame = 0;
+        return false;
       }
+
+      // Otherwise, wraps back around to the last frame.
+      index = keyframes.Length - 1;
     }
 
-    keyframe = impl[index];
+    keyframe = keyframes[index];
     keyframeIndex = index;
     normalizedFrame = frame;
     return true;
   }
 
-  private readonly struct KeyframeFrameComparer<TKeyframe>(float frame)
-      : IStaticAsymmetricComparer<TKeyframe, float>
+  private static int BinarySearchForPrecedingKeyframe_<TKeyframe>(
+      ReadOnlySpan<TKeyframe> keyframes,
+      float frame)
       where TKeyframe : IKeyframe {
-    public float Value => frame;
+    int lowI = 0;
+    int highI = keyframes.Length - 1;
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public int Compare(TKeyframe lhs, float rhs)
-      => FrameComparisonUtil.CompareFrames(lhs.Frame, rhs);
+    int lastLower = -1;
+
+    while (lowI <= highI) {
+      var midI = lowI + ((highI - lowI) >> 1);
+      var midFrame = keyframes[midI].Frame;
+
+      if (midFrame.IsRoughly(frame)) {
+        return midI;
+      }
+
+      // 2. Direct comparisons narrow down bounds cleanly
+      if (midFrame < frame) {
+        lastLower = midI;
+        lowI = midI + 1;
+      } else {
+        highI = midI - 1;
+      }
+    }
+
+    return lastLower;
   }
 
   public enum InterpolationDataType {
@@ -105,29 +113,29 @@ public static class KeyframesUtil {
 
   public static InterpolationDataType TryGetPrecedingAndFollowingKeyframes<
       TKeyframe>(
-      this List<TKeyframe> impl,
+      this ReadOnlySpan<TKeyframe> keyframes,
       float frame,
       ISharedInterpolationConfig sharedConfig,
       IIndividualInterpolationConfig individualConfig,
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe,
       out float normalizedFrame) where TKeyframe : IKeyframe {
-    if (!impl.TryGetPrecedingKeyframe(frame,
+    if (!keyframes.TryGetPrecedingKeyframe(frame,
                                       sharedConfig,
                                       individualConfig,
                                       out precedingKeyframe,
                                       out var precedingKeyframeIndex,
                                       out normalizedFrame)) {
       if (sharedConfig.Looping) {
-        if (impl.Count == 1) {
-          precedingKeyframe = impl[0];
+        if (keyframes.Length == 1) {
+          precedingKeyframe = keyframes[0];
           followingKeyframe = default!;
           return InterpolationDataType.PRECEDING_ONLY;
         }
 
-        if (impl.Count > 1) {
-          precedingKeyframe = impl[^1];
-          followingKeyframe = impl[0];
+        if (keyframes.Length > 1) {
+          precedingKeyframe = keyframes[^1];
+          followingKeyframe = keyframes[0];
           return InterpolationDataType.PRECEDING_AND_FOLLOWING;
         }
       }
@@ -137,9 +145,9 @@ public static class KeyframesUtil {
     }
 
     var followingKeyframeIndex = precedingKeyframeIndex + 1;
-    if (followingKeyframeIndex == impl.Count) {
+    if (followingKeyframeIndex == keyframes.Length) {
       // TODO: Should this support from a frame to itself?
-      if (!sharedConfig.Looping || impl.Count == 1) {
+      if (!sharedConfig.Looping || keyframes.Length == 1) {
         followingKeyframe = default!;
         return InterpolationDataType.PRECEDING_ONLY;
       }
@@ -147,7 +155,7 @@ public static class KeyframesUtil {
       followingKeyframeIndex = 0;
     }
 
-    followingKeyframe = impl[followingKeyframeIndex];
+    followingKeyframe = keyframes[followingKeyframeIndex];
     return InterpolationDataType.PRECEDING_AND_FOLLOWING;
   }
 }

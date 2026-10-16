@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.animation.keyframes;
 using fin.math.floats;
 using fin.util.asserts;
@@ -43,7 +45,8 @@ public static class HermiteInterpolationUtil {
       out float tangentOut) {
     var unsafeList = keyframes.Definitions
                               .AssertAsA<List<KeyframeWithTangents<float>>>();
-    if (unsafeList.TryGetPrecedingAndFollowingKeyframes(
+    if (unsafeList.AsSpan()
+                  .TryGetPrecedingAndFollowingKeyframes(
             frame,
             keyframes.SharedConfig,
             keyframes.IndividualConfig!,
