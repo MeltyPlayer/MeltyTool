@@ -1197,7 +1197,7 @@ public sealed class TstltModelImporter
   }
 
   private static Quaternion GetDefaultRotation_(IReadOnlyBone bone)
-    => bone.Transform.LocalRotation ?? Quaternion.Identity;
+    => bone.Transform.LocalRotation;
 
   private static Quaternion GetPose1Rotation_(bool isHand,
                                               short degreesTimesTen) {

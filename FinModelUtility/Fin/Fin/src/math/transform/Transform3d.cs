@@ -10,12 +10,12 @@ namespace fin.math.transform;
 
 [GenerateReadOnly]
 public partial interface ITransform3d
-    : ITransform<Vector3, Quaternion?, Vector3?> {
+    : ITransform<Vector3, Quaternion, Vector3> {
   bool IgnoreParentScale { get; set; }
   new Matrix4x4 WorldMatrix { get; }
 
   new Matrix4x4 LocalMatrix { get; }
-  new Vector3? LocalEulerRadians { get; set; }
+  new Vector3 LocalEulerRadians { get; set; }
 }
 
 public sealed class Transform3d : ITransform3d {
@@ -28,8 +28,8 @@ public sealed class Transform3d : ITransform3d {
   private bool isEulerRadiansDirty_;
   private bool isQuaternionDirty_;
 
-  private Quaternion? rotation_;
-  private Vector3? eulerRadians_;
+  private Quaternion rotation_ = Quaternion.Identity;
+  private Vector3 eulerRadians_;
 
   public Transform3d(Transform3d? parent = null) {
     this.parent_ = parent;
@@ -88,14 +88,14 @@ public sealed class Transform3d : ITransform3d {
     }
   }
 
-  public Quaternion? LocalRotation {
+  public Quaternion LocalRotation {
     get {
       if (!this.isQuaternionDirty_) {
         return this.rotation_;
       }
 
       this.isQuaternionDirty_ = false;
-      return this.rotation_ = this.eulerRadians_?.CreateZyxRadians();
+      return this.rotation_ = this.eulerRadians_.CreateZyxRadians();
     }
     set {
       this.isQuaternionDirty_ = false;
@@ -106,14 +106,14 @@ public sealed class Transform3d : ITransform3d {
     }
   }
 
-  public Vector3? LocalEulerRadians {
+  public Vector3 LocalEulerRadians {
     get {
       if (!this.isEulerRadiansDirty_) {
         return this.eulerRadians_;
       }
 
       this.isEulerRadiansDirty_ = false;
-      return this.eulerRadians_ = this.rotation_?.ToEulerRadians();
+      return this.eulerRadians_ = this.rotation_.ToEulerRadians();
     }
     set {
       this.isEulerRadiansDirty_ = false;
@@ -124,13 +124,13 @@ public sealed class Transform3d : ITransform3d {
     }
   }
 
-  public Vector3? LocalScale {
+  public Vector3 LocalScale {
     get;
     set {
       field = value;
       this.MarkLocalDirty_();
     }
-  }
+  } = Vector3.One;
 
   private void MarkLocalDirty_() {
     this.isLocalMatrixDirty_ = true;

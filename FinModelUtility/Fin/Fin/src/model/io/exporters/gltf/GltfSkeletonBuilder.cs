@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 
 using fin.data.queues;
+using fin.math;
 
 using SharpGLTF.Schema2;
 
@@ -48,12 +49,12 @@ public sealed class GltfSkeletonBuilder {
     var finTransform = bone.Transform;
     node.WithLocalTranslation(finTransform.LocalTranslation * scale);
 
-    if (finTransform.LocalRotation != null) {
-      node.WithLocalRotation(finTransform.LocalRotation.Value);
+    if (!finTransform.LocalRotation.IsIdentity) {
+      node.WithLocalRotation(finTransform.LocalRotation);
     }
 
-    if (finTransform.LocalScale != null) {
-      node.WithLocalScale(finTransform.LocalScale.Value);
+    if (!finTransform.LocalScale.IsRoughly1()) {
+      node.WithLocalScale(finTransform.LocalScale);
     }
   }
 }

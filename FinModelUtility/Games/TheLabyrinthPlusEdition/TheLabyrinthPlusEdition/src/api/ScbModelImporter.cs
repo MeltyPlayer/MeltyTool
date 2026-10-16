@@ -146,7 +146,7 @@ public sealed class ScbModelImporter : IModelImporter<ScbModelImporter, ScbModel
 
             finAnimation.FrameCount = (int) Math.Max(finAnimation.FrameCount, frame);
 
-            var rotation = currentBone.Transform.LocalRotation.Value *
+            var rotation = currentBone.Transform.LocalRotation *
                            ConvertRotationToQuaternion_(keyframe.EulerRadians);
             rotationTrack.SetKeyframe(frame, rotation);
           }

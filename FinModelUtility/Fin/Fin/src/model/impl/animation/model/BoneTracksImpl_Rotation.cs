@@ -25,22 +25,22 @@ public partial class ModelImpl<TVertex> {
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialXCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.X ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.X),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialYCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.Y ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.Y),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialZCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.Z ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.Z),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialWCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.W ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.W),
           });
 
       this.Rotations = keyframes;
@@ -61,22 +61,22 @@ public partial class ModelImpl<TVertex> {
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialXCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.X ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.X),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialYCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.Y ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.Y),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialZCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.Z ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.Z),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialWCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalRotation?.W ?? 0),
+                  = Optional.Of(bone.Transform.LocalRotation.W),
           });
 
       this.Rotations = keyframes;
@@ -91,8 +91,7 @@ public partial class ModelImpl<TVertex> {
           QuaternionKeyframeInterpolator.Instance,
           new IndividualInterpolationConfig<Quaternion> {
               InitialCapacity = initialCapacity,
-              DefaultValue = Optional.Of(() => bone.Transform.LocalRotation ??
-                                               Quaternion.Zero),
+              DefaultValue = Optional.Of(bone.Transform.LocalRotation),
           });
 
       this.Rotations = keyframes;
@@ -111,17 +110,17 @@ public partial class ModelImpl<TVertex> {
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialXCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalEulerRadians?.X ?? 0),
+                  = Optional.Of(bone.Transform.LocalEulerRadians.X),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialYCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalEulerRadians?.Y ?? 0),
+                  = Optional.Of(bone.Transform.LocalEulerRadians.Y),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialZCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalEulerRadians?.Z ?? 0),
+                  = Optional.Of(bone.Transform.LocalEulerRadians.Z),
           });
 
       this.Rotations = keyframes;
@@ -141,17 +140,17 @@ public partial class ModelImpl<TVertex> {
               new IndividualInterpolationConfig<float> {
                   InitialCapacity = initialXCapacity,
                   DefaultValue = Optional.Of(
-                      () => bone.Transform.LocalEulerRadians?.X ?? 0),
+                      bone.Transform.LocalEulerRadians.X),
               },
               new IndividualInterpolationConfig<float> {
                   InitialCapacity = initialYCapacity,
                   DefaultValue = Optional.Of(
-                      () => bone.Transform.LocalEulerRadians?.Y ?? 0),
+                      bone.Transform.LocalEulerRadians.Y),
               },
               new IndividualInterpolationConfig<float> {
                   InitialCapacity = initialZCapacity,
                   DefaultValue = Optional.Of(
-                      () => bone.Transform.LocalEulerRadians?.Z ?? 0),
+                      bone.Transform.LocalEulerRadians.Z),
               });
 
       this.Rotations = keyframes;

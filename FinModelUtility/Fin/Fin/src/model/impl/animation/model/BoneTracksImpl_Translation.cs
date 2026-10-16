@@ -23,17 +23,17 @@ public partial class ModelImpl<TVertex> {
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialXCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalTranslation.X),
+                  = Optional.Of(bone.Transform.LocalTranslation.X),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialYCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalTranslation.Y),
+                  = Optional.Of(bone.Transform.LocalTranslation.Y),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialZCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalTranslation.Z),
+                  = Optional.Of(bone.Transform.LocalTranslation.Z),
           });
 
       this.Translations = keyframes;
@@ -52,17 +52,17 @@ public partial class ModelImpl<TVertex> {
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialXCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalTranslation.X),
+                  = Optional.Of(bone.Transform.LocalTranslation.X),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialYCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalTranslation.Y),
+                  = Optional.Of(bone.Transform.LocalTranslation.Y),
           },
           new IndividualInterpolationConfig<float> {
               InitialCapacity = initialZCapacity,
               DefaultValue
-                  = Optional.Of(() => bone.Transform.LocalTranslation.Z),
+                  = Optional.Of(bone.Transform.LocalTranslation.Z),
           });
 
       this.Translations = keyframes;
@@ -77,7 +77,7 @@ public partial class ModelImpl<TVertex> {
           Vector3KeyframeInterpolator.Instance,
           new IndividualInterpolationConfig<Vector3> {
               InitialCapacity = initialCapacity,
-              DefaultValue = Optional.Of(() => bone.Transform.LocalTranslation),
+              DefaultValue = Optional.Of(bone.Transform.LocalTranslation),
           });
 
       this.Translations = keyframes;
@@ -94,7 +94,7 @@ public partial class ModelImpl<TVertex> {
               new IndividualInterpolationConfig<Vector3> {
                   InitialCapacity = initialCapacity,
                   DefaultValue
-                      = Optional.Of(() => bone.Transform.LocalTranslation),
+                      = Optional.Of(bone.Transform.LocalTranslation),
               });
 
       this.Translations = keyframes;
