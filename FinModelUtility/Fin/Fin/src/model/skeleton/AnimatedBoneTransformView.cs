@@ -52,6 +52,9 @@ public sealed class AnimatedBoneTransformView : ITargetedBoneTransformView {
   public AnimatedBoneTransformView(IReadOnlyList<IReadOnlyBone> bones) {
     this.boneTransformViewByBone_
         = new IndexableArray<IReadOnlyBone, IBoneTransformView>(bones.Count);
+    for (var i = 0; i < this.boneTransformViewByBone_.Count; ++i) {
+      this.boneTransformViewByBone_[i] = NoopBoneTransformView.Instance;
+    }
   }
 
   public void TargetBone(IReadOnlyBone bone) {
