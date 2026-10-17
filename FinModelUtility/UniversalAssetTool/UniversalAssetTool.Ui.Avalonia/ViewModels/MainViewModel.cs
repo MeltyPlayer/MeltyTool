@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 
+using Avalonia.Threading;
+
 using fin.model;
 using fin.scene;
 using fin.ui;
@@ -69,7 +71,7 @@ public sealed class MainViewModel : BViewModel {
     };
 
     SceneInstanceService.OnSceneInstanceOpened
-        += (_, sceneInstance) => {
+        += (_, sceneInstance) => Dispatcher.UIThread.Invoke(() => {
           AvaloniaBitmapUtil.ClearCache();
 
           var fileBundle = sceneInstance.Definition.FileBundle;
@@ -103,7 +105,7 @@ public sealed class MainViewModel : BViewModel {
                 Scene = sceneInstance.Definition
             };
           }
-        };
+        });
 
     AudioPlaylistService.OnPlaylistUpdated
         += playlist => { this.AudioPlayerPanel.AudioFileBundles = playlist; };
