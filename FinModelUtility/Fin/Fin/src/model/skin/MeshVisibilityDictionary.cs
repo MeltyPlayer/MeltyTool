@@ -24,7 +24,7 @@ public partial interface IMeshVisibilityDictionary {
 public sealed class MeshVisibilityDictionary
     : IMeshVisibilityDictionary {
   private readonly VisibilityNode rootVisibilityNode_;
-  private SparseIndexableDictionary<IReadOnlyMesh, VisibilityNode> impl_;
+  private IndexableArray<IReadOnlyMesh, VisibilityNode> impl_;
 
   private int userHiddenCount_;
 

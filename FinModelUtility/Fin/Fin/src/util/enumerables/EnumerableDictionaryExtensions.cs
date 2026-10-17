@@ -25,11 +25,11 @@ public static class EnumerableDictionaryExtensions {
       Func<T, TKey> keySelector,
       Func<T, TValue> valueSelector)
       where TKey : IIndexable {
-    var SparseIndexableDictionary = new SparseIndexableDictionary<TKey, TValue>();
+    var sparseIndexableDictionary = new SparseIndexableDictionary<TKey, TValue>();
     foreach (var t in enumerable) {
-      SparseIndexableDictionary[keySelector(t)] = valueSelector(t);
+      sparseIndexableDictionary[keySelector(t)] = valueSelector(t);
     }
 
-    return SparseIndexableDictionary;
+    return sparseIndexableDictionary;
   }
 }
