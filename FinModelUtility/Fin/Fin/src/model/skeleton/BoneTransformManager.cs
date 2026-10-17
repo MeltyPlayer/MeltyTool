@@ -57,7 +57,7 @@ public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
   void CalculateMatrices(
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
-      IBoneTransformView? boneTransformView,
+      ITargetedBoneTransformView? boneTransformView,
       BoneWeightTransformType boneWeightTransformType,
       in Matrix4x4 modelMatrix);
 }
@@ -142,7 +142,7 @@ public sealed class BoneTransformManager : IBoneTransformManager {
   public void CalculateMatrices(
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
-      IBoneTransformView? boneTransformView,
+      ITargetedBoneTransformView? boneTransformView,
       BoneWeightTransformType boneWeightTransformType,
       in Matrix4x4 modelMatrix) {
     var isFirstPass = boneTransformView == null;

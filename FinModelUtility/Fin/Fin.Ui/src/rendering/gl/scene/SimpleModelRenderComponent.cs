@@ -25,7 +25,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
     this.meshes_ = model.Skin.Meshes.ToArray();
     this.meshVisibility_ = new MeshVisibilityDictionary(model);
 
-    this.SimpleBoneTransformView = new();
+    this.SimpleBoneTransformView = new(model.Skeleton.Bones);
 
     this.BoneTransformManager = new BoneTransformManager();
     this.BoneTransformManager.CalculateStaticMatricesForManualProjection(

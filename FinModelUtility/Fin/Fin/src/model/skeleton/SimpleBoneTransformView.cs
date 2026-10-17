@@ -1,8 +1,7 @@
-﻿using System.Numerics;
+﻿using System.Collections.Generic;
+using System.Numerics;
 
 using fin.data.indexable;
-
-
 using fin.model.util;
 
 namespace fin.model.skeleton;
@@ -10,10 +9,10 @@ namespace fin.model.skeleton;
 /// <summary>
 ///   Well, this is simple for downstream users at least.
 /// </summary>
-public sealed class SimpleBoneTransformView : IBoneTransformView {
+public sealed class SimpleBoneTransformView : ITargetedBoneTransformView {
   private const bool USE_FASTER_TRANSFORM_VIEW = false;
 
-  private readonly IBoneTransformView[] impls_;
+  private readonly ITargetedBoneTransformView[] impls_;
 
   private SparseIndexableDictionary<IReadOnlyBone, Vector3> worldTranslationOverrides_
       = new();
@@ -26,8 +25,8 @@ public sealed class SimpleBoneTransformView : IBoneTransformView {
 
   private IReadOnlyBone? bone_;
 
-  public SimpleBoneTransformView() {
-    this.AnimatedBoneTransformView = new();
+  public SimpleBoneTransformView(IReadOnlyList<IReadOnlyBone> bones) {
+    this.AnimatedBoneTransformView = new(bones);
     this.impls_ = [
         this.AnimatedBoneTransformView,
         new RootBoneTransformView(),

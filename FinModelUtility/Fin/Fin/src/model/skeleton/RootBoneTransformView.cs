@@ -2,7 +2,7 @@
 
 namespace fin.model.skeleton;
 
-public sealed class RootBoneTransformView : IBoneTransformView {
+public sealed class RootBoneTransformView : ITargetedBoneTransformView {
   private IReadOnlyBone? bone_;
 
   public void TargetBone(IReadOnlyBone bone) => this.bone_ = bone;
