@@ -66,19 +66,19 @@ public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
 
 public sealed class BoneTransformManager : IBoneTransformManager {
   // TODO: This is going to be slow, can we put this somewhere else for O(1) access?
-  private readonly IndexableDictionary<IReadOnlyBone, IFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBone, IFinMatrix4x4>
       bonesToWorldMatrices_ = new();
 
-  private readonly IndexableDictionary<IReadOnlyBone, IReadOnlyFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBone, IReadOnlyFinMatrix4x4>
       bonesToInverseWorldMatrices_ = new();
 
-  private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
       boneWeightsToWorldMatrices_ = new();
 
-  private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
+  private readonly SparseIndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
       boneWeightsInverseMatrices_ = new();
 
-  private IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>
+  private SparseIndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>
       verticesToWorldMatrices_ = new();
 
   public (IReadOnlyBoneTransformManager, IReadOnlyBone)? Parent { get; }
@@ -107,7 +107,7 @@ public sealed class BoneTransformManager : IBoneTransformManager {
                                   bool forcePreproject = false) {
     var vertices = model.Skin.Vertices;
     this.verticesToWorldMatrices_ =
-        new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>(
+        new SparseIndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>(
             vertices.Count);
     foreach (var vertex in vertices) {
       this.verticesToWorldMatrices_[vertex] =

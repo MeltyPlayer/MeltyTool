@@ -7,7 +7,7 @@ using fin.data.indexable;
 namespace fin.model.skeleton;
 
 public sealed class FasterAnimatedBoneTransformView : IBoneTransformView {
-  private readonly IndexableDictionary<IReadOnlyBone,
+  private readonly SparseIndexableDictionary<IReadOnlyBone,
       (IFastInterpolatable<Vector3>? translations,
       IFastInterpolatable<Quaternion>? rotations,
       IFastInterpolatable<Vector3>? scales)> fastInterpolatablesByBone_ = new();

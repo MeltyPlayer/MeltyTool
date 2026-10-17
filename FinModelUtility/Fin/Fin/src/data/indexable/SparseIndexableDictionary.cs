@@ -8,7 +8,7 @@ using readOnly;
 namespace fin.data.indexable;
 
 [GenerateReadOnly]
-public partial interface IIndexableDictionary<in TIndexable, TValue>
+public partial interface ISparseIndexableDictionary<in TIndexable, TValue>
     : IEnumerable<TValue>
     where TIndexable : IIndexable {
   new int Count { get; }
@@ -29,15 +29,15 @@ public partial interface IIndexableDictionary<in TIndexable, TValue>
   bool Remove(TIndexable key);
 }
 
-public static class IndexableDictionaryExtensions {
+public static class SparseIndexableDictionaryExtensions {
   public static bool TryGetValue<TKey, TValue>(
-      this IReadOnlyIndexableDictionary<TKey, TValue> impl,
+      this IReadOnlySparseIndexableDictionary<TKey, TValue> impl,
       TKey key,
       out TValue value) where TKey : IIndexable
     => impl.TryGetValue(key.Index, out value);
 
   public static bool TryGetValue<TKey, TValue>(
-      this IReadOnlyIndexableDictionary<TKey, TValue> impl,
+      this IReadOnlySparseIndexableDictionary<TKey, TValue> impl,
       int index,
       out TValue value) where TKey : IIndexable {
     if (impl.ContainsKey(index)) {
@@ -50,12 +50,12 @@ public static class IndexableDictionaryExtensions {
   }
 }
 
-public sealed class IndexableDictionary<TIndexable, TValue>(int capacity)
-    : IIndexableDictionary<TIndexable, TValue>
+public sealed class SparseIndexableDictionary<TIndexable, TValue>(int capacity)
+    : ISparseIndexableDictionary<TIndexable, TValue>
     where TIndexable : IIndexable {
   private readonly List<(bool hasValue, TValue value)> impl_ = new(capacity);
 
-  public IndexableDictionary() : this(0) { }
+  public SparseIndexableDictionary() : this(0) { }
 
   public int Count { get; private set; }
 

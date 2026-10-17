@@ -30,13 +30,13 @@ public sealed class TextureSwapManager : ITextureSwapManager {
 
   private bool hasCreatedTextures_;
 
-  private readonly IndexableDictionary<IReadOnlyTexture, IGlTexture>
+  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
       glTextureByFinTexture_;
 
-  private readonly IndexableDictionary<IReadOnlyTexture, IGlTexture>
+  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
       overrideGlTextureByFinTexture_;
 
-  private readonly IndexableDictionary<IReadOnlyTexture, IGlTexture>
+  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
       finalGlTextureByFinTexture_;
 
   public TextureSwapManager(IReadOnlyList<IReadOnlyTexture> finTextures) {

@@ -94,7 +94,7 @@ public sealed class SkeletonRenderer : ISkeletonRenderer {
   private readonly IndexableSet<IReadOnlyBone> selectedChildren_ = [];
   private readonly IReadOnlyBoneTransformManager boneTransformManager_;
 
-  private readonly IReadOnlyIndexableDictionary<IReadOnlyBone, Vector3>
+  private readonly IReadOnlySparseIndexableDictionary<IReadOnlyBone, Vector3>
       scaleByBone_;
 
   public SkeletonRenderer(IReadOnlyModel model,
@@ -105,7 +105,7 @@ public sealed class SkeletonRenderer : ISkeletonRenderer {
     this.Skeleton = skeleton;
 
     var verticesByBone
-        = new IndexableDictionary<IReadOnlyBone, HashSet<IReadOnlyVertex>>(
+        = new SparseIndexableDictionary<IReadOnlyBone, HashSet<IReadOnlyVertex>>(
             skeleton.Bones.Count);
     foreach (var vertex in model.Skin.Vertices) {
       var boneWeights = vertex.BoneWeights;
@@ -123,7 +123,7 @@ public sealed class SkeletonRenderer : ISkeletonRenderer {
     }
 
     var scaleByBone
-        = new IndexableDictionary<IReadOnlyBone, Vector3>(skeleton.Bones.Count);
+        = new SparseIndexableDictionary<IReadOnlyBone, Vector3>(skeleton.Bones.Count);
     this.scaleByBone_ = scaleByBone;
     foreach (var bone in skeleton.Bones) {
       if (bone.Children is [var childBone]) {

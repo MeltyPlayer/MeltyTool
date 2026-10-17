@@ -27,7 +27,7 @@ public partial class ModelImpl<TVertex> {
 
     private readonly BoneWeightsDictionary boneWeightsDictionary_ = new();
 
-    private readonly IndexableDictionary<IReadOnlyBone, IBoneWeights>
+    private readonly SparseIndexableDictionary<IReadOnlyBone, IBoneWeights>
         boneWeightsByBone_ = new();
 
     public SkinImpl(Func<int, Vector3, TVertex> vertexCreator)

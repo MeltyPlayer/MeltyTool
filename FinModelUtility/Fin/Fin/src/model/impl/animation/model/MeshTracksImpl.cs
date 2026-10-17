@@ -7,12 +7,12 @@ namespace fin.model.impl;
 
 public partial class ModelImpl<TVertex> {
   private partial class ModelAnimationImpl {
-    private readonly IndexableDictionary<IReadOnlyMesh, IMeshTracks>
+    private readonly SparseIndexableDictionary<IReadOnlyMesh, IMeshTracks>
         meshTracks_ = new();
 
     public bool HasAnyMeshTracks { get; private set; }
 
-    public IReadOnlyIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks
+    public IReadOnlySparseIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks
       => this.meshTracks_;
 
     public IMeshTracks AddMeshTracks(IReadOnlyMesh mesh) {

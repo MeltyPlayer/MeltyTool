@@ -12,7 +12,7 @@ public static class TextureTransformBaking {
     var vertices = skin.Vertices;
 
     var textureTransformByVertex
-        = new IndexableDictionary<IReadOnlyVertex, IReadOnlyTextureTransform
+        = new SparseIndexableDictionary<IReadOnlyVertex, IReadOnlyTextureTransform
             ?>(vertices.Count);
 
     var transforms = new HashSet<ITextureTransform>();

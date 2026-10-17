@@ -12,8 +12,8 @@ public class IndexableDictionaries {
   private const int X_ = 10000;
   private const int N_ = 1000;
 
-  private readonly IndexableDictionary<Indexable, int> indexableV1_ = new(X_);
-  private readonly IndexableDictionaryV2<Indexable, int> indexableV2_ = new(X_);
+  private readonly SparseIndexableDictionary<Indexable, int> indexableV1_ = new(X_);
+  private readonly SparseIndexableDictionaryV2<Indexable, int> indexableV2_ = new(X_);
 
   [GlobalSetup]
   public void SetUp() {
@@ -26,7 +26,7 @@ public class IndexableDictionaries {
   [Benchmark]
   public void AddWithoutCapacityV1() {
     for (var iteration = 0; iteration < N_; ++iteration) {
-      var impl = new IndexableDictionary<Indexable, int>();
+      var impl = new SparseIndexableDictionary<Indexable, int>();
       for (var i = 0; i < X_; i++) {
         impl[i] = i;
       }
@@ -36,7 +36,7 @@ public class IndexableDictionaries {
   [Benchmark]
   public void AddWithoutCapacityV2() {
     for (var iteration = 0; iteration < N_; ++iteration) {
-      var impl = new IndexableDictionaryV2<Indexable, int>();
+      var impl = new SparseIndexableDictionaryV2<Indexable, int>();
       for (var i = 0; i < X_; i++) {
         impl[i] = i;
       }
@@ -46,7 +46,7 @@ public class IndexableDictionaries {
   [Benchmark]
   public void AddWithCapacityV1() {
     for (var iteration = 0; iteration < N_; ++iteration) {
-      var impl = new IndexableDictionary<Indexable, int>(X_);
+      var impl = new SparseIndexableDictionary<Indexable, int>(X_);
       for (var i = 0; i < X_; i++) {
         impl[i] = i;
       }
@@ -56,7 +56,7 @@ public class IndexableDictionaries {
   [Benchmark]
   public void AddWithCapacityV2() {
     for (var iteration = 0; iteration < N_; ++iteration) {
-      var impl = new IndexableDictionaryV2<Indexable, int>(X_);
+      var impl = new SparseIndexableDictionaryV2<Indexable, int>(X_);
       for (var i = 0; i < X_; i++) {
         impl[i] = i;
       }
