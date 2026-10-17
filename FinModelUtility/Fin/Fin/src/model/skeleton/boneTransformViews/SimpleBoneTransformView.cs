@@ -4,7 +4,7 @@ using System.Numerics;
 using fin.data.indexable;
 using fin.model.util;
 
-namespace fin.model.skeleton;
+namespace fin.model.skeleton.boneTransformViews;
 
 /// <summary>
 ///   Well, this is simple for downstream users at least.
@@ -29,14 +29,14 @@ public sealed class SimpleBoneTransformView : ITargetedBoneTransformView {
     this.AnimatedBoneTransformView = new(bones);
     this.impls_ = [
         this.AnimatedBoneTransformView,
-        new RootBoneTransformView(),
+        new RootTargetedBoneTransformView(),
     ];
   }
 
   #if USE_FASTER_TRANSFORM_VIEW
   public FasterAnimatedBoneTransformView AnimatedBoneTransformView { get; }
   #else
-  public AnimatedBoneTransformView AnimatedBoneTransformView { get; }
+  public AnimatedTargetedBoneTransformView AnimatedBoneTransformView { get; }
   #endif
 
   public bool HasAnyOverrides

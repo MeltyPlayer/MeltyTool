@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace fin.model.skeleton;
+namespace fin.model.skeleton.boneTransformViews;
 
 public interface IBoneTransformView {
   bool TryGetWorldTranslation(out Vector3 translation);

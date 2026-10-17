@@ -6,9 +6,9 @@ using fin.animation.interpolation;
 using fin.data.indexable;
 using fin.math.interpolation;
 
-namespace fin.model.skeleton;
+namespace fin.model.skeleton.boneTransformViews;
 
-public sealed class AnimatedBoneTransformView : ITargetedBoneTransformView {
+public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformView {
   private readonly IndexableArray<IReadOnlyBone, IBoneTransformView>
       boneTransformViewByBone_;
 
@@ -49,7 +49,7 @@ public sealed class AnimatedBoneTransformView : ITargetedBoneTransformView {
     }
   }
 
-  public AnimatedBoneTransformView(IReadOnlyList<IReadOnlyBone> bones) {
+  public AnimatedTargetedBoneTransformView(IReadOnlyList<IReadOnlyBone> bones) {
     this.boneTransformViewByBone_
         = new IndexableArray<IReadOnlyBone, IBoneTransformView>(bones.Count);
     for (var i = 0; i < this.boneTransformViewByBone_.Count; ++i) {
@@ -176,42 +176,6 @@ public sealed class AnimatedBoneTransformView : ITargetedBoneTransformView {
 
       return this.scaleMagFilterInterpolationTrack_
                  .TryGetAtFrame(this.Frame, out scale);
-    }
-  }
-
-  private class NoopBoneTransformView : IBoneTransformView {
-    public static NoopBoneTransformView Instance { get; } = new();
-
-    private NoopBoneTransformView() { }
-
-    public bool TryGetWorldTranslation(out Vector3 translation) {
-      translation = default;
-      return false;
-    }
-
-    public bool TryGetWorldRotation(out Quaternion rotation) {
-      rotation = default;
-      return false;
-    }
-
-    public bool TryGetWorldScale(out Vector3 scale) {
-      scale = default;
-      return false;
-    }
-
-    public bool TryGetLocalTranslation(out Vector3 translation) {
-      translation = default;
-      return false;
-    }
-
-    public bool TryGetLocalRotation(out Quaternion rotation) {
-      rotation = default;
-      return false;
-    }
-
-    public bool TryGetLocalScale(out Vector3 scale) {
-      scale = default;
-      return false;
     }
   }
 }

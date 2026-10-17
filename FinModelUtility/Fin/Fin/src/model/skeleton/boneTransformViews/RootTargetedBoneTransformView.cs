@@ -1,8 +1,8 @@
 ﻿using System.Numerics;
 
-namespace fin.model.skeleton;
+namespace fin.model.skeleton.boneTransformViews;
 
-public sealed class RootBoneTransformView : ITargetedBoneTransformView {
+public sealed class RootTargetedBoneTransformView : ITargetedBoneTransformView {
   private IReadOnlyBone? bone_;
 
   public void TargetBone(IReadOnlyBone bone) => this.bone_ = bone;

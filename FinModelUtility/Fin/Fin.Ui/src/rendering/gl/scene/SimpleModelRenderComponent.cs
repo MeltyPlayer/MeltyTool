@@ -3,6 +3,7 @@ using fin.config;
 using fin.math;
 using fin.model;
 using fin.model.skeleton;
+using fin.model.skeleton.boneTransformViews;
 using fin.model.skin;
 using fin.scene;
 using fin.scene.components;

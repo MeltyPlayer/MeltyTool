@@ -4,7 +4,7 @@ using fin.animation;
 using fin.animation.interpolation;
 using fin.data.indexable;
 
-namespace fin.model.skeleton;
+namespace fin.model.skeleton.boneTransformViews;
 
 public sealed class FasterAnimatedBoneTransformView : ITargetedBoneTransformView {
   private readonly SparseIndexableDictionary<IReadOnlyBone,
