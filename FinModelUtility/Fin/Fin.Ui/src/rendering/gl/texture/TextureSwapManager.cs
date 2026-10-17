@@ -30,13 +30,12 @@ public sealed class TextureSwapManager : ITextureSwapManager {
 
   private bool hasCreatedTextures_;
 
-  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
-      glTextureByFinTexture_;
+  private readonly IndexableArray<IReadOnlyTexture, IGlTexture> glTextureByFinTexture_;
 
   private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
       overrideGlTextureByFinTexture_;
 
-  private readonly SparseIndexableDictionary<IReadOnlyTexture, IGlTexture>
+  private readonly IndexableArray<IReadOnlyTexture, IGlTexture>
       finalGlTextureByFinTexture_;
 
   public TextureSwapManager(IReadOnlyList<IReadOnlyTexture> finTextures) {
@@ -93,7 +92,6 @@ public sealed class TextureSwapManager : ITextureSwapManager {
 
     this.hasInit_ = true;
     this.previousAnimationAndFrame_ = animationAndFrame;
-    this.finalGlTextureByFinTexture_.Clear();
 
     var allTextureTracks = animationAndFrame?.Item1.TextureTracks;
     var frame = animationAndFrame?.Item2 ?? 0;

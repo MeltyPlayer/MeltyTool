@@ -40,5 +40,5 @@ public sealed class IndexableArray<TIndexable, TValue>(int capacity)
   IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
   public IEnumerator<TValue> GetEnumerator()
-    => (IEnumerator<TValue>) this.impl_.GetEnumerator();
+    => ((IEnumerable<TValue>) this.impl_).GetEnumerator();
 }

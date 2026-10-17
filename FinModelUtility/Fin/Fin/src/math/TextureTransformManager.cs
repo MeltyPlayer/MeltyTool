@@ -16,8 +16,6 @@ public interface IReadOnlyTextureTransformManager {
 }
 
 public interface ITextureTransformManager : IReadOnlyTextureTransformManager {
-  void Clear();
-
   void CalculateMatrices(
       IReadOnlyList<IReadOnlyTexture> textures,
       (IReadOnlyModelAnimation, float)? animationAndFrame
@@ -25,13 +23,11 @@ public interface ITextureTransformManager : IReadOnlyTextureTransformManager {
 }
 
 public sealed class TextureTransformManager : ITextureTransformManager {
-  private readonly SparseIndexableDictionary<IReadOnlyTexture, (bool is2d, Matrix3x2
-      twoDMatrix, Matrix4x4 threeDMatrix)> texturesToMatrices_ = new();
+  private IndexableArray<IReadOnlyTexture, (bool is2d, Matrix3x2
+      twoDMatrix, Matrix4x4 threeDMatrix)> texturesToMatrices_;
 
   private bool hasInit_;
   private (IReadOnlyModelAnimation, float)? previousAnimationAndFrame_;
-
-  public void Clear() => this.texturesToMatrices_.Clear();
 
   public void CalculateMatrices(
       IReadOnlyList<IReadOnlyTexture> textures,
@@ -42,6 +38,8 @@ public sealed class TextureTransformManager : ITextureTransformManager {
 
     this.hasInit_ = true;
     this.previousAnimationAndFrame_ = animationAndFrame;
+
+    this.texturesToMatrices_ ??= new(textures.Count);
     
     var animation = animationAndFrame?.Item1;
     var frame = animationAndFrame?.Item2;
