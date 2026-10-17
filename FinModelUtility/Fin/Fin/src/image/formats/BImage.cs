@@ -30,7 +30,7 @@ public abstract class BImage<TPixel>(PixelFormat format) : IImage<TPixel>
 
   public Bitmap AsBitmap() => FinImage.ConvertToBitmap(this);
 
-  public void ExportToStream(Stream stream, LocalImageFormat imageFormat)
+  public virtual void ExportToStream(Stream stream, LocalImageFormat imageFormat)
     => this.Impl.Save(
         stream,
         FinImage.ConvertFinImageFormatToImageSharpEncoder(imageFormat));

@@ -7,6 +7,7 @@ using fin.math;
 using fin.math.rotations;
 using fin.model;
 using fin.model.skeleton;
+using fin.model.skeleton.boneTransformViews;
 using fin.model.util;
 using fin.scene;
 using fin.ui.rendering.gl;
