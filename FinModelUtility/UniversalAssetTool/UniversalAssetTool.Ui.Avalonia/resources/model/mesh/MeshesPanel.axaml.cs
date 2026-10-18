@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using fin.model;
 using fin.ui;
 using fin.ui.avalonia.controls;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
@@ -15,7 +16,7 @@ public sealed class MeshesPanelViewModelForDesigner : MeshesPanelViewModel {
   }
 }
 
-public class MeshesPanelViewModel : BViewModel {
+public class MeshesPanelViewModel : BViewModel, ISelectablePanelViewModel {
   public required IReadOnlyModel? Model {
     set {
       this.Impl = value != null
@@ -41,6 +42,11 @@ public class MeshesPanelViewModel : BViewModel {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
+
+  public SelectableType Type => SelectableType.MESH;
+
+  public void ReselectSelectedElementViaService()
+    => this.Impl.SelectElementViaService();
 }
 
 public partial class MeshesPanel : BUserControl<MeshesPanelViewModel> {

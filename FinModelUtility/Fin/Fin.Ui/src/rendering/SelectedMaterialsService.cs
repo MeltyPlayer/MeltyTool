@@ -21,10 +21,21 @@ public static class SelectedMaterialsService {
   public static event Action<IReadOnlySet<IReadOnlyMaterial>?>
       OnMaterialsSelected;
 
-  public static void SelectMaterial(IReadOnlyMaterial? material)
-    => OnMaterialsSelected?.Invoke(material.AsSet());
+  public static void SelectMaterial(IReadOnlyMaterial? material) {
+    if (SelectedServiceUtils.SelectableType is SelectableType.MATERIAL
+                                               or SelectableType.TEXTURE ||
+        material == null) {
+      OnMaterialsSelected?.Invoke(material.AsSet());
+    }
+  }
 
   public static void SelectMaterials(
-      IReadOnlySet<IReadOnlyMaterial>? materials)
-    => OnMaterialsSelected?.Invoke(materials);
+      IReadOnlySet<IReadOnlyMaterial>? materials) {
+    if (SelectedServiceUtils.SelectableType ==
+        SelectableType.MATERIAL ||
+        materials == null ||
+        !(materials?.Any() ?? false)) {
+      OnMaterialsSelected?.Invoke(materials);
+    }
+  }
 }

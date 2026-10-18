@@ -24,7 +24,8 @@ public sealed class TextureListViewModelForDesigner
   public TextureListViewModelForDesigner() {
     var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
 
-    var modelsAndTextures = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
+    var modelsAndTextures
+        = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
     modelsAndTextures.AddRange(model, material.Textures);
 
     this.ModelsAndTextures = modelsAndTextures;
@@ -61,8 +62,7 @@ public class TextureListViewModel : BViewModel {
   public TextureViewModel? SelectedTextureViewModel {
     get;
     set {
-      this.RaiseAndSetIfChanged(ref field,
-                                value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
       var model = field?.Model;
       var texture = field?.Texture;

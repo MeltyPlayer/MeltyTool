@@ -4,6 +4,7 @@ using fin.animation;
 using fin.data.dictionaries;
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 
 using ReactiveUI;
@@ -88,7 +89,7 @@ public class ModelPanelViewModel : BViewModel {
   }
 }
 
-public partial class ModelPanel : UserControl {
+public partial class ModelPanel : BUserControl<ModelPanelViewModel> {
   public ModelPanel() {
     this.InitializeComponent();
   }
@@ -100,38 +101,34 @@ public partial class ModelPanel : UserControl {
       return;
     }
 
-    var shouldDeselectSkeleton = true;
-    var shouldDeselectMesh = true;
-    var shouldDeselectTexture = true;
+    ISelectablePanelViewModel? selectedPanel = null;
+    var viewModel = this.ViewModel;
+
     if (e.AddedItems.Count > 0) {
       if (e.AddedItems[0] is TabItem item) {
         var header = item.Header;
 
         if (header == this.SkeletonTabHeader) {
-          shouldDeselectSkeleton = true;
+          selectedPanel = viewModel.SkeletonPanel;
         }
+
+        if (header == this.MaterialsTabHeader) {
+          selectedPanel = viewModel.MaterialsPanel;
+        }
+
 
         if (header == this.MeshesTabHeader) {
-          shouldDeselectMesh = true;
+          selectedPanel = viewModel.MeshesPanel;
         }
 
-        if (header == this.MaterialsTabHeader ||
-            header == this.TexturesTabHeader) {
-          shouldDeselectTexture = false;
+        if (header == this.TexturesTabHeader) {
+          selectedPanel = viewModel.TexturesPanel;
         }
       }
     }
 
-    if (shouldDeselectSkeleton) {
-      SelectedBoneService.SelectBone(null);
-    }
-
-    if (shouldDeselectMesh) {
-      SelectedMeshService.SelectMesh(null);
-    }
-
-    if (shouldDeselectTexture) {
-      SelectedTextureService.SelectTexture(null);
-    }
+    SelectedServiceUtils.SelectableType
+        = selectedPanel?.Type ?? SelectableType.NONE;
+    selectedPanel?.ReselectSelectedElementViaService();
   }
 }

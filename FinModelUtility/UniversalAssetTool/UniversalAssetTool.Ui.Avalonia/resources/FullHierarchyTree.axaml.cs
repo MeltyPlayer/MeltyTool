@@ -48,6 +48,8 @@ public sealed class FullHierarchyTreeViewModelForDesigner
 }
 
 public class FullHierarchyTreeViewModel : BViewModel {
+  private IFullHierarchyNode? selectedFullHierarchyNode_;
+
   public static FullHierarchyTreeViewModel FromScene(
       IReadOnlyScene scene,
       FullHierarchyTreeType type = FullHierarchyTreeType.ALL)
@@ -124,33 +126,11 @@ public class FullHierarchyTreeViewModel : BViewModel {
     this.Source.ShowColumnHeaders = false;
     this.Source.CanUserResizeColumns = false;
 
-    this.Source.RowSelection!.SelectionChanged += (_, e) => {
-      IReadOnlyBone? selectedBone = null;
-      IReadOnlyMesh? selectedMesh = null;
-      IReadOnlySceneNode? selectedNode = null;
-
-      if (e.SelectedItems.Count == 1) {
-        var selectedFullHierarchyNode = e.SelectedItems[0];
-        switch (selectedFullHierarchyNode) {
-          case BoneFullHierarchyNode boneNode: {
-            selectedBone = boneNode.Bone;
-            break;
-          }
-          case MeshFullHierarchyNode meshNode: {
-            selectedMesh = meshNode.Mesh;
-            break;
-          }
-          case NodeFullHierarchyNode nodeNode: {
-            selectedNode = nodeNode.Node;
-            break;
-          }
-        }
-      }
-
-      SelectedBoneService.SelectBone(selectedBone);
-      SelectedMeshService.SelectMesh(selectedMesh);
-      SelectedNodeService.SelectNode(selectedNode);
-    };
+    this.Source.RowSelection!.SelectionChanged
+        += (_, e) => {
+          this.selectedFullHierarchyNode_ = e.SelectedItems.FirstOrDefault();
+          this.SelectElementViaService();
+        };
   }
 
   public HierarchicalTreeDataGridSource<IFullHierarchyNode> Source { get; }
@@ -159,6 +139,31 @@ public class FullHierarchyTreeViewModel : BViewModel {
     => this.Source.ExpandCollapseRecursive(n => type.CheckFlag(n.Type));
 
   public void ExpandAll() => this.Source.ExpandAll();
+
+  public void SelectElementViaService() {
+    IReadOnlyBone? selectedBone = null;
+    IReadOnlyMesh? selectedMesh = null;
+    IReadOnlySceneNode? selectedNode = null;
+
+    switch (this.selectedFullHierarchyNode_) {
+      case BoneFullHierarchyNode boneNode: {
+        selectedBone = boneNode.Bone;
+        break;
+      }
+      case MeshFullHierarchyNode meshNode: {
+        selectedMesh = meshNode.Mesh;
+        break;
+      }
+      case NodeFullHierarchyNode nodeNode: {
+        selectedNode = nodeNode.Node;
+        break;
+      }
+    }
+
+    SelectedBoneService.SelectBone(selectedBone);
+    SelectedMeshService.SelectMesh(selectedMesh);
+    SelectedNodeService.SelectNode(selectedNode);
+  }
 }
 
 public interface IFullHierarchyNode {

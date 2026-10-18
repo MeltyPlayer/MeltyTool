@@ -8,6 +8,7 @@ using fin.math;
 using fin.model;
 using fin.ui;
 using fin.ui.avalonia.controls;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
@@ -32,7 +33,8 @@ public sealed class PopulatedTexturesPanelViewModelForDesigner
   public PopulatedTexturesPanelViewModelForDesigner() {
     var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
 
-    var modelsAndTextures = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
+    var modelsAndTextures
+        = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
     modelsAndTextures.AddRange(model, material.Textures);
 
     this.ModelsAndTextures = modelsAndTextures;
@@ -49,7 +51,7 @@ public sealed class KeyValuePairViewModel(string key, string? value)
     => new(tuple.key, tuple.value?.ToString());
 }
 
-public class TexturesPanelViewModel : BViewModel {
+public class TexturesPanelViewModel : BViewModel, ISelectablePanelViewModel {
   public IReadOnlyListDictionary<IReadOnlyModel, IReadOnlyTexture>
       ModelsAndTextures {
     get;
@@ -128,6 +130,18 @@ public class TexturesPanelViewModel : BViewModel {
     private set
       => this.RaiseAndSetIfChanged(ref field,
                                    value);
+  }
+
+  public SelectableType Type => SelectableType.TEXTURE;
+
+  public void ReselectSelectedElementViaService() {
+    var selectedTextureViewModel = this.TextureList.SelectedTextureViewModel;
+   
+    var model = selectedTextureViewModel?.Model;
+    var texture = selectedTextureViewModel?.Texture;
+    
+    SelectedTextureService.SelectTexture(
+        model != null && texture != null ? (model, texture) : null);
   }
 }
 

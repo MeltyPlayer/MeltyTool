@@ -7,6 +7,7 @@ using fin.data.dictionaries;
 using fin.model;
 using fin.scene;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 
 using ReactiveUI;
@@ -46,7 +47,8 @@ public class ScenePanelViewModel : BViewModel {
               = models
                   .ToListDictionary(
                       m => m,
-                      m => (IEnumerable<IReadOnlyTexture>) m.MaterialManager.Textures),
+                      m => (IEnumerable<IReadOnlyTexture>) m.MaterialManager
+                          .Textures),
       };
     }
   }
@@ -72,7 +74,7 @@ public class ScenePanelViewModel : BViewModel {
   }
 }
 
-public partial class ScenePanel : UserControl {
+public partial class ScenePanel : BUserControl<ScenePanelViewModel> {
   public ScenePanel() {
     this.InitializeComponent();
   }
@@ -84,19 +86,29 @@ public partial class ScenePanel : UserControl {
       return;
     }
 
-    var shouldDeselectArea = true;
+    ISelectablePanelViewModel? selectedPanel = null;
+    var viewModel = this.ViewModel;
+
     if (e.AddedItems.Count > 0) {
       if (e.AddedItems[0] is TabItem item) {
         var header = item.Header;
 
         if (header == this.AreasTabHeader) {
-          shouldDeselectArea = true;
+          selectedPanel = viewModel.AreasPanel;
+        }
+
+        if (header == this.MaterialsTabHeader) {
+          selectedPanel = viewModel.MaterialsPanel;
+        }
+
+        if (header == this.TexturesTabHeader) {
+          selectedPanel = viewModel.TexturesPanel;
         }
       }
     }
 
-    if (shouldDeselectArea) {
-      SelectedNodeService.SelectNode(null);
-    }
+    SelectedServiceUtils.SelectableType
+        = selectedPanel?.Type ?? SelectableType.NONE;
+    selectedPanel?.ReselectSelectedElementViaService();
   }
 }

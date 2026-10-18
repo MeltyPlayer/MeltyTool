@@ -31,7 +31,7 @@ public sealed class MaterialsPanelViewModelForDesigner
   }
 }
 
-public class MaterialsPanelViewModel : BViewModel {
+public class MaterialsPanelViewModel : BViewModel, ISelectablePanelViewModel {
   public IReadOnlyListDictionary<IReadOnlyModel, IReadOnlyMaterial?>
       ModelsAndMaterials {
     get;
@@ -82,6 +82,11 @@ public class MaterialsPanelViewModel : BViewModel {
         ref field,
         value);
   }
+
+  public SelectableType Type => SelectableType.MATERIAL;
+
+  public void ReselectSelectedElementViaService()
+    => SelectedMaterialsService.SelectMaterial(this.SelectedMaterial?.material);
 }
 
 public partial class MaterialsPanel : UserControl {
