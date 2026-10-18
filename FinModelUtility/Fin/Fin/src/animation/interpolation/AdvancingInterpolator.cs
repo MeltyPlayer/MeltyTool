@@ -17,7 +17,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
     where TKeyframe : class, IKeyframe<T> {
   private readonly int animationLength_;
   private int keyframePairI_ = 0;
-  private readonly (TKeyframe, TKeyframe)[] keyframePairs_;
+  private readonly (TKeyframe precedingKeyframe, int precedingKeyframeI, float fromFrame, float toFrame)[] keyframeTuples_;
 
   private KeyframesUtil.InterpolationDataType interpolationDataType_;
   private TKeyframe? precedingKeyframe_;
@@ -43,14 +43,32 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
     this.keyframeInterpolator_ = keyframeInterpolator;
 
     if (this.keyframes_.Count < 2) {
-      this.keyframePairs_ = [];
+      this.keyframeTuples_ = [];
     } else {
-      var keyframePairs = new List<(TKeyframe, TKeyframe)>();
-      for (var i = 0; i < this.keyframes_.Count - 1; ++i) {
-        keyframePairs.Add((this.keyframes_[i], this.keyframes_[i + 1]));
+      var looping = sharedConfig.Looping;
+
+      var keyframeTuples = new List<(TKeyframe precedingKeyframe, int precedingKeyframeI, float fromFrame, float toFrame)>();
+
+      var firstKeyframe = this.keyframes_[0];
+      var lastKeyframe = this.keyframes_[^1];
+      var lastKeyframeI = this.keyframes_.Count - 1;
+
+      if (looping) {
+        keyframeTuples.Add((lastKeyframe, lastKeyframeI, 0, firstKeyframe.Frame));
       }
 
-      this.keyframePairs_ = keyframePairs.ToArray();
+      for (var i = 0; i < this.keyframes_.Count - 1; ++i) {
+        var precedingKeyframe = this.keyframes_[i];
+        var followingKeyframe = this.keyframes_[i + 1];
+
+        keyframeTuples.Add((precedingKeyframe, i, precedingKeyframe.Frame, followingKeyframe.Frame));
+      }
+
+      if (looping) {
+        keyframeTuples.Add((lastKeyframe, lastKeyframeI, lastKeyframe.Frame, this.animationLength_));
+      }
+
+      this.keyframeTuples_ = keyframeTuples.ToArray();
     }
   }
 
@@ -169,14 +187,6 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
   private int SearchForPrecedingKeyframe_(
       float frame,
       out TKeyframe precedingKeyframe) {
-    // If still in current keyframe pair, just leave it as-is.
-    if (this.followingKeyframe_ != null &&
-        this.followingKeyframe_.Frame > frame &&
-        this.precedingKeyframe_.Frame <= frame) {
-      precedingKeyframe = this.precedingKeyframe_;
-      return this.keyframePairI_;
-    }
-
     var keyframePairI = this.keyframePairI_;
 
     // Oops, we looped. Let's start at 0 instead.
@@ -185,14 +195,13 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
       keyframePairI = 0;
     }
 
-    for (; keyframePairI < this.keyframePairs_.Length; ++keyframePairI) {
-      var (fromFrame, toFrame)
-          = this.keyframePairs_[keyframePairI];
+    for (; keyframePairI < this.keyframeTuples_.Length; ++keyframePairI) {
+      var keyframeTuple = this.keyframeTuples_[keyframePairI];
 
-      if (fromFrame.Frame <= frame && toFrame.Frame > frame) {
-        precedingKeyframe = fromFrame;
+      if (keyframeTuple.fromFrame <= frame && keyframeTuple.toFrame > frame) {
+        precedingKeyframe = keyframeTuple.precedingKeyframe;
         this.keyframePairI_ = keyframePairI;
-        return keyframePairI;
+        return keyframeTuple.precedingKeyframeI;
       }
     }
 
