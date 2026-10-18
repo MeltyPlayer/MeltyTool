@@ -40,7 +40,10 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
       out IReadOnlyList<(Quaternion tangentIn, Quaternion tangentOut)>? tangentKeyframes)
     => this.impl_.TryGetSimpleKeyframes(out keyframes, out tangentKeyframes);
 
-  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator() {
-    throw new NotImplementedException();
-  }
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator()
+    => new AdvancingInterpolator<Quaternion, TKeyframe>(
+        sharedConfig,
+        individualConfig,
+        this.impl_.Impl,
+        interpolator);
 }

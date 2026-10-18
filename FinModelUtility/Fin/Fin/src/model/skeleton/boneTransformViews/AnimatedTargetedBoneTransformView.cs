@@ -89,8 +89,8 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
     private readonly IAdvancingInterpolator<Vector3>?
         translationMagFilterAdvancingInterpolator_;
 
-    private readonly MagFilterInterpolatable<Quaternion>?
-        rotationMagFilterInterpolationTrack_;
+    private readonly IAdvancingInterpolator<Quaternion>?
+        rotationMagFilterAdvancingInterpolator_;
 
     private readonly IAdvancingInterpolator<Vector3>?
         scaleMagFilterAdvancingInterpolator_;
@@ -111,14 +111,14 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       }
 
       if (boneTracks.Rotations?.HasAnyData ?? false) {
-        this.rotationMagFilterInterpolationTrack_
+        this.rotationMagFilterAdvancingInterpolator_
             = new MagFilterInterpolatable<Quaternion>(
                 new SimpleQuaternionInterpolator()) {
                 AnimationInterpolationMagFilter
                     = AnimationInterpolationMagFilter
                         .ORIGINAL_FRAME_RATE_LINEAR,
                 Impl = boneTracks.Rotations,
-            };
+            }.GetAdvancingInterpolator();
       }
 
       if (boneTracks.Scales?.HasAnyData ?? false) {
@@ -159,13 +159,13 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
     }
 
     public bool TryGetLocalRotation(out Quaternion rotation) {
-      if (this.rotationMagFilterInterpolationTrack_ == null) {
+      if (this.rotationMagFilterAdvancingInterpolator_ == null) {
         rotation = default;
         return false;
       }
 
-      return this.rotationMagFilterInterpolationTrack_
-                 .TryGetAtFrameWithBinarySearch(this.Frame, out rotation);
+      return this.rotationMagFilterAdvancingInterpolator_
+                 .TryGetAtFrame(this.Frame, out rotation);
     }
 
     public bool TryGetLocalScale(out Vector3 scale) {

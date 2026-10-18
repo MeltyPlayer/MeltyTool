@@ -5,9 +5,11 @@ using System.Numerics;
 using fin.animation.interpolation;
 using fin.animation.keyframes;
 using fin.animation.types.radians;
+using fin.animation.types.vector3;
 using fin.math;
 using fin.math.floats;
 using fin.math.rotations;
+using fin.util.asserts;
 using fin.util.optional;
 
 namespace fin.animation.types.quaternion;
@@ -92,9 +94,9 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
         toZFrame,
     ];
     Span<bool> areAxesStatic = stackalloc bool[3];
-    AreAxesStatic_(areFromsAndTosNull, fromsAndTos, areAxesStatic);
+    SeparateEulerRadiansKeyframesUtil.AreAxesStatic(areFromsAndTosNull, fromsAndTos, areAxesStatic);
 
-    if (!CanInterpolateWithQuaternions_(
+    if (!SeparateEulerRadiansKeyframesUtil.CanInterpolateWithQuaternions(
             areFromsAndTosNull,
             fromsAndTos,
             areAxesStatic)) {
@@ -124,17 +126,15 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
     var defaultY = individualConfigY.DefaultValue.GetOrNull();
     var defaultZ = individualConfigZ.DefaultValue.GetOrNull();
 
-    var fromX
-        = GetFromValueOrDefault_(xInterpolationType, fromXFrame, defaultX);
-    var fromY
-        = GetFromValueOrDefault_(yInterpolationType, fromYFrame, defaultY);
-    var fromZ
-        = GetFromValueOrDefault_(zInterpolationType, fromZFrame, defaultZ);
+    var fromX = SeparateEulerRadiansKeyframesUtil.GetFromValueOrDefault(xInterpolationType, fromXFrame, defaultX);
+    var fromY = SeparateEulerRadiansKeyframesUtil.GetFromValueOrDefault(yInterpolationType, fromYFrame, defaultY);
+    var fromZ = SeparateEulerRadiansKeyframesUtil.GetFromValueOrDefault(zInterpolationType, fromZFrame, defaultZ);
 
-    if (GetFromAndToFrameIndex_(fromsAndTos,
-                                areAxesStatic,
-                                out var fromFrame,
-                                out var toFrame)) {
+    if (SeparateEulerRadiansKeyframesUtil.GetFromAndToFrameIndex(
+            fromsAndTos,
+            areAxesStatic,
+            out var fromFrame,
+            out var toFrame)) {
       if (toFrame < fromFrame) {
         toFrame += sharedConfig.AnimationLength;
       }
@@ -143,9 +143,9 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
 
       var q1 = this.ConvertRadiansToQuaternionImpl(fromX, fromY, fromZ);
 
-      var toX = GetToValueOrDefault_(xInterpolationType, toXFrame, defaultX);
-      var toY = GetToValueOrDefault_(yInterpolationType, toYFrame, defaultY);
-      var toZ = GetToValueOrDefault_(zInterpolationType, toZFrame, defaultZ);
+      var toX = SeparateEulerRadiansKeyframesUtil.GetToValueOrDefault(xInterpolationType, toXFrame, defaultX);
+      var toY = SeparateEulerRadiansKeyframesUtil.GetToValueOrDefault(yInterpolationType, toYFrame, defaultY);
+      var toZ = SeparateEulerRadiansKeyframesUtil.GetToValueOrDefault(zInterpolationType, toZFrame, defaultZ);
 
       var q2 = this.ConvertRadiansToQuaternionImpl(toX, toY, toZ);
 
@@ -163,111 +163,11 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
     return true;
   }
 
-  private static void AreAxesStatic_(
-      ReadOnlySpan<bool> areFromsAndTosNull,
-      ReadOnlySpan<TKeyframe?> fromsAndTos,
-      Span<bool> areAxesStatic) {
-    for (var i = 0; i < 3; ++i) {
-      var fromIsNull = areFromsAndTosNull[i];
-      var toIsNull = areFromsAndTosNull[3 + i];
-
-      if (fromIsNull && toIsNull) {
-        areAxesStatic[i] = true;
-      } else if (!fromIsNull && !toIsNull) {
-        var from = fromsAndTos[i];
-        var to = fromsAndTos[3 + i];
-        if (from.ValueOut.IsRoughly(to.ValueIn)) {
-          areAxesStatic[i] = true;
-        }
-      }
-    }
-  }
-
-  private static bool GetFromAndToFrameIndex_(
-      ReadOnlySpan<TKeyframe?> fromsAndTos,
-      ReadOnlySpan<bool> areAxesStatic,
-      out float fromFrameIndex,
-      out float toFrameIndex) {
-    for (var i = 0; i < 3; ++i) {
-      if (!areAxesStatic[i]) {
-        fromFrameIndex = fromsAndTos[i].Frame;
-        toFrameIndex = fromsAndTos[3 + i].Frame;
-        return true;
-      }
-    }
-
-    fromFrameIndex = 0;
-    toFrameIndex = 0;
-    return false;
-  }
-
-  private static bool CanInterpolateWithQuaternions_(
-      ReadOnlySpan<bool> areFromsAndTosNull,
-      ReadOnlySpan<TKeyframe?> fromsAndTos,
-      ReadOnlySpan<bool> areAxesStatic) {
-    for (var i = 0; i < 3; ++i) {
-      if (areAxesStatic[i % 3]) {
-        continue;
-      }
-
-      if (areFromsAndTosNull[i] || areFromsAndTosNull[3 + i]) {
-        return false;
-      }
-
-      if (fromsAndTos[i] is IKeyframeWithTangents<float> from &&
-          (from.TangentOut ?? 0) != 0) {
-        return false;
-      }
-
-      if (fromsAndTos[i] is IKeyframeWithTangents<float> to &&
-          (to.TangentIn ?? 0) != 0) {
-        return false;
-      }
-    }
-
-    for (var i = 0; i < 3; ++i) {
-      if (areAxesStatic[i]) {
-        continue;
-      }
-
-      var from = fromsAndTos[i];
-      for (var oi = i + 1; oi < 3; ++oi) {
-        if (areAxesStatic[oi]) {
-          continue;
-        }
-
-        var to = fromsAndTos[oi];
-        if (!from.Frame.IsRoughly(to.Frame)) {
-          return false;
-        }
-      }
-    }
-
-    return true;
-  }
-
   public ISeparateEulerRadiansKeyframes<TKeyframe>.ConvertRadiansToQuaternion
       ConvertRadiansToQuaternionImpl { get; set; } =
     QuaternionUtil.CreateZyxRadians;
 
   public IRadiansKeyframeInterpolator<TKeyframe> Interpolator => interpolator;
-
-  private static float GetFromValueOrDefault_(
-      KeyframesUtil.InterpolationDataType interpolationType,
-      TKeyframe? fromKeyframe,
-      float defaultValue)
-    => interpolationType == KeyframesUtil.InterpolationDataType.NONE
-        ? defaultValue
-        : fromKeyframe.ValueOut;
-
-  private static float GetToValueOrDefault_(
-      KeyframesUtil.InterpolationDataType interpolationType,
-      TKeyframe? toKeyframe,
-      float defaultValue)
-    => interpolationType ==
-       KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING
-        ? toKeyframe.ValueIn
-        : defaultValue;
 
   public void GetAllFrames(Span<Quaternion> dst) {
     // TODO: Switch this to use a more optimized approach
@@ -286,7 +186,15 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
     return false;
   }
 
-  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator() {
-    throw new NotImplementedException();
-  }
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator()
+    => new SeparateEulerRadiansAdvancingInterpolator<TKeyframe>(
+        this,
+        sharedConfig,
+        individualConfigX,
+        individualConfigY,
+        individualConfigZ,
+        this.Axes[0].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[1].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[2].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        interpolator);
 }
