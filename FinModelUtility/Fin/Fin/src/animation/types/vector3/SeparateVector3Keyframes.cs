@@ -165,7 +165,7 @@ public sealed class SeparateVector3Keyframes<TKeyframe>(
 
         for (var i = 0; i < axes.Length; ++i) {
           var axis = axes[i];
-          if (!HermiteInterpolationUtil.TryGetTangent(
+          if (!HermiteInterpolationUtil.TryGetTangentWithBinarySearch(
                   axis.keyframesWithTangents!,
                   keyframe,
                   out var axisTangentIn,

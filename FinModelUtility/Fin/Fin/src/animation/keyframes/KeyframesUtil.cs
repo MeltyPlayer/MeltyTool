@@ -164,7 +164,7 @@ public static class KeyframesUtil {
     return InterpolationDataType.PRECEDING_AND_FOLLOWING;
   }
 
-  public static bool TryToInterpolateAtFrame
+  public static bool TryToInterpolateBetweenKeyframes
       <T, TKeyframe, TKeyframeInterpolator>(
           ISharedInterpolationConfig sharedConfig,
           IIndividualInterpolationConfig<T> individualConfig,

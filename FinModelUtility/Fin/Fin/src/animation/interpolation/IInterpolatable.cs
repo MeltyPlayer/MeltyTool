@@ -14,7 +14,7 @@ public interface IInterpolatable<T> {
   bool Looping { get; }
 
   [Const]
-  bool TryGetAtFrame(float frame, out T value);
+  bool TryGetAtFrameWithBinarySearch(float frame, out T value);
 
   // Returns the value at each frame in the animation.
   [Const]

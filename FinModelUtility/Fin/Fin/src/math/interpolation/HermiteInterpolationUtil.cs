@@ -33,44 +33,65 @@ public static class HermiteInterpolationUtil {
     var t2 = t1 * t1;
 
     var m2 = 6 * (fromValue - toValue) * (t1 - 1) * t1 +
-           m0 * (3 * t2 - 4 * t1 + 1) +
-           m1 * t1 * (-2 + 3 * t1);
+             m0 * (3 * t2 - 4 * t1 + 1) +
+             m1 * t1 * (-2 + 3 * t1);
     return m2 / dt;
   }
 
-  public static bool TryGetTangent(
+  public static bool TryGetTangentWithBinarySearch(
       IInterpolatableKeyframes<KeyframeWithTangents<float>, float> keyframes,
       float frame,
       out float tangentIn,
       out float tangentOut) {
     var unsafeList = keyframes.Definitions
                               .AssertAsA<List<KeyframeWithTangents<float>>>();
-    if (unsafeList.AsSpan()
-                  .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
-            frame,
-            keyframes.SharedConfig,
-            keyframes.IndividualConfig!,
-            out var precedingKeyframe,
-            out var followingKeyframe,
-            out var normalizedFrame) !=
+    var interpolationDataType
+        = unsafeList
+          .AsSpan()
+          .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
+              frame,
+              keyframes.SharedConfig,
+              keyframes.IndividualConfig!,
+              out var precedingKeyframe,
+              out var followingKeyframe,
+              out var normalizedFrame);
+
+    return TryGetTangentBetweenKeyframes(
+        precedingKeyframe,
+        followingKeyframe,
+        normalizedFrame,
+        interpolationDataType,
+        out tangentIn,
+        out tangentOut);
+  }
+
+  public static bool TryGetTangentBetweenKeyframes<TKeyframe>(
+      TKeyframe precedingKeyframe,
+      TKeyframe followingKeyframe,
+      float normalizedFrame,
+      KeyframesUtil.InterpolationDataType interpolationDataType,
+      out float tangentIn,
+      out float tangentOut) where TKeyframe : IKeyframeWithTangents<float> {
+    if (interpolationDataType !=
         KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING) {
       tangentIn = tangentOut = 0;
       return false;
     }
 
-    if (frame.IsRoughly(precedingKeyframe.Frame)) {
+    if (normalizedFrame.IsRoughly(precedingKeyframe.Frame)) {
       tangentIn = precedingKeyframe.TangentIn ?? 0;
       tangentOut = precedingKeyframe.TangentOut ?? 0;
       return true;
     }
 
-    tangentIn = tangentOut = GetTangent(precedingKeyframe.ValueOut,
-                      precedingKeyframe.Frame,
-                      precedingKeyframe.TangentOut ?? 0,
-                      followingKeyframe.ValueIn,
-                      followingKeyframe.Frame,
-                      followingKeyframe.TangentIn ?? 0,
-                      normalizedFrame);
+    tangentIn = tangentOut = GetTangent(
+        precedingKeyframe.ValueOut,
+        precedingKeyframe.Frame,
+        precedingKeyframe.TangentOut ?? 0,
+        followingKeyframe.ValueIn,
+        followingKeyframe.Frame,
+        followingKeyframe.TangentIn ?? 0,
+        normalizedFrame);
     return true;
   }
 
