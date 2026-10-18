@@ -167,18 +167,18 @@ public static class KeyframesUtil {
   public static bool TryToInterpolateBetweenKeyframes
       <T, TKeyframe, TKeyframeInterpolator>(
           ISharedInterpolationConfig sharedConfig,
-          IIndividualInterpolationConfig<T> individualConfig,
+          IIndividualInterpolationConfig<T>? individualConfig,
           TKeyframe precedingKeyframe,
           TKeyframe followingKeyframe,
           float normalizedFrame,
-          TKeyframeInterpolator interpolator,
+          TKeyframeInterpolator keyframeInterpolator,
           InterpolationDataType interpolationDataType,
           out T value)
       where TKeyframe : IKeyframe<T>
       where TKeyframeInterpolator : IKeyframeInterpolator<TKeyframe, T> {
     switch (interpolationDataType) {
       case InterpolationDataType.PRECEDING_AND_FOLLOWING:
-        value = interpolator.Interpolate(precedingKeyframe,
+        value = keyframeInterpolator.Interpolate(precedingKeyframe,
                                          followingKeyframe,
                                          normalizedFrame,
                                          sharedConfig);
@@ -190,7 +190,7 @@ public static class KeyframesUtil {
 
       default:
       case InterpolationDataType.NONE:
-        if (individualConfig.DefaultValue?.Try(out value) ?? false) {
+        if (individualConfig?.DefaultValue?.Try(out value) ?? false) {
           return true;
         }
 

@@ -19,7 +19,7 @@ public sealed class SeparateVector3Keyframes<TKeyframe>(
     IndividualInterpolationConfig<float>? individualConfigY,
     IndividualInterpolationConfig<float>? individualConfigZ)
     : ISeparateVector3Keyframes<TKeyframe>
-    where TKeyframe : IKeyframe<float> {
+    where TKeyframe : class, IKeyframe<float> {
   public SeparateVector3Keyframes(
       ISharedInterpolationConfig sharedConfig,
       IKeyframeInterpolator<TKeyframe, float> interpolator,
@@ -100,7 +100,8 @@ public sealed class SeparateVector3Keyframes<TKeyframe>(
     }
 
     Span<(IInterpolatableKeyframes<TKeyframe, float> keyframes,
-        IInterpolatableKeyframes<KeyframeWithTangents<float>, float>? keyframesWithTangents,
+        IInterpolatableKeyframes<KeyframeWithTangents<float>, float>?
+        keyframesWithTangents,
         IndividualInterpolationConfig<float>? config)> axes = [
         (xAxis,
          xAxis as IInterpolatableKeyframes<KeyframeWithTangents<float>, float>,
@@ -186,4 +187,15 @@ public sealed class SeparateVector3Keyframes<TKeyframe>(
 
     return true;
   }
+
+  public IAdvancingInterpolator<Vector3> GetAdvancingInterpolator()
+    => new SeparateVector3AdvancingInterpolator<TKeyframe>(
+        sharedConfig,
+        individualConfigX,
+        individualConfigY,
+        individualConfigZ,
+        this.Axes[0].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[1].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[2].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        interpolator);
 }

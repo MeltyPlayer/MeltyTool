@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 
 using CommunityToolkit.HighPerformance;
@@ -20,9 +21,11 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
     IKeyframeInterpolator<TKeyframe, T> interpolator,
     IndividualInterpolationConfig<T>? individualConfig = null)
     : IInterpolatableKeyframes<TKeyframe, T>
-    where TKeyframe : IKeyframe<T> {
+    where TKeyframe : class, IKeyframe<T> {
   private readonly List<TKeyframe> impl_
       = new(individualConfig?.InitialCapacity ?? 0);
+
+  public IReadOnlyList<TKeyframe> Impl => this.impl_;
 
   public ISharedInterpolationConfig SharedConfig => sharedConfig;
 
@@ -134,4 +137,11 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
 
     return true;
   }
+
+  public IAdvancingInterpolator<T> GetAdvancingInterpolator()
+    => new AdvancingInterpolator<T, TKeyframe>(
+        sharedConfig,
+        individualConfig,
+        this.impl_,
+        interpolator);
 }

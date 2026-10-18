@@ -25,6 +25,9 @@ public interface IInterpolatable<T> {
   bool TryGetSimpleKeyframes(
       out IReadOnlyList<(float frame, T value)> keyframes,
       out IReadOnlyList<(T tangentIn, T tangentOut)>? tangentKeyframes);
+
+  [Const]
+  IAdvancingInterpolator<T> GetAdvancingInterpolator();
 }
 
 public interface IKeyframeInterpolator<in TKeyframe, out T>

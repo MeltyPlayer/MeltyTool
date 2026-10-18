@@ -15,7 +15,7 @@ public sealed class SeparateQuaternionKeyframes<TKeyframe>(
     IndividualInterpolationConfig<float>? individualConfigZ,
     IndividualInterpolationConfig<float>? individualConfigW)
     : ISeparateQuaternionKeyframes<TKeyframe>
-    where TKeyframe : IKeyframe<float> {
+    where TKeyframe : class, IKeyframe<float> {
   public SeparateQuaternionKeyframes(
       ISharedInterpolationConfig sharedConfig,
       IKeyframeInterpolator<TKeyframe, float> interpolator,
@@ -100,5 +100,9 @@ public sealed class SeparateQuaternionKeyframes<TKeyframe>(
     keyframes = null;
     tangentKeyframes = null;
     return false;
+  }
+
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator() {
+    throw new NotImplementedException();
   }
 }

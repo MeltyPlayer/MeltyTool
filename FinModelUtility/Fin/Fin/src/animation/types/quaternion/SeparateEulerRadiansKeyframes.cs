@@ -20,7 +20,7 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
     IndividualInterpolationConfig<float>? individualConfigY,
     IndividualInterpolationConfig<float>? individualConfigZ)
     : ISeparateEulerRadiansKeyframes<TKeyframe>
-    where TKeyframe : IKeyframe<float> {
+    where TKeyframe : class, IKeyframe<float> {
   private readonly IReadOnlyList<InterpolatedKeyframes<TKeyframe, float>> axes_
       = [
           new (sharedConfig, interpolator, individualConfigX),
@@ -284,5 +284,9 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
     keyframes = null;
     tangentKeyframes = null;
     return false;
+  }
+
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator() {
+    throw new NotImplementedException();
   }
 }

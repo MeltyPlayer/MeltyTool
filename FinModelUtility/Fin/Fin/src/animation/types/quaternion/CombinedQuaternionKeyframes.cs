@@ -12,7 +12,7 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
     IKeyframeInterpolator<TKeyframe, Quaternion> interpolator,
     IndividualInterpolationConfig<Quaternion>? individualConfig = null)
     : ICombinedQuaternionKeyframes<TKeyframe>
-    where TKeyframe : IKeyframe<Quaternion> {
+    where TKeyframe : class, IKeyframe<Quaternion> {
   private readonly InterpolatedKeyframes<TKeyframe, Quaternion> impl_
       = new(sharedConfig, interpolator, individualConfig);
 
@@ -39,4 +39,8 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
       out IReadOnlyList<(float frame, Quaternion value)> keyframes,
       out IReadOnlyList<(Quaternion tangentIn, Quaternion tangentOut)>? tangentKeyframes)
     => this.impl_.TryGetSimpleKeyframes(out keyframes, out tangentKeyframes);
+
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator() {
+    throw new NotImplementedException();
+  }
 }

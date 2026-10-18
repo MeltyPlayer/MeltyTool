@@ -12,7 +12,7 @@ public sealed class CombinedVector3Keyframes<TKeyframe>(
     IKeyframeInterpolator<TKeyframe, Vector3> interpolator,
     IndividualInterpolationConfig<Vector3>? individualConfig = null)
     : ICombinedVector3Keyframes<TKeyframe>
-    where TKeyframe : IKeyframe<Vector3> {
+    where TKeyframe : class, IKeyframe<Vector3> {
   private readonly InterpolatedKeyframes<TKeyframe, Vector3> impl_
       = new(sharedConfig, interpolator, individualConfig);
 
@@ -23,7 +23,7 @@ public sealed class CombinedVector3Keyframes<TKeyframe>(
 
   public IReadOnlyList<TKeyframe> Definitions => this.impl_.Definitions;
   public bool HasAnyData => this.impl_.HasAnyData;
-  
+
   public int AnimationLength => sharedConfig.AnimationLength;
   public bool Looping => sharedConfig.Looping;
 
@@ -36,6 +36,14 @@ public sealed class CombinedVector3Keyframes<TKeyframe>(
 
   public bool TryGetSimpleKeyframes(
       out IReadOnlyList<(float frame, Vector3 value)> keyframes,
-      out IReadOnlyList<(Vector3 tangentIn, Vector3 tangentOut)>? tangentKeyframes)
+      out IReadOnlyList<(Vector3 tangentIn, Vector3 tangentOut)>?
+          tangentKeyframes)
     => this.impl_.TryGetSimpleKeyframes(out keyframes, out tangentKeyframes);
+
+  public IAdvancingInterpolator<Vector3> GetAdvancingInterpolator()
+    => new AdvancingInterpolator<Vector3, TKeyframe>(
+        sharedConfig,
+        individualConfig,
+        this.impl_.Impl,
+        interpolator);
 }

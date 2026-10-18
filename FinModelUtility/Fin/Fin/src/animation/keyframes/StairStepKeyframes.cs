@@ -84,4 +84,7 @@ public sealed class StairStepKeyframes<T>(
     tangentKeyframes = null;
     return false;
   }
+
+  public IAdvancingInterpolator<T> GetAdvancingInterpolator()
+    => throw new NotImplementedException();
 }

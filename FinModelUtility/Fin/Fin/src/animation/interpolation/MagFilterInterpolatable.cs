@@ -44,7 +44,7 @@ public sealed class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
 
     if (this.Impl.TryGetAtFrameWithBinarySearch(intFrame, out var fromValue) &&
         this.Impl.TryGetAtFrameWithBinarySearch((int) Math.Ceiling(frame),
-                                out var toValue)) {
+                                                out var toValue)) {
       value = interpolator.Interpolate(fromValue, toValue, frac);
       return true;
     }
@@ -59,4 +59,7 @@ public sealed class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
       out IReadOnlyList<(float frame, T value)> keyframes,
       out IReadOnlyList<(T tangentIn, T tangentOut)>? tangentKeyframes)
     => this.Impl.TryGetSimpleKeyframes(out keyframes, out tangentKeyframes);
+
+  public IAdvancingInterpolator<T> GetAdvancingInterpolator()
+    => new MagFilterAdvancingInterpolator<T>(this, interpolator);
 }

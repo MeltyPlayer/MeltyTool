@@ -4,6 +4,7 @@ using System.Numerics;
 
 using fin.animation.interpolation;
 using fin.animation.keyframes;
+using fin.util.asserts;
 
 namespace fin.animation.types.vector2;
 
@@ -13,7 +14,7 @@ public sealed class SeparateVector2Keyframes<TKeyframe>(
     IndividualInterpolationConfig<float>? individualConfigX,
     IndividualInterpolationConfig<float>? individualConfigY)
     : ISeparateVector2Keyframes<TKeyframe>
-    where TKeyframe : IKeyframe<float> {
+    where TKeyframe : class, IKeyframe<float> {
   public SeparateVector2Keyframes(
       ISharedInterpolationConfig sharedConfig,
       IKeyframeInterpolator<TKeyframe, float> interpolator,
@@ -73,4 +74,13 @@ public sealed class SeparateVector2Keyframes<TKeyframe>(
     tangentKeyframes = null;
     return false;
   }
+
+  public IAdvancingInterpolator<Vector2> GetAdvancingInterpolator()
+    => new SeparateVector2AdvancingInterpolator<TKeyframe>(
+        sharedConfig,
+        individualConfigX,
+        individualConfigY,
+        this.Axes[0].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[1].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        interpolator);
 }
