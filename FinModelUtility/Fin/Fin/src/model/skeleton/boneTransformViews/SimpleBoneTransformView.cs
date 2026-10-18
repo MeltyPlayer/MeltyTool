@@ -10,8 +10,6 @@ namespace fin.model.skeleton.boneTransformViews;
 ///   Well, this is simple for downstream users at least.
 /// </summary>
 public sealed class SimpleBoneTransformView : ITargetedBoneTransformView {
-  private const bool USE_FASTER_TRANSFORM_VIEW = false;
-
   private readonly ITargetedBoneTransformView[] impls_;
 
   private SparseIndexableDictionary<IReadOnlyBone, Vector3> worldTranslationOverrides_
@@ -33,11 +31,7 @@ public sealed class SimpleBoneTransformView : ITargetedBoneTransformView {
     ];
   }
 
-  #if USE_FASTER_TRANSFORM_VIEW
-  public FasterAnimatedBoneTransformView AnimatedBoneTransformView { get; }
-  #else
   public AnimatedTargetedBoneTransformView AnimatedBoneTransformView { get; }
-  #endif
 
   public bool HasAnyOverrides
     => this.worldTranslationOverrides_.Count > 0 ||

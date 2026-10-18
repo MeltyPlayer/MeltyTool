@@ -48,7 +48,7 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
                   out var precedingKeyframe,
                   out var followingKeyframe,
                   out var normalizedFrame);
-    return TryToInterpolateAtFrame(
+    return TryToInterpolateBetweenKeyframes(
         sharedConfig,
         this.IndividualConfig,
         precedingKeyframe,
