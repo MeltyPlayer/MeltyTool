@@ -119,10 +119,10 @@ public sealed class StairStepKeyframesTests {
     impl.SetKeyframe(4, "second");
     impl.SetKeyframe(6, "third");
 
-    Assert.IsFalse(impl.TryGetAtFrame(-1, out _));
+    Assert.IsFalse(impl.TryGetAtFrameWithBinarySearch(-1, out _));
 
-    Assert.IsFalse(impl.TryGetAtFrame(0, out _));
-    Assert.IsFalse(impl.TryGetAtFrame(1, out _));
+    Assert.IsFalse(impl.TryGetAtFrameWithBinarySearch(0, out _));
+    Assert.IsFalse(impl.TryGetAtFrameWithBinarySearch(1, out _));
     AssertFrame_(impl, 2, "first");
     AssertFrame_(impl, 3, "first");
     AssertFrame_(impl, 4, "second");
@@ -227,7 +227,7 @@ public sealed class StairStepKeyframesTests {
   private static void AssertFrame_<T>(IInterpolatable<T> impl,
                                       float frame,
                                       T expected) {
-    Assert.IsTrue(impl.TryGetAtFrame(frame, out var actual));
+    Assert.IsTrue(impl.TryGetAtFrameWithBinarySearch(frame, out var actual));
     Assert.AreEqual(expected, actual);
   }
 

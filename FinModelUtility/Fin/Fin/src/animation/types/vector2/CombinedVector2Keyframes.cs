@@ -29,8 +29,8 @@ public sealed class CombinedVector2Keyframes<TKeyframe>(
 
   public void Add(TKeyframe keyframe) => this.impl_.Add(keyframe);
 
-  public bool TryGetAtFrame(float frame, out Vector2 value)
-    => this.impl_.TryGetAtFrame(frame, out value);
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Vector2 value)
+    => this.impl_.TryGetAtFrameWithBinarySearch(frame, out value);
 
   public void GetAllFrames(Span<Vector2> dst) => this.impl_.GetAllFrames(dst);
 

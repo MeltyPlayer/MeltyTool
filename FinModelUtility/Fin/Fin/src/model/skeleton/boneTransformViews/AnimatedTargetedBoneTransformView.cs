@@ -155,7 +155,7 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       }
 
       return this.translationMagFilterInterpolationTrack_
-                 .TryGetAtFrame(this.Frame, out translation);
+                 .TryGetAtFrameWithBinarySearch(this.Frame, out translation);
     }
 
     public bool TryGetLocalRotation(out Quaternion rotation) {
@@ -165,7 +165,7 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       }
 
       return this.rotationMagFilterInterpolationTrack_
-                 .TryGetAtFrame(this.Frame, out rotation);
+                 .TryGetAtFrameWithBinarySearch(this.Frame, out rotation);
     }
 
     public bool TryGetLocalScale(out Vector3 scale) {
@@ -175,7 +175,7 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       }
 
       return this.scaleMagFilterInterpolationTrack_
-                 .TryGetAtFrame(this.Frame, out scale);
+                 .TryGetAtFrameWithBinarySearch(this.Frame, out scale);
     }
   }
 }

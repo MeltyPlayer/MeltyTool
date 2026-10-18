@@ -38,7 +38,7 @@ public sealed class SeparateVector2Keyframes<TKeyframe>(
             individualConfigY),
     ];
 
-  public bool TryGetAtFrame(float frame, out Vector2 value) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Vector2 value) {
     value = default;
 
     if (!this.Axes[0].TryGetAtFrameOrDefault(frame, individualConfigX, out var x)) {

@@ -29,8 +29,8 @@ public sealed class CombinedVector3Keyframes<TKeyframe>(
 
   public void Add(TKeyframe keyframe) => this.impl_.Add(keyframe);
 
-  public bool TryGetAtFrame(float frame, out Vector3 value)
-    => this.impl_.TryGetAtFrame(frame, out value);
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Vector3 value)
+    => this.impl_.TryGetAtFrameWithBinarySearch(frame, out value);
 
   public void GetAllFrames(Span<Vector3> dst) => this.impl_.GetAllFrames(dst);
 

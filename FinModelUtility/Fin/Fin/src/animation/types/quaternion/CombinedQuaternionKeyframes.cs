@@ -30,8 +30,8 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
 
   public void Add(TKeyframe keyframe) => this.impl_.Add(keyframe);
 
-  public bool TryGetAtFrame(float frame, out Quaternion value)
-    => this.impl_.TryGetAtFrame(frame, out value);
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Quaternion value)
+    => this.impl_.TryGetAtFrameWithBinarySearch(frame, out value);
 
   public void GetAllFrames(Span<Quaternion> dst) => this.impl_.GetAllFrames(dst);
 

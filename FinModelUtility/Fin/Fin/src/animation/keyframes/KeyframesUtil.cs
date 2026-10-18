@@ -115,15 +115,16 @@ public static class KeyframesUtil {
     PRECEDING_ONLY,
   }
 
-  public static InterpolationDataType TryGetPrecedingAndFollowingKeyframes<
-      TKeyframe>(
-      this ReadOnlySpan<TKeyframe> keyframes,
-      float frame,
-      ISharedInterpolationConfig sharedConfig,
-      IIndividualInterpolationConfig individualConfig,
-      out TKeyframe precedingKeyframe,
-      out TKeyframe followingKeyframe,
-      out float normalizedFrame) where TKeyframe : IKeyframe {
+  public static InterpolationDataType
+      TryGetPrecedingAndFollowingKeyframesWithBinarySearch<
+          TKeyframe>(
+          this ReadOnlySpan<TKeyframe> keyframes,
+          float frame,
+          ISharedInterpolationConfig sharedConfig,
+          IIndividualInterpolationConfig individualConfig,
+          out TKeyframe precedingKeyframe,
+          out TKeyframe followingKeyframe,
+          out float normalizedFrame) where TKeyframe : IKeyframe {
     if (!keyframes.TryGetPrecedingKeyframe(frame,
                                            sharedConfig,
                                            individualConfig,
@@ -161,5 +162,40 @@ public static class KeyframesUtil {
 
     followingKeyframe = keyframes[followingKeyframeIndex];
     return InterpolationDataType.PRECEDING_AND_FOLLOWING;
+  }
+
+  public static bool TryToInterpolateAtFrame
+      <T, TKeyframe, TKeyframeInterpolator>(
+          ISharedInterpolationConfig sharedConfig,
+          IIndividualInterpolationConfig<T> individualConfig,
+          TKeyframe precedingKeyframe,
+          TKeyframe followingKeyframe,
+          float normalizedFrame,
+          TKeyframeInterpolator interpolator,
+          InterpolationDataType interpolationDataType,
+          out T value)
+      where TKeyframe : IKeyframe<T>
+      where TKeyframeInterpolator : IKeyframeInterpolator<TKeyframe, T> {
+    switch (interpolationDataType) {
+      case InterpolationDataType.PRECEDING_AND_FOLLOWING:
+        value = interpolator.Interpolate(precedingKeyframe,
+                                         followingKeyframe,
+                                         normalizedFrame,
+                                         sharedConfig);
+        return true;
+
+      case InterpolationDataType.PRECEDING_ONLY:
+        value = precedingKeyframe.ValueOut;
+        return true;
+
+      default:
+      case InterpolationDataType.NONE:
+        if (individualConfig.DefaultValue?.Try(out value) ?? false) {
+          return true;
+        }
+
+        value = default!;
+        return false;
+    }
   }
 }

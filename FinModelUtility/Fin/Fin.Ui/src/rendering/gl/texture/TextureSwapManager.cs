@@ -109,7 +109,7 @@ public sealed class TextureSwapManager : ITextureSwapManager {
         if (allTextureTracks?.TryGetValue(finTexture, out var textureTracks) ??
             false) {
           var flipbookSwaps = textureTracks.FlipbookSwaps;
-          flipbookSwaps?.TryGetAtFrame(frame, out flipbookSwap);
+          flipbookSwaps?.TryGetAtFrameWithBinarySearch(frame, out flipbookSwap);
         }
 
         glTexture = this.glTextureByFinTexture_[flipbookSwap ?? finTexture];

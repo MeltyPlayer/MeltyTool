@@ -49,7 +49,7 @@ public sealed class SeparateVector3Keyframes<TKeyframe>(
             individualConfigZ),
     ];
 
-  public bool TryGetAtFrame(float frame, out Vector3 value) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Vector3 value) {
     value = default;
 
     if (!this.Axes[0]

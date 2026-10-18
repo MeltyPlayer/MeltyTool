@@ -44,7 +44,7 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
   public IReadOnlyList<IInterpolatableKeyframes<TKeyframe, float>> Axes
     => this.axes_;
 
-  public bool TryGetAtFrame(float frame, out Quaternion value) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Quaternion value) {
     if (sharedConfig.Looping) {
       frame = frame.ModRange(0, sharedConfig.AnimationLength);
     }
@@ -272,7 +272,7 @@ public sealed class SeparateEulerRadiansKeyframes<TKeyframe>(
   public void GetAllFrames(Span<Quaternion> dst) {
     // TODO: Switch this to use a more optimized approach
     for (var i = 0; i < dst.Length; ++i) {
-      this.TryGetAtFrame(i, out var rotation);
+      this.TryGetAtFrameWithBinarySearch(i, out var rotation);
       dst[i] = rotation;
     }
   }

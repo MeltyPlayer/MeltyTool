@@ -50,7 +50,7 @@ public sealed class SeparateQuaternionKeyframes<TKeyframe>(
             individualConfigW),
     ];
 
-  public bool TryGetAtFrame(float frame, out Quaternion value) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Quaternion value) {
     value = default;
 
     if (!this.Axes[0]

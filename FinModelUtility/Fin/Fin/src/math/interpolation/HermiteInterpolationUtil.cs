@@ -46,7 +46,7 @@ public static class HermiteInterpolationUtil {
     var unsafeList = keyframes.Definitions
                               .AssertAsA<List<KeyframeWithTangents<float>>>();
     if (unsafeList.AsSpan()
-                  .TryGetPrecedingAndFollowingKeyframes(
+                  .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
             frame,
             keyframes.SharedConfig,
             keyframes.IndividualConfig!,

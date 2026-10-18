@@ -138,7 +138,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
       this.meshVisibility_.Reset();
       if (animation.HasAnyMeshTracks) {
         foreach (var meshTracks in animation.MeshTracks) {
-          if (!meshTracks.DisplayStates.TryGetAtFrame(
+          if (!meshTracks.DisplayStates.TryGetAtFrameWithBinarySearch(
                   frame,
                   out var displayState)) {
             continue;

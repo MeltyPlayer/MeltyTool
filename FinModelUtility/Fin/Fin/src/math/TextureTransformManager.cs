@@ -57,7 +57,7 @@ public sealed class TextureTransformManager : ITextureTransformManager {
       if (textureTracks != null) {
         // Only gets the values from the animation if the frame is at least partially defined.
         if (textureTracks.Translations?.HasAnyData ?? false) {
-          if (textureTracks.Translations.TryGetAtFrame(
+          if (textureTracks.Translations.TryGetAtFrameWithBinarySearch(
                   frame.Value,
                   out var outAnimationTranslation)) {
             animationTranslation = outAnimationTranslation;
@@ -65,7 +65,7 @@ public sealed class TextureTransformManager : ITextureTransformManager {
         }
 
         if (textureTracks.Rotations?.HasAnyData ?? false) {
-          if (textureTracks.Rotations.TryGetAtFrame(
+          if (textureTracks.Rotations.TryGetAtFrameWithBinarySearch(
                   frame.Value,
                   out var outAnimationRotation)) {
             animationRotation = outAnimationRotation.ToEulerRadians();
@@ -73,7 +73,7 @@ public sealed class TextureTransformManager : ITextureTransformManager {
         }
 
         if (textureTracks.Scales?.HasAnyData ?? false) {
-          if (textureTracks.Scales.TryGetAtFrame(
+          if (textureTracks.Scales.TryGetAtFrameWithBinarySearch(
                   frame.Value,
                   out var outAnimationScale)) {
             animationScale = outAnimationScale;

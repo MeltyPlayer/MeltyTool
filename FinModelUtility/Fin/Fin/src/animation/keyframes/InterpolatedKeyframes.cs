@@ -38,35 +38,25 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Add(TKeyframe keyframe) => this.impl_.AddKeyframe(keyframe);
 
-  public bool TryGetAtFrame(float frame, out T value) {
-    switch (this.impl_.AsSpan()
-                .TryGetPrecedingAndFollowingKeyframes(
-                    frame,
-                    sharedConfig,
-                    this.IndividualConfig,
-                    out var precedingKeyframe,
-                    out var followingKeyframe,
-                    out var normalizedFrame)) {
-      case InterpolationDataType.PRECEDING_AND_FOLLOWING:
-        value = interpolator.Interpolate(precedingKeyframe,
-                                         followingKeyframe,
-                                         normalizedFrame,
-                                         sharedConfig);
-        return true;
-
-      case InterpolationDataType.PRECEDING_ONLY:
-        value = precedingKeyframe.ValueOut;
-        return true;
-
-      default:
-      case InterpolationDataType.NONE:
-        if (this.IndividualConfig.DefaultValue?.Try(out value) ?? false) {
-          return true;
-        }
-
-        value = default!;
-        return false;
-    }
+  public bool TryGetAtFrameWithBinarySearch(float frame, out T value) {
+    var interpolationDataType
+        = this.impl_.AsSpan()
+              .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
+                  frame,
+                  sharedConfig,
+                  this.IndividualConfig,
+                  out var precedingKeyframe,
+                  out var followingKeyframe,
+                  out var normalizedFrame);
+    return TryToInterpolateAtFrame(
+        sharedConfig,
+        this.IndividualConfig,
+        precedingKeyframe,
+        followingKeyframe,
+        normalizedFrame,
+        interpolator,
+        interpolationDataType,
+        out value);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,7 +66,7 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
       out TKeyframe followingKeyframe,
       out float normalizedFrame)
     => this.impl_.AsSpan()
-           .TryGetPrecedingAndFollowingKeyframes(
+           .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
                frame,
                sharedConfig,
                this.IndividualConfig,

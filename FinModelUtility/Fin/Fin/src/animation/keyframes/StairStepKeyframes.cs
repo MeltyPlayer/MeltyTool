@@ -33,7 +33,7 @@ public sealed class StairStepKeyframes<T>(
 
   public void Add(Keyframe<T> keyframe) => this.impl_.AddKeyframe(keyframe);
 
-  public bool TryGetAtFrame(float frame, out T value) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out T value) {
     if (this.impl_
             .AsSpan()
             .TryGetPrecedingKeyframe(
