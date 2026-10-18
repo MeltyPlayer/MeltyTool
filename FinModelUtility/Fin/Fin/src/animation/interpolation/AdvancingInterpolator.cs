@@ -15,6 +15,7 @@ public interface IAdvancingInterpolator<T> {
 public sealed class AdvancingInterpolator<T, TKeyframe>
     : IAdvancingInterpolator<T>
     where TKeyframe : class, IKeyframe<T> {
+  private readonly int animationLength_;
   private int keyframePairI_ = 0;
   private readonly (TKeyframe, TKeyframe)[] keyframePairs_;
 
@@ -33,6 +34,9 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
                                IReadOnlyList<TKeyframe> keyframes,
                                IKeyframeInterpolator<TKeyframe, T>
                                    keyframeInterpolator) {
+    this.animationLength_ = individualConfig?.AnimationLength ??
+                            sharedConfig.AnimationLength;
+
     this.sharedConfig_ = sharedConfig;
     this.individualConfig_ = individualConfig;
     this.keyframes_ = keyframes;
@@ -91,7 +95,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
         }
 
         if (this.keyframes_.Count > 1) {
-          this.precedingKeyframe_ = this.keyframes_[this.keyframes_.Count - 1];
+          this.precedingKeyframe_ = this.keyframes_[^1];
           this.followingKeyframe_ = this.keyframes_[0];
           this.interpolationDataType_
               = InterpolationDataType.PRECEDING_AND_FOLLOWING;
@@ -136,10 +140,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
 
     var looping = this.sharedConfig_.Looping;
     if (looping) {
-      frame = frame.ModRange(
-          0,
-          this.individualConfig_.AnimationLength ??
-          this.sharedConfig_.AnimationLength);
+      frame = frame.Mod0ToMax(this.animationLength_);
     }
 
     var index = this.SearchForPrecedingKeyframe_(frame, out keyframe);

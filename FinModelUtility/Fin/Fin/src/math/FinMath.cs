@@ -62,6 +62,16 @@ public static class FinMath {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public static TNumber Mod0ToMax<TNumber>(this TNumber value, TNumber max)
+      where TNumber : INumber<TNumber> {
+    if (value < TNumber.Zero) {
+      return max - (value % max);
+    }
+
+    return value % max;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static float RoundToNearest(this float value, float target)
     => MathF.Round(value / target) * target;
 

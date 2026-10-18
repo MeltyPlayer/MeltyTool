@@ -49,9 +49,8 @@ public static class KeyframesUtil {
     var looping = sharedConfig.Looping;
 
     if (looping) {
-      frame = frame.ModRange(0,
-                             individualConfig.AnimationLength ??
-                             sharedConfig.AnimationLength);
+      frame = frame.Mod0ToMax(individualConfig.AnimationLength ??
+                              sharedConfig.AnimationLength);
     }
 
     var index = BinarySearchForPrecedingKeyframe_(keyframes, frame);
