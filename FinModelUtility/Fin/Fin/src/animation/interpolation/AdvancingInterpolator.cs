@@ -21,7 +21,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>(
   private int precedingKeyframeIndex_;
 
   private KeyframesUtil.InterpolationDataType interpolationDataType_;
-  private TKeyframe precedingKeyframe_;
+  private TKeyframe? precedingKeyframe_;
   private TKeyframe? followingKeyframe_;
   private float normalizedFrame_;
 
@@ -144,7 +144,8 @@ public sealed class AdvancingInterpolator<T, TKeyframe>(
     var keyframeI = this.precedingKeyframeIndex_;
 
     // Oops, we looped. Let's start at 0 instead.
-    if (frame < this.precedingKeyframe_.Frame) {
+    if (this.precedingKeyframe_ != null &&
+        frame < this.precedingKeyframe_.Frame) {
       keyframeI = 0;
     }
 
