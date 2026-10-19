@@ -21,6 +21,13 @@ public static class MaterialTransparencyTypeUtil {
           material.ColorDstFactor is BlendFactor.ONE) {
         return TransparencyType.TRANSPARENT;
       }
+
+      // Subtractive blend modes depend on what's already been drawn, so they
+      // need to be rendered after opaque geometry.
+      if (material.ColorBlendEquation is BlendEquation.SUBTRACT
+                                         or BlendEquation.REVERSE_SUBTRACT) {
+        return TransparencyType.TRANSPARENT;
+      }
     }
 
     // TODO: Detect this from the model

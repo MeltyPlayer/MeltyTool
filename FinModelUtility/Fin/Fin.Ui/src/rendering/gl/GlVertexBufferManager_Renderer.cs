@@ -54,10 +54,13 @@ public sealed partial class GlVertexBufferManager {
       bool isArray;
       int vertexOffset, vertexCount;
 
-      // Nice, can reuse an existing primitive's range
+      // Nice, can reuse an existing primitive's range - but we need to make
+      // sure we update isArray/vertexOffset/vertexCount appropriately
       if (mergedPrimitive.Base != null) {
-        var primitive = mergedPrimitive.Vertices.First().Item1;
-        (isArray, vertexOffset, vertexCount) = rangeByPrimitive[primitive];
+        IEnumerable<IReadOnlyPrimitive> primitives = mergedPrimitive.Vertices.Select(t => t.Item1);
+        (isArray, vertexOffset, _) = rangeByPrimitive[primitives.First()];
+        (_, int lastOffset, int lastCount) = rangeByPrimitive[primitives.Last()];
+        vertexCount = lastOffset + lastCount - vertexOffset;
       }
       // Otherwise, find the new range
       else {
@@ -122,12 +125,17 @@ public sealed partial class GlVertexBufferManager {
                                       .Collapsed()
                                       .ToArray();
 
+      // Primitives that reuse an existing range need to inherit primitiveType
+      // and isFlipped from that one
+      var primitiveType = mergedPrimitive.Base?.PrimitiveType ?? mergedPrimitive.PrimitiveType;
+      var isFlipped = mergedPrimitive.Base?.IsFlipped ?? mergedPrimitive.IsFlipped;
+
       if (isArray) {
         renderers[i] = new GlBufferRenderer(
             this.VaoId,
             primitives,
-            mergedPrimitive.PrimitiveType,
-            mergedPrimitive.IsFlipped,
+            primitiveType,
+            isFlipped,
             null,
             null,
             vertexOffset,
@@ -136,8 +144,8 @@ public sealed partial class GlVertexBufferManager {
         renderers[i] = new GlBufferRenderer(
             this.VaoId,
             primitives,
-            mergedPrimitive.PrimitiveType,
-            mergedPrimitive.IsFlipped,
+            primitiveType,
+            isFlipped,
             ebo,
             eboDisposable,
             vertexOffset,
