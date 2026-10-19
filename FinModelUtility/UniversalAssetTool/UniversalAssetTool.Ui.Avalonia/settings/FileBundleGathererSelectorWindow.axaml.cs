@@ -10,6 +10,8 @@ using fin.ui;
 using fin.ui.avalonia.controls;
 using fin.util.progress;
 
+using ReactiveUI;
+
 using uni.config;
 using uni.games;
 using uni.ui.avalonia.ViewModels;

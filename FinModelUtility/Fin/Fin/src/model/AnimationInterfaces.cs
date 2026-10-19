@@ -35,11 +35,6 @@ public partial interface IAnimation : INamed {
   new float FrameRate { get; set; }
   new bool UseLoopingInterpolation { get; set; }
   new bool DisableNearestRotationFix { get; set; }
-
-  new AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
-    get;
-    set;
-  }
 }
 
 [GenerateReadOnly]

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.animation.interpolation;
+using static fin.animation.keyframes.KeyframesUtil;
 
 namespace fin.animation.keyframes;
 
@@ -57,7 +61,7 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
+  public KeyframesUtil.InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
       float frame,
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe,

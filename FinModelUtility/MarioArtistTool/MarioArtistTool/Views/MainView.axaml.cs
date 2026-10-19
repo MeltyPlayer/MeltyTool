@@ -12,6 +12,7 @@ using fin.scene.instance;
 using fin.services;
 using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.viewer;
+using fin.util.asserts;
 using fin.util.tasks;
 
 using marioartist.api;

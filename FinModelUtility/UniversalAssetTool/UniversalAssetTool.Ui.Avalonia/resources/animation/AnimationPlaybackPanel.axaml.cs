@@ -7,6 +7,8 @@ using fin.math;
 using fin.ui;
 using fin.ui.avalonia.controls;
 
+using ReactiveUI;
+
 using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.resources.animation;

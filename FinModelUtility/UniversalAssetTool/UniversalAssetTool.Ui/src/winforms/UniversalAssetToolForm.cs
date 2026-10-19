@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 using fin.model.io.exporters.assimp;
 using fin.io;
+using fin.math.floats;
 using fin.model.io;
 using fin.model.processing;
 using fin.scene;

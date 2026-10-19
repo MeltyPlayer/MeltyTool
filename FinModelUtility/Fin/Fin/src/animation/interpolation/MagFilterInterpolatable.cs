@@ -12,11 +12,6 @@ namespace fin.animation.interpolation;
 /// </summary>
 public sealed class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
     : IInterpolatable<T> {
-  public AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
-    get;
-    set;
-  } = AnimationInterpolationMagFilter.ANY_FRAME_RATE;
-
   public IInterpolatable<T>? Impl { get; set; }
   public bool HasAnyData => this.Impl?.HasAnyData ?? false;
 
@@ -31,15 +26,8 @@ public sealed class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
 
     var intFrame = (int) frame;
     var frac = frame - intFrame;
-    if (frac.IsRoughly0() ||
-        this.AnimationInterpolationMagFilter ==
-        AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_NEAREST) {
+    if (frac.IsRoughly0()) {
       return this.Impl.TryGetAtFrameWithBinarySearch(intFrame, out value);
-    }
-
-    if (this.AnimationInterpolationMagFilter ==
-        AnimationInterpolationMagFilter.ANY_FRAME_RATE) {
-      return this.Impl.TryGetAtFrameWithBinarySearch(frame, out value);
     }
 
     if (this.Impl.TryGetAtFrameWithBinarySearch(intFrame, out var fromValue) &&

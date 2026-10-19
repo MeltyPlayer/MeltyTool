@@ -12,6 +12,7 @@ using fin.model.impl;
 using fin.model.io;
 using fin.model.io.importers;
 using fin.model.util;
+using fin.util.sets;
 using fin.util.strings;
 
 using schema.text.reader;

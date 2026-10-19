@@ -3,6 +3,7 @@ using System.Text;
 
 using fin.io.bundles;
 using fin.io.web;
+using fin.math.floats;
 using fin.model.io;
 using fin.util.progress;
 using fin.util.tasks;

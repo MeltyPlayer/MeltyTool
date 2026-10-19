@@ -84,7 +84,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
         out value);
   }
 
-  public InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
+  public KeyframesUtil.InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
       float frame,
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe) {
@@ -106,7 +106,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
         if (this.keyframes_.Count == 1) {
           this.precedingKeyframe_ = this.keyframes_[0];
           this.followingKeyframe_ = null;
-          this.interpolationDataType_ = InterpolationDataType.PRECEDING_ONLY;
+          this.interpolationDataType_ = KeyframesUtil.InterpolationDataType.PRECEDING_ONLY;
           return;
         }
 
@@ -114,13 +114,13 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
           this.precedingKeyframe_ = this.keyframes_[^1];
           this.followingKeyframe_ = this.keyframes_[0];
           this.interpolationDataType_
-              = InterpolationDataType.PRECEDING_AND_FOLLOWING;
+              = KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING;
           return;
         }
       }
 
       this.followingKeyframe_ = null;
-      this.interpolationDataType_ = InterpolationDataType.NONE;
+      this.interpolationDataType_ = KeyframesUtil.InterpolationDataType.NONE;
       return;
     }
 
@@ -129,7 +129,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
       // TODO: Should this support from a frame to itself?
       if (!this.sharedConfig_.Looping || this.keyframes_.Count == 1) {
         this.followingKeyframe_ = null;
-        this.interpolationDataType_ = InterpolationDataType.PRECEDING_ONLY;
+        this.interpolationDataType_ = KeyframesUtil.InterpolationDataType.PRECEDING_ONLY;
         return;
       }
 
@@ -137,7 +137,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
     }
 
     this.followingKeyframe_ = this.keyframes_[followingKeyframeIndex];
-    this.interpolationDataType_ = InterpolationDataType.PRECEDING_AND_FOLLOWING;
+    this.interpolationDataType_ = KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

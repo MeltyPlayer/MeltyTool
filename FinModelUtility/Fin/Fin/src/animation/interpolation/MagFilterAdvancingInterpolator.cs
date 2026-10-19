@@ -1,43 +1,57 @@
 ﻿using System;
 
+using fin.math;
 using fin.math.floats;
 using fin.math.interpolation;
 
 namespace fin.animation.interpolation;
 
-public sealed class MagFilterAdvancingInterpolator<T>(
-    MagFilterInterpolatable<T> parent,
-    IInterpolator<T> interpolator)
+public sealed class MagFilterAdvancingInterpolator<T>
     : IAdvancingInterpolator<T> {
-  private IAdvancingInterpolator<T> fromFrameInterpolator_
-      = parent.Impl.GetAdvancingInterpolator();
+  private readonly (bool hadValue, T value)[] cachedFrames_;
 
-  private IAdvancingInterpolator<T> toFrameInterpolator_
-      = parent.Impl.GetAdvancingInterpolator();
+  private readonly bool looping_;
+  private readonly IInterpolator<T> interpolator_;
+
+  public MagFilterAdvancingInterpolator(MagFilterInterpolatable<T> parent,
+                                        IInterpolator<T> interpolator) {
+    this.looping_ = parent.Looping;
+    this.interpolator_ = interpolator;
+
+    var advancingInterpolator = parent.Impl.GetAdvancingInterpolator();
+    this.cachedFrames_ = new (bool hadValue, T value)[parent.AnimationLength];
+    for (var i = 0; i < this.cachedFrames_.Length; ++i) {
+      var hadValue = advancingInterpolator.TryGetAtFrame(i, out var value);
+      this.cachedFrames_[i] = (hadValue, value);
+    }
+  }
 
   public bool TryGetAtFrame(float frame, out T value) {
-    var animationInterpolationMagFilter
-        = parent.AnimationInterpolationMagFilter;
-
-    if (animationInterpolationMagFilter ==
-        AnimationInterpolationMagFilter.ANY_FRAME_RATE) {
-      return this.fromFrameInterpolator_.TryGetAtFrame(frame, out value);
-    }
-
+    var animationLength = this.cachedFrames_.Length;
+    
     var intFrame = (int) frame;
-    var frac = frame - intFrame;
-    if (frac.IsRoughly0() ||
-        animationInterpolationMagFilter ==
-        AnimationInterpolationMagFilter.ORIGINAL_FRAME_RATE_NEAREST) {
-      return this.fromFrameInterpolator_.TryGetAtFrame(intFrame, out value);
+    if (this.looping_) {
+      intFrame = intFrame.Mod0ToMax(animationLength);
+    } else {
+      intFrame = intFrame.Clamp(0, animationLength - 1);
+    }
+    
+    var (fromHadValue, fromValue) = this.cachedFrames_[intFrame];
+    if (!this.looping_ && intFrame == animationLength - 1) {
+      value = fromValue;
+      return fromHadValue;
     }
 
-    if (this.fromFrameInterpolator_.TryGetAtFrame(
-            intFrame,
-            out var fromValue) &&
-        this.toFrameInterpolator_.TryGetAtFrame((int) Math.Ceiling(frame),
-                                                out var toValue)) {
-      value = interpolator.Interpolate(fromValue, toValue, frac);
+    var frac = frame - intFrame;
+    if (frac.IsRoughly0()) {
+      value = fromValue;
+      return fromHadValue;
+    }
+
+    var (toHadValue, toValue)
+        = this.cachedFrames_[(intFrame + 1) % animationLength];
+    if (fromHadValue && toHadValue) {
+      value = this.interpolator_.Interpolate(fromValue, toValue, frac);
       return true;
     }
 

@@ -59,11 +59,6 @@ public partial class ModelImpl<TVertex> {
       set => this.sharedInterpolationConfig_.DisableNearestRotationFix = value;
     }
 
-    public AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
-      get;
-      set;
-    }
-
     // TODO: Allow setting looping behavior (once, back and forth, etc.)
   }
 }

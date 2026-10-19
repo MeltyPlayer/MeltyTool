@@ -5,6 +5,7 @@ using fin.color;
 using fin.data.lazy;
 using fin.image;
 using fin.io;
+using fin.math;
 using fin.math.transform;
 using fin.model;
 using fin.model.io.importers.assimp;
@@ -12,6 +13,7 @@ using fin.model.util;
 using fin.scene;
 using fin.ui.rendering.gl.scene;
 using fin.util.asserts;
+using fin.util.enums;
 using fin.util.sets;
 
 using gm.api;

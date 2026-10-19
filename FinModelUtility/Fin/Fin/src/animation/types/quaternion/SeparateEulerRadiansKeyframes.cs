@@ -8,6 +8,8 @@ using fin.animation.types.radians;
 using fin.animation.types.vector3;
 using fin.math;
 using fin.math.rotations;
+using fin.util.asserts;
+using fin.util.optional;
 
 namespace fin.animation.types.quaternion;
 
