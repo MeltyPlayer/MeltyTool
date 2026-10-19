@@ -87,9 +87,9 @@ public partial class ModelRenderer {
                 isTransparent);
           }
 
-          // Need to include this to support rendering meshes when other
-          // meshes are hidden in the viewer.
-          if (isVisibilityAnimated) {
+          // Need to include this to support rendering meshes when selected or
+          // when other meshes are hidden in the viewer.
+          if (isVisibilityAnimated || SceneTypeService.IsASingleModel) {
             var visibilityMeshMaterialTuple
                 = (primitive.Material, (mesh, isVisibilityAnimated));
             primitivesByMaterial.Add(visibilityMeshMaterialTuple, primitive);

@@ -45,9 +45,8 @@ public static class FileBundleExportService {
               DirectoryConstants.OUT_DIRECTORY.FullPath);
     var defaultExtension = lastExtension_ ?? ".fbx";
 
-    var mainFile = modelFileBundle.MainFile;
-    var suggestedFileName = mainFile != null
-        ? $"{mainFile.NameWithoutExtension}{defaultExtension.ReplaceFirst('*', '.')}"
+    var suggestedFileName = modelFileBundle.MainFile != null
+        ? $"{ExporterUtil.GetExportName(modelFileBundle)}{defaultExtension.ReplaceFirst('*', '.')}"
         : null;
 
     var selectedStorageFile

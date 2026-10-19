@@ -18,6 +18,14 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
 
   IReadOnlyTreeDirectory Directory => this.MainFile.AssertGetParent();
 
+  /// <summary>
+  ///   Optional '/'-separated path of the folder to show this bundle in,
+  ///   relative to the root of the main file's hierarchy, instead of the main
+  ///   file's own directory. Folders that don't exist on disk are added to the
+  ///   file tree virtually. Useful for bundles that are only part of a file.
+  /// </summary>
+  string? VirtualDirectoryPath => null;
+
   ReadOnlySpan<char> IUiFile.RawName
     => FinIoStatic.GetName(this.DisplayFullPath);
 

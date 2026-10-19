@@ -5,7 +5,8 @@ using OpenTK.Graphics.OpenGL4;
 namespace fin.ui.rendering.gl;
 
 public partial record GlState {
-  public CullingMode CurrentCullingMode { get; set; } = CullingMode.SHOW_FRONT_ONLY;
+  // Matches OpenGL's initial state, where face culling is disabled.
+  public CullingMode CurrentCullingMode { get; set; } = CullingMode.SHOW_BOTH;
 }
 
 public static partial class GlUtil {
