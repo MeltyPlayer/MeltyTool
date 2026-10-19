@@ -1,5 +1,4 @@
-﻿using fin.config;
-using fin.data.sets;
+﻿using fin.data.sets;
 using fin.io;
 using fin.io.archive;
 using fin.io.bundles;

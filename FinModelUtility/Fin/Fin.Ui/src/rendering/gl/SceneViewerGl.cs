@@ -9,7 +9,6 @@ using fin.services;
 using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.gl.ubo;
 using fin.ui.rendering.viewer;
-using fin.util.time;
 
 namespace fin.ui.rendering.gl;
 

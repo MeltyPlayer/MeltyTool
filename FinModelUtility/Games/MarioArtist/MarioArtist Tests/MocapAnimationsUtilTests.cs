@@ -5,8 +5,6 @@ using marioartist.api;
 
 using NUnit.Framework;
 
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
-
 namespace marioartist;
 
 public sealed class MocapAnimationsUtilTests {

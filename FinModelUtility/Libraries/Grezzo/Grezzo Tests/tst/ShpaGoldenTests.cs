@@ -3,12 +3,9 @@
 using fin.io;
 using fin.testing;
 
-using grezzo.schema.cmb;
 using grezzo.schema.shpa;
 
 using schema.binary;
-
-using Version = grezzo.schema.cmb.Version;
 
 namespace grezzo;
 

@@ -1,5 +1,4 @@
 ﻿using fin.model;
-using fin.schema;
 
 using schema.text.reader;
 

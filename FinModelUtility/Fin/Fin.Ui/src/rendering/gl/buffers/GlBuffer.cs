@@ -1,6 +1,4 @@
-﻿using fin.util.spans;
-
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
 using readOnly;
 

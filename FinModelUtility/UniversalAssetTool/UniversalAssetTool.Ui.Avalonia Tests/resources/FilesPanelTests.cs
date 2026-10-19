@@ -1,13 +1,10 @@
 ﻿using Avalonia.Headless.NUnit;
 
-using fin.data.dictionaries;
 using fin.io;
-using fin.model;
 using fin.model.impl;
 using fin.util.asserts;
 
 using uni.ui.avalonia.helpers;
-using uni.ui.avalonia.resources.model;
 
 namespace uni.ui.avalonia.resources;
 

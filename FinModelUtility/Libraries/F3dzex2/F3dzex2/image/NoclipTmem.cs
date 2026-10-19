@@ -4,7 +4,6 @@ using System.Linq;
 using f3dzex2.combiner;
 using f3dzex2.displaylist.opcodes;
 
-using fin.image;
 using fin.model;
 using fin.util.asserts;
 

@@ -4,8 +4,6 @@ using fin.util.progress;
 
 using sonicadventure.api;
 
-using uni.platforms.desktop;
-
 namespace uni.games.sonic_adventure_dx;
 
 using SadxFiles = (string name, IFileHierarchyFile modelFile,

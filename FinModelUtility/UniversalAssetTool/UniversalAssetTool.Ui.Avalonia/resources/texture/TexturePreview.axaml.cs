@@ -1,5 +1,4 @@
 using System.Drawing;
-using System.Threading.Tasks;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -12,7 +11,6 @@ using fin.model;
 using fin.ui;
 using fin.ui.avalonia.controls;
 using fin.ui.avalonia.images;
-using fin.util.asserts;
 
 using ReactiveUI;
 

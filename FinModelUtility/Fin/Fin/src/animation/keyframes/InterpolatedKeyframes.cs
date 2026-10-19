@@ -1,14 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 
-using CommunityToolkit.HighPerformance;
-
 using fin.animation.interpolation;
-
-using static fin.animation.keyframes.KeyframesUtil;
 
 namespace fin.animation.keyframes;
 

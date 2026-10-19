@@ -1,7 +1,6 @@
 ﻿using Avalonia.Controls;
 
 using AvaloniaEdit;
-using AvaloniaEdit.Document;
 
 using fin.util.asserts;
 

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using fin.exporter.assimp;
-using fin.io;
-using fin.model.io.exporters;
 using fin.ui;
 using fin.ui.rendering.gl;
 
-using pikmin1.api;
-
-using uni.api;
 using uni.cli;
 using uni.ui.winforms;
 

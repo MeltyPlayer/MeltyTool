@@ -5,8 +5,6 @@ using System.Linq;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 
-using CommunityToolkit.Mvvm.ComponentModel;
-
 using fin.config.avalonia.services;
 using fin.importers;
 using fin.io;
@@ -16,8 +14,6 @@ using fin.util.linq;
 using fin.util.strings;
 
 using ReactiveUI;
-
-using uni.services;
 
 namespace uni.ui.avalonia.resources;
 

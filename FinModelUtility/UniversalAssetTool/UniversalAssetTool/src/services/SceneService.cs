@@ -1,5 +1,4 @@
-﻿using fin.image;
-using fin.io.bundles;
+﻿using fin.io.bundles;
 using fin.scene;
 using fin.services;
 using fin.ui.rendering;

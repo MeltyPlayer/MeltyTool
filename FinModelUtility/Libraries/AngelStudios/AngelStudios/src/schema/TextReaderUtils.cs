@@ -2,8 +2,6 @@
 
 using CommunityToolkit.Diagnostics;
 
-using fin.schema;
-
 using schema.text;
 using schema.text.reader;
 

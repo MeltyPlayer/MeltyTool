@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 using CommunityToolkit.Diagnostics;
 
 using fin.math.matrix.three;
-using fin.util.asserts;
 
 namespace fin.math.rotations;
 

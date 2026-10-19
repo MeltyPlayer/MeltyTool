@@ -5,8 +5,6 @@ using fin.util.asserts;
 
 using uni.ui.avalonia.helpers;
 
-using Assert = NUnit.Framework.Assert;
-
 namespace uni.ui.avalonia.resources.animation;
 
 public class AnimationListTests {

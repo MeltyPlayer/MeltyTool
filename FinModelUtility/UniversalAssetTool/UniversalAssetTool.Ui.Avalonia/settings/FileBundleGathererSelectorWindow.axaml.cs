@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -9,10 +8,7 @@ using Avalonia.Media;
 using fin.io.bundles;
 using fin.ui;
 using fin.ui.avalonia.controls;
-using fin.util.asserts;
 using fin.util.progress;
-
-using ReactiveUI;
 
 using uni.config;
 using uni.games;

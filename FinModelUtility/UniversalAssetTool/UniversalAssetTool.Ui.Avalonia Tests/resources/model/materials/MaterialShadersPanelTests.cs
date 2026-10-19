@@ -1,6 +1,4 @@
-﻿using Avalonia.Headless;
-using Avalonia.Headless.NUnit;
-using Avalonia.Threading;
+﻿using Avalonia.Headless.NUnit;
 
 using fin.model.impl;
 

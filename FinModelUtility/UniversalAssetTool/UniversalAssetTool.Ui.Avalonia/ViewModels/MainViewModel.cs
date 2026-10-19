@@ -8,7 +8,6 @@ using fin.model;
 using fin.scene;
 using fin.ui;
 using fin.ui.avalonia.images;
-using fin.ui.rendering;
 using fin.util.tasks;
 using fin.util.types;
 

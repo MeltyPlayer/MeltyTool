@@ -1,5 +1,4 @@
-﻿using DiscUtils;
-using DiscUtils.Iso9660;
+﻿using DiscUtils.Iso9660;
 
 using fin.common;
 using fin.data.queues;

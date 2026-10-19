@@ -2,14 +2,12 @@
 
 using fin.color;
 using fin.data;
-using fin.math.floats;
 using fin.model;
 
 using OpenTK.Graphics.OpenGL4;
 
 using FinTextureMinFilter = fin.model.TextureMinFilter;
 using TextureMagFilter = fin.model.TextureMagFilter;
-using TextureMinFilter = OpenTK.Graphics.OpenGL4.TextureMinFilter;
 
 
 namespace fin.ui.rendering.gl.texture;

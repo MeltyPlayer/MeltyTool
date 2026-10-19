@@ -1,14 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 
-using Avalonia.Controls;
-
 using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
 using fin.ui;
 using fin.ui.avalonia.controls;
-
-using ReactiveUI;
 
 namespace uni.ui.avalonia.resources.model.materials;
 

@@ -1,15 +1,11 @@
 using System;
 
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 using fin.animation;
 using fin.math;
 using fin.ui;
 using fin.ui.avalonia.controls;
-using fin.util.asserts;
-
-using ReactiveUI;
 
 using uni.ui.avalonia.resources.model;
 

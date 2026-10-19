@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 using fin.animation.interpolation;
 using fin.math;
-using fin.math.floats;
 
 namespace fin.animation.keyframes;
 

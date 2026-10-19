@@ -1,7 +1,4 @@
-﻿using fin.math;
-using fin.util.spans;
-
-using OpenTK.Graphics.OpenGL4;
+﻿using OpenTK.Graphics.OpenGL4;
 
 namespace fin.ui.rendering.gl.buffers;
 

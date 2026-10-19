@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Avalonia.Controls;
-
 using fin.language.equations.fixedFunction;
 using fin.ui;
 using fin.ui.avalonia.controls;

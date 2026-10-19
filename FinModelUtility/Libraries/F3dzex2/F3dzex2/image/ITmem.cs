@@ -1,6 +1,5 @@
 ﻿using f3dzex2.displaylist.opcodes;
 
-using fin.image;
 using fin.model;
 
 

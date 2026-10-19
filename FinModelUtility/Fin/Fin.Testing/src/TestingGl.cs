@@ -1,8 +1,5 @@
 ﻿using fin.ui.rendering.gl;
 
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Windowing.GraphicsLibraryFramework;
-
 namespace fin.testing;
 
 public static class TestingGl {

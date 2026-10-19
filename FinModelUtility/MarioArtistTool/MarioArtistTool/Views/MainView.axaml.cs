@@ -3,7 +3,6 @@ using System.Linq;
 using System.Numerics;
 
 using Avalonia.Controls;
-using Avalonia.Interactivity;
 
 using fin.io.web;
 using fin.model.io;
@@ -13,21 +12,17 @@ using fin.scene.instance;
 using fin.services;
 using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.viewer;
-using fin.util.asserts;
 using fin.util.tasks;
 
 using marioartist.api;
 
 using marioartisttool.backgrounds;
 using marioartisttool.config;
-using marioartisttool.file_select;
 using marioartisttool.services;
 using marioartisttool.view;
 using marioartisttool.view.face;
 using marioartisttool.view.games.ball;
 using marioartisttool.ViewModels;
-
-using static marioartisttool.file_select.FileSelectTopBar;
 
 namespace marioartisttool.Views;
 

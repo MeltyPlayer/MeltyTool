@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 using fin.animation.keyframes;
 using fin.math;
 
-using static fin.animation.keyframes.KeyframesUtil;
-
 namespace fin.animation.interpolation;
 
 public interface IAdvancingInterpolator<T> {
