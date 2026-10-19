@@ -3,8 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace fin.math.interpolation;
 
-public readonly struct SimpleQuaternionInterpolator
-    : IInterpolator<Quaternion> {
+public class SimpleQuaternionInterpolator : IInterpolator<Quaternion> {
+  public static SimpleQuaternionInterpolator Instance { get; } = new();
+
+  private SimpleQuaternionInterpolator() { }
+
   // TODO: Might need to negate q2 if Quaternion.Dot(q1, q2) < 0?
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Quaternion Interpolate(in Quaternion q1,

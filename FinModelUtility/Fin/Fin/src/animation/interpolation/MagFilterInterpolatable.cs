@@ -49,5 +49,7 @@ public sealed class MagFilterInterpolatable<T>(IInterpolator<T> interpolator)
     => this.Impl.TryGetSimpleKeyframes(out keyframes, out tangentKeyframes);
 
   public IAdvancingInterpolator<T> GetAdvancingInterpolator()
-    => new MagFilterAdvancingInterpolator<T>(this, interpolator);
+    => this.Looping
+        ? new LoopingMagFilterAdvancingInterpolator<T>(this, interpolator)
+        : new NonLoopingMagFilterAdvancingInterpolator<T>(this, interpolator);
 }

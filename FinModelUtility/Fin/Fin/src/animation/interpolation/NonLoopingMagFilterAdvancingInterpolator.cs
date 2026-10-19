@@ -1,21 +1,17 @@
-﻿using System;
-
-using fin.math;
+﻿using fin.math;
 using fin.math.floats;
 using fin.math.interpolation;
 
 namespace fin.animation.interpolation;
 
-public sealed class MagFilterAdvancingInterpolator<T>
+public sealed class NonLoopingMagFilterAdvancingInterpolator<T>
     : IAdvancingInterpolator<T> {
   private readonly (bool hadValue, T value)[] cachedFrames_;
-
-  private readonly bool looping_;
   private readonly IInterpolator<T> interpolator_;
 
-  public MagFilterAdvancingInterpolator(MagFilterInterpolatable<T> parent,
-                                        IInterpolator<T> interpolator) {
-    this.looping_ = parent.Looping;
+  public NonLoopingMagFilterAdvancingInterpolator(
+      MagFilterInterpolatable<T> parent,
+      IInterpolator<T> interpolator) {
     this.interpolator_ = interpolator;
 
     var advancingInterpolator = parent.Impl.GetAdvancingInterpolator();
@@ -28,16 +24,12 @@ public sealed class MagFilterAdvancingInterpolator<T>
 
   public bool TryGetAtFrame(float frame, out T value) {
     var animationLength = this.cachedFrames_.Length;
-    
+
     var intFrame = (int) frame;
-    if (this.looping_) {
-      intFrame = intFrame.Mod0ToMax(animationLength);
-    } else {
-      intFrame = intFrame.Clamp(0, animationLength - 1);
-    }
-    
+    intFrame = intFrame.Clamp(0, animationLength - 1);
+
     var (fromHadValue, fromValue) = this.cachedFrames_[intFrame];
-    if (!this.looping_ && intFrame == animationLength - 1) {
+    if (intFrame == animationLength - 1) {
       value = fromValue;
       return fromHadValue;
     }

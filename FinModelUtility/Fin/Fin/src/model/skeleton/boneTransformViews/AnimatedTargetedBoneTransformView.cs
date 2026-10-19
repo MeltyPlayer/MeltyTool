@@ -102,7 +102,7 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       // Only gets the values from the animation if the frame is at least partially defined.
       if (boneTracks.Translations?.HasAnyData ?? false) {
         this.translationMagFilterAdvancingInterpolator_
-            = new MagFilterInterpolatable<Vector3>(new Vector3Interpolator()) {
+            = new MagFilterInterpolatable<Vector3>(Vector3Interpolator.Instance) {
                 Impl = boneTracks.Translations,
             }.GetAdvancingInterpolator();
       }
@@ -110,7 +110,7 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       if (boneTracks.Rotations?.HasAnyData ?? false) {
         this.rotationMagFilterAdvancingInterpolator_
             = new MagFilterInterpolatable<Quaternion>(
-                new SimpleQuaternionInterpolator()) {
+                SimpleQuaternionInterpolator.Instance) {
                 Impl = boneTracks.Rotations,
             }.GetAdvancingInterpolator();
       }
@@ -118,7 +118,7 @@ public sealed class AnimatedTargetedBoneTransformView : ITargetedBoneTransformVi
       if (boneTracks.Scales?.HasAnyData ?? false) {
         this.scaleMagFilterAdvancingInterpolator_
             = new MagFilterInterpolatable<Vector3>(
-                new Vector3Interpolator()) {
+                Vector3Interpolator.Instance) {
                 Impl = boneTracks.Scales,
             }.GetAdvancingInterpolator();
       }
