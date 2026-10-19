@@ -1,4 +1,5 @@
 ﻿using fin.animation;
+using fin.animation.interpolation;
 using fin.config;
 using fin.math;
 using fin.model;
@@ -17,6 +18,9 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   private readonly MeshVisibilityDictionary meshVisibility_;
   private bool isBoneSelected_;
   private bool hadOverrides_;
+
+  private (IReadOnlyMesh, IAdvancingInterpolator<MeshDisplayState>)[]
+      meshDisplayStateTuples_ = [];
 
   private bool needsToAlwaysUpdateMatrices_;
 
@@ -81,7 +85,8 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   ~SimpleModelRenderComponent() => this.ReleaseUnmanagedResources_();
 
   public void Dispose() {
-    MeshVisibilityService.OnMeshVisibilityChanged -= this.OnMeshVisibilityChanged_;
+    MeshVisibilityService.OnMeshVisibilityChanged
+        -= this.OnMeshVisibilityChanged_;
     this.ReleaseUnmanagedResources_();
     GC.SuppressFinalize(this);
   }
@@ -124,7 +129,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
           BoneWeightTransformType.FOR_RENDERING,
           GlTransform.ModelMatrix);
     }
-    
+
     this.hadOverrides_ = hasAnyOverrides;
 
     if (animation != null) {
@@ -136,18 +141,17 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
           (animation, frame));
 
       this.meshVisibility_.Reset();
-      if (animation.HasAnyMeshTracks) {
-        foreach (var meshTracks in animation.MeshTracks) {
-          if (!meshTracks.DisplayStates.TryGetAtFrameWithBinarySearch(
-                  frame,
-                  out var displayState)) {
-            continue;
-          }
-
-          this.meshVisibility_.SetLocalVisibility(
-              meshTracks.Mesh,
-              displayState is not MeshDisplayState.HIDDEN);
+      foreach (var (mesh, meshDisplayStateAdvancingInterpolator) in
+               this.meshDisplayStateTuples_) {
+        if (!meshDisplayStateAdvancingInterpolator.TryGetAtFrame(
+                frame,
+                out var displayState)) {
+          continue;
         }
+
+        this.meshVisibility_.SetLocalVisibility(
+            mesh,
+            displayState is not MeshDisplayState.HIDDEN);
       }
     } else {
       this.TextureTransformManager.CalculateMatrices(
@@ -193,6 +197,15 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
       apm.Frame = 0;
       apm.FrameRate = (int) (value?.FrameRate ?? 20);
       apm.TotalFrames = value?.FrameCount ?? 0;
+
+      this.meshDisplayStateTuples_
+          = value?
+            .MeshTracks
+            .Select(m
+                        => (m.Mesh,
+                            m.DisplayStates.GetAdvancingInterpolator()))
+            .ToArray() ??
+            [];
     }
   }
 

@@ -96,7 +96,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private void UpdateKeyframeMetadata_(float frame) {
-    if (!this.TryToGetPrecedingKeyframe_(
+    if (!this.TryToGetPrecedingKeyframe(
             frame,
             out this.precedingKeyframe_,
             out var precedingKeyframeIndex,
@@ -141,7 +141,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private bool TryToGetPrecedingKeyframe_(
+  public bool TryToGetPrecedingKeyframe(
       float frame,
       out TKeyframe keyframe,
       out int keyframeIndex,

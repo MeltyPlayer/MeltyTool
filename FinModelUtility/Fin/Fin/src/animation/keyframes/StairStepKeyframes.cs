@@ -86,5 +86,8 @@ public sealed class StairStepKeyframes<T>(
   }
 
   public IAdvancingInterpolator<T> GetAdvancingInterpolator()
-    => throw new NotImplementedException();
+    => new StairStepAdvancingInterpolator<T>(
+        sharedConfig,
+        individualConfig,
+        this.impl_);
 }
