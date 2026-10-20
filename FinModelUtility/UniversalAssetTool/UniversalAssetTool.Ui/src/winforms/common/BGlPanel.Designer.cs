@@ -45,10 +45,6 @@ namespace uni.ui.winforms.common {
       glControlSettings.API
           = OpenGlVersionService.Es ? ContextAPI.OpenGLES : ContextAPI.OpenGL;
 
-      if (GlConstants.Compatibility) {
-        glControlSettings.Profile = ContextProfile.Compatability;
-      }
-
       this.impl_ = new GLControl(glControlSettings);
 
       this.SuspendLayout();
