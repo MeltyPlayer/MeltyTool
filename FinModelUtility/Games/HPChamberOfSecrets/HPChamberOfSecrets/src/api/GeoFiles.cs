@@ -19,4 +19,12 @@ public static class GeoFiles {
     => Asserts.CastNonnull(geoFile.Parent)
               .TryToGetExistingFile($"{geoFile.NameWithoutExtension}.gdt",
                                     out gdtFile);
+
+  /// <summary>
+  /// Checks if a GEO file is a loading screen. Used to properly categorize loading screens
+  /// </summary>
+  /// <param name="geoName">GEO file name</param>
+  /// <returns>True if loading screen, false otherwise</returns>
+  public static bool IsLoadingScreen(ReadOnlySpan<char> geoName)
+    => geoName.EndsWith("LS", StringComparison.Ordinal);
 }
