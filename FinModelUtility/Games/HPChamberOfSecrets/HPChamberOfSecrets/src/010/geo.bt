@@ -1,0 +1,117 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.4 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+const uint HEADER_COLOR = 0x888888;
+
+const uint ENUM_COLOR = 0xff0000;
+const uint POINTER_COLOR = 0x00ff00;
+const uint COUNT_COLOR = 0x0000ff;
+
+const uint ORIENTATION_COLOR = 0xffff00;
+const uint IMAGE_COLOR = 0x00ffff;
+const uint STRING_COLOR = 0xff00ff;
+
+struct Pointer {
+    local uint currentPosition = FTell();
+    uint offset <bgcolor=POINTER_COLOR>;
+    local uint value = currentPosition + offset;
+};
+
+struct CountAndPointer {
+    uint count <bgcolor=COUNT_COLOR>;
+    Pointer pointer;
+};
+
+struct Header {
+    uint unk0;
+
+    ushort unk1;
+    byte version;
+    byte unk2;
+    
+    uint unk3;
+    
+    CountAndPointer meshCountAndPointer;
+    CountAndPointer textureCountAndPointer; 
+   
+    CountAndPointer unkCountAndPointer1;
+    CountAndPointer unkCountAndPointer2;
+    
+    CountAndPointer layoutCountAndPointer;
+} header <bgcolor=HEADER_COLOR>;
+
+FSeek(0x64);
+CountAndPointer subFileCountAndPointer;
+
+FSeek(subFileCountAndPointer.pointer.value);
+struct SubFile {
+    uint unk0[7];
+    uint gdtOffset <bgcolor=POINTER_COLOR>;
+    
+    uint unk1[11];
+} subFiles <bgcolor=HEADER_COLOR, optimize=false>;
+
+FSeek(header.meshCountAndPointer.pointer.value);
+struct Mesh {
+    
+} meshes[header.meshCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
+
+FSeek(header.textureCountAndPointer.pointer.value);
+struct Texture {
+    uint unk0[0xc];
+    uint width <bgcolor=ORIENTATION_COLOR>;
+    uint height <bgcolor=ORIENTATION_COLOR>;
+    uint unk1;
+
+    Pointer namePointer;
+    local uint tmp0 = FTell();
+    FSeek(namePointer.value);
+    string name <bgcolor=STRING_COLOR>;
+    FSeek(tmp0);
+
+    uint unk2[3];
+    
+    enum GeoTextureFormat {
+        RGB5A3 = 1,
+        CMPR = 2,
+        RGBA8 = 3,
+    } format <bgcolor=ENUM_COLOR>;
+    
+    uint unk3[2];
+    Pointer dataPointer;
+
+    local uint tileLength = format == CMPR ? 8 : 4;
+    local uint tileSize = format == RGBA8 ? 64 : 32;
+    
+    local uint tmp1 = FTell();
+    FSeek(dataPointer.value);
+    
+    typedef struct(int width, int height) {
+        local uint tileXCount = (width + tileLength - 1) / tileLength;
+        local uint tileYCount = (height + tileLength - 1) / tileLength;
+        local uint dataSize = tileXCount * tileYCount * tileSize;        
+        byte data[dataSize] <bgcolor=IMAGE_COLOR>;
+    } MipmapLevel <bgcolor=HEADER_COLOR>;
+    
+    local uint mipmapWidth = width;
+    local uint mipmapHeight = height;
+    while (mipmapWidth > 1 && mipmapHeight > 1) {
+        MipmapLevel mipmapLevels(mipmapWidth, mipmapHeight);
+        mipmapWidth >>= 1;
+        mipmapHeight >>= 1;
+    }   
+
+    FSeek(tmp1);    
+} texture[header.textureCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;

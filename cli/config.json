@@ -36,6 +36,7 @@
       "halo_wars": true,
       "harvest_moon_64": true,
       "harvest_moon_back_to_nature": true,
+      "hp_chamber_of_secrets": true,
       "kirby_air_ride": true,
       "luigis_mansion": true,
       "luigis_mansion_3d": true,
@@ -75,6 +76,8 @@
     "PreferGlNativeInterop": true,
     "ShowGrid": true,
     "ShowSkeleton": false,
-    "ViewerModelScaleSource": "MIN_MAX_BOUNDS"
+    "ViewerModelScaleSource": "MIN_MAX_BOUNDS",
+    "PinFileSelectorSidebar": false,
+    "PinInfoSidebar": false
   }
 }
