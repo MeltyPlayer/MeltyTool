@@ -6,8 +6,8 @@ using fin.image;
 using fin.image.util;
 using fin.io;
 using fin.language.equations.fixedFunction;
+using fin.math.matrix.four;
 using fin.math.rotations;
-using fin.math.transform;
 using fin.model;
 using fin.model.impl;
 using fin.model.io.importers;
@@ -23,7 +23,8 @@ namespace hpcos.api;
 /// <summary>
 ///   Importer for HP COS GCN GEO models, based on lumos by pixel#8843.
 ///   https://github.com/metallicafan212/HarryPotterUnrealWiki/blob/master/Other/Console%20Model%20and%20Texture%20Exporter/lumos.py
-///   Treats all files as static meshes for reduced scope.
+///   Treats all files as static meshes for reduced scope: layout transforms
+///   are baked into the vertices, and no bones or bone weights are created.
 /// </summary>
 public sealed class GeoModelImporter
     : IModelImporter<GeoModelImporter, GeoModelFileBundle> {
@@ -141,9 +142,7 @@ public sealed class GeoModelImporter
                                      key));
 
     // The game is left-handed, so the Z axis is flipped to convert it.
-    IBone finRootBone = finModel.Skeleton.Root.AddRoot(0, 0, 0);
-    finRootBone.Name = geoFile.NameWithoutExtension.ToString();
-    finRootBone.Transform.SetScale(1, 1, -1);
+    Matrix4x4 rootMatrix = Matrix4x4.CreateScale(1, 1, -1);
 
     // Some GEOs (pause menu maps, wizard cards, fonts, etc.) only contain
     // textures, so a row of planes is generated to display them. Loading
@@ -154,7 +153,7 @@ public sealed class GeoModelImporter
       for (int i = 0; i < planeTextures.Length; ++i) {
         GeoTexture geoTexture = planeTextures[i];
         AddTexturePlane_(finModel,
-                         finRootBone,
+                         rootMatrix,
                          geoTexture,
                          GetTextureName_(geoFile, geoTexture),
                          left,
@@ -179,7 +178,7 @@ public sealed class GeoModelImporter
           = meshTable.ReadMesh(fileBundle.UnplacedMesh.MeshOrdinal);
       geoMesh.DiscardColorsIfUnlit();
       AddMesh_(finModel,
-               finRootBone,
+               rootMatrix,
                geoMesh,
                Triangulate_(geoMesh),
                lazyFinMaterials);
@@ -203,14 +202,16 @@ public sealed class GeoModelImporter
           continue;
         }
 
-        IBone finBone = finRootBone.AddChild(geoLayoutObject.Position);
-        finBone.Name = geoMesh.Name;
-        finBone.Transform.SetRotation(
-            QuaternionUtil.CreateZyxRadians(-geoLayoutObject.RotationRadians));
-        finBone.Transform.SetScale(geoLayoutObject.Scale);
+        Matrix4x4 layoutMatrix
+            = SystemMatrix4x4Util.FromTrs(
+                  geoLayoutObject.Position,
+                  QuaternionUtil.CreateZyxRadians(
+                      -geoLayoutObject.RotationRadians),
+                  geoLayoutObject.Scale) *
+              rootMatrix;
 
         AddMesh_(finModel,
-                 finBone,
+                 layoutMatrix,
                  geoMesh,
                  lazyTriangulations[geoMesh],
                  lazyFinMaterials);
@@ -219,7 +220,7 @@ public sealed class GeoModelImporter
       foreach (GeoMesh geoMesh in meshTable.ReadMeshes()
                                            .OrderBy(m => m.Index)) {
         AddMesh_(finModel,
-                 finRootBone,
+                 rootMatrix,
                  geoMesh,
                  Triangulate_(geoMesh),
                  lazyFinMaterials);
@@ -483,7 +484,7 @@ public sealed class GeoModelImporter
 
   private static void AddMesh_(
       ModelImpl finModel,
-      IReadOnlyBone finBone,
+      Matrix4x4 transform,
       GeoMesh geoMesh,
       Triangulation_ triangulation,
       LazyDictionary<MaterialKey, IMaterial?> lazyFinMaterials) {
@@ -491,8 +492,7 @@ public sealed class GeoModelImporter
       return;
     }
 
-    (ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin,
-     IBoneWeights finBoneWeights) = GetSkinAndBoneWeights_(finModel, finBone);
+    ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin = finModel.Skin;
 
     Vector3[] geoPositions = geoMesh.Positions;
     Vector2[] geoTexcoords = geoMesh.Texcoords;
@@ -511,7 +511,7 @@ public sealed class GeoModelImporter
 
           NormalTangentMultiColorMultiUvVertexImpl finVertex
               = AddVertex_(finSkin,
-                           finBoneWeights,
+                           transform,
                            geoPositions[positionIndex],
                            geoNormals?[positionIndex],
                            GetTexcoord_(geoTexcoords, texcoordIndex0));
@@ -555,20 +555,19 @@ public sealed class GeoModelImporter
   ///   bottom-left corner at (left, 0).
   /// </summary>
   private static void AddTexturePlane_(ModelImpl finModel,
-                                       IReadOnlyBone finBone,
+                                       Matrix4x4 transform,
                                        GeoTexture geoTexture,
                                        string name,
                                        float left,
                                        IMaterial? finMaterial) {
-    (ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin,
-     IBoneWeights finBoneWeights) = GetSkinAndBoneWeights_(finModel, finBone);
+    ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin = finModel.Skin;
 
     float right = left + geoTexture.Width * TEXTURE_PLANE_SCALE_;
     float height = geoTexture.Height * TEXTURE_PLANE_SCALE_;
 
     IReadOnlyVertex AddVertex(float x, float y, float u, float v)
       => AddVertex_(finSkin,
-                    finBoneWeights,
+                    transform,
                     new Vector3(x, y, 0),
                     new Vector3(0, 0, -1),
                     new Vector2(u, v));
@@ -582,26 +581,17 @@ public sealed class GeoModelImporter
            .SetMaterial(finMaterial);
   }
 
-  private static (ISkin<NormalTangentMultiColorMultiUvVertexImpl>,
-      IBoneWeights) GetSkinAndBoneWeights_(ModelImpl finModel,
-                                           IReadOnlyBone finBone) {
-    ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin = finModel.Skin;
-    return (finSkin,
-            finSkin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE,
-                                           finBone));
-  }
-
   private static NormalTangentMultiColorMultiUvVertexImpl AddVertex_(
       ISkin<NormalTangentMultiColorMultiUvVertexImpl> finSkin,
-      IBoneWeights finBoneWeights,
+      Matrix4x4 transform,
       Vector3 position,
       Vector3? normal,
       Vector2 uv) {
     NormalTangentMultiColorMultiUvVertexImpl finVertex
-        = finSkin.AddVertex(position);
-    finVertex.SetBoneWeights(finBoneWeights);
+        = finSkin.AddVertex(Vector3.Transform(position, transform));
     if (normal != null) {
-      finVertex.SetLocalNormal(normal.Value);
+      finVertex.SetLocalNormal(
+          Vector3.Normalize(Vector3.TransformNormal(normal.Value, transform)));
     }
 
     finVertex.SetUv(0, uv);
