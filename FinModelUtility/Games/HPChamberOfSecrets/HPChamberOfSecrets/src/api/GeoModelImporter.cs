@@ -147,13 +147,9 @@ public sealed class GeoModelImporter
 
     // Some GEOs (pause menu maps, wizard cards, fonts, etc.) only contain
     // textures, so a row of planes is generated to display them. Loading
-    // screens also contain a loading bar and logo, but only the background
-    // (the first texture) is shown.
+    // screen GEOs contain a background, loading bar, and logo.
     if (geoHeader.TotalMeshCount == 0) {
-      GeoTexture[] planeTextures
-          = GeoFiles.IsLoadingScreen(geoFile.NameWithoutExtension)
-              ? geo.Textures[..Math.Min(1, geo.Textures.Length)]
-              : geo.Textures;
+      GeoTexture[] planeTextures = geo.Textures;
       float left = -planeTextures.Sum(t => t.Width) * TEXTURE_PLANE_SCALE_ / 2;
       for (int i = 0; i < planeTextures.Length; ++i) {
         GeoTexture geoTexture = planeTextures[i];

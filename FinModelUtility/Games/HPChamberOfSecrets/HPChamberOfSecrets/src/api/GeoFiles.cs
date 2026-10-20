@@ -19,7 +19,4 @@ public static class GeoFiles {
     => Asserts.CastNonnull(geoFile.Parent)
               .TryToGetExistingFile($"{geoFile.NameWithoutExtension}.gdt",
                                     out gdtFile);
-
-  public static bool IsLoadingScreen(ReadOnlySpan<char> geoName)
-    => geoName.EndsWith("LS", StringComparison.Ordinal);
 }
