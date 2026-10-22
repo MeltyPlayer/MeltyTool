@@ -19,6 +19,8 @@ public sealed class GeoTexture : IBinaryDeserializable {
   public long Offset { get; private set; }
   public int Width { get; private set; }
   public int Height { get; private set; }
+  public GxWrapMode WrapModeU { get; private set; }
+  public GxWrapMode WrapModeV { get; private set; }
   public string Name { get; private set; }
   public GeoTextureFormat Format { get; private set; }
 
@@ -35,6 +37,11 @@ public sealed class GeoTexture : IBinaryDeserializable {
 
     this.Width = br.ReadInt32At(this.Offset + 0x30);
     this.Height = br.ReadInt32At(this.Offset + 0x34);
+
+    var wrapModes = br.ReadInt32At(this.Offset + 0x38);
+    this.WrapModeU = (GxWrapMode) (((wrapModes ^ 2) >> 1) & 1);
+    this.WrapModeV = (GxWrapMode) (((wrapModes ^ 4) >> 2) & 1);
+
     this.Name = br.ReadRelativeStringAt(this.Offset + 0x3c);
     this.Format = (GeoTextureFormat) br.ReadInt32At(this.Offset + 0x4c);
     this.DataOffset = br.ReadRelativePointerAt(this.Offset + 0x58);

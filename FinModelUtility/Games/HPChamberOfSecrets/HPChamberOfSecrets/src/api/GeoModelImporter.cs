@@ -14,6 +14,8 @@ using fin.model.io.importers;
 using fin.model.util;
 using fin.util.sets;
 
+using gx;
+
 using hpcos.schema.geo;
 
 using schema.binary;
@@ -123,9 +125,12 @@ public sealed class GeoModelImporter
               UV_SCROLL_SPEED_X_,
               UV_SCROLL_SPEED_Y_)
           : finMaterialManager.CreateTexture(lazyImages[key.TextureIndex]);
-      finTexture.Name = GetTextureName_(geoFile, geo.Textures[key.TextureIndex]);
+
+      var geoTexture = geo.Textures[key.TextureIndex];
+      finTexture.Name = GetTextureName_(geoFile, geoTexture);
       finTexture.UvIndex = key.UvIndex;
-      finTexture.WrapModeU = finTexture.WrapModeV = WrapMode.REPEAT;
+      finTexture.WrapModeU = geoTexture.WrapModeU.ToFinWrapMode();
+      finTexture.WrapModeV = geoTexture.WrapModeV.ToFinWrapMode();
       if (key.EnvironmentMap) {
         finTexture.UvType = UvType.SPHERICAL;
       }
