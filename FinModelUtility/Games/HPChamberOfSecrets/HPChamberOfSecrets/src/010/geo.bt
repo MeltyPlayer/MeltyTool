@@ -29,6 +29,13 @@ struct Pointer {
     local uint value = currentPosition + offset;
 };
 
+struct RelativeString(Pointer &pointer) {
+    local uint tmp = FTell();
+    FSeek(pointer.value);
+    string text <bgcolor=STRING_COLOR>;
+    FSeek(tmp);
+};
+
 struct CountAndPointer {
     uint count <bgcolor=COUNT_COLOR>;
     Pointer pointer;
@@ -46,8 +53,8 @@ struct Header {
     CountAndPointer meshCountAndPointer;
     CountAndPointer textureCountAndPointer; 
    
-    CountAndPointer unkCountAndPointer1;
-    CountAndPointer unkCountAndPointer2;
+    CountAndPointer animationCountAndPointer;
+    CountAndPointer unkBCountAndPointer;
     
     CountAndPointer layoutCountAndPointer;
 } header <bgcolor=HEADER_COLOR>;
@@ -76,10 +83,7 @@ struct Texture {
     uint unk1;
 
     Pointer namePointer;
-    local uint tmp0 = FTell();
-    FSeek(namePointer.value);
-    string name <bgcolor=STRING_COLOR>;
-    FSeek(tmp0);
+    RelativeString name(namePointer);
 
     uint unk2[3];
     
@@ -115,3 +119,41 @@ struct Texture {
 
     FSeek(tmp1);    
 } texture[header.textureCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
+
+FSeek(header.animationCountAndPointer.pointer.value);
+struct Animation {
+    ushort unk0;
+    ushort unk1 <bgcolor=COUNT_COLOR>;
+
+    uint unk2;
+
+    uint unk3 <bgcolor=COUNT_COLOR>;
+    uint unk4 <bgcolor=COUNT_COLOR>;    
+    uint unk5 <bgcolor=COUNT_COLOR>;
+    
+    uint unk6[9];
+    
+    Pointer namePointer;
+    RelativeString name(namePointer);
+    
+    float unk7[0xa];
+    uint unk8[4];
+    Pointer dataPointer;
+    Pointer unkPointer;
+
+    uint unk9[0x18];
+    
+    local uint tmp = FTell();
+    
+    FSeek(dataPointer.value);
+    struct AnimationData0 {
+        uint unk0;
+    } data <bgcolor=HEADER_COLOR>;
+
+    FSeek(unkPointer.value);
+    struct UnkData {
+        uint unk0;
+    } data <bgcolor=HEADER_COLOR>;
+
+    FSeek(tmp);
+} animations[header.animationCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
