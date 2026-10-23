@@ -4,23 +4,6 @@ namespace modl.schema.anim;
 
 public sealed class WeirdFloatMathTests {
   [Test]
-  [TestCase(3100000000, -0.00009453f)]
-  [TestCase(3150000000, -0.005895f)]
-  [TestCase(3200000000, -0.367431f)]
-  [TestCase(3250000000, -22.883056f)]
-  [TestCase(3300000000, -1424.03125f)]
-  [TestCase((uint) 0x0229C4AB, WeirdFloatMath.C_ZERO)]
-  [TestCase((uint) 0x38000000, WeirdFloatMath.C_3_05175_EN5)]
-  [TestCase((uint) 0x38800000, WeirdFloatMath.C_6_10351_EN5)]
-  [TestCase((uint) 0x3F000000, WeirdFloatMath.C_HALF)]
-  [TestCase((uint) 0x40400000, WeirdFloatMath.C_3)]
-  [TestCase((uint) 0x46800000, WeirdFloatMath.C_16384)]
-  public void TestInterpretAsSingle(uint input, float expectedOutput)
-    => Assert.AreEqual(expectedOutput,
-                       WeirdFloatMath.InterpretAsSingle(input),
-                       .000001f);
-
-  [Test]
   [TestCase(13746744073709551615, -2.6518952414567028E-06d)]
   [TestCase(13796744073709551615, -0.0058304183539235046d)]
   [TestCase(13846744073709551615, -12.758538758847861d)]

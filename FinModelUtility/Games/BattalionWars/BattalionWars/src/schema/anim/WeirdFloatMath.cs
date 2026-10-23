@@ -31,14 +31,4 @@ public static class WeirdFloatMath {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static unsafe double InterpretAsDouble(ulong value)
     => *(double*) (&value);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static unsafe float InterpretAsSingle(uint value)
-    => *(float*) (&value);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public static double CreateWeirdDoubleFromUInt32(uint value)
-    => InterpretAsDouble(
-           Concat44(0x43300000, value)) -
-       C_4503599627370496;
 }
