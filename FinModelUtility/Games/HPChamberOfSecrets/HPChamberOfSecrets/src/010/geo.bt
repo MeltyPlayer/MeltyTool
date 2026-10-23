@@ -41,6 +41,28 @@ struct CountAndPointer {
     Pointer pointer;
 };
 
+typedef struct {
+    float x;
+    float y;
+    float z;
+} Vector3 <bgcolor=ORIENTATION_COLOR>;
+
+float processShort(short value) {
+    return (float)(value) / 16384.0;
+}
+
+typedef struct {
+    short rawX;
+    short rawY;
+    short rawZ;
+    short rawW;
+        
+    local float x = processShort(rawX);
+    local float y = processShort(rawY);
+    local float z = processShort(rawZ);
+    local float w = processShort(rawW);
+} FixedPointQuaternion <bgcolor=ORIENTATION_COLOR>;
+
 struct Header {
     uint unk0;
 
@@ -70,23 +92,26 @@ struct SubFile {
     uint unk1[11];
 } subFiles <bgcolor=HEADER_COLOR, optimize=false>;
 
+// From decomp, at 0x80006e68
 FSeek(header.meshCountAndPointer.pointer.value);
 struct Mesh {
     
 } meshes[header.meshCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
 
+// From decomp, at 0x800057ac
 FSeek(header.textureCountAndPointer.pointer.value);
 struct Texture {
     uint unk0[0xc];
     uint width <bgcolor=ORIENTATION_COLOR>;
     uint height <bgcolor=ORIENTATION_COLOR>;
-    uint unk1;
+    uint wrapModes;
 
     Pointer namePointer;
     RelativeString name(namePointer);
 
     uint unk2[3];
     
+    // TODO: Not quite right, this uses a lookup table to get the GX format
     enum GeoTextureFormat {
         RGB5A3 = 1,
         CMPR = 2,
@@ -95,11 +120,13 @@ struct Texture {
     
     uint unk3[2];
     Pointer dataPointer;
+    
+    uint unk4[0x18];
 
     local uint tileLength = format == CMPR ? 8 : 4;
     local uint tileSize = format == RGBA8 ? 64 : 32;
     
-    local uint tmp1 = FTell();
+    local uint tmp = FTell();
     FSeek(dataPointer.value);
     
     typedef struct(int width, int height) {
@@ -117,7 +144,7 @@ struct Texture {
         mipmapHeight >>= 1;
     }   
 
-    FSeek(tmp1);    
+    FSeek(tmp);    
 } texture[header.textureCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
 
 FSeek(header.animationCountAndPointer.pointer.value);
@@ -127,33 +154,35 @@ struct Animation {
 
     uint unk2;
 
-    uint unk3 <bgcolor=COUNT_COLOR>;
-    uint unk4 <bgcolor=COUNT_COLOR>;    
-    uint unk5 <bgcolor=COUNT_COLOR>;
+    uint animationLength <bgcolor=COUNT_COLOR>;
+    uint translationCount <bgcolor=COUNT_COLOR>;    
+    uint unk4 <bgcolor=COUNT_COLOR>;
     
-    uint unk6[9];
+    uint unk5[6];
+    
+    uint rotationsPerFrame <bgcolor=COUNT_COLOR>;
+    
+    uint unk6[2];
     
     Pointer namePointer;
     RelativeString name(namePointer);
     
     float unk7[0xa];
-    uint unk8[4];
-    Pointer dataPointer;
-    Pointer unkPointer;
+    uint unk8[3];
+    
+    uint unkFlags;
+    Pointer rotationsPointer;
+    Pointer translationsPointer;
 
     uint unk9[0x18];
     
     local uint tmp = FTell();
     
-    FSeek(dataPointer.value);
-    struct AnimationData0 {
-        uint unk0;
-    } data <bgcolor=HEADER_COLOR>;
+    FSeek(rotationsPointer.value);
+    FixedPointQuaternion rotations[rotationsPerFrame * animationLength] <bgcolor=HEADER_COLOR, optimize=true>;
 
-    FSeek(unkPointer.value);
-    struct UnkData {
-        uint unk0;
-    } data <bgcolor=HEADER_COLOR>;
+    FSeek(translationsPointer.value);
+    Vector3 translations[translationCount];
 
     FSeek(tmp);
 } animations[header.animationCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
