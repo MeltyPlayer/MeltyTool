@@ -61,6 +61,8 @@ typedef struct {
     local float y = processShort(rawY);
     local float z = processShort(rawZ);
     local float w = processShort(rawW);
+    
+    local float length = Sqrt(x * x + y * y + z * z + w * w);
 } FixedPointQuaternion <bgcolor=ORIENTATION_COLOR>;
 
 struct Header {
@@ -95,6 +97,51 @@ struct SubFile {
 // From decomp, at 0x80006e68
 FSeek(header.meshCountAndPointer.pointer.value);
 struct Mesh {
+    uint unk0;
+    
+    Pointer namePointer;
+    RelativeString name(namePointer);
+
+    uint unk1;
+    
+    CountAndPointer positionCountAndPointer;
+
+    uint unk2[3];
+    
+    CountAndPointer unkACountAndPointer;
+    CountAndPointer unkBCountAndPointer;
+
+    uint unk3[0x25];
+    
+    typedef enum <uint> {
+        USES_SHORT_POSITIONS = 4,
+        USES_BYTE_NORMALS = 8,
+        USES_SHORT_COLORS = 0x20,
+    } VertexFormat <edit=flags, format=hex>;
+    VertexFormat vertexFormat;
+    
+    uint positionShift;
+    CountAndPointer shiftGroupCountAndPointer;
+
+    CountAndPointer unkCCountAndPointer;
+    
+    uint unk4[4];
+    
+    local uint tmp = FTell();
+
+    FSeek(unkACountAndPointer.pointer.value);    
+    uint unkAStart;
+
+    FSeek(unkBCountAndPointer.pointer.value);    
+    uint unkBStart;
+
+    FSeek(unkCCountAndPointer.pointer.value);    
+    uint unkCStart;
+
+    FSeek(positionCountAndPointer.pointer.value);    
+    Vector3 positions[positionCountAndPointer.count];
+
+    FSeek(tmp);  
     
 } meshes[header.meshCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
 
