@@ -31,6 +31,8 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
     => individualConfig ?? IndividualInterpolationConfig<T>.DEFAULT;
 
   public IReadOnlyList<TKeyframe> Definitions => this.impl_;
+  public void EnsureCapacity(int capacity) => this.impl_.EnsureCapacity(capacity);
+
   public bool HasAnyData => this.Definitions.Count > 0;
 
   public int AnimationLength => sharedConfig.AnimationLength;

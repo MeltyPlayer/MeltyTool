@@ -29,15 +29,16 @@ public sealed class GltfVertexBuilder {
     }
   }
 
-  public IVertexBuilder CreateVertexBuilder(
+  public IVertexBuilder CreateVertexBuilder<TVertexAccessor>(
       IReadOnlyBoneTransformManager boneTransformManager,
-      IVertexAccessor vertexAccessor,
+      TVertexAccessor vertexAccessor,
       float scale,
       bool hasNormals,
       bool hasTangents,
       int colorCount,
       int uvCount,
-      int weightCount) {
+      int weightCount)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor> {
     var geometryType
         = GltfBuilderUtil.GetGeometryType(hasNormals, hasTangents);
     var materialType = !this.UvIndices
@@ -115,10 +116,10 @@ public sealed class GltfVertexBuilder {
     return vertexBuilder;
   }
 
-  private static IVertexMaterial GetVertexMaterial_(
-      IVertexAccessor vertexAccessor,
+  private static IVertexMaterial GetVertexMaterial_<TVertexAccessor>(
+      TVertexAccessor vertexAccessor,
       int colorCount,
-      int uvCount)
+      int uvCount) where TVertexAccessor : IVertexAccessor<TVertexAccessor>
     => colorCount switch {
         >= 2 => uvCount switch {
             >= 4 => new VertexColor2Texture4(
@@ -190,13 +191,14 @@ public sealed class GltfVertexBuilder {
 }
 
 public static class VertexAccessorExtensions {
-  public static Vector4 GetColorOrDefault(this IVertexAccessor vertexAccessor,
-                                          int index) {
-    var color = vertexAccessor.GetColor(index);
-    return new(color?.Rf ?? 1, color?.Gf ?? 1, color?.Bf ?? 1, color?.Af ?? 1);
-  }
+  extension<TVertexAccessor>(TVertexAccessor vertexAccessor)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor> {
+    public Vector4 GetColorOrDefault(int index) {
+      var color = vertexAccessor.GetColor(index);
+      return new(color?.Rf ?? 1, color?.Gf ?? 1, color?.Bf ?? 1, color?.Af ?? 1);
+    }
 
-  public static Vector2 GetUvOrDefault(this IVertexAccessor vertexAccessor,
-                                       int index)
-    => vertexAccessor.GetUv(index) ?? Vector2.Zero;
+    public Vector2 GetUvOrDefault(int index)
+      => vertexAccessor.GetUv(index) ?? Vector2.Zero;
+  }
 }

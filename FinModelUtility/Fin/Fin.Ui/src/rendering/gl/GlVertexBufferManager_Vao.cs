@@ -24,7 +24,7 @@ public sealed partial class GlVertexBufferManager {
     private const int COLOR_SIZE_ = 4;
 
     private readonly IReadOnlyList<IReadOnlyVertex> vertices_;
-    private readonly IVertexAccessor vertexAccessor_;
+    private readonly ConsistentVertexAccessor vertexAccessor_;
 
     private int vaoId_;
 

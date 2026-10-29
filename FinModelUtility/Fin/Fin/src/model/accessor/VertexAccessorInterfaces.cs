@@ -4,12 +4,13 @@ public interface IVertexTargeter {
   void Target(IReadOnlyVertex vertex);
 }
 
-public interface IVertexAccessor
+public interface IVertexAccessor<out TVertexAccessor>
     : IVertexNormalAccessor,
       IVertexTangentAccessor,
       IVertexColorAccessor,
-      IVertexUvAccessor {
-  static abstract IVertexAccessor GetAccessorForModel(IReadOnlyModel model);
+      IVertexUvAccessor 
+    where TVertexAccessor : IVertexAccessor<TVertexAccessor> {
+  static abstract TVertexAccessor GetAccessorForModel(IReadOnlyModel model);
 }
 
 public interface IVertexNormalAccessor : IVertexTargeter,

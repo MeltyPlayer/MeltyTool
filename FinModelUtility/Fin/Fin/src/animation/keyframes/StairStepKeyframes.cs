@@ -28,6 +28,9 @@ public sealed class StairStepKeyframes<T>(
   public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;
 
+  public void EnsureCapacity(int capacity)
+    => this.impl_.EnsureCapacity(capacity);
+
   public int AnimationLength => sharedConfig.AnimationLength;
   public bool Looping => sharedConfig.Looping;
 

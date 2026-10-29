@@ -24,5 +24,6 @@ public interface IKeyframeWithTangents<out T>
 [GenerateReadOnly]
 public partial interface IKeyframes<TKeyframe> where TKeyframe : IKeyframe {
   new IReadOnlyList<TKeyframe> Definitions { get; }
+  void EnsureCapacity(int capacity);
   void Add(TKeyframe keyframe);
 }

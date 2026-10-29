@@ -194,7 +194,7 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
     }
 
     for (; keyframePairI < this.keyframeTuples_.Length; ++keyframePairI) {
-      var keyframeTuple = this.keyframeTuples_[keyframePairI];
+      ref readonly var keyframeTuple = ref this.keyframeTuples_[keyframePairI];
 
       if (keyframeTuple.fromFrame <= frame && keyframeTuple.toFrame > frame) {
         precedingKeyframe = keyframeTuple.precedingKeyframe;

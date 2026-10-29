@@ -25,6 +25,9 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
 
   public bool HasAnyData => this.impl_.HasAnyData;
 
+  public void EnsureCapacity(int capacity)
+    => this.impl_.EnsureCapacity(capacity);
+
   public int AnimationLength => sharedConfig.AnimationLength;
   public bool Looping => sharedConfig.Looping;
 
