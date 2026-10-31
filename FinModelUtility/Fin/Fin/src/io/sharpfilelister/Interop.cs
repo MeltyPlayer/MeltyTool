@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security;
@@ -27,12 +28,18 @@ public sealed class Interop {
     private fixed byte cFileNameAlternativeName[2 * 14];
 
     public ReadOnlySpan<char> FileName {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
       get {
         fixed (byte* fileNamePtr = &this.cFileName[0]) {
           return new ReadOnlySpan<char>(fileNamePtr, FILE_NAME_LENGTH_)
               .SubstringUpTo('\0');
         }
       }
+    }
+
+    public long FileSize {
+      [MethodImpl(MethodImplOptions.AggressiveInlining)]
+      get => ((long) this.nFileSizeHigh << 32) | (uint) this.nFileSizeLow;
     }
   }
 

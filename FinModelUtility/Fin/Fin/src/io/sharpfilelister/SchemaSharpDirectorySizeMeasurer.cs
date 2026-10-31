@@ -18,7 +18,7 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
     Span<char> pathSpan = stackalloc char[PATH_SPAN_LENGTH];
     fullPath.CopyTo(pathSpan);
 
-    Interop.WIN32_FIND_DATAW findData;
+    WIN32_FIND_DATAW findData = default;
 
     var totalSize = 0L;
     fixed (char* pathPtr = &MemoryMarshal.GetReference(pathSpan)) {
@@ -26,6 +26,7 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
           pathPtr,
           (uint) fullPath.Length,
           ref totalSize,
+          ref findData,
           &findData);
     }
 
@@ -37,7 +38,8 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
       char* pathPtr,
       uint parentLength,
       ref long totalSize,
-      Interop.WIN32_FIND_DATAW* findDataPtr) {
+      ref WIN32_FIND_DATAW findData,
+      WIN32_FIND_DATAW* findDataPtr) {
     IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
     try {
       pathPtr[parentLength] = '\\';
@@ -51,7 +53,6 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
       fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, findDataPtr);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
-          var findData = *findDataPtr;
           var fileName = findData.FileName;
           if (fileName[0] == '.') {
             continue;
@@ -60,13 +61,14 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
           fixed (char* fileNamePtr = &fileName[0]) {
             var attributes = findData.dwFileAttributes;
             if ((attributes & FileAttributes.Directory) == 0) {
-              totalSize += GetFileSize_(findData);
+              totalSize += findData.FileSize;
             } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
               Copy_(subFilePtr, fileNamePtr, remainingLength);
               var subDirLength = Length_(fileNamePtr);
               FindNextFilePInvoke_(pathPtr,
                                    parentLength + 1 + subDirLength,
                                    ref totalSize,
+                                   ref findData,
                                    findDataPtr);
             }
           }
@@ -78,10 +80,6 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
       }
     }
   }
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static long GetFileSize_(in WIN32_FIND_DATAW findData)
-    => ((long) findData.nFileSizeHigh << 32) | (uint) findData.nFileSizeLow;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static unsafe void Copy_(char* dstPtr, char* srcPtr, uint length)
