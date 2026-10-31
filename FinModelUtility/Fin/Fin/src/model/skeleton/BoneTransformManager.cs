@@ -19,6 +19,12 @@ public interface IVertexProjector {
       IReadOnlyVertex vertex,
       out Vector3 outPosition);
 
+  void ProjectVertexPositionNormal<TVertexAccessor>(
+      TVertexAccessor vertex,
+      out Vector3 outPosition,
+      out Vector3 outNormal)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor>;
+
   void ProjectVertexPositionNormalTangent<TVertexAccessor>(
       TVertexAccessor vertex,
       out Vector3 outPosition,
@@ -268,6 +274,27 @@ public sealed class BoneTransformManager : IBoneTransformManager {
 
     var transformMatrix = finTransformMatrix.Impl;
     ProjectionUtil.ProjectPosition(transformMatrix, ref outPosition);
+  }
+
+  public void ProjectVertexPositionNormal<TVertexAccessor>(
+      TVertexAccessor vertex,
+      out Vector3 outPosition,
+      out Vector3 outNormal)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor> {
+    outPosition = vertex.LocalPosition;
+
+    outNormal = vertex.LocalNormal.GetValueOrDefault();
+
+    var finTransformMatrix = this.GetTransformMatrix(vertex);
+    if (finTransformMatrix == null || finTransformMatrix.Impl.IsIdentity) {
+      return;
+    }
+
+    var transformMatrix = finTransformMatrix.Impl;
+    ProjectionUtil.ProjectPosition(transformMatrix, ref outPosition);
+    if (vertex.LocalNormal.HasValue) {
+      ProjectionUtil.ProjectNormal(transformMatrix, ref outNormal);
+    }
   }
 
   public void ProjectVertexPositionNormalTangent<TVertexAccessor>(
