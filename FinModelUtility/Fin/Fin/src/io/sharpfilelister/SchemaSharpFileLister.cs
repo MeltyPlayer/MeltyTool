@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -40,29 +39,31 @@ public sealed class SchemaSharpFileLister {
       string path,
       string name) {
     var directoryInfo = new SchemaDirectoryInformation { Name = name };
-    var fileList = new LinkedList<Uint16SizedString>();
-    var directoryList = new LinkedList<SchemaDirectoryInformation>();
+    var fileList = new List<Uint16SizedString>();
+    var directoryList = new List<SchemaDirectoryInformation>();
+
+    WIN32_FIND_DATAW findData;
+    WIN32_FIND_DATAW* findDataPtr = &findData;
 
     IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
     try {
-      fileSearchHandle = FindFirstFileWInDirectory_(path, out var findData);
+      fileSearchHandle = FindFirstFileWInDirectory_(path, findDataPtr);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
-          var fileNameSpan = new ReadOnlySpan<char>(findData.cFileName, 260);
-          var fileName = fileNameSpan[..fileNameSpan.IndexOf('\0')].ToString();
-
-          if (fileName is "." or "..") {
+          var fileNameSpan = findData.FileName;
+          if (fileNameSpan is "." or "..") {
             continue;
           }
 
+          var fileName = fileNameSpan.ToString();
           var attributes = findData.dwFileAttributes;
-          var fullPath = @$"{path}\{fileName}";
           if ((attributes & FileAttributes.Directory) == 0) {
-            fileList.AddLast(new Uint16SizedString { Name = fileName });
+            fileList.Add(new Uint16SizedString { Name = fileName });
           } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
-            directoryList.AddLast(FindNextFilePInvoke(fullPath, fileName));
+            var fullPath = @$"{path}\{fileName}";
+            directoryList.Add(FindNextFilePInvoke(fullPath, fileName));
           }
-        } while (FindNextFile(fileSearchHandle, out findData));
+        } while (FindNextFile(fileSearchHandle, findDataPtr));
       }
     } finally {
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
@@ -79,14 +80,14 @@ public sealed class SchemaSharpFileLister {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static unsafe nint FindFirstFileWInDirectory_(
       ReadOnlySpan<char> directoryPath,
-      out WIN32_FIND_DATAW findData) {
+      WIN32_FIND_DATAW* findDataPtr) {
     Span<char> pathChars = stackalloc char[directoryPath.Length + 3];
     directoryPath.CopyTo(pathChars);
     pathChars[^3] = '\\';
     pathChars[^2] = '*';
 
-    fixed (char* ptr = &MemoryMarshal.GetReference(pathChars)) {
-      return FindFirstFileW((IntPtr) ptr, out findData);
+    fixed (char* ptr = pathChars) {
+      return FindFirstFileW((nint) ptr, findDataPtr);
     }
   }
 }

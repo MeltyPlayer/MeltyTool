@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 using fin.io.sharpfilelister;
 
-using static fin.io.sharpfilelister.Interop2;
+using static fin.io.sharpfilelister.Interop;
 
 namespace fin.io.sharpDirLister;
 
@@ -48,26 +48,29 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
       var subFilePtr = pathPtr + parentLength + 1;
       var remainingLength = PATH_SPAN_LENGTH - parentLength;
 
-      fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, (IntPtr) findDataPtr);
+      fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, findDataPtr);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
           var findData = *findDataPtr;
-          if (findData.cFileName[0] == '.') {
+          var fileName = findData.FileName;
+          if (fileName[0] == '.') {
             continue;
           }
 
-          var attributes = findData.dwFileAttributes;
-          if ((attributes & FileAttributes.Directory) == 0) {
-            totalSize += GetFileSize_(findData);
-          } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
-            Copy_(subFilePtr, findData.cFileName, remainingLength);
-            var subDirLength = Length_(findData.cFileName);
-            FindNextFilePInvoke_(pathPtr,
-                                 parentLength + 1 + subDirLength,
-                                 ref totalSize,
-                                 findDataPtr);
+          fixed (char* fileNamePtr = &fileName[0]) {
+            var attributes = findData.dwFileAttributes;
+            if ((attributes & FileAttributes.Directory) == 0) {
+              totalSize += GetFileSize_(findData);
+            } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
+              Copy_(subFilePtr, fileNamePtr, remainingLength);
+              var subDirLength = Length_(fileNamePtr);
+              FindNextFilePInvoke_(pathPtr,
+                                   parentLength + 1 + subDirLength,
+                                   ref totalSize,
+                                   findDataPtr);
+            }
           }
-        } while (FindNextFile(fileSearchHandle, (IntPtr) findDataPtr));
+        } while (FindNextFile(fileSearchHandle, findDataPtr));
       }
     } finally {
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
@@ -77,7 +80,7 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static long GetFileSize_(in Interop.WIN32_FIND_DATAW findData)
+  private static long GetFileSize_(in WIN32_FIND_DATAW findData)
     => ((long) findData.nFileSizeHigh << 32) | (uint) findData.nFileSizeLow;
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
