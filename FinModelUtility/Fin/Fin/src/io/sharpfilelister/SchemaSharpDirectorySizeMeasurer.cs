@@ -3,9 +3,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using fin.io.sharpfilelister;
-
-using static fin.io.sharpfilelister.Interop;
+using static fin.io.sharpfilelister.Interop2;
 
 namespace fin.io.sharpDirLister;
 
@@ -24,7 +22,7 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
     fixed (char* pathPtr = &MemoryMarshal.GetReference(pathSpan)) {
       FindNextFilePInvoke_(
           pathPtr,
-          (uint) fullPath.Length,
+          fullPath.Length,
           ref totalSize,
           ref findData,
           &findData);
@@ -36,7 +34,7 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
   //Code based heavily on https://stackoverflow.com/q/47471744
   private static unsafe void FindNextFilePInvoke_(
       char* pathPtr,
-      uint parentLength,
+      int parentLength,
       ref long totalSize,
       ref WIN32_FIND_DATAW findData,
       WIN32_FIND_DATAW* findDataPtr) {
@@ -44,17 +42,24 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
     try {
       pathPtr[parentLength] = '\\';
       pathPtr[parentLength + 1] = '*';
-
-      ClearEndOfPath_(pathPtr, parentLength + 2);
+      pathPtr[parentLength + 2] = '\0';
 
       var subFilePtr = pathPtr + parentLength + 1;
       var remainingLength = PATH_SPAN_LENGTH - parentLength;
 
-      fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, findDataPtr);
+      fileSearchHandle = FindFirstFileExW(
+          pathPtr,
+          // Bypasses MS-DOS short name query
+          FIND_EX_INFO_BASIC,
+          findDataPtr,
+          FIND_EX_SEARCH_NAME_MATCH,
+          0,
+          // Uses larger kernel buffer size and case-sensitive search
+          FIND_FIRST_EX_FLAGS);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
           var fileName = findData.FileName;
-          if (fileName[0] == '.') {
+          if (fileName is "." or "..") {
             continue;
           }
 
@@ -64,7 +69,7 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
               totalSize += findData.FileSize;
             } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
               Copy_(subFilePtr, fileNamePtr, remainingLength);
-              var subDirLength = Length_(fileNamePtr);
+              var subDirLength = fileName.Length;
               FindNextFilePInvoke_(pathPtr,
                                    parentLength + 1 + subDirLength,
                                    ref totalSize,
@@ -82,23 +87,6 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static unsafe void Copy_(char* dstPtr, char* srcPtr, uint length)
-    => Unsafe.CopyBlock(dstPtr, srcPtr, 2 * length);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static unsafe void ClearEndOfPath_(char* pathPtr, uint length)
-    => Unsafe.InitBlockUnaligned(pathPtr + length,
-                                 0,
-                                 2 * (PATH_SPAN_LENGTH - length));
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static unsafe uint Length_(char* pathPtr) {
-    for (uint i = 0; i < PATH_SPAN_LENGTH; i++) {
-      if (pathPtr[i] == '\0') {
-        return i;
-      }
-    }
-
-    return PATH_SPAN_LENGTH;
-  }
+  private static unsafe void Copy_(char* dstPtr, char* srcPtr, int length)
+    => Unsafe.CopyBlock(dstPtr, srcPtr, (uint) (2 * length));
 }
