@@ -45,7 +45,6 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
       pathPtr[parentLength + 2] = '\0';
 
       var subFilePtr = pathPtr + parentLength + 1;
-      var remainingLength = PATH_SPAN_LENGTH - parentLength;
 
       fileSearchHandle = FindFirstFileExW(
           pathPtr,
@@ -68,8 +67,8 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
             if ((attributes & FileAttributes.Directory) == 0) {
               totalSize += findData.FileSize;
             } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
-              Copy_(subFilePtr, fileNamePtr, remainingLength);
               var subDirLength = fileName.Length;
+              Copy_(subFilePtr, fileNamePtr, subDirLength);
               FindNextFilePInvoke_(pathPtr,
                                    parentLength + 1 + subDirLength,
                                    ref totalSize,
