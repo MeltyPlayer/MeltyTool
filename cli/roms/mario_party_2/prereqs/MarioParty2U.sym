@@ -1,0 +1,516 @@
+80000300,u32,osTvType,0=PAL,1=NTSC,2=MPAL
+80000304,u32,osRomType,0=cart,1=disk
+80000308,data,osRomBase,B0000000=cart,A6000000=IPL
+8000030C,data,osResetType,0=cold reset,1=NMI,2=false 'disk' reboot
+80000318,data,osMemSize,Size of RDRAM
+80014B14,code,PlaySound,A0=sound_index
+80017680,code,ReadMainFS,Reads file from MainFS, allocating space. A0=DDDDFFFF
+80017800,code,FreeMainFS,Free's an allocated MainFS file pointer
+80018AFC,code,GetRandomByte
+8001D190,code,interpretFORM?
+80038F0C,code,interpretMTNX?,A0=mtnx_pointer
+80040D80,code,MakePermHeap,A0=heap_addr,A1=heap_len,calls MakeHeap and persists pointer
+80040DA4,code,MallocPerm,A0=size,mallocs in the permanent heap
+80040DC8,code,FreePerm,A0=addr,frees in the permanent heap
+80040E50,code,MakeTempHeap,A0=heap_addr,A1=heap_len,calls MakeHeap and persists pointer
+80040E74,code,MallocTemp,A0=size,mallocs in the temporary heap
+80040E98,code,FreeTemp,A0=addr,frees in the temp heap
+80042BE0,code,spaceanglehelper?
+80044800,code,RunDecisionTree,A0=decision_tree_pointer
+8004CA34,code,ShowPlayerCoinChange,A0=player_index,A1=amount (signed),shows coins +/- next to player ui
+8004D6A0,code,UseMushroom,Mushroom item function
+8004D734,code,UseSkeleton_key,Skeleton Key item function
+8004D758,code,UsePlunder_chest,Plunder Chest item function
+8004D780,code,UseBowserBomb,Bowser Bomb item function
+8004D7A0,code,UseDuelingGlove,Dueling Glove item function
+8004D858,code,UseWarpBlock,Warp Block item function
+8004D8B0,code,UseGoldenMushroom,Golden Mushroom item function
+8004D944,code,UseBooBell,Boo Bell item function
+8004DA2C,code,UseBowserSuit,Bowser Suit item function
+8004DAC4,code,UseMagicLamp,Magic Lamp item function
+80054268,code,AddArrowAngle,F0=degree_rot_of_arrow,0-360,0 is facing normal, rotates counter clockwise as degrees increase
+800542FC,code,spacedrawloop?
+80054B8C,code,GetSpaceData,A0=space_index,Gets pointer to the space data originating from the board def
+80054BB0,code,GetAbsSpaceIndexFromChainSpaceIndex,A0=chain_index,A1=space_index_in_chain gets true space index from chain+index
+8005568C,code,EventTableHydrate,Moves event table data into the space data
+80056144,code,CloseMessage,Closes open message window (with animation)
+80056168,code,closemessage?,Closes open message window (no animation)
+80056368,code,ShowMessage,A0=character_index,A1=string index,A2 onward: string format options
+80056658,code,spaceanglehelper?
+80056C30,code,RotateCharacterModel,A0=player_index (-1 for cur), A1=speed_to_turn, A2=space_index to turn towards
+800572E0,code,SetPlayerOntoChain,A0=player_index,A1=chain_index,A2=space_index
+8005734C,code,SetNextChainAndSpace
+80059FD0,code,GetPlayerPlacement?
+8005DC30,code,GetCurrentPlayerIndex
+8005DC3C,code,GetPlayerStruct,A0=player_index pass -1 to get current player's struct
+8005DC84,code,PlayerIsCurrent,A0=player_index tests if A0 is the current player
+8005DCA0,code,PlayerIsCPU,A0=player_index
+8005DCC8,code,AdjustPlayerCoins,A0=player_index,A1=amount (signed), ensures 0 <= coins <= 999
+8005DD38,code,PlayerHasCoins,A0=player_index,A1=min_coints tests if player coins >= A1
+8005DD68,code,SetBoardPlayerAnimation,A0=player_index,A1=animation_index,A2=???
+800614B4,code,AdjustPlayerCoinsGradual,A0=player_index,A1=amount,like AdjustPlayerCoins but with sounds one at a time
+80068328,code,IsBoardFeatureDisabled?
+80068460,code,MakeHeap,A0=addr,A1=size,instantiates the heap by writing initial header
+80068480,code,Malloc,A0=heap pointer (main or temp),A1=size
+8006850C,code,Free,A0=allocated heap pointer
+800760C0,code,InitObjSys
+80076E64,code,InitProcess
+8007975C,code,PlayCharacterSound,A0=sound_index,A1=character_number,Plays character voices without overlapping them
+8007D9E0,code,SleepProcess
+8007DA44,code,SleepVProcess
+8008F544,code,InitFadeIn,A0=fade_type,A1=duration (frames)... 00=simple fade, 01=circle, 02=star, 03=bowser, 04=happening space, 05=chance time, 06=square, 07=explosion, 08=bob-omb, 09=toad, 0A=koopa, 0B=goomba, 0C=shy guy, 0D=sun, 0E=moon
+8008F5AC,code,InitFadeOut,A0=fade_type,A1=duration (frames)... 00=simple fade, 01=circle, 02=star, 03=bowser, 04=happening space, 05=chance time, 06=square, 07=explosion, 08=bob-omb, 09=toad, 0A=koopa, 0B=goomba, 0C=shy guy, 0D=sun, 0E=moon
+800DEFD0,data,perm_heap_addr,Permanent heap pointer
+800DEFE0,data,temp_heap_addr,Temporary heap address
+80092AF0,code,alSynStartVoiceParams
+80092C90,code,alSynSetPan
+80096EC4,code,__leoCommand
+80097B50,code,__leoAnalize_asic_status
+80097FF0,code,__leoSend_asic_cmd_w
+80098028,code,__leoSend_asic_cmd_w_nochkDiskChange
+80098164,code,__leoRecal_w
+800981F0,code,__leoSeek_w
+80098280,code,__leoChk_err_retry
+80098390,code,__leoChk_cur_drvmode
+800984A0,code,__LEOrw_flags
+800984A2,code,__LEOdma_que
+800984BA,code,__LEOPiDmaParam
+800984D2,code,__LEOtgt_param
+800984E2,code,__LEOasic_seq_ctl_shadow
+800984E6,code,__leoSet_mseq
+80098654,code,__leoClr_reset
+800986C4,code,__LEOcommand_que
+800986DC,code,__leoClr_queue
+80098770,code,__leoLba_to_phys
+800989C0,code,LeoDriveExist
+80098BE0,code,__leoActive
+80098BE4,code,LeoReadDiskID
+80098C40,code,__leoActive
+80098C44,code,LeoReadWrite
+80098CD4,code,__LEO_country_code
+80098CD8,code,__osShutdown
+80098E0C,code,__LeoBootGame2
+80099018,code,LeoBootGame
+80099150,code,__LeoBootGame3
+8009AD94,code,LEOPiInfo?
+8009AD98,code,__leoInquiry
+8009AE44,code,__leoMode_sel
+8009AEF4,code,__leoStart_stop
+8009AFE0,code,__LEORAM_BYTE
+8009AFFC,code,__LEOdisk_type
+8009AFFD,code,__LEORAM_START_LBA
+8009B00F,code,__leoRd_capacity
+8009B3D4,code,__LEOtgt_param
+8009B3E0,code,leoRezero
+8009B474,code,leoSeek
+8009B534,code,__leoTest_unit_rdy
+8009C520,code,__osPiTable
+8009C524,code,osLeoDiskInit
+8009C5BC,code,__osDiskHandle
+8009C5C0,code,__LeoDiskHandle
+8009C720,code,osEepromWrite
+8009C888,code,__conteepwrite_o_00AC
+8009C930,code,__osEepStatus
+8009CAD0,code,osEepromProbe
+8009CB50,code,osEepromLongWrite
+8009CC40,code,osEepromLongRead
+8009D33C,code,__osEnqueueAndYield
+8009D48C,code,__osPopThread
+8009D630,code,__osDisableInt
+8009D6A0,code,__osRestoreInt
+8009D6C0,code,osSetIntMask
+8009D760,code,__osSetHWIntrRoutine
+8009D7C0,code,osCreatePiManager
+8009D950,code,__Dom2SpeedParam
+8009D958,code,__osPiTable
+8009D95C,code,__osPiDevMgr
+8009D9C4,code,__Dom1SpeedParam
+8009DA38,code,__osCurrentHandle
+8009DA40,code,__osPiTable
+8009DA44,code,__osPiDevMgr
+8009DB40,code,osEPiWriteIo
+8009DBA0,code,osEPiReadIo
+8009DC00,code,osEPiStartDma
+8009DCA0,code,__CartRomHandle
+8009DD14,code,osCartRomInit
+8009DE20,code,__osDevMgrMain
+8009E1E0,code,__osPiCreateAccessQueue
+8009E208,code,__osPiGetAccess
+8009E234,code,__osPiGetAccess
+8009E274,code,__osPiAccessQueue
+8009E28C,code,__osPiCreateAccessQueue
+8009E2A0,code,__osPiRelAccess
+8009E2D0,code,osAiGetLength
+8009E2E0,code,__osPiAccessQueueEnabled
+8009E4A0,code,alBnkfNew
+8009E534,code,alSeqFileNew
+8009E574,code,__bnkf_o_0098
+8009E620,code,__bnkf_o_0118
+8009E6B4,code,__bnkf_o_01D8
+8009E70C,code,__bnkf_o_0258
+8009E770,code,alEvtqFlushType
+8009E7EC,code,alEvtqNextEvent
+8009E820,code,alEvtqFlush
+8009E884,code,alEvtqPostEvent
+8009E898,code,alEvtqPostEvent
+8009E9A4,code,alEvtqNextEvent
+8009EA08,code,alEvtqFlushType
+8009EA3C,code,alEvtqNew
+8009EB1C,code,alLink
+8009EB3C,code,alUnlink
+8009EB70,code,alHeapInit
+8009EBB0,code,alHeapDBAlloc
+8009EC00,code,alCopy
+8009EC40,code,alCSeqGetLoc
+8009ECB4,code,alCSeqSetLoc
+8009ED28,code,alCSeqNewMarker
+8009ED4C,code,alCSeqNextEvent
+8009EE40,code,__alCSeqNextDelta
+8009EEC0,code,__cseq_o_0194
+8009F0E4,code,__alCSeqNextDelta
+8009F258,code,alCSeqNew
+8009F5D4,code,__cseq_o_02A4
+8009F68C,code,__cseq_o_0088
+8009F700,code,alSeqpDelete
+8009F720,code,alSeqpGetChlFXMix
+8009F740,code,alSeqpGetChlPan
+8009F760,code,alSeqpGetChlVol
+8009F780,code,alSeqpGetChlProgram
+8009F800,code,alCSPGetTempo
+8009F830,code,alSeqpGetState
+8009F840,code,alSeqpPlay
+8009F870,code,alSeqpSetBank
+8009F8A0,code,alSeqpSetSeq
+8009F8D0,code,alSeqpSetTempo
+8009F920,code,alSeqpSetVol
+8009F950,code,alSeqpStop
+8009F980,code,__CSPPostNextSeqEvent
+8009F9F4,code,alCSPNew
+8009FFB8,code,__csplayer_o_046C
+800A002C,code,__csplayer_o_01D0
+800A012C,code,__csplayer_o_03E0
+800A0988,code,__csplayer_o_03F4
+800A0B18,code,__csplayer_o_115C
+800A0BA8,code,__csplayer_o_05B4
+800A0BE0,code,alSndpDelete
+800A0C10,code,alSndpAllocate
+800A0CD0,code,alSndpDeallocate
+800A0D20,code,alSndpSetSound
+800A0D30,code,alSndpPlay
+800A0D90,code,alSndpStop
+800A0DE0,code,alSndpGetState
+800A0E00,code,alSndpSetPitch
+800A0E50,code,alSndpSetPriority
+800A0E80,code,alSndpSetVol
+800A0ED0,code,alSndpSetPan
+800A0F20,code,alSndpSetFXMix
+800A1094,code,alAudioFrame
+800A1244,code,alSynNew
+800A1430,code,__synthesizer_o_0440
+800A14C4,code,__synthesizer_o_0370
+800A1558,code,__synthesizer_o_032C
+800A15B0,code,alSynDelete
+800A15C0,code,alSynAddPlayer
+800A1610,code,alSynRemovePlayer
+800A16B0,code,alSynFreeVoice
+800A1750,code,alSynAllocVoice
+800A1808,code,alSynAllocVoice
+800A1878,code,__synallocvoice_o_0048
+800A1930,code,alSynStopVoice
+800A19B0,code,alSynStartVoice
+800A1A50,code,alSynSetPitch
+800A1AE0,code,alSynSetVol
+800A1BA0,code,alSynSetFXMix
+800A1C40,code,alSynAllocFX
+800A1CE0,code,alCents2Ratio
+800A1D40,code,osInvalDCache
+800A1DF0,code,osInvalICache
+800A1E70,code,osWritebackDCache
+800A1EF0,code,osWritebackDCacheAll
+800A1F20,code,osContGetReadData
+800A1FBC,code,osContStartReadData
+800A2044,code,__contreaddata_o_0028
+800A2470,code,osVirtualToPhysical
+800A24D0,code,cosf
+800A2620,code,guLookAt
+800A29A4,code,guLookAtF
+800A2D30,code,guLookAtHilite
+800A2E04,code,guLookAtHiliteF
+800A3790,code,guLookAtReflect
+800A37FC,code,guLookAtReflectF
+800A3D80,code,guMtxXFMF?
+800A3E2C,code,guMtxCatF
+800A3E5C,code,guMtxXFMF?
+800A3F10,code,guMtxXFML
+800A3F9C,code,guMtxCatL
+800A4010,code,guMtxF2L
+800A40A8,code,guMtxL2F
+800A4100,code,guMtxIdentF
+800A4150,code,guMtxIdentF
+800A4290,code,guOrtho
+800A43DC,code,guOrthoF
+800A4510,code,guPerspective
+800A46D8,code,guPerspectiveF
+800A4890,code,guRandom,Generates a pseudo-random number
+800A48C0,code,guRotate
+800A4A38,code,guRotateF
+800A4BA0,code,guRotateRPY
+800A4D2C,code,guRotateRPYF
+800A4EC0,code,guScale
+800A4F3C,code,guScaleF
+800A4FA0,code,sinf
+800A5140,code,guTranslate
+800A51B0,code,guTranslateF
+800A5210,code,bcopy
+800A5530,code,bzero
+800A55D0,code,memcpy
+800A55F8,code,strlen
+800A5610,code,strlen
+800A561C,code,strchr
+800A5634,code,memcpy
+800A5660,code,sprintf
+800A56F0,code,rmonPrintf,no-op in released ROM
+800A5704,code,osSyncPrintf,no-op in released ROM
+800A5720,code,osCreateMesgQueue
+800A5750,code,osJamMesg
+800A5890,code,osRecvMesg
+800A59C0,code,osSendMesg
+800A5AF0,code,osSetEventMesg
+800A5BA0,code,__osSetCause
+800A5BB0,code,__osSetCompare
+800A5BC0,code,__osSetCount
+800A5BD0,code,__osSetSR
+800A5BE0,code,osSpTaskStartGo
+800A5C0C,code,osSpTaskLoad
+800A5E20,code,osSpTaskYield
+800A5E40,code,osSpTaskYielded
+800A5E90,code,__osSiRawStartDma
+800A5F94,code,__osSiGetAccess
+800A6000,code,__osSiRelAccess
+800A6030,code,osCreateThread
+800A61E0,code,osGetThreadPri
+800A6200,code,osSetThreadPri
+800A62D0,code,osStartThread
+800A63F0,code,osStopThread
+800A64B0,code,__osDequeueThread
+800A64E4,code,__osFaultedThread
+800A64E8,code,__osRunningThread
+800A64EC,code,__osActiveQueue
+800A64F0,code,osYieldThread
+800A64F4,code,__osThreadTail
+800A6540,code,osGetTime
+800A65D0,code,osSetTimer
+800A6800,code,__osSetTimerIntr
+800A6860,code,__osInsertTimer
+800A6970,code,__osProbeTLB
+800A6A30,code,osViGetCurrentFramebuffer
+800A6DF0,code,osViSetEvent
+800A6E50,code,osViSetMode
+800A6EA0,code,osViSetSpecialFeatures
+800A7010,code,osViSetYScale
+800A7060,code,osViSwapBuffer
+800A70B0,code,__osViSwapContext
+800A73C0,code,osViBlack
+800A7420,code,osMotorInit
+800A7668,code,__osMotorAccess
+800A77B0,code,__osPfsSelectBank
+800A7820,code,__osContRamRead
+800A7A08,code,__osPfsLastChannel
+800A7A10,code,__osContRamWrite
+800A7C80,code,osAfterPreNMI
+800A7CA0,code,osGetMemSize
+800A8030,code,osEepromRead
+800A81C8,code,__conteepread_o_00A8
+800A8250,code,__osSetGlobalIntMask
+800A8290,code,__osResetGlobalIntMask
+800A82E0,code,__osPiRawStartDma
+800A83B0,code,osPiGetCmdQueue
+800A83D0,code,__osEPiRawReadIo
+800A8530,code,alHeapCheck
+800A8540,code,__osEPiRawWriteIo
+800A86B0,code,__osAiDeviceBusy
+800A86D0,code,_init_lpfilter
+800A8774,code,alFxNew
+800A8C0C,code,alEnvmixerNew
+800A8CC4,code,alLoadNew
+800A8D74,code,alResampleNew
+800A8E00,code,alAuxBusNew
+800A8E5C,code,alMainBusNew
+800A8EB8,code,alSaveNew
+800A8F00,code,alLoadParam
+800A90AC,code,alRaw16Pull
+800A9448,code,alAdpcmPull
+800A96E0,code,alLoadParam
+800A988C,code,__load_o_0108
+800A9A10,code,alAuxBusParam
+800A9A40,code,alAuxBusPull
+800A9AEC,code,alAuxBusParam
+800A9B20,code,_ldexpf
+800A9B44,code,_frexpf
+800A9C24,code,alEnvmixerParam
+800A9CF8,code,alEnvmixerPull
+800AA020,code,alEnvmixerParam
+800AA0F4,code,__env_o_01E0
+800AA4CC,code,__env_o_0718
+800AA74C,code,__env_o_027C
+800AA7D0,code,alFilterNew
+800AA7F0,code,alMainBusParam
+800AA820,code,alMainBusPull
+800AA930,code,alMainBusParam
+800AA960,code,alResampleParam
+800AAA20,code,alResamplePull
+800AAB4C,code,alResampleParam
+800AAC10,code,_doModFunc
+800AAC9C,code,alFxParamHdl
+800AAE8C,code,alFxParam
+800AAEA0,code,_filterBuffer
+800AAF3C,code,_loadOutputBuffer
+800AAF84,code,alFxParam
+800AB154,code,_loadBuffer
+800AB188,code,__reverb_o_0178
+800AB2C4,code,_saveBuffer
+800AB3A0,code,__reverb_o_0154
+800AB434,code,alFxPull
+800AB510,code,__reverb_o_00C4
+800AB680,code,__reverb_o_024C
+800AB71C,code,__reverb_o_05D0
+800AB7B0,code,alSaveParam
+800AB7D8,code,alSavePull
+800AB858,code,alSaveParam
+800AB880,code,__resetPerfChanState
+800AB900,code,__setInstChanState
+800AB954,code,__lookupVoice
+800AB9A8,code,__vsPan
+800AB9EC,code,__mapVoice
+800ABA3C,code,__lookupSoundQuick
+800ABB10,code,__initFromBank
+800ABBBC,code,__seqpReleaseVoice
+800ABCE0,code,__voiceNeedsNoteKill
+800ABD90,code,__postNextSeqEvent
+800ABE60,code,__vsDelta
+800ABE7C,code,__vsVol
+800ABED8,code,__seqplayer_o_0420
+800ABEEC,code,__unmapVoice
+800ABF50,code,__seqpStopOsc
+800ABFA8,code,__seqplayer_o_01DC
+800AC040,code,__initChanState
+800AC0F4,code,alSeqpNew
+800AC1A8,code,__seqplayer_o_03EC
+800AC9D0,code,__seqplayer_o_0400
+800ACA3C,code,__seqplayer_o_0A54
+800ACA8C,code,__seqplayer_o_0244
+800ACAF0,code,__seqplayer_o_0D18
+800ACB44,code,__seqplayer_o_0A1C
+800ACC18,code,__seqplayer_o_0284
+800ACC88,code,__seqplayer_o_0320
+800ACCA4,code,__seqplayer_o_0C7C
+800ACCE8,code,__seqplayer_o_04F8
+800ACE0C,code,__seqplayer_o_04E0
+800ACEBC,code,__seqplayer_o_0600
+800ACF68,code,__seqplayer_o_107C
+800ACFBC,code,__seqplayer_o_167C
+800AD03C,code,__seqplayer_o_00BC
+800AD0F0,code,__seqplayer_o_0238
+800AD1E0,code,__seqplayer_o_05D8
+800AD220,code,alSynSetPriority
+800AD230,code,sqrtf,SQRT.S F0, F12
+800AD240,code,guNormalize?
+800AD2F0,code,_Printf?
+800AD870,code,something?
+800ADD50,code,osGetCount
+800ADD90,code,__osSpDeviceBusy
+800ADDB0,code,__osSpGetStatus
+800ADDC0,code,__osSpSetStatus
+800ADDD0,code,__osSpSetPc
+800ADE00,code,__osSpRawStartDma
+800ADE90,code,__osSpRawReadIo
+800ADEE0,code,__osSpRawWriteIo
+800ADF30,code,__osContDataCrc
+800ADF9C,code,__osContDataCrc
+800ADFAC,code,__osContAddressCrc
+800AE1F0,code,__osPfsGetInitData
+800AE2A4,code,__osPfsRequestData
+800AE348,code,__osPfsPifRam
+800AE36C,code,__pfsisplug_o_004C
+800AE388,code,osPfsIsPlug
+800AE410,code,__pfsisplug_o_0094
+800AE4D0,code,__osPfsGetOneChannelData
+800AE550,code,__osPfsRequestOneChannel
+800AE5C0,code,__pfsgetstatus_o_0030
+800AE5E4,code,__osPfsGetStatus
+800AE654,code,__pfsgetstatus_o_0084
+800AE6E0,code,__osPfsInodeCache
+800AE758,code,__contpfs_o_0598
+800AE7E0,code,__osPfsRWInode
+800AEA44,code,__contpfs_o_0578
+800AEB18,code,__osCheckId
+800AEBD0,code,__osGetId
+800AED9C,code,__osCheckPackId
+800AEF00,code,__osRepairPackId
+800AF760,code,bcmp?
+800AF870,code,_Litob
+800AFAC0,code,_Ldtob
+800AFF0C,code,__xldtob_o_0080
+800AFFA4,code,__xldtob_o_0414
+800B0550,code,__osSpDeviceBusy
+800B0570,code,lldiv?
+800B05F4,code,lldiv?
+800B1420,code,__divdi3
+800B1590,code,__udivdi3
+800B15B0,code,__umoddi3
+800B8590,code,rspbootTextStart?
+800B8660,data,gspF3DEX2_fifoDataStart?
+800B8A80,code,gspF3DEX2_fifoTextStart?
+800B99F0,data,gspF3DEX2_NoN_fifoDataStart?
+800B9E10,code,gspF3DEX2_NoN_fifoTextStart?
+800BAD80,data,gspF3DLX2_Rej_fifoDataStart?
+800BB190,code,gspF3DLX2_Rej_fifoTextStart?
+800BBF10,data,gspS2DEX2_fifoDataStart?
+800BC2A0,code,gspS2DEX2_fifoTextStart?
+800BD7D0,data,gspL3DEX2_fifoDataStart?
+800BDBC0,code,gspL3DEX2_fifoTextStart?
+800BE960,data,aspMainDataStart?
+800BEC20,data,aspMainTextStart?
+800C8874,data,overlay_table
+800CC010,data,item_function_pointers,u32[10]
+800DEFD0,data,perm_heap_addr,Address of permanent heap
+800DEFE0,data,temp_heap_addr,Address of temporary heap
+800E18D0,u16,num_board_spaces
+800E18D2,u16,num_chains
+800E18D4,u32,hydrated_space_data
+800E18D8,u32,hydrated_chains
+800E1940,data,arrow_angles,f32[8]
+800E1960,u32,num_arrow_angles
+800F93AE,u16,total_turns
+800F93B0,u16,current_turn
+800FA63E,u16,scene,Current scene number
+800FD2C3,u8,p1_controller
+800FD2C4,u8,p1_char,00=Mario,01=Luigi,02=Peach,03=Yoshi,04=Wario,05=DK
+800FD2C8,u16,p1_coins,Player 1 coin count
+800FD2CE,u16,p1_stars,Player 1 star count
+800FD2D0,u16,p1_cur_chain_index,Player 1 current chain index
+800FD2D2,u16,p1_cur_space_index,Player 1 current space index
+800FD2D4,u16,p1_next_chain_index,Player 1 next chain index
+800FD2D6,u16,p1_next_space_index,Player 1 next space index
+800FD2D9,u8,p1_item,Player 1 item
+800FD2DA,u16,p1_turn_status,Player 1 turn status
+800FD2F8,u8,p2_char,00=Mario,01=Luigi,02=Peach,03=Yoshi,04=Wario,05=DK
+800FD2FC,u16,p2_coins,Player 2 coin count
+800FD302,u16,p2_stars,Player 2 star count
+800FD304,u16,p2_cur_chain_index,Player 2 current chain index
+800FD306,u16,p2_cur_space_index,Player 2 current space index
+800FD308,u16,p2_next_chain_index,Player 2 next chain index
+800FD30A,u16,p2_next_space_index,Player 2 next space index
+800FD30D,u8,p2_item,Player 2 item
+800FD30E,u16,p2_turn_status,Player 2 turn status
+800FD32C,u8,p3_char,00=Mario,01=Luigi,02=Peach,03=Yoshi,04=Wario,05=DK
+800FD330,u16,p3_coins,Player 3 coin count
+800FD336,u16,p3_stars,Player 3 star count
+800FD341,u8,p3_item,Player 3 item
+800FD342,u16,p3_turn_statu,Player 3 turn status
+800FD360,u8,p4_char,00=Mario,01=Luigi,02=Peach,03=Yoshi,04=Wario,05=DK
+800FD364,u16,p4_coins,Player 4 coin count
+800FD36A,u16,p4_stars,Player 4 star count
+800FD375,u8,p4_item,Player 4 item
+800FD376,u16,p4_turn_status,Player 4 turn status
+800FD418,u16,hidden_space_primary,space index of primary hidden space
