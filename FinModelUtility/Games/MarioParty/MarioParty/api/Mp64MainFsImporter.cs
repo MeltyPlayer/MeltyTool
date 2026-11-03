@@ -33,7 +33,7 @@ public sealed class Mp64MainFsImporter
     var game = Game.FromRomCode(romCode);
 
     var mainFsOffsets = game.GetMainFsOffsets();
-    var fsOffset = GetRomOffset_(mainFsOffsets);
+    var fsOffset = GetRomOffset_(romBr, mainFsOffsets);
 
     readStream.Position = fsOffset;
 
@@ -66,9 +66,16 @@ public sealed class Mp64MainFsImporter
     }
   }
 
-  private static uint GetRomOffset_((uint, uint)[] mainFsOffsets) {
+  private static uint GetRomOffset_(
+      IBinaryReader br,
+      (uint, uint)[] mainFsOffsets) {
     var (upper, lower) = mainFsOffsets[0];
+
+    upper = br.SubreadUInt16At(upper);
+    lower = br.SubreadUInt16At(lower);
+    
     var offset = (upper << 16) | lower;
+
     if ((lower & 0x8000) != 0) {
       // Account for signed addition workaround.
       offset -= 0x00010000;
