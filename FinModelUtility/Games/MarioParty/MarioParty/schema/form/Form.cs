@@ -14,6 +14,8 @@ namespace mp64.schema.form;
 public sealed partial class Form : IBinaryDeserializable {
   private readonly string magic_ = "FORM";
 
+  private uint fileSize_;
+
   [RSequenceUntilEndOfStream]
   public FormChunk[] Chunks { get; set; }
 }
@@ -21,16 +23,32 @@ public sealed partial class Form : IBinaryDeserializable {
 [BinarySchema]
 [AlignEnd(2)]
 public sealed partial class FormChunk : IBinaryDeserializable {
-  public SwitchMagicStringUInt32SizedSection<IFormChunkData> Impl { get; }
-    = new(4,
-          magic => magic switch {
-              "ATR1" => new Atr1Data(),
-              "COL1" => new Col1Data(),
-              "HBIN" => new HbinmodeData(),
-              "MAT1" => new Mat1Data(),
-              "STRG" => new StrgData(),
-              _      => throw new NotImplementedException(),
-          });
+  [ReadLogic]
+  private void SetImpl_(IBinaryReader br) {
+    var magic = br.ReadString(4);
+
+    if (magic == "HBIN") {
+      br.AssertString("MODE");
+    }
+
+    this.Impl = new(magic switch {
+        "ATR1" => new Atr1Data(),
+        "BMP1" => new NoopData(),
+        "COL1" => new Col1Data(),
+        "FAC1" => new NoopData(),
+        "HBIN" => new HbinmodeData(),
+        "MAT1" => new Mat1Data(),
+        "MTN1" => new NoopData(),
+        "OBJ1" => new NoopData(),
+        "PAL1" => new NoopData(),
+        "SKL1" => new NoopData(),
+        "STRG" => new StrgData(),
+        "VTX1" => new NoopData(),
+        _      => throw new NotImplementedException(),
+    });
+  }
+
+  public PassThruUInt32SizedSection<IFormChunkData> Impl { get; private set; }
 }
 
 [UnionCandidate]

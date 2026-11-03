@@ -21,8 +21,18 @@ public sealed class MarioParty2FileBundleGatherer
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
-      IMutablePercentageProgress
-          mutablePercentageProgress,
+      IMutablePercentageProgress mutablePercentageProgress,
       IFileHierarchy fileHierarchy) {
+    foreach (var dir in fileHierarchy.Root.GetExistingSubdirs()) {
+      var formFiles = dir.GetFilesWithFileType(".form").Select(f => f.Impl).ToArray();
+      if (!formFiles.Any()) {
+        continue;
+      }
+
+      var mtxnFiles = dir.GetFilesWithFileType(".mtnx").Select(f => f.Impl).ToArray();
+      foreach (var formFile in formFiles) {
+        organizer.Add(new FormModelFileBundle(formFile, mtxnFiles));
+      }
+    }
   }
 }

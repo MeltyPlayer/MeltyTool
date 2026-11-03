@@ -10,8 +10,6 @@ namespace mp64.schema.form;
 /// </summary>
 [BinarySchema]
 public sealed partial class HbinmodeData : IFormChunkData {
-  private readonly string magic_ = "MODE";
-
   [Unknown]
   private readonly byte[] unk_ = new byte [0x14];
 

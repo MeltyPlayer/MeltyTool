@@ -22,7 +22,7 @@ public sealed partial class StrgData : IFormChunkData {
 
   [ReadLogic]
   private void ReadStrings_(IBinaryReader br) {
-    this.Strings = new string[this.Strings.Length];
+    this.Strings = new string[this.stringCount_];
     for (var i = 0; i < this.Strings.Length; i++) {
       using var sb = new ValueStringBuilder();
       for (var j = 0; j < this.stringLengths_[i]; ++j) {
