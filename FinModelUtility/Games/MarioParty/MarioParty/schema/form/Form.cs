@@ -35,7 +35,7 @@ public sealed partial class FormChunk : IBinaryDeserializable {
         "ATR1" => new Atr1Data(),
         "BMP1" => new NoopData(),
         "COL1" => new Col1Data(),
-        "FAC1" => new NoopData(),
+        "FAC1" => new Fac1Data(),
         "HBIN" => new HbinmodeData(),
         "MAT1" => new Mat1Data(),
         "MTN1" => new NoopData(),
@@ -43,7 +43,7 @@ public sealed partial class FormChunk : IBinaryDeserializable {
         "PAL1" => new NoopData(),
         "SKL1" => new NoopData(),
         "STRG" => new StrgData(),
-        "VTX1" => new NoopData(),
+        "VTX1" => new Vtx1Data(),
         _      => throw new NotImplementedException(),
     });
   }
