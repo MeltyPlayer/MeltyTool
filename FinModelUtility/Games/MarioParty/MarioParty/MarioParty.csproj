@@ -2,8 +2,14 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>mp</RootNamespace>
+    <RootNamespace>mp64</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="schema\NewFolder\**" />
+    <EmbeddedResource Remove="schema\NewFolder\**" />
+    <None Remove="schema\NewFolder\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />

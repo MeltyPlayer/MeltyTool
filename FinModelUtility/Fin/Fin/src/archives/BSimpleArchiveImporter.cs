@@ -28,6 +28,8 @@ public interface ISimpleArchiveDirectory : IArchiveDirectory2 {
                Func<Stream, Stream> processor);
 
   void AddFile(string path, string text);
+
+  void AddFile(string path, byte[] bytes);
 }
 
 public abstract class BSimpleArchiveImporter<TBundle>
@@ -123,6 +125,11 @@ public abstract class BSimpleArchiveImporter<TBundle>
       parentDir.filesImpl_[fileName] = new TextArchiveFile(fileName, text);
     }
 
+    public void AddFile(string path, byte[] bytes) {
+      var (parentDir, fileName) = this.GetParentDirAndFileName_(path);
+      parentDir.filesImpl_[fileName] = new BytesArchiveFile(fileName, bytes);
+    }
+
 
     private (SimpleArchiveDirectory, string) GetParentDirAndFileName_(
         string path) {
@@ -212,5 +219,12 @@ public abstract class BSimpleArchiveImporter<TBundle>
       stream.Position = 0;
       return stream;
     }
+  }
+
+  private sealed class BytesArchiveFile(
+      string name,
+      byte[] bytes) : IArchiveFile2 {
+    public string Name => name;
+    public Stream OpenRead() => new MemoryStream(bytes);
   }
 }
