@@ -6,12 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="schema\NewFolder\**" />
-    <EmbeddedResource Remove="schema\NewFolder\**" />
-    <None Remove="schema\NewFolder\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
   </ItemGroup>
 
