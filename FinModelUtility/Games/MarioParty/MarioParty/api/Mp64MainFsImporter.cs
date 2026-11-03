@@ -43,7 +43,8 @@ public sealed class Mp64MainFsImporter
     for (var d = 0; d < dirPtrs.Length; ++d) {
       var dir = dirPtrs[d].Value;
 
-      var builderDir = builderRoot.AddSubdir($"{d}");
+      var dirName = GetDirName_(d) ?? $"{d}";
+      var builderDir = builderRoot.AddSubdir(dirName);
 
       var filePtrs = dir.Files;
       for (var f = 0; f < filePtrs.Length; ++f) {
@@ -52,7 +53,7 @@ public sealed class Mp64MainFsImporter
         var data = file.DecompressedBytes;
 
         using var nameSb = new ValueStringBuilder();
-        nameSb.Append(f);
+        nameSb.Append(GetFileName_(d, f) ?? $"{f}");
         if (MagicTextUtil.Verify(data, "FORM")) {
           nameSb.Append(".form");
         } else if (MagicTextUtil.Verify(data, "MTNX")) {
@@ -83,4 +84,72 @@ public sealed class Mp64MainFsImporter
 
     return offset;
   }
+
+  private static string? GetDirName_(int dirI)
+    => dirI switch {
+        2  => "mario",
+        3  => "luigi",
+        4  => "yoshi",
+        5  => "wario",
+        6  => "donkey_kong",
+        7  => "peach",
+        9  => "menu",
+        10 => "board",
+        11 => "mini_game_info",
+        12 => "battle_results",
+        14 => "intro",
+        _  => null,
+    };
+
+  private static string? GetFileName_(int dirI, int fileI)
+    => dirI switch {
+        >= 2 and <= 7 => GetCharacterFileName_(fileI),
+        _  => null,
+    };
+
+  private static string? GetCharacterFileName_(int fileI)
+    => fileI switch {
+        0  => "stand",
+        1  => "walk",
+        2  => "run",
+        3  => "punch",
+        4  => "jump",
+        5  => "kick",
+        6  => "hip_drop",
+        7  => "wake_up",
+        8  => "stand_dizzy",
+        9  => "swim",
+        10 => "get_up_pain",
+        11 => "swim_drown",
+        12 => "swim_dead",
+        13 => "swim_knocked_back",
+        14 => "swim_tread",
+        15 => "walk_slow",
+        16 => "get_up_from_hip_drop",
+        17 => "get_up_from_fall",
+        18 => "fall",
+        19 => "stand_carry",
+        20 => "pant",
+        21 => "put_down",
+        22 => "sit_dizzy",
+        23 => "hit_block",
+        // TODO: Good lord there's like a billion more
+
+        // Models
+        // TODO: Is this right?
+        209 => "default_baked",
+        210 => "default",
+        211 => "default_low_poly",
+        212 => "western_low_poly",
+        213 => "western",
+        214 => "pirate_low_poly",
+        215 => "pirate",
+        216 => "horror_low_poly",
+        217 => "horror",
+        218 => "space_low_poly",
+        219 => "space",
+        220 => "adventure_low_poly",
+        221 => "adventure",
+        _ => null,
+    };
 }
