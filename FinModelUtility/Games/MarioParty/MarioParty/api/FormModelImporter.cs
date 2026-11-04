@@ -1,8 +1,12 @@
 ﻿using System.Numerics;
 
+using fin.animation.keyframes;
+using fin.animation.types.vector3;
+using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
 using fin.io;
+using fin.math.rotations;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;
@@ -35,7 +39,8 @@ public sealed class FormModelImporter
   public IModel Import(FormModelFileBundle fileBundle) {
     var form = fileBundle.MainFile.ReadNew<Form>(Endianness.BigEndian);
     var mtnxes = fileBundle.MtnxFiles
-                           .Select(f => f.ReadNew<Mtnx>(Endianness.BigEndian))
+                           .Select(f => (f.NameWithoutExtension.ToString(),
+                                         f.ReadNew<Mtnx>(Endianness.BigEndian)))
                            .ToArray();
 
     var model = new ModelImpl {
@@ -58,7 +63,7 @@ public sealed class FormModelImporter
 
     var strg = formChunks.OfType<StrgData>().SingleOrDefault();
     var allStrings = strg?.Strings ?? [];
-    
+
     var vertexScale = vtx1?.Scale ?? 1;
     var lazyVertices
         = new LazyDictionary<(ushort vtxI, Vector2 uv, IReadOnlyBoneWeights
@@ -66,7 +71,8 @@ public sealed class FormModelImporter
             IReadOnlyVertex>(tuple => {
           var (vtxI, uv, boneWeights) = tuple;
           var v = allVertices[vtxI];
-          var vertex = model.Skin.AddVertex(v.Position.AsVector3() * vertexScale);
+          var vertex
+              = model.Skin.AddVertex(v.Position.AsVector3() * vertexScale);
           vertex.SetLocalNormal(Vector3.Normalize(v.Normal.AsVector3()));
           vertex.SetUv(uv);
           vertex.SetBoneWeights(boneWeights);
@@ -74,6 +80,8 @@ public sealed class FormModelImporter
         });
 
     var boneByGlobalIndex = new Dictionary<ushort, IReadOnlyBone>();
+
+    var globalIndexByWeirdIndex = objects.OfType<Object0x3d>().Select(o => o.GlobalIndex).ToArray();
 
     var objQueue = new FinTuple2Queue<IBone, ushort>((model.Skeleton.Root, 0));
     while (objQueue.TryDequeue(out var parentBone,
@@ -84,7 +92,7 @@ public sealed class FormModelImporter
       IBone bone = parentBone;
       if (transform != null) {
         bone = parentBone.AddChild(transform.Position);
-        bone.Transform.SetRotationRadians(transform.Rotation);
+        bone.Transform.SetRotationDegrees(transform.Rotation);
         bone.Transform.SetScale(transform.Scale);
 
         boneByGlobalIndex[currentGlobalIndex] = bone;
@@ -108,7 +116,8 @@ public sealed class FormModelImporter
           foreach (var face in faces) {
             var vertices
                 = face.VtxEntries
-                      .Select(v => lazyVertices[(v.VertexIndex, v.Uv, boneWeights)])
+                      .Select(v => lazyVertices[
+                                  (v.VertexIndex, v.Uv, boneWeights)])
                       .ToArray();
 
             IPrimitive primitive;
@@ -126,6 +135,108 @@ public sealed class FormModelImporter
         case Object0x3d obj0x3d: {
           objQueue.Enqueue(obj0x3d.Children.Select(c => (bone, c)));
           break;
+        }
+      }
+    }
+
+    foreach (var (mtnxName, mtnx) in mtnxes) {
+      var animation = model.AnimationManager.AddAnimation();
+      animation.Name = mtnxName;
+      animation.FrameRate = 60;
+      animation.FrameCount = mtnx.FrameCount;
+
+      var mtnxTrackByObj = mtnx.Tracks.Select(t => t.Data)
+                               .ToListDictionary(t => globalIndexByWeirdIndex[t.WeirdObjIndex]);
+
+      foreach (var (globalIndex, mtnxTracks) in mtnxTrackByObj.GetPairs()) {
+        var boneTracks
+            = animation.GetOrCreateBoneTracks(boneByGlobalIndex[globalIndex]);
+
+        var positionXTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.POSITION, Dimension: MtnxDimension.X
+            });
+        var positionYTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.POSITION, Dimension: MtnxDimension.Y
+            });
+        var positionZTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.POSITION, Dimension: MtnxDimension.Z
+            });
+
+        if (positionXTrack != null ||
+            positionYTrack != null ||
+            positionZTrack != null) {
+          var positionKeyframes = boneTracks.UseSeparateTranslationKeyframes();
+
+          foreach (var (frame, value) in positionXTrack?.Keyframes ?? []) {
+            positionKeyframes.Axes[0].SetKeyframe(frame, value.X);
+          }
+          foreach (var (frame, value) in positionYTrack?.Keyframes ?? []) {
+            positionKeyframes.Axes[1].SetKeyframe(frame, value.X);
+          }
+          foreach (var (frame, value) in positionZTrack?.Keyframes ?? []) {
+            positionKeyframes.Axes[2].SetKeyframe(frame, value.X);
+          }
+        }
+
+        var rotationXTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.ROTATION, Dimension: MtnxDimension.X
+            });
+        var rotationYTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.ROTATION, Dimension: MtnxDimension.Y
+            });
+        var rotationZTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.ROTATION, Dimension: MtnxDimension.Z
+            });
+
+        if (rotationXTrack != null ||
+            rotationYTrack != null ||
+            rotationZTrack != null) {
+          var rotationKeyframes = boneTracks.UseSeparateEulerRadiansKeyframes();
+
+          foreach (var (frame, value) in rotationXTrack?.Keyframes ?? []) {
+            rotationKeyframes.Axes[0].SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
+          }
+          foreach (var (frame, value) in rotationYTrack?.Keyframes ?? []) {
+            rotationKeyframes.Axes[1].SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
+          }
+          foreach (var (frame, value) in rotationZTrack?.Keyframes ?? []) {
+            rotationKeyframes.Axes[2].SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
+          }
+        }
+
+        var scaleXTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.SCALE, Dimension: MtnxDimension.X
+            });
+        var scaleYTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.SCALE, Dimension: MtnxDimension.Y
+            });
+        var scaleZTrack
+            = mtnxTracks.Find(t => t is {
+                Type: MtnxTrackType.SCALE, Dimension: MtnxDimension.Z
+            });
+
+        if (scaleXTrack != null ||
+            scaleYTrack != null ||
+            scaleZTrack != null) {
+          var scaleKeyframes = boneTracks.UseSeparateScaleKeyframes();
+
+          foreach (var (frame, value) in scaleXTrack?.Keyframes ?? []) {
+            scaleKeyframes.Axes[0].SetKeyframe(frame, value.X);
+          }
+          foreach (var (frame, value) in scaleYTrack?.Keyframes ?? []) {
+            scaleKeyframes.Axes[1].SetKeyframe(frame, value.X);
+          }
+          foreach (var (frame, value) in scaleZTrack?.Keyframes ?? []) {
+            scaleKeyframes.Axes[2].SetKeyframe(frame, value.X);
+          }
         }
       }
     }

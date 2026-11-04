@@ -39,13 +39,25 @@ public sealed partial class MtnxTrack : IBinaryDeserializable, IChildOf<Mtnx> {
   public MtnxTrackData Data { get; } = new();
 }
 
+public enum MtnxDimension : byte {
+  X = 0x45,
+  Y = 0x46,
+  Z = 0x47,
+}
+
+public enum MtnxTrackType : byte {
+  POSITION = 0x17,
+  ROTATION = 0x4c,
+  SCALE = 0x1b,
+}
+
 [BinarySchema]
 public sealed partial class MtnxTrackData
     : IBinaryDeserializable, IChildOf<MtnxTrack> {
   public MtnxTrack Parent { get; set; }
 
-  public byte Type { get; set; }
-  public byte Dimension { get; set; }
+  public MtnxTrackType Type { get; set; }
+  public MtnxDimension Dimension { get; set; }
 
   [Unknown]
   public byte Unk0 { get; set; }
@@ -61,13 +73,14 @@ public sealed partial class MtnxTrackData
   [Unknown]
   public byte Unk3 { get; set; }
 
-  public byte ObjIndex { get; set; }
+  public byte WeirdObjIndex { get; set; }
 
   private ushort keyframesIndex_;
   private ushort dataIndex_;
 
   private ushort keyframeCount_;
 
+  // TODO: Y and Z might be tangents?
   [Skip]
   public (ushort frame, Vector3 value)[] Keyframes { get; private set; }
 
