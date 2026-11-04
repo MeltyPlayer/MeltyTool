@@ -16,13 +16,135 @@ _Current WinForms-based UI:_
 _Upcoming Avalonia-based UI:_
 <img width="1422" height="736" alt="image" src="https://github.com/user-attachments/assets/46a5375c-a960-439a-9073-172cb9fed3ff" />
 
-## Suggestions
+## Supported formats/games
 
-If you'd like to vote on new games or features that should be supported, please fill out the following Google Form:
+✔️ = supported, ⚠️ = partially supported, blank = not supported.
 
-[Suggesting Games/Features](https://docs.google.com/forms/d/e/1FAIpQLSfWviQFZxCAuZHYmrcIRvYy3SXRRXo6TmhJVCDsGKR5zvXJvw/viewform)
+| Game                                                                                                                                 | Platform           | Format(s)             | Maps | Meshes | Textures | Animations | Audio |
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------ | --------------------- | :--: | :----: | :------: | :--------: | :---: |
+| [Battalion Wars](https://wiki.dolphin-emu.org/index.php?title=Battalion_Wars)                                                        | GameCube           | .modl, .out           |  ✔️  |   ✔️   |    ✔️    |     ✔️     |       |
+| [Battalion Wars 2](https://wiki.dolphin-emu.org/index.php?title=Battalion_Wars_2)                                                    | Wii                | .modl, .out           |  ✔️  |   ✔️   |    ✔️    |     ✔️     |       |
+| [Beetle Adventure Racing!](https://en.wikipedia.org/wiki/Beetle_Adventure_Racing!)                                                   | N64                | .uvct, .uvmd, .uvtr   |  ✔️  |   ✔️   |    ✔️    |            |       |
+| [Celeste 64: Fragments of the Mountain](https://en.wikipedia.org/wiki/Celeste_64:_Fragments_of_the_Mountain)                         | PC                 | .map                  |  ✔️  |   ✔️   |    ✔️    |            |  ✔️   |
+| [Chibi-Robo!](https://wiki.dolphin-emu.org/index.php?title=Chibi-Robo!)                                                              | GameCube           | HSD (.dat)            |      |   ✔️   |    ✔️    |     ✔️     |  ✔️   |
+| [Dead Space](<https://en.wikipedia.org/wiki/Dead_Space_(2008_video_game)>)                                                           | PC (Steam, EA app) | .geo                  |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [Donkey Kong 64](https://en.wikipedia.org/wiki/Donkey_Kong_64)                                                                       | N64                | Maps                  |  ✔️  |        |    ✔️    |            |       |
+| [GameMaker](https://en.wikipedia.org/wiki/GameMaker)                                                                                 | PC                 | .d3d, .g3d            |      |   ✔️   |    ✔️    |    ⚠️²     |       |
+| [Gauntlet Dark Legacy](https://wiki.dolphin-emu.org/index.php?title=Gauntlet_Dark_Legacy)                                            | GameCube           | .ngc, .ps2            |  ✔️  |   ✔️   |    ✔️    |     ✔️     |       |
+| [Glover](<https://en.wikipedia.org/wiki/Glover_(video_game)>)                                                                        | PC (Steam)         | .glo                  |      |   ✔️   |    ✔️    |     ✔️     |  ✔️   |
+| [Halo Wars](https://en.wikipedia.org/wiki/Halo_Wars)                                                                                 | PC (Steam)         | .vis, .xtd            |  ✔️  |   ✔️   |    ✔️    |            |       |
+| [Harry Potter and the Chamber of Secrets](https://wiki.dolphin-emu.org/index.php?title=Harry_Potter_and_the_Chamber_of_Secrets)      | GameCube           | .geo, .gdt            |  ✔️  |   ✔️   |    ✔️    |            |       |
+| [Harvest Moon 64](https://en.wikipedia.org/wiki/Harvest_Moon_64)                                                                     | N64                | Maps                  |  ✔️  |        |    ✔️    |            |       |
+| [Luigi's Mansion (3DS)](https://en.wikipedia.org/wiki/Luigi%27s_Mansion)                                                             | 3DS                | .cmb                  |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [The Legend of Zelda: Majora's Mask 3D](https://en.wikipedia.org/wiki/The_Legend_of_Zelda:_Majora%27s_Mask_3D)                       | 3DS                | .cmb                  |  ✔️  |   ✔️   |    ✔️    |     ✔️     |       |
+| [Mario Artist: Polygon Studio](https://en.wikipedia.org/wiki/Mario_Artist#Polygon_Studio)                                            | N64 (64DD)         | .ma3d1, .tstlt        |      |   ✔️   |    ✔️    |    ⚠️²     |       |
+| [Mario Artist: Talent Studio](https://en.wikipedia.org/wiki/Mario_Artist#Talent_Studio)                                              | N64 (64DD)         | .ma3d1, .tstlt        |      |   ✔️   |    ✔️    |    ⚠️²     |       |
+| [Mario Kart: Double Dash!!](https://wiki.dolphin-emu.org/index.php?title=Mario_Kart:_Double_Dash!!)                                  | GameCube           | J3dGraph (.bdl, .bmd) |  ✔️  |   ✔️   |    ✔️    |     ✔️     |  ✔️   |
+| [Mario's Picross](https://en.wikipedia.org/wiki/Mario%27s_Picross)                                                                   | Game Boy           | .gb                   |      |        |   ⚠️¹    |            |       |
+| [The Legend of Zelda: Ocarina of Time 3D](https://en.wikipedia.org/wiki/The_Legend_of_Zelda:_Ocarina_of_Time_3D)                     | 3DS                | .cmb                  |  ✔️  |   ✔️   |    ✔️    |     ✔️     |       |
+| [Paper Mario](<https://en.wikipedia.org/wiki/Paper_Mario_(video_game)>)                                                              | N64                | Maps                  |  ✔️  |        |    ✔️    |            |       |
+| [Paper Mario: The Thousand-Year Door](https://wiki.dolphin-emu.org/index.php?title=Paper_Mario:_The_Thousand-Year_Door)              | GameCube           | /a                    |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [Picross 2](https://en.wikipedia.org/wiki/Mario%27s_Picross#Legacy)                                                                  | Game Boy           | .gb                   |      |        |   ⚠️¹    |            |       |
+| [Pikmin](https://wiki.dolphin-emu.org/index.php?title=Pikmin)                                                                        | GameCube           | .mod                  |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [Pikmin 2](https://wiki.dolphin-emu.org/index.php?title=Pikmin_2)                                                                    | GameCube           | J3dGraph (.bdl, .bmd) |  ✔️  |   ✔️   |    ✔️    |     ✔️     |  ✔️   |
+| [Professor Layton vs. Phoenix Wright: Ace Attorney](https://en.wikipedia.org/wiki/Professor_Layton_vs._Phoenix_Wright:_Ace_Attorney) | 3DS                | .xc                   |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [Rolling Madness 3D](http://www.lucaelia.com/games.php)                                                                              | PC                 | .ase.mesh             |      |   ✔️   |    ✔️    |            |       |
+| [Super Mario 64 DS](https://en.wikipedia.org/wiki/Super_Mario_64_DS)                                                                 | DS                 | .bmd                  |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [Super Mario Sunshine](https://wiki.dolphin-emu.org/index.php?title=Super_Mario_Sunshine)                                            | GameCube           | J3dGraph (.bdl, .bmd) |  ✔️  |   ✔️   |    ✔️    |     ✔️     |       |
+| [Super Paper Mario](https://wiki.dolphin-emu.org/index.php?title=Super_Paper_Mario)                                                  | Wii                | /a                    |      |   ✔️   |    ✔️    |     ✔️     |       |
+| [Super Smash Bros. Melee](https://wiki.dolphin-emu.org/index.php?title=Super_Smash_Bros._Melee)                                      | GameCube           | HSD (.dat)            |  ✔️  |   ✔️   |    ✔️    |     ✔️     |  ✔️   |
+| [Virtual Reality Walt Disney World](https://web.archive.org/web/20040608032334/https://vrwdw.tripod.com/)                            | PC                 | VRML (.wrl)           |  ✔️  |   ✔️   |    ✔️    |     ✔️     |  ✔️   |
+
+¹ Puzzles are exported as images.
+
+² Only flipbook texture animations are supported.
+
+### Notes about exported models
+
+- Not all of the models for each game are currently supported, and not every feature of each model will be accurately recreated in the output GLTF/FBX files. To flag any broken/missing models that you'd like to see fixed, please feel free to file feedback via [the Issues tab](https://github.com/MeltyPlayer/MeltyTool/issues).
+- Both GLTF (.glb) and FBX models will be created when exporting, since each format has slightly different compatibility. FBX is generally preferred due to supporting additional UV channels, but GLTF is better supported within model viewer programs such as Noesis.
+- The materials for some models are broken/incomplete due to the complexity of recreating fixed-function pipeline effects in a standalone model. These will need to be manually recreated in whichever program you import the model into.
+
+### Suggesting Games/Features
+
+If you'd like to vote on new games or features that should be supported, please fill out [this Google Form](https://docs.google.com/forms/d/e/1FAIpQLSfWviQFZxCAuZHYmrcIRvYy3SXRRXo6TmhJVCDsGKR5zvXJvw/viewform).
 
 (Sorry, I can't really make any promises as to when I'll get to these. This is moreso for documenting public interest in specific features.)
+
+## Usage guide
+
+Download a release via the Releases tab (for stability), or via the green "Code" button above (for latest). Extract this somewhere on your machine.
+
+### Game setup
+
+Before launching the tool, set up each game you want to view/extract using the steps in the table below.
+
+| Game                                              | Required setup                                                                                                                        |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Battalion Wars                                    | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Battalion Wars 2                                  | Add game files to `roms/` as `battalion_wars_2.[ciso/iso]`                                                                            |
+| Beetle Adventure Racing!                          | Add game files to `roms/` as `beetle_adventure_racing.z64`                                                                            |
+| Celeste 64: Fragments of the Mountain             | Add game files to `roms/celeste_64/prereqs/`                                                                                          |
+| Chibi-Robo!                                       | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Dead Space                                        | Install the game via Steam or the EA app                                                                                              |
+| Donkey Kong 64                                    | Add game files to `roms/` as `donkey_kong_64.z64`                                                                                     |
+| GameMaker                                         | Add `.d3d`/`.g3d` files (with same-named `.png` textures) to `roms/meltyplayer/prereqs/misc/`                                         |
+| Gauntlet Dark Legacy                              | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Glover                                            | Install the game via Steam                                                                                                            |
+| Halo Wars                                         | Install Halo Wars: Definitive Edition via Steam                                                                                       |
+| Harry Potter and the Chamber of Secrets           | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Harvest Moon 64                                   | Add game files to `roms/` as `harvest_moon_64.z64`                                                                                    |
+| Luigi's Mansion (3DS)                             | Add game files to `roms/` as `luigis_mansion_3d.[3ds/cci/cia]`                                                                        |
+| The Legend of Zelda: Majora's Mask 3D             | Add game files to `roms/` as `majoras_mask_3d.[3ds/cci/cia]`                                                                          |
+| Mario Artist: Polygon Studio                      | Rip the disk with [mfs_manager](https://github.com/LuigiBlood/mfs_manager), then add the ripped files to `roms/mario_artist/prereqs/` |
+| Mario Artist: Talent Studio                       | Rip the disk with [mfs_manager](https://github.com/LuigiBlood/mfs_manager), then add the ripped files to `roms/mario_artist/prereqs/` |
+| Mario Kart: Double Dash!!                         | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Mario's Picross                                   | Add game files to `roms/` as `marios_picross_1.gb`                                                                                    |
+| The Legend of Zelda: Ocarina of Time 3D           | Add game files to `roms/` as `ocarina_of_time_3d.[3ds/cci/cia]`                                                                       |
+| Paper Mario                                       | Add game files to `roms/` as `paper_mario.z64`                                                                                        |
+| Paper Mario: The Thousand-Year Door               | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Picross 2                                         | Add game files to `roms/` as `marios_picross_2.gb`                                                                                    |
+| Pikmin                                            | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Pikmin 2                                          | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Professor Layton vs. Phoenix Wright: Ace Attorney | Add game files to `roms/` as `professor_layton_vs_phoenix_wright.[3ds/cci/cia]`                                                       |
+| Rolling Madness 3D                                | Add game files to `roms/rolling_madness_3d/prereqs/`                                                                                  |
+| Super Mario 64 DS                                 | Add game files to `roms/` as `super_mario_64_ds.nds`                                                                                  |
+| Super Mario Sunshine                              | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Super Paper Mario                                 | Add game files to `roms/` as `super_paper_mario.[ciso/iso]`                                                                           |
+| Super Smash Bros. Melee                           | Add game files to `roms/` as `<any file name>.[ciso/gcm/iso/nkit.iso]`                                                                |
+| Virtual Reality Walt Disney World                 | Add game files to `roms/vrwdw/prereqs/`                                                                                               |
+
+### Extracting files via UI
+
+2. Double-click the `launch_ui.bat` file in the root directory. This will first rip all of the files from the game, and then gather the currently supported models. This can take a while on the first execution, but future executions will reuse the exported files.
+3. The viewer will open with nothing initially selected. Navigate through the models in the left-hand column and select a model you wish to view/extract. Once selected, the model will be loaded/rendered with as close of a representation to the original game as possible.
+4. The model can be extracted by clicking the <img alt="export" src="https://user-images.githubusercontent.com/15970939/204157246-43aa2e0d-628b-49c7-abb9-bfc2d52b16a0.png" height="16px" /> icon in the top bar. It will automatically be placed relative to the `out/[game_name]/` directory, in a chain of folders matching the ROM's original file structure. The model may not look exactly as it appeared in the viewer, because some material features are not supported in common model formats.
+5. All of the models in a given directory can be extracted by clicking the <img alt="export_all" src="https://user-images.githubusercontent.com/15970939/204157353-7b3dffb6-7061-4c3d-b90f-461764598b4d.png" height="16px" /> icon in the top bar. Current progress will be displayed in the status bar on the bottom while models are extracted in the background. To stop this operation, click the <img alt="cancel" src="https://user-images.githubusercontent.com/15970939/230075836-a38a1e1b-489f-4240-ae63-12edaa6050d2.png" height="16px" /> icon on the right side of the status bar.
+
+### Extracting files via batch script
+
+2. Double-click the corresponding `rip_[game_name].bat` file in the root directory. This will first rip all of the files from the game, and then the currently supported models. This can take a while on the first execution, but future executions will reuse the exported files.
+3. Extracted models will appear within the corresponding `out/[game_name]/` directory.
+
+### Extracting files via command line
+
+The tool can also be used to convert models via the command-line like so:
+
+```
+  tools/universal_asset_tool/universal_asset_tool.exe convert -i [input files] -o [output file]
+```
+
+Here's an example with some files from Pikmin 1:
+
+```
+  tools/universal_asset_tool/universal_asset_tool.exe convert -i chappy.mod chappy.anm -o chappy.fbx
+```
+
+The best plugin will automatically be detected based on the list of input files. For a list of supported plugins, use the following command:
+
+```
+  tools/universal_asset_tool/universal_asset_tool.exe list_plugins
+```
 
 ## Credits
 
@@ -108,116 +230,3 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@Wiimm](https://github.com/Wiimm), who created the [wiimms-iso-tools](https://github.com/Wiimm/wiimms-iso-tools) used to extract the contents of Wii .isos.
 - [@xdanieldzd](https://github.com/xdanieldzd), for reverse-engineering and documenting the .cmb and .csab formats. In addition, their [Scarlet](https://github.com/xdanieldzd/Scarlet) tool was referenced for dumping .gar files.
 - xyz, whose [Infinite Ground Grid shader](https://godotshaders.com/shader/infinite-ground-grid/) was used to render a better-looking grid in the viewer.
-
-## Supported formats/games
-
-_Not all of the models for each game are currently supported, and not every feature of each model will be accurately recreated in the output GLTF/FBX files. To flag any broken/missing models that you'd like to see fixed, please feel free to file feedback via the Issues tab above._
-
-- /a (Animated group models) (GCN)
-    - Paper Mario: The Thousand Year Door (`paper_mario_the_thousand_year_door.[ciso/gcm/iso/nkit.iso]`)
-    - Super Paper Mario (`super_paper_mario.[ciso/iso]`)
-- .ase.mesh (PC)
-    - [Rolling Madness 3D](http://www.lucaelia.com/games.php)
-- J3dGraph (.bdl/.bmd) (GCN)
-    - Mario Kart: Double Dash (`mario_kart_double_dash.[ciso/gcm/iso/nkit.iso]`)
-    - Pikmin 2 (`pikmin_2.[ciso/gcm/iso/nkit.iso]`)
-    - Super Mario Sunshine (`super_mario_sunshine.[ciso/gcm/iso/nkit.iso]`)
-- .bmd (DS)
-    - Super Mario 64 DS (`super_mario_64_ds.nds`)
-- .cmb (3DS)
-    - Luigi's Mansion 3D (`luigis_mansion_3d.[3ds/cci/cia]`)
-    - Majora's Mask 3D (`majoras_mask_3d.[3ds/cci/cia]`)
-    - Ocarina of Time 3D (`ocarina_of_time_3d.[3ds/cci/cia]`)
-- .d3d (PC)
-    - Game Maker
-- Donkey Kong 64 maps
-    - Donkey Kong 64 (`donkey_kong_64.z64`)
-- .geo (PC)
-    - Dead Space (Steam/Epic Games)
-- .glo (PC)
-    - Glover (Steam)
-- Harvest Moon 64 maps
-    - Harvest Moon 64 (`harvest_moon_64.z64`)
-- HSD, aka HAL sysdolphin (.dat) (GCN)
-    - Chibi-Robo! (`chibi_robo.[ciso/gcm/iso/nkit.iso]`)
-    - Super Smash Bros. Melee (`super_smash_bros_melee.[ciso/gcm/iso/nkit.iso]`)
-- .map (PC)
-    - Celeste 64
-- .mod (GCN)
-    - Pikmin (`pikmin_1.[ciso/gcm/iso/nkit.iso]`)
-- .modl/.out (GCN/WII)
-    - Battalion Wars (`battalion_wars_1.[ciso/gcm/iso/nkit.iso]`)
-    - Battalion Wars 2 (`battalion_wars_2.[ciso/iso]`)
-- .ngc/.ps2 (GCN)
-    - Gauntlet Dark Legacy (`gauntlet_dark_legacy.[ciso/gcm/iso/nkit.iso]`)
-- Paper Mario maps
-    - Paper Mario (`paper_mario.z64`)
-- (Picross puzzles)
-    - Mario's Picross (`marios_picross_1.gb`)
-    - Picross 2 (AKA Mario's Picross 2) (`marios_picross_2.gb`)
-- Mario Artist (.ma3d1/.tstlt) (N64)
-
-    _(Rip these first with [mfs_manager](https://github.com/LuigiBlood/mfs_manager) and include them in `roms/mario_artist/prereqs`.)_
-    - Mario Artist: Polygon Studio
-    - Mario Artist: Talent Studio
-
-- .uvct/.uvmd/.uvtr (N64)
-    - Beetle Adventure Racing! (`beetle_adventure_racing.z64`)
-- .vis/.xtd (PC)
-    - Halo Wars (Steam)
-- VRML (.wrl)
-    - [Virtual Reality Walt Disney World](https://web.archive.org/web/20040608032334/https://vrwdw.tripod.com/)
-- .xc (3DS)
-    - Professor Layton vs. Phoenix Wright (`professor_layton_vs_phoenix_wright.[3ds/cci/cia]`)
-
-_Note:_
-
-- For GameCube ROMs, files with `.ciso`, `.gcm`, `.iso`, or `.nkit.iso` extensions should work.
-- For 3DS ROMs, files with `.3ds`, `.cci`, or `.cia` extensions should work.
-
-## Usage guide
-
-Download a release via the Releases tab (for stability), or via the green "Code" button above (for latest). Extract this somewhere on your machine.
-
-Then, follow the steps below.
-
-### Viewing/extracting models from ROMs automatically
-
-1. Drop ROM(s) in the `roms/` directory. Make sure their names match the corresponding name above! ( Games with brackets should accept any of the listed extensions.)
-
-#### Viewing/extracting models via the UI
-
-2. Double-click the `launch_ui.bat` file in the root directory. This will first rip all of the files from the game, and then gather the currently supported models. This can take a while on the first execution, but future executions will reuse the exported files.
-3. The viewer will open with nothing initially selected. Navigate through the models in the left-hand column and select a model you wish to view/extract. Once selected, the model will be loaded/rendered with as close of a representation to the original game as possible.
-4. The model can be extracted by clicking the <img alt="export" src="https://user-images.githubusercontent.com/15970939/204157246-43aa2e0d-628b-49c7-abb9-bfc2d52b16a0.png" height="16px" /> icon in the top bar. It will automatically be placed relative to the `out/[game_name]/` directory, in a chain of folders matching the ROM's original file structure. The model may not look exactly as it appeared in the viewer, because some material features are not supported in common model formats.
-5. All of the models in a given directory can be extracted by clicking the <img alt="export_all" src="https://user-images.githubusercontent.com/15970939/204157353-7b3dffb6-7061-4c3d-b90f-461764598b4d.png" height="16px" /> icon in the top bar. Current progress will be displayed in the status bar on the bottom while models are extracted in the background. To stop this operation, click the <img alt="cancel" src="https://user-images.githubusercontent.com/15970939/230075836-a38a1e1b-489f-4240-ae63-12edaa6050d2.png" height="16px" /> icon on the right side of the status bar.
-
-#### Extracting all files from a given game via a batch script
-
-2. Double-click the corresponding `rip_[game_name].bat` file in the root directory. This will first rip all of the files from the game, and then the currently supported models. This can take a while on the first execution, but future executions will reuse the exported files.
-3. Extracted models will appear within the corresponding `out/[game_name]/` directory.
-
-### Converting models
-
-The tool can also be used to convert models via the command-line like so:
-
-```
-  tools/universal_asset_tool/universal_asset_tool.exe convert -i [input files] -o [output file]
-```
-
-Here's an example with some files from Pikmin 1:
-
-```
-  tools/universal_asset_tool/universal_asset_tool.exe convert -i chappy.mod chappy.anm -o chappy.fbx
-```
-
-The best plugin will automatically be detected based on the list of input files. For a list of supported plugins, use the following command:
-
-```
-  tools/universal_asset_tool/universal_asset_tool.exe list_plugins
-```
-
-## Notes about exported models
-
-- Both GLTF (.glb) and FBX models will be created when exporting, since each format has slightly different compatibility. FBX is generally preferred due to supporting additional UV channels, but GLTF is better supported within model viewer programs such as Noesis.
-- The materials for some models are broken/incomplete due to the complexity of recreating fixed-function pipeline effects in a standalone model. These will need to be manually recreated in whichever program you import the model into.
