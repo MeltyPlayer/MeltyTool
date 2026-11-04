@@ -1,4 +1,6 @@
-﻿using fin.schema;
+﻿using System.Numerics;
+
+using fin.schema;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -11,7 +13,15 @@ namespace mp64.schema.form;
 /// </summary>
 [BinarySchema]
 public sealed partial class Fac1Data : IFormChunkData {
-  [SequenceLengthSource(SchemaIntegerType.UINT16)]
+  private ushort faceCount_;
+
+  [Unknown]
+  public ushort Unk0 { get; set; }
+
+  [Unknown]
+  public uint Unk1 { get; set; }
+
+  [RSequenceLengthSource(nameof(faceCount_))]
   public Face[] Faces { get; set; }
 }
 
@@ -45,6 +55,5 @@ public sealed class Face : IBinaryConvertible {
 public sealed partial class VtxEntry : IBinaryConvertible {
   public ushort VertexIndex { get; set; }
   public short MaterialIndex { get; set; }
-  public float U { get; set; }
-  public float V { get; set; }
+  public Vector2 Uv { get; set; }
 }

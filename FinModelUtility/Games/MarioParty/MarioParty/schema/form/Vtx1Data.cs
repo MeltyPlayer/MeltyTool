@@ -1,4 +1,5 @@
 ﻿using fin.schema;
+using fin.schema.vector;
 
 using schema.binary;
 using schema.binary.attributes;
@@ -7,32 +8,23 @@ namespace mp64.schema.form;
 
 /// <summary>
 ///   Shamelessly stolen from:
-///   https://github.com/PartyPlanner64/PartyPlanner64/blob/980d043217823d0e5901ee93d3a50e36f728db10/packages/lib/models/FORM.ts#L497
+///   https://github.com/PartyPlanner64/PartyPlanner64/blob/980d043217823d0e5901ee93d3a50e36f728db10/packages/lib/models/FORM.ts#L396
 /// </summary>
 [BinarySchema]
-public sealed partial class Skl1Data : IFormChunkData {
-  public byte GlobalIndex { get; set; }
+public sealed partial class Vtx1Data : IFormChunkData {
+  private ushort vertexCount_;
 
-  [SequenceLengthSource(SchemaIntegerType.UINT16)]
-  public Bone[] Bones { get; set; }
+  [Unknown]
+  public ushort Unk0 { get; set; }
+
+  public float Scale { get; set; }
+
+  [RSequenceLengthSource(nameof(vertexCount_))]
+  public Vertex[] Vertices { get; set; }
 }
 
 [BinarySchema]
-public sealed partial class Bone : IBinaryConvertible {
-  [Unknown]
-  public byte Unk0 { get; set; }
-
-  public ushort ObjGlobalIndex { get; set; }
-  public Transform Transform { get; } = new();
-  [Unknown]
-  public float Unk1 { get; set; }
-  [Unknown]
-  public float Unk2 { get; set; }
-  [Unknown]
-  public float Unk3 { get; set; }
-  public ushort NextSiblingRelativeIndex { get; set; }
-  public byte IsParentNode { get; set; }
-
-  [Unknown]
-  public byte Unk4 { get; set; }
+public sealed partial class Vertex : IBinaryConvertible {
+  public Vector3s Position { get; } = new();
+  public Vector3b Normal { get; } = new();
 }

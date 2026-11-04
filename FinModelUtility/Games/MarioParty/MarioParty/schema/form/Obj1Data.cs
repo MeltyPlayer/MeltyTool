@@ -22,19 +22,22 @@ public sealed partial class Obj1Data : IFormChunkData {
 
   [ReadLogic]
   private void Read_(IBinaryReader br) {
-    var baseOffset = br.Position;
-
-    var size = br.ReadUInt16();
-    var type = br.ReadByte();
-    var globalIndex = br.ReadUInt16();
-
     var objects = this.Objects = new IObject[this.objCount_];
     for (var i = 0; i < this.objCount_; ++i) {
+      var size = br.ReadUInt16();
+      var type = br.ReadByte();
+      var globalIndex = br.ReadUInt16();
+
+      var baseOffset = br.Position;
+
       switch (type) {
         case 0x10: {
           var skeletonGlobalIndex = br.ReadUInt16();
           var transform = br.ReadNew<Transform>();
-          objects[i] = new Object0x10(skeletonGlobalIndex, transform);
+          objects[i] = new Object0x10(skeletonGlobalIndex, transform){
+              Type = type,
+              GlobalIndex = globalIndex,
+          };
           break;
         }
         case 0x3a: {
@@ -42,7 +45,10 @@ public sealed partial class Obj1Data : IFormChunkData {
           var faceIndex = br.ReadUInt16();
           var faceCount = br.ReadUInt16();
           var transform = br.ReadNew<Transform>();
-          objects[i] = new Object0x3a(unk0, faceIndex, faceCount, transform);
+          objects[i] = new Object0x3a(unk0, faceIndex, faceCount, transform) {
+              Type = type,
+              GlobalIndex = globalIndex,
+          };
           break;
         }
         case 0x3b: {
@@ -57,7 +63,10 @@ public sealed partial class Obj1Data : IFormChunkData {
           var subObjCount = br.ReadUInt16();
           var children = br.ReadUInt16s(subObjCount);
           var transform = br.ReadNew<Transform>();
-          objects[i] = new Object0x3d(children, transform);
+          objects[i] = new Object0x3d(children, transform) {
+              Type = type,
+              GlobalIndex = globalIndex,
+          };
           break;
         }
         case 0x3e: {
@@ -96,22 +105,27 @@ public sealed partial class Obj1Data : IFormChunkData {
 public interface IObject {
   byte Type { get; init; }
   ushort GlobalIndex { get; init; }
+  Transform? Transform { get; }
 }
 
-public abstract record BObject : IObject {
-  public byte Type { get; init; }
-  public ushort GlobalIndex { get; init; }
+public abstract record BObject(Transform? Transform) : IObject {
+  public required byte Type { get; init; }
+  public required ushort GlobalIndex { get; init; }
 }
 
-public sealed record NoopObject : BObject;
+public sealed record NoopObject() : BObject((Transform?) null);
 
 public sealed record Object0x10(ushort SkeletonGlobalIndex, Transform Transform)
-    : BObject;
+    : BObject(Transform);
 
-public sealed record Object0x3a(byte Unk0, ushort FaceIndex, ushort FaceCount, Transform Transform)
-    : BObject;
+public sealed record Object0x3a(
+    byte Unk0,
+    ushort FaceIndex,
+    ushort FaceCount,
+    Transform Transform)
+    : BObject(Transform);
 
 public sealed record Object0x3d(ushort[] Children, Transform Transform)
-    : BObject;
+    : BObject(Transform);
 
-public sealed record Object0x61(Transform Transform) : BObject;
+public sealed record Object0x61(Transform Transform) : BObject(Transform);
