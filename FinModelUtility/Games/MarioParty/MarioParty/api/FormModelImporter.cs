@@ -116,7 +116,9 @@ public sealed class FormModelImporter
           [];
 
     var fac1 = formChunks.OfType<Fac1Data>().SingleOrDefault();
-    var allFaces = (fac1?.Faces ?? []).AsSpan();
+    var allFaces = fac1?.Faces ?? [];
+
+    var skl1ByGlobalIndex = formChunks.OfType<Skl1Data>().ToDictionary(s => s.GlobalIndex);
 
     var vtx1 = formChunks.OfType<Vtx1Data>().SingleOrDefault();
     var allVertices = vtx1?.Vertices ?? [];
@@ -152,9 +154,7 @@ public sealed class FormModelImporter
                                          .Select(o => o.GlobalIndex)
                                          .ToArray();
 
-    var objQueue = new FinTuple2Queue<IBone, ushort>((model.Skeleton.Root, 0));
-    while (objQueue.TryDequeue(out var parentBone,
-                               out var currentGlobalIndex)) {
+    void AddObject(IBone parentBone, ushort currentGlobalIndex) {
       var obj = objByGlobalIndex[currentGlobalIndex];
       var transform = obj.Transform;
 
@@ -171,8 +171,9 @@ public sealed class FormModelImporter
       bone.Name = name;
 
       switch (obj) {
-        case Object0x10: {
-          // TODO: Support
+        case Object0x10 obj0x10: {
+          var skl1 = skl1ByGlobalIndex[obj0x10.SkeletonGlobalIndex];
+          AddSkl(bone, skl1);
           break;
         }
         case Object0x3a obj0x3a: {
@@ -181,7 +182,7 @@ public sealed class FormModelImporter
           mesh.Name = name;
           var boneWeights
               = skin.GetOrCreateBoneWeights(VertexSpace.RELATIVE_TO_BONE, bone);
-          var faces = allFaces.Slice(obj0x3a.FaceIndex, obj0x3a.FaceCount);
+          var faces = allFaces.AsSpan(obj0x3a.FaceIndex, obj0x3a.FaceCount);
           foreach (var face in faces) {
             var vertices
                 = face.VtxEntries
@@ -205,11 +206,38 @@ public sealed class FormModelImporter
           break;
         }
         case Object0x3d obj0x3d: {
-          objQueue.Enqueue(obj0x3d.Children.Select(c => (bone, c)));
+          foreach (var child in obj0x3d.Children) {
+            AddObject(bone, child);
+          }
           break;
         }
       }
     }
+
+    void AddSkl(IBone parentBone, Skl1Data skl)
+      => AddSklBone(parentBone, skl, 0);
+
+    void AddSklBone(IBone parentBone, Skl1Data skl, int boneIndex) {
+      var sklBone = skl.Bones[boneIndex];
+
+      var transform = sklBone.Transform;
+      var bone = parentBone.AddChild(transform.Position);
+      bone.Transform.SetRotationDegrees(transform.Rotation);
+      bone.Transform.SetScale(transform.Scale);
+
+      AddObject(parentBone, sklBone.ObjGlobalIndex);
+
+      if (sklBone.IsParentNode != 0) {
+        AddSklBone(bone, skl, boneIndex + 1);
+      }
+      if (sklBone.NextSiblingRelativeIndex != 0) {
+        AddSklBone(parentBone,
+                   skl,
+                   boneIndex + sklBone.NextSiblingRelativeIndex);
+      }
+    }
+
+    AddObject(model.Skeleton.Root, 0);
 
     foreach (var (mtnxName, mtnx) in mtnxes) {
       IListDictionary<ushort, MtnxTrackData> mtnxTrackByObj;
