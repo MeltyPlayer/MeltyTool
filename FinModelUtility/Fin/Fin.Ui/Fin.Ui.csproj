@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="OpenTK" Version="$(OpenGlVersion)" />
-    <PackageReference Include="ReactiveUI" Version="24.1.0" />
+    <PackageReference Include="ReactiveUI" Version="26.0.1" />
   </ItemGroup>
 
   <ItemGroup>
