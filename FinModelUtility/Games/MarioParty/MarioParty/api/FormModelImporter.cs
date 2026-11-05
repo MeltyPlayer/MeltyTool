@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.animation.keyframes;
-using fin.animation.types.vector3;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
@@ -50,13 +49,32 @@ public sealed class FormModelImporter
 
     var formChunks = form.Chunks.Select(c => c.Impl.Data).ToArray();
 
+    var attributes
+        = formChunks.OfType<Atr1Data>().SingleOrDefault()?.Attributes ?? [];
     var bmp1s = formChunks.OfType<Bmp1Data>().ToArray();
     var pal1ByGlobalIndex
         = formChunks.OfType<Pal1Data>().ToDictionary(p => p.GlobalIndex);
-    foreach (var bmp1 in bmp1s) {
-      var image = bmp1.ToImage(pal1ByGlobalIndex);
-      model.MaterialManager.AddSimpleTextureMaterialFromImage(image);
-    }
+    var bmpImageByGlobalIndex
+        = bmp1s.Select(b => (b, b.ToImage(pal1ByGlobalIndex)))
+               .ToDictionary(t => t.b.GlobalIndex, t => t.Item2);
+
+    var materials = attributes.Select(a => {
+      var image = bmpImageByGlobalIndex[a.BmpGlobalIndex];
+      var (material, texture)
+          = model.MaterialManager.AddSimpleTextureMaterialFromImage(image);
+      texture.WrapModeU = a.XBehavior switch {
+          WrapBehavior.MIRRORED_REPEAT => WrapMode.MIRROR_REPEAT,
+          WrapBehavior.REPEAT => WrapMode.REPEAT,
+          WrapBehavior.CLAMP => WrapMode.CLAMP,
+      };
+      texture.WrapModeV = a.YBehavior switch {
+          WrapBehavior.MIRRORED_REPEAT => WrapMode.MIRROR_REPEAT,
+          WrapBehavior.REPEAT          => WrapMode.REPEAT,
+          WrapBehavior.CLAMP           => WrapMode.CLAMP,
+      };
+
+      return material;
+    }).ToArray();
 
     var obj1 = formChunks.OfType<Obj1Data>().SingleOrDefault();
     var objects = obj1?.Objects.ToArray() ?? [];
@@ -138,7 +156,10 @@ public sealed class FormModelImporter
               primitive = mesh.AddQuads(vertices);
             }
 
-            // TODO: Set material
+            if (face.AtrIndex >= 0 && face.AtrIndex < materials.Length) {
+              primitive.SetMaterial(materials[face.AtrIndex]);
+            }
+            primitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
           }
 
           break;

@@ -25,7 +25,8 @@ public sealed partial class Pal1Data : IFormChunkData {
   public void Read_(IBinaryReader br) {
     this.Colors = new IColor[this.colorCount_];
 
-    var bpp = (uint) (Math.Floor((br.Length - 4f) / this.colorCount_) * 8);
+    var remainingLength = br.Length - br.Position;
+    var bpp = (uint) Math.Floor(1f * remainingLength / this.colorCount_);
     this.Format = bpp switch {
         1 => PixelFormat.L8,
         2 => PixelFormat.LA88,

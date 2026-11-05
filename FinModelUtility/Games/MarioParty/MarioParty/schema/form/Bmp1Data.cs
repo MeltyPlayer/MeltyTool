@@ -15,13 +15,13 @@ namespace mp64.schema.form;
 /// </summary>
 [BinarySchema]
 public sealed partial class Bmp1Data : IFormChunkData {
+  public ushort GlobalIndex { get; set; }
   [RSequenceUntilEndOfStream]
   public byte[] Data { get; set; }
 
   public IImage ToImage(IDictionary<ushort, Pal1Data> pal1ByGlobalIndex) {
     using var bmpBr = new SchemaBinaryReader(this.Data, Endianness.BigEndian);
 
-    var unk0 = bmpBr.ReadUInt16();
     var format = bmpBr.ReadUInt16();
     var unk1 = bmpBr.ReadByte();
     var width = bmpBr.ReadUInt16();
@@ -37,7 +37,7 @@ public sealed partial class Bmp1Data : IFormChunkData {
         var paletteGlobalIndex = bmpBr.ReadUInt16();
         var pal1 = pal1ByGlobalIndex[paletteGlobalIndex];
 
-        bmpBr.Position = 0xf;
+        bmpBr.Position = 0xf - 2;
         var inBmpSize = bmpBr.ReadUInt16();
 
         // Doesn't appear to indicate BPP, but we can calculate from size and dimens.
@@ -84,10 +84,10 @@ public sealed partial class Bmp1Data : IFormChunkData {
       case 0x127: {
         // mp1 9/138
         // Just raw RGBA already
-        bmpBr.Position = 0x4;
+        bmpBr.Position = 0x4 - 2;
         var bpp = bmpBr.ReadByte();
 
-        bmpBr.Position = 0xd;
+        bmpBr.Position = 0xd - 2;
         return bpp switch {
             16 => PixelImageReader
                   .New(width, height, new Rgba5551PixelReader())
@@ -102,7 +102,7 @@ public sealed partial class Bmp1Data : IFormChunkData {
         // 0x126 mp1 9/25
         // 24 bits per color
         // TODO: Are the bits right, or is there alpha?
-        bmpBr.Position = 0xd;
+        bmpBr.Position = 0xd - 2;
         return PixelImageReader
                .New(width, height, new Rgb24PixelReader())
                .ReadImage(bmpBr);
@@ -110,7 +110,7 @@ public sealed partial class Bmp1Data : IFormChunkData {
       case 0x125: {
         // Grayscale?
         // TODO: I don't think this is right? Some sort of shadow mask?
-        bmpBr.Position = 0xd;
+        bmpBr.Position = 0xd - 2;
         return PixelImageReader
                .New(width, height, new La16PixelReader())
                .ReadImage(bmpBr);
@@ -119,7 +119,7 @@ public sealed partial class Bmp1Data : IFormChunkData {
         // 0x124 mp3 11/51
         // Grayscale?
         // TODO: I don't think this is right? Some sort of shadow mask?
-        bmpBr.Position = 0xd;
+        bmpBr.Position = 0xd - 2;
         return PixelImageReader
                .New(width, height, new L4PixelReader())
                .ReadImage(bmpBr);

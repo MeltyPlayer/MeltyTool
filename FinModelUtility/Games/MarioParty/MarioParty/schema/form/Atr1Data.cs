@@ -1,7 +1,6 @@
 ﻿using fin.schema;
 
 using schema.binary;
-using schema.binary.attributes;
 
 namespace mp64.schema.form;
 
@@ -9,10 +8,19 @@ namespace mp64.schema.form;
 ///   Shamelessly stolen from:
 ///   https://github.com/PartyPlanner64/PartyPlanner64/blob/980d043217823d0e5901ee93d3a50e36f728db10/packages/lib/models/FORM.ts#L372
 /// </summary>
-[BinarySchema]
-public sealed partial class Atr1Data : IFormChunkData {
-  [SequenceLengthSource(SchemaIntegerType.UINT16)]
+public sealed class Atr1Data : IFormChunkData {
   public Attribute[] Attributes { get; set; }
+
+  public void Read(IBinaryReader br) {
+    this.Attributes = new Attribute[br.ReadUInt16()];
+    for (var i = 0; i < this.Attributes.Length; ++i) {
+      var baseOffset = br.Position;
+      this.Attributes[i] = br.ReadNew<Attribute>();
+      br.Position = baseOffset + this.Attributes[i].Size + 2;
+    }
+  }
+
+  public void Write(IBinaryWriter bw) => throw new NotImplementedException();
 }
 
 public enum WrapBehavior : byte {
