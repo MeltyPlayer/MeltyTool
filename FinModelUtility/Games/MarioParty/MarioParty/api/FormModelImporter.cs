@@ -49,6 +49,15 @@ public sealed class FormModelImporter
     };
 
     var formChunks = form.Chunks.Select(c => c.Impl.Data).ToArray();
+
+    var bmp1s = formChunks.OfType<Bmp1Data>().ToArray();
+    var pal1ByGlobalIndex
+        = formChunks.OfType<Pal1Data>().ToDictionary(p => p.GlobalIndex);
+    foreach (var bmp1 in bmp1s) {
+      var image = bmp1.ToImage(pal1ByGlobalIndex);
+      model.MaterialManager.AddSimpleTextureMaterialFromImage(image);
+    }
+
     var obj1 = formChunks.OfType<Obj1Data>().SingleOrDefault();
     var objects = obj1?.Objects.ToArray() ?? [];
     var objByGlobalIndex
@@ -81,7 +90,9 @@ public sealed class FormModelImporter
 
     var boneByGlobalIndex = new Dictionary<ushort, IReadOnlyBone>();
 
-    var globalIndexByWeirdIndex = objects.OfType<Object0x3d>().Select(o => o.GlobalIndex).ToArray();
+    var globalIndexByWeirdIndex = objects.OfType<Object0x3d>()
+                                         .Select(o => o.GlobalIndex)
+                                         .ToArray();
 
     var objQueue = new FinTuple2Queue<IBone, ushort>((model.Skeleton.Root, 0));
     while (objQueue.TryDequeue(out var parentBone,
@@ -146,7 +157,8 @@ public sealed class FormModelImporter
       animation.FrameCount = mtnx.FrameCount;
 
       var mtnxTrackByObj = mtnx.Tracks.Select(t => t.Data)
-                               .ToListDictionary(t => globalIndexByWeirdIndex[t.WeirdObjIndex]);
+                               .ToListDictionary(t => globalIndexByWeirdIndex[
+                                                     t.WeirdObjIndex]);
 
       foreach (var (globalIndex, mtnxTracks) in mtnxTrackByObj.GetPairs()) {
         var boneTracks
@@ -173,9 +185,11 @@ public sealed class FormModelImporter
           foreach (var (frame, value) in positionXTrack?.Keyframes ?? []) {
             positionKeyframes.Axes[0].SetKeyframe(frame, value.X);
           }
+
           foreach (var (frame, value) in positionYTrack?.Keyframes ?? []) {
             positionKeyframes.Axes[1].SetKeyframe(frame, value.X);
           }
+
           foreach (var (frame, value) in positionZTrack?.Keyframes ?? []) {
             positionKeyframes.Axes[2].SetKeyframe(frame, value.X);
           }
@@ -200,13 +214,18 @@ public sealed class FormModelImporter
           var rotationKeyframes = boneTracks.UseSeparateEulerRadiansKeyframes();
 
           foreach (var (frame, value) in rotationXTrack?.Keyframes ?? []) {
-            rotationKeyframes.Axes[0].SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
+            rotationKeyframes.Axes[0]
+                             .SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
           }
+
           foreach (var (frame, value) in rotationYTrack?.Keyframes ?? []) {
-            rotationKeyframes.Axes[1].SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
+            rotationKeyframes.Axes[1]
+                             .SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
           }
+
           foreach (var (frame, value) in rotationZTrack?.Keyframes ?? []) {
-            rotationKeyframes.Axes[2].SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
+            rotationKeyframes.Axes[2]
+                             .SetKeyframe(frame, value.X * FinTrig.DEG_2_RAD);
           }
         }
 
@@ -231,9 +250,11 @@ public sealed class FormModelImporter
           foreach (var (frame, value) in scaleXTrack?.Keyframes ?? []) {
             scaleKeyframes.Axes[0].SetKeyframe(frame, value.X);
           }
+
           foreach (var (frame, value) in scaleYTrack?.Keyframes ?? []) {
             scaleKeyframes.Axes[1].SetKeyframe(frame, value.X);
           }
+
           foreach (var (frame, value) in scaleZTrack?.Keyframes ?? []) {
             scaleKeyframes.Axes[2].SetKeyframe(frame, value.X);
           }

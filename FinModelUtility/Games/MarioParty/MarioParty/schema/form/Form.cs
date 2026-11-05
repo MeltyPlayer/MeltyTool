@@ -33,14 +33,14 @@ public sealed partial class FormChunk : IBinaryDeserializable {
 
     this.Impl = new(magic switch {
         "ATR1" => new Atr1Data(),
-        "BMP1" => new NoopData(),
+        "BMP1" => new Bmp1Data(),
         "COL1" => new Col1Data(),
         "FAC1" => new Fac1Data(),
         "HBIN" => new HbinmodeData(),
         "MAT1" => new Mat1Data(),
         "MTN1" => new NoopData(),
         "OBJ1" => new Obj1Data(),
-        "PAL1" => new NoopData(),
+        "PAL1" => new Pal1Data(),
         "SKL1" => new Skl1Data(),
         "STRG" => new StrgData(),
         "VTX1" => new Vtx1Data(),

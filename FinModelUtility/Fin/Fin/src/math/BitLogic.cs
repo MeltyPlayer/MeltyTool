@@ -14,6 +14,18 @@ public static partial class BitLogic {
     low = (byte) (value & 0xF);
   }
 
+  public static void SplitCrumbs(this byte value,
+                                 out byte c0,
+                                 out byte c1,
+                                 out byte c2,
+                                 out byte c3) {
+    c0 = (byte) (value >> 6);
+    c1 = (byte) ((value >> 4) & 0x3);
+    c2 = (byte) ((value >> 2) & 0x3);
+    c3 = (byte) (value & 0x3);
+  }
+
+
   public static uint ToUint32(byte a, byte b, byte c, byte d) {
     TEMP_[0] = a;
     TEMP_[1] = b;
