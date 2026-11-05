@@ -27,7 +27,7 @@ public sealed partial class Fac1Data : IFormChunkData {
 
 public sealed class Face : IBinaryConvertible {
   public VtxEntry[] VtxEntries { get; set; }
-  public short UnkIndex { get; set; }
+  public short MaterialIndex { get; set; }
   public short AtrIndex { get; set; }
 
   [Unknown]
@@ -43,7 +43,7 @@ public sealed class Face : IBinaryConvertible {
       this.VtxEntries = br.ReadNews<VtxEntry>(vtxEntryCount);
     }
 
-    this.UnkIndex = br.ReadInt16();
+    this.MaterialIndex = br.ReadInt16();
     this.AtrIndex = br.ReadInt16();
     this.Unk = br.ReadByte();
   }

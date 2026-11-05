@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.animation.keyframes;
+using fin.color;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.data.queues;
@@ -58,23 +59,54 @@ public sealed class FormModelImporter
         = bmp1s.Select(b => (b, b.ToImage(pal1ByGlobalIndex)))
                .ToDictionary(t => t.b.GlobalIndex, t => t.Item2);
 
-    var materials = attributes.Select(a => {
-      var image = bmpImageByGlobalIndex[a.BmpGlobalIndex];
-      var (material, texture)
-          = model.MaterialManager.AddSimpleTextureMaterialFromImage(image);
-      texture.WrapModeU = a.XBehavior switch {
-          WrapBehavior.MIRRORED_REPEAT => WrapMode.MIRROR_REPEAT,
-          WrapBehavior.REPEAT => WrapMode.REPEAT,
-          WrapBehavior.CLAMP => WrapMode.CLAMP,
-      };
-      texture.WrapModeV = a.YBehavior switch {
-          WrapBehavior.MIRRORED_REPEAT => WrapMode.MIRROR_REPEAT,
-          WrapBehavior.REPEAT          => WrapMode.REPEAT,
-          WrapBehavior.CLAMP           => WrapMode.CLAMP,
-      };
+    var col1 = formChunks.OfType<Col1Data>().SingleOrDefault();
+    var colors = col1?.Colors ?? [];
+    var mat1 = formChunks.OfType<Mat1Data>().SingleOrDefault();
+    var materials = mat1?.Materials ?? [];
 
-      return material;
-    }).ToArray();
+    var colorByMaterialIndex
+        = materials.Select(m => colors[m.ColorIndex]).ToArray();
+
+    var lazyFinMaterials
+        = new LazyDictionary<(int attributeIndex, int materialIndex),
+            IReadOnlyMaterial>(tuple => {
+          var (attributeIndex, materialIndex) = tuple;
+
+          var color = colorByMaterialIndex[materialIndex];
+
+          if (attributeIndex != -1) {
+            var attribute = attributes[attributeIndex];
+            var image = bmpImageByGlobalIndex[attribute.BmpGlobalIndex];
+            var (material, texture)
+                = model.MaterialManager
+                       .AddSimpleTextureMaterialFromImage(
+                           image);
+            texture.WrapModeU = attribute.XBehavior switch {
+                WrapBehavior.MIRRORED_REPEAT => WrapMode
+                    .MIRROR_REPEAT,
+                WrapBehavior.REPEAT => WrapMode
+                    .REPEAT,
+                WrapBehavior.CLAMP => WrapMode
+                    .CLAMP,
+            };
+            texture.WrapModeV = attribute.YBehavior switch {
+                WrapBehavior.MIRRORED_REPEAT => WrapMode
+                    .MIRROR_REPEAT,
+                WrapBehavior.REPEAT => WrapMode
+                    .REPEAT,
+                WrapBehavior.CLAMP => WrapMode
+                    .CLAMP,
+            };
+
+            material.DiffuseColor = color.ToSystemColor();
+            material.Shininess = 0;
+            return material;
+          } else {
+            var material = model.MaterialManager.AddColorMaterial(color.ToSystemColor());
+            material.Shininess = 0;
+            return material;
+          }
+        });
 
     var obj1 = formChunks.OfType<Obj1Data>().SingleOrDefault();
     var objects = obj1?.Objects.ToArray() ?? [];
@@ -93,16 +125,23 @@ public sealed class FormModelImporter
 
     var vertexScale = vtx1?.Scale ?? 1;
     var lazyVertices
-        = new LazyDictionary<(ushort vtxI, Vector2 uv, IReadOnlyBoneWeights
+        = new LazyDictionary<(ushort vtxI, short materialIndex, Vector2 uv,
+            IReadOnlyBoneWeights
             boneWeights),
             IReadOnlyVertex>(tuple => {
-          var (vtxI, uv, boneWeights) = tuple;
+          var (vtxI, materialIndex, uv, boneWeights) = tuple;
           var v = allVertices[vtxI];
           var vertex
               = model.Skin.AddVertex(v.Position.AsVector3() * vertexScale);
           vertex.SetLocalNormal(Vector3.Normalize(v.Normal.AsVector3()));
           vertex.SetUv(uv);
+
+          if (materialIndex != -1) {
+            vertex.SetColor(colorByMaterialIndex[materialIndex]);
+          }
+
           vertex.SetBoneWeights(boneWeights);
+
           return vertex;
         });
 
@@ -146,7 +185,8 @@ public sealed class FormModelImporter
             var vertices
                 = face.VtxEntries
                       .Select(v => lazyVertices[
-                                  (v.VertexIndex, v.Uv, boneWeights)])
+                                  (v.VertexIndex, v.MaterialIndex, v.Uv,
+                                   boneWeights)])
                       .ToArray();
 
             IPrimitive primitive;
@@ -156,9 +196,8 @@ public sealed class FormModelImporter
               primitive = mesh.AddQuads(vertices);
             }
 
-            if (face.AtrIndex >= 0 && face.AtrIndex < materials.Length) {
-              primitive.SetMaterial(materials[face.AtrIndex]);
-            }
+            primitive.SetMaterial(
+                lazyFinMaterials[(face.AtrIndex, face.MaterialIndex)]);
             primitive.SetVertexOrder(VertexOrder.COUNTER_CLOCKWISE);
           }
 
