@@ -102,7 +102,8 @@ public sealed class FormModelImporter
             material.Shininess = 0;
             return material;
           } else {
-            var material = model.MaterialManager.AddColorMaterial(color.ToSystemColor());
+            var material
+                = model.MaterialManager.AddColorMaterial(color.ToSystemColor());
             material.Shininess = 0;
             return material;
           }
@@ -211,14 +212,20 @@ public sealed class FormModelImporter
     }
 
     foreach (var (mtnxName, mtnx) in mtnxes) {
+      IListDictionary<ushort, MtnxTrackData> mtnxTrackByObj;
+      try {
+        mtnxTrackByObj
+            = mtnx.Tracks.Select(t => t.Data)
+                  .ToListDictionary(t => globalIndexByWeirdIndex[
+                                        t.WeirdObjIndex]);
+      } catch {
+        continue;
+      }
+
       var animation = model.AnimationManager.AddAnimation();
       animation.Name = mtnxName;
       animation.FrameRate = 60;
       animation.FrameCount = mtnx.FrameCount;
-
-      var mtnxTrackByObj = mtnx.Tracks.Select(t => t.Data)
-                               .ToListDictionary(t => globalIndexByWeirdIndex[
-                                                     t.WeirdObjIndex]);
 
       foreach (var (globalIndex, mtnxTracks) in mtnxTrackByObj.GetPairs()) {
         var boneTracks

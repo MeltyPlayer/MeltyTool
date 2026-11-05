@@ -112,7 +112,7 @@ public sealed partial class Bmp1Data : IFormChunkData {
         // TODO: I don't think this is right? Some sort of shadow mask?
         bmpBr.Position = 0xd - 2;
         return PixelImageReader
-               .New(width, height, new La16PixelReader())
+               .New(width, height, new La8PixelReader())
                .ReadImage(bmpBr);
       }
       case 0x124: {
