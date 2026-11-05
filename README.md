@@ -84,6 +84,7 @@ If you'd like to vote on new games or features that should be supported, please 
 - [@nico](https://github.com/nico), aka thakis, whose [szstools](http://amnoid.de/gc/) CLI was originally used to extract the contents of GameCube .isos and whose [ddsview](http://www.amnoid.de/ddsview/index.html) tool was referenced to fix Halo Wars DXT5A/ATI1/BC4 parsing.
 - [@Nominom](https://github.com/Nominom), whose [BCnEncoder.NET](https://github.com/Nominom/BCnEncoder.NET) library is used to parse DXT1/3/5 images.
 - [@oxyplot](https://github.com/oxyplot), whose [oxyplot-avalonia](https://github.com/oxyplot/oxyplot-avalonia) library is used to render graphs of animation values.
+- [@PartyPlanner64](https://github.com/PartyPlanner64), whose [PartyPlanner64](https://github.com/PartyPlanner64/PartyPlanner64) tool was ported to C# to add support for Mario Party 64 models.
 - [@PeterLemon](https://github.com/PeterLemon), aka krom, whose [MA3D1 Blender import script](https://64dd.org/tools.html) was referenced to add support for .ma3d1 models.
 - [@PistonMiner](https://github.com/PistonMiner), whose [ttyd-tools](https://github.com/PistonMiner/ttyd-tools) documentation was referenced to add support for importing Paper Mario: The Thousand Year Door's animated group models.
 - pixel#8843, whose [lumos](https://github.com/metallicafan212/HarryPotterUnrealWiki/blob/master/Other/Console%20Model%20and%20Texture%20Exporter/lumos.py) script was used as the basis for the Harry Potter and the Chamber of Secrets GCN importer.
