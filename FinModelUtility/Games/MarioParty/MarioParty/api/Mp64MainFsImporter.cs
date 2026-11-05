@@ -30,9 +30,10 @@ public sealed class Mp64MainFsImporter
 
     romBr.Position = 0x3b;
     var romCode = romBr.ReadString(4);
-    var game = Game.FromRomCode(romCode);
-
-    var mainFsOffsets = game.GetMainFsOffsets();
+    var gameVersion = GameVersion.FromRomCode(romCode);
+    var game = gameVersion.GetGame();
+    
+    var mainFsOffsets = gameVersion.GetMainFsOffsets();
     var fsOffset = GetRomOffset_(romBr, mainFsOffsets);
 
     readStream.Position = fsOffset;
@@ -43,7 +44,7 @@ public sealed class Mp64MainFsImporter
     for (var d = 0; d < dirPtrs.Length; ++d) {
       var dir = dirPtrs[d].Value;
 
-      var dirName = GetDirName_(d) ?? $"{d}";
+      var dirName = GetDirName_(game, d) ?? $"{d}";
       var builderDir = builderRoot.AddSubdir(dirName);
 
       var filePtrs = dir.Files;
@@ -53,7 +54,7 @@ public sealed class Mp64MainFsImporter
         var data = file.DecompressedBytes;
 
         using var nameSb = new ValueStringBuilder();
-        nameSb.Append(GetFileName_(d, f) ?? $"{f}");
+        nameSb.Append(GetFileName_(game, d, f) ?? $"{f}");
         if (MagicTextUtil.Verify(data, "FORM")) {
           nameSb.Append(".form");
         } else if (MagicTextUtil.Verify(data, "MTNX")) {
@@ -74,7 +75,7 @@ public sealed class Mp64MainFsImporter
 
     upper = br.SubreadUInt16At(upper);
     lower = br.SubreadUInt16At(lower);
-    
+
     var offset = (upper << 16) | lower;
 
     if ((lower & 0x8000) != 0) {
@@ -85,26 +86,32 @@ public sealed class Mp64MainFsImporter
     return offset;
   }
 
-  private static string? GetDirName_(int dirI)
-    => dirI switch {
-        2  => "mario",
-        3  => "luigi",
-        4  => "yoshi",
-        5  => "wario",
-        6  => "donkey_kong",
-        7  => "peach",
-        9  => "menu",
-        10 => "board",
-        11 => "mini_game_info",
-        12 => "battle_results",
-        14 => "intro",
-        _  => null,
+  private static string? GetDirName_(Game game, int dirI)
+    => game switch {
+        Game.MARIO_PARTY_2 => dirI switch {
+            2  => "mario",
+            3  => "luigi",
+            4  => "yoshi",
+            5  => "wario",
+            6  => "donkey_kong",
+            7  => "peach",
+            9  => "menu",
+            10 => "board",
+            11 => "mini_game_info",
+            12 => "battle_results",
+            14 => "intro",
+            _  => null,
+        },
+        _ => null,
     };
 
-  private static string? GetFileName_(int dirI, int fileI)
-    => dirI switch {
-        >= 2 and <= 7 => GetCharacterFileName_(fileI),
-        _  => null,
+  private static string? GetFileName_(Game game, int dirI, int fileI)
+    => game switch {
+        Game.MARIO_PARTY_2 => dirI switch {
+            >= 2 and <= 7 => GetCharacterFileName_(fileI),
+            _             => null,
+        },
+        _ => null,
     };
 
   private static string? GetCharacterFileName_(int fileI)
@@ -150,6 +157,6 @@ public sealed class Mp64MainFsImporter
         219 => "space",
         220 => "adventure_low_poly",
         221 => "adventure",
-        _ => null,
+        _   => null,
     };
 }

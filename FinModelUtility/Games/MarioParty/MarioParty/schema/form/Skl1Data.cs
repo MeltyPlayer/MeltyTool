@@ -11,9 +11,9 @@ namespace mp64.schema.form;
 /// </summary>
 [BinarySchema]
 public sealed partial class Skl1Data : IFormChunkData {
-  public byte GlobalIndex { get; set; }
+  public ushort GlobalIndex { get; set; }
 
-  [SequenceLengthSource(SchemaIntegerType.UINT16)]
+  [SequenceLengthSource(SchemaIntegerType.BYTE)]
   public Bone[] Bones { get; set; }
 }
 

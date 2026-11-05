@@ -37,6 +37,7 @@ public sealed partial class FormChunk : IBinaryDeserializable {
         "COL1" => new Col1Data(),
         "FAC1" => new Fac1Data(),
         "HBIN" => new HbinmodeData(),
+        "MAP1" => new NoopData(),
         "MAT1" => new Mat1Data(),
         "MTN1" => new NoopData(),
         "OBJ1" => new Obj1Data(),
