@@ -11,6 +11,8 @@ public partial class ModelImpl<TVertex> {
 
     public IReadOnlyList<IMorphTarget> MorphTargets => this.morphTargets_;
 
+    public IReadOnlyMorphTarget DefaultMorph { get; } = new MorphTargetImpl();
+
     public IMorphTarget AddMorphTarget() {
       var morphTarget = new MorphTargetImpl();
       this.morphTargets_.Add(morphTarget);

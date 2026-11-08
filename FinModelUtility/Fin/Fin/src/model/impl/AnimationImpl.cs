@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 
-using fin.animation;
 using fin.animation.interpolation;
 
 namespace fin.model.impl;

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Numerics;
 
-using fin.animation;
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
@@ -18,12 +17,19 @@ public partial interface IAnimationManager {
   void RemoveAnimation(IModelAnimation animation);
 
   new IReadOnlyList<IMorphTarget> MorphTargets { get; }
+  IReadOnlyMorphTarget DefaultMorph { get; }
   IMorphTarget AddMorphTarget();
 }
 
-public interface IMorphTarget : INamed {
-  IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs { get; }
-  IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs { get; }
+[GenerateReadOnly]
+public partial interface IMorphTarget : INamed {
+  new IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> PositionMorphs {
+    get;
+  }
+
+  new IReadOnlySparseIndexableDictionary<IReadOnlyVertex, Vector3> NormalMorphs {
+    get;
+  }
 
   IMorphTarget SetNewLocalPosition(IReadOnlyVertex vertex, Vector3 position);
   IMorphTarget SetNewLocalNormal(IReadOnlyVertex vertex, Vector3 normal);
@@ -39,16 +45,15 @@ public partial interface IAnimation : INamed {
 
 [GenerateReadOnly]
 public partial interface IModelAnimation : IAnimation {
-  new IReadOnlySparseIndexableDictionary<IReadOnlyBone, IBoneTracks> BoneTracks {
-    get;
-  }
+  new IReadOnlySparseIndexableDictionary<IReadOnlyBone, IBoneTracks>
+      BoneTracks { get; }
 
   IBoneTracks GetOrCreateBoneTracks(IReadOnlyBone bone);
 
   new bool HasAnyMeshTracks { get; }
-  new IReadOnlySparseIndexableDictionary<IReadOnlyMesh, IMeshTracks> MeshTracks {
-    get;
-  }
+
+  new IReadOnlySparseIndexableDictionary<IReadOnlyMesh, IMeshTracks>
+      MeshTracks { get; }
 
   IMeshTracks AddMeshTracks(IReadOnlyMesh mesh);
 
@@ -56,6 +61,10 @@ public partial interface IModelAnimation : IAnimation {
       TextureTracks { get; }
 
   ITextureTracks AddTextureTracks(IReadOnlyTexture texture);
+
+  new IReadOnlyMorphTrack? MorphTrack { get; }
+  IMorphTrack UseMorphTrack();
+
 
   // TODO: Allow setting looping behavior (once, back and forth, etc.)
 }
@@ -216,7 +225,7 @@ public partial interface ITextureTracks {
   IStairStepKeyframes<IReadOnlyTexture?> UseFlipbookSwapKeyframes(
       int initialCapacity = 0,
       int? animationLength = null);
-  
+
   // Translation
   ISeparateVector3Keyframes<KeyframeWithTangents<float>>
       UseSeparateTranslationKeyframesWithTangents(int initialCapacity = 0,
@@ -263,5 +272,11 @@ public partial interface ITextureTracks {
                                             int? animationLength = null);
 }
 
+[GenerateReadOnly]
+public partial interface IMorphTrack {
+  // TODO: Allow this to use non-stairstep interpolation
+  // TODO: Allow weighted morph targets in a frame
+  new IStairStepKeyframes<Keyframe<IReadOnlyMorphTarget>> Keyframes { get; }
+}
 
 // TODO: Add a track for animating params, e.g. textures, UVs, frames.
