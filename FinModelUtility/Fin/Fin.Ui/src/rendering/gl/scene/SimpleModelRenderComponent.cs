@@ -22,6 +22,11 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   private (IReadOnlyMesh, IAdvancingInterpolator<MeshDisplayState>)[]
       meshDisplayStateTuples_ = [];
 
+  private IAdvancingInterpolator<IReadOnlyMorphTarget>?
+      morphTargetInterpolator_;
+
+  private IReadOnlyMorphTarget? appliedMorphTarget_;
+
   private bool needsToAlwaysUpdateMatrices_;
 
   public SimpleModelRenderComponent(IReadOnlyModel model) {
@@ -49,13 +54,20 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
     this.TextureSwapManager =
         new TextureSwapManager(model.MaterialManager.Textures);
 
-    this.modelRenderer_ =
-        new ModelRenderer(model,
-                          this.BoneTransformManager,
-                          this.TextureTransformManager,
-                          this.TextureSwapManager) {
-            MeshVisibility = this.meshVisibility_,
-        };
+    var hasMorphAnimations
+        = model.AnimationManager.Animations
+               .Any(animation => animation.MorphTrack != null);
+
+    this.modelRenderer_ = hasMorphAnimations
+        ? fin.ui.rendering.gl.model.ModelRenderer.CreateDynamic(model,
+          this.BoneTransformManager,
+          this.TextureTransformManager,
+          this.TextureSwapManager)
+        : fin.ui.rendering.gl.model.ModelRenderer.CreateStatic(model,
+          this.BoneTransformManager,
+          this.TextureTransformManager,
+          this.TextureSwapManager);
+    this.modelRenderer_.MeshVisibility = this.meshVisibility_;
 
     if (SceneTypeService.IsASingleModel) {
       this.SkeletonRenderer
@@ -134,6 +146,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
 
     if (animation != null) {
       var frame = (float) animationPlaybackManager.Frame;
+      this.ApplyMorphFrame_(frame);
       this.TextureTransformManager.CalculateMatrices(
           model.MaterialManager.Textures,
           (animation, frame));
@@ -154,11 +167,26 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
             displayState is not MeshDisplayState.HIDDEN);
       }
     } else {
+      this.ApplyMorphFrame_(0);
       this.TextureTransformManager.CalculateMatrices(
           model.MaterialManager.Textures,
           null);
       this.TextureSwapManager.UpdateCurrentFlipbookSwaps(null);
     }
+  }
+
+  private void ApplyMorphFrame_(float frame) {
+    IReadOnlyMorphTarget? morphTarget = null;
+    this.morphTargetInterpolator_?.TryGetAtFrame(
+        frame,
+        out morphTarget);
+    morphTarget ??= this.Model.AnimationManager.DefaultMorph;
+
+    if (this.appliedMorphTarget_ == morphTarget) {
+      return;
+    }
+
+    (this.modelRenderer_ as IDynamicModelRenderer)?.UpdateBuffer(morphTarget);
   }
 
   public void Render(ISceneNodeInstance _) => this.Render();
@@ -206,6 +234,8 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
                             m.DisplayStates.GetAdvancingInterpolator()))
             .ToArray() ??
             [];
+      this.morphTargetInterpolator_
+          = value?.MorphTrack?.Keyframes.GetAdvancingInterpolator();
     }
   }
 

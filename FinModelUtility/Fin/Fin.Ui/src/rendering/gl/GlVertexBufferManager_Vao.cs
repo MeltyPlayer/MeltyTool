@@ -1,5 +1,7 @@
 ﻿using System.Numerics;
 
+using fin.data.indexable;
+using fin.math.matrix.four;
 using fin.model;
 using fin.model.accessor;
 using fin.model.skeleton;
@@ -117,12 +119,6 @@ public sealed partial class GlVertexBufferManager {
       var boneTransformManager = new BoneTransformManager();
       boneTransformManager.CalculateStaticMatricesForRendering(this.model_);
 
-      var usedBoneIndexMap = this.model_.Skin.BonesUsedByVertices
-                                 .Select((bone, index) => (index, bone))
-                                 .ToDictionary(
-                                     pair => (IReadOnlyBone) pair.bone,
-                                     pair => pair.index);
-
       if (!this.modelRequirements_.HasNormals) {
         for (var i = 0; i < this.vertices_.Count; ++i) {
           var vertex = this.vertices_[i];
@@ -163,12 +159,78 @@ public sealed partial class GlVertexBufferManager {
         }
       }
 
-      var numBones = (int) this.modelRequirements_.NumBones;
+      this.PopulateNonPositionData_(out var numBones);
+      this.PassInData_(numBones);
+    }
+
+    public void UpdateBuffer(IReadOnlyMorphTarget morphTarget) {
+      var boneTransformManager = new BoneTransformManager();
+      boneTransformManager.CalculateStaticMatricesForRendering(this.model_);
+
+      var positionMorphs = morphTarget.PositionMorphs;
+      var normalMorphs = morphTarget.NormalMorphs;
+
+      if (!this.modelRequirements_.HasNormals) {
+        for (var i = 0; i < this.vertices_.Count; ++i) {
+          var vertex = this.vertices_[i];
+
+          if (!positionMorphs.TryGetValue(vertex, out var position)) {
+            position = vertex.LocalPosition;
+          }
+
+          var finTransformMatrix
+              = boneTransformManager.GetTransformMatrix(vertex);
+          if (finTransformMatrix != null) {
+            var transformMatrix = finTransformMatrix.Impl;
+            ProjectionUtil.ProjectPosition(transformMatrix, ref position);
+          }
+
+          this.positionData_[i] = position;
+        }
+      } else {
+        for (var i = 0; i < this.vertices_.Count; ++i) {
+          var vertex = this.vertices_[i];
+
+          if (!positionMorphs.TryGetValue(vertex, out var position)) {
+            position = vertex.LocalPosition;
+          }
+          if (!normalMorphs.TryGetValue(vertex, out var normal)) {
+            this.vertexAccessor_.Target(this.vertices_[i]);
+            normal = this.vertexAccessor_.LocalNormal.GetValueOrDefault();
+          }
+
+          var finTransformMatrix
+              = boneTransformManager.GetTransformMatrix(vertex);
+          if (finTransformMatrix != null) {
+            var transformMatrix = finTransformMatrix.Impl;
+            ProjectionUtil.ProjectPosition(transformMatrix, ref position);
+            ProjectionUtil.ProjectNormal(transformMatrix, ref normal);
+          }
+
+          this.positionData_[i] = position;
+          this.normalData_[i] = normal;
+
+          // TODO: Support tangent morphs...
+        }
+      }
+
+      this.PopulateNonPositionData_(out var numBones);
+      this.PassInData_(numBones);
+    }
+
+    private void PopulateNonPositionData_(out int numBones) {
+      numBones = (int) this.modelRequirements_.NumBones;
       for (var i = 0; i < this.vertices_.Count; ++i) {
         this.vertexAccessor_.Target(this.vertices_[i]);
         var vertex = this.vertexAccessor_;
 
         if (numBones > 0) {
+          var usedBoneIndexMap = this.model_.Skin.BonesUsedByVertices
+                                     .Select((bone, index) => (index, bone))
+                                     .ToDictionary(
+                                         pair => (IReadOnlyBone) pair.bone,
+                                         pair => pair.index);
+
           if ((vertex.BoneWeights?.Weights.Count ?? 0) == 0) {
             this.boneIdsData_[numBones * i] = 0;
             this.boneWeightsData_[numBones * i] = 1;
@@ -226,7 +288,9 @@ public sealed partial class GlVertexBufferManager {
           }
         }
       }
+    }
 
+    private void PassInData_(int numBones) {
       GlUtil.BindVao(this.vaoId_);
 
       var vertexAttribIndex = 0;

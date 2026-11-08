@@ -31,8 +31,8 @@ public partial class ModelRenderer {
       this.Model = model;
       this.textureTransformManager_ = textureTransformManager;
       this.textureSwapManager_ = textureSwapManager ??
-                                         new TextureSwapManager(
-                                             model.MaterialManager.Textures);
+                                 new TextureSwapManager(
+                                     model.MaterialManager.Textures);
       this.dynamic_ = dynamic;
     }
 
@@ -51,7 +51,9 @@ public partial class ModelRenderer {
             = GlVertexBufferManager.CreateStatic(this.Model, modelRequirements);
       } else {
         this.bufferManager_ = this.dynamicBufferManager_
-            = GlVertexBufferManager.CreateDynamic(this.Model, modelRequirements);
+            = GlVertexBufferManager.CreateDynamic(
+                this.Model,
+                modelRequirements);
       }
 
       this.materialRenderers_
@@ -87,6 +89,9 @@ public partial class ModelRenderer {
       => this.materialRenderers_;
 
     public void UpdateBuffer() => this.dynamicBufferManager_?.UpdateBuffer();
+
+    public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
+      => this.dynamicBufferManager_?.UpdateBuffer(morphTarget);
 
     public void UpdateMatricesUbo() { }
     public void BindMatricesUbo() { }

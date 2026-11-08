@@ -20,6 +20,7 @@ public interface IModelRenderer : IRenderable {
 
 public interface IDynamicModelRenderer : IModelRenderer {
   void UpdateBuffer();
+  void UpdateBuffer(IReadOnlyMorphTarget morphTarget);
 }
 
 public interface IMaterialRenderer : IRenderable {

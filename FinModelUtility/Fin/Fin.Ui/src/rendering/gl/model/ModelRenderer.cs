@@ -98,6 +98,8 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
   public LightsUbo? LightsUbo { get; set; }
 
   public void UpdateBuffer() => this.impl_.UpdateBuffer();
+  public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
+    => this.impl_?.UpdateBuffer(morphTarget);
 
   public void Render() {
     this.UpdateMatricesUbo();

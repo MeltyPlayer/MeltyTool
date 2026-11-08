@@ -276,7 +276,7 @@ public partial interface ITextureTracks {
 public partial interface IMorphTrack {
   // TODO: Allow this to use non-stairstep interpolation
   // TODO: Allow weighted morph targets in a frame
-  new IStairStepKeyframes<Keyframe<IReadOnlyMorphTarget>> Keyframes { get; }
+  new IStairStepKeyframes<IReadOnlyMorphTarget> Keyframes { get; }
 }
 
 // TODO: Add a track for animating params, e.g. textures, UVs, frames.

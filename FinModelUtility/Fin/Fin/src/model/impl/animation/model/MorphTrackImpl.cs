@@ -16,8 +16,8 @@ public partial class ModelImpl<TVertex> {
 
   private sealed class MorphTrackImpl(ISharedInterpolationConfig sharedConfig)
       : IMorphTrack {
-    public IStairStepKeyframes<Keyframe<IReadOnlyMorphTarget>> Keyframes {
+    public IStairStepKeyframes<IReadOnlyMorphTarget> Keyframes {
       get;
-    } = new StairStepKeyframes<Keyframe<IReadOnlyMorphTarget>>(sharedConfig);
+    } = new StairStepKeyframes<IReadOnlyMorphTarget>(sharedConfig);
   }
 }

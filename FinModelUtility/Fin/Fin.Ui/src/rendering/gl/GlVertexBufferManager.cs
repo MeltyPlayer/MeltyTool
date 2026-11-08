@@ -12,6 +12,7 @@ public partial interface IGlBufferManager : IDisposable {
 
 public interface IDynamicGlBufferManager : IGlBufferManager {
   void UpdateBuffer();
+  void UpdateBuffer(IReadOnlyMorphTarget morphTarget);
 }
 
 public sealed partial class GlVertexBufferManager : IDynamicGlBufferManager {
@@ -26,19 +27,19 @@ public sealed partial class GlVertexBufferManager : IDynamicGlBufferManager {
       IReadOnlyModel model,
       IModelRequirements modelRequirements)
     => new GlVertexBufferManager(model,
-                           modelRequirements,
-                           BufferUsageHint.StaticDraw);
+                                 modelRequirements,
+                                 BufferUsageHint.StaticDraw);
 
   public static IDynamicGlBufferManager CreateDynamic(
       IReadOnlyModel model,
       IModelRequirements modelRequirements)
     => new GlVertexBufferManager(model,
-                           modelRequirements,
-                           BufferUsageHint.DynamicDraw);
+                                 modelRequirements,
+                                 BufferUsageHint.DynamicDraw);
 
   private GlVertexBufferManager(IReadOnlyModel model,
-                          IModelRequirements modelRequirements,
-                          BufferUsageHint bufferType) {
+                                IModelRequirements modelRequirements,
+                                BufferUsageHint bufferType) {
     this.model_ = model;
     this.modelRequirements_ = modelRequirements;
     this.bufferType_ = bufferType;
@@ -69,4 +70,7 @@ public sealed partial class GlVertexBufferManager : IDynamicGlBufferManager {
                       (_, vao) => vao.Dispose());
 
   public void UpdateBuffer() => this.vao_.UpdateBuffer();
+
+  public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
+    => this.vao_.UpdateBuffer(morphTarget);
 }
