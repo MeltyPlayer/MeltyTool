@@ -33,13 +33,22 @@ public sealed class StairStepAdvancingInterpolator<T>(
     out T preceding,
     out T following,
     out float fraction) {
-    if (this.impl_.TryGetPrecedingAndFollowingKeyframes(
-          frame,
-          out var precedingKeyframe,
-          out var followingKeyframe,
-          out fraction) is not KeyframesUtil.InterpolationDataType.NONE) {
+    var interpolationType = this.impl_.TryGetPrecedingAndFollowingKeyframes(
+      frame,
+      out var precedingKeyframe,
+      out var followingKeyframe,
+      out fraction);
+    if (interpolationType is KeyframesUtil.InterpolationDataType
+                                          .PRECEDING_AND_FOLLOWING) {
       preceding = precedingKeyframe.ValueOut;
       following = followingKeyframe.ValueIn;
+      return true;
+    }
+
+    if (interpolationType is KeyframesUtil.InterpolationDataType
+                                          .PRECEDING_ONLY) {
+      preceding = precedingKeyframe.ValueOut;
+      following = default!;
       return true;
     }
 

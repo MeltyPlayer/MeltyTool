@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using System.Numerics;
+﻿using System.Numerics;
 
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
@@ -35,8 +34,6 @@ public sealed class TtydModelFileBundle
 
 public sealed class TtydModelImporter
     : IModelImporter<TtydModelImporter, TtydModelFileBundle> {
-  private const bool INCLUDE_MORPHS_ = true;
-
   public IModel Import(TtydModelFileBundle fileBundle) {
     var modelFile = fileBundle.ModelFile;
     var ttydModel = modelFile.ReadNew<Model>(Endianness.BigEndian);
@@ -522,7 +519,7 @@ public sealed class TtydModelImporter
       }
 
       // Sets up morph keyframes
-      if (INCLUDE_MORPHS_) {
+      {
         var previousMorphTarget = finModel.AnimationManager.DefaultMorphTarget;
 
         if (ttydAnimationData.Keyframes.Sum(f => f.VertexPositionDeltaCount +
@@ -536,8 +533,17 @@ public sealed class TtydModelImporter
 
             var vertexPositionDeltaCount = ttydKeyframe.VertexPositionDeltaCount;
             var vertexNormalDeltaCount = ttydKeyframe.VertexNormalDeltaCount;
-            if (vertexPositionDeltaCount > 0 || vertexNormalDeltaCount > 0) {
+            if (vertexPositionDeltaCount == 0 && vertexNormalDeltaCount == 0) {
+              morphTrack.Keyframes.Add(
+                new Keyframe<IReadOnlyMorphTarget>(
+                  keyframe,
+                  previousMorphTarget));
+            } else {
               var currentMorphTarget = previousMorphTarget.Clone();
+              currentMorphTarget.Name = $"{finAnimation.Name}_morph_{keyframe}";
+
+              previousMorphTarget = currentMorphTarget;
+
               morphTrack.Keyframes.Add(
                   new Keyframe<IReadOnlyMorphTarget>(
                       keyframe,

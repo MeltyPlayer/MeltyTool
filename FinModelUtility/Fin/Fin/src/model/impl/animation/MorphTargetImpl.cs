@@ -12,7 +12,7 @@ public partial class ModelImpl<TVertex> {
     public IReadOnlyList<IMorphTarget> MorphTargets => this.morphTargets_;
 
     public IReadOnlyMorphTarget DefaultMorphTarget { get; }
-      = new MorphTargetImpl();
+      = new MorphTargetImpl { Name = "default" };
 
     public IMorphTarget AddMorphTarget() {
       var morphTarget = new MorphTargetImpl();

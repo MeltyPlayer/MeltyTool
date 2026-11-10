@@ -120,6 +120,7 @@ public sealed class SparseIndexableDictionary<TIndexable, TValue>(int capacity)
   public SparseIndexableDictionary<TIndexable, TValue> Clone() {
     var copy = new SparseIndexableDictionary<TIndexable, TValue>(this.impl_.Capacity);
     copy.impl_.AddRange(this.impl_);
+    copy.Count = this.Count;
     return copy;
   }
 }
