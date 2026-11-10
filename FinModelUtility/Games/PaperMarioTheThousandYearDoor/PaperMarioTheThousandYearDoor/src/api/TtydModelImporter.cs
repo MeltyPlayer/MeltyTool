@@ -35,7 +35,7 @@ public sealed class TtydModelFileBundle
 
 public sealed class TtydModelImporter
     : IModelImporter<TtydModelImporter, TtydModelFileBundle> {
-  private const bool INCLUDE_MORPHS_ = false;
+  private const bool INCLUDE_MORPHS_ = true;
 
   public IModel Import(TtydModelFileBundle fileBundle) {
     var modelFile = fileBundle.ModelFile;
@@ -529,15 +529,8 @@ public sealed class TtydModelImporter
                                                  f.VertexNormalDeltaCount) > 0) {
           var morphTrack = finAnimation.UseMorphTrack();
 
-          var vertexPositions
-            = new SparseIndexableDictionary<IReadOnlyVertex, Vector3>();
-          var vertexNormals
-            = new SparseIndexableDictionary<IReadOnlyVertex, Vector3>();
-          foreach (var vertex in allVertices) {
-            vertexPositions[vertex] = vertex.LocalPosition;
-            vertexNormals[vertex] = vertex.AssertAsA<INormalVertex>().LocalNormal!.Value;
-          }
-
+          var vertexPositions = ttydModel.Vertices.ToArray();
+          var vertexNormals = ttydModel.Normals.ToArray();
           foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
             var keyframe = ttydKeyframe.Time;
 
