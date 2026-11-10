@@ -130,7 +130,7 @@ public sealed class AssimpIndirectModelExporter : IModelExporter {
 
     var hasMorphAnimation =
         model.AnimationManager.Animations.Any(
-            animation => animation.MorphTargetFrames.Count > 0);
+            animation => animation.MorphTrack?.Keyframes.HasAnyData ?? false);
 #if !ENABLE_PATCHED_ASSIMP_MORPH_FBX
     if (!this.LowLevel && nonGltfFormats.Length > 0 && hasMorphAnimation) {
       // Assimp 6 currently crashes in native code while writing FBX blend

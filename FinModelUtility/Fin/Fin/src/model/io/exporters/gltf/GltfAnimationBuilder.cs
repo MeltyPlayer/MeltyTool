@@ -17,7 +17,7 @@ public sealed class GltfAnimationBuilder {
       (GltfNode, IReadOnlyBone)[] skinNodesAndBones,
       IReadOnlyDictionary<IReadOnlyMesh, Node> gltfNodeByFinMesh,
       float modelScale,
-      IReadOnlyList<IMorphTarget> morphTargets,
+      IReadOnlyList<IReadOnlyMorphTarget> morphTargets,
       IReadOnlyList<IReadOnlyModelAnimation> animations) {
     foreach (var animation in animations) {
       this.BuildAnimation_(
@@ -35,7 +35,7 @@ public sealed class GltfAnimationBuilder {
       (GltfNode, IReadOnlyBone)[] skinNodesAndBones,
       IReadOnlyDictionary<IReadOnlyMesh, Node> gltfNodeByFinMesh,
       float modelScale,
-      IReadOnlyList<IMorphTarget> morphTargets,
+      IReadOnlyList<IReadOnlyMorphTarget> morphTargets,
       IReadOnlyModelAnimation animation) {
     var hasBoneAnimation
         = animation
@@ -44,7 +44,7 @@ public sealed class GltfAnimationBuilder {
                    => (finBoneTracks.Translations?.HasAnyData ?? false) ||
                       (finBoneTracks.Rotations?.HasAnyData ?? false) ||
                       (finBoneTracks.Scales?.HasAnyData ?? false));
-    var hasMorphAnimation = animation.MorphTargetFrames.Count > 0;
+    var hasMorphAnimation = animation.MorphTrack?.Keyframes.HasAnyData ?? false;
 
     if (!hasBoneAnimation && !hasMorphAnimation) {
       return;
@@ -77,13 +77,15 @@ public sealed class GltfAnimationBuilder {
                                  .ToDictionary(pair => pair.target,
                                                pair => pair.index);
         var morphKeyframes = new Dictionary<float, float[]>();
+
+        var morphTrackDefinitions = animation.MorphTrack.Keyframes.Definitions;
         for (var frame = 0;
-             frame < animation.MorphTargetFrames.Count;
+             frame < morphTrackDefinitions.Count;
              ++frame) {
           var weights = new float[allMorphTargets];
-          var morphTarget = animation.MorphTargetFrames[frame];
+          var morphTarget = morphTrackDefinitions[frame];
           if (morphTarget != null &&
-              morphTargetIndices.TryGetValue(morphTarget,
+              morphTargetIndices.TryGetValue(morphTarget.ValueOut,
                                              out var morphTargetIndex)) {
             weights[morphTargetIndex] = 1;
           }

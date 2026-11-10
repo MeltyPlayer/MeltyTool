@@ -1,7 +1,8 @@
-﻿using fin.animation;
+﻿using System.Numerics;
+
+using fin.animation;
 using fin.animation.interpolation;
 using fin.config;
-using fin.data.indexable;
 using fin.math;
 using fin.math.floats;
 using fin.model;
@@ -31,9 +32,6 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
     toMorphTarget, float fraction) appliedMorphTarget_;
 
   private bool needsToAlwaysUpdateMatrices_;
-  private readonly Vector3[] baseVertexPositions_;
-  private readonly Vector3?[] baseVertexNormals_;
-  private int displayedMorphFrame_ = -1;
 
   public SimpleModelRenderComponent(IReadOnlyModel model) {
     this.Model = model;
@@ -208,61 +206,6 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
     }
   }
 
-  private void ApplyMorphFrame_(IReadOnlyModelAnimation animation,
-                                float frame) {
-    var morphTargetFrames = animation.MorphTargetFrames;
-    if (morphTargetFrames.Count == 0) {
-      return;
-    }
-
-    var frameIndex = Math.Clamp((int) MathF.Floor(frame),
-                                0,
-                                morphTargetFrames.Count - 1);
-    if (frameIndex == this.displayedMorphFrame_) {
-      return;
-    }
-
-    var morphTarget = morphTargetFrames[frameIndex];
-    var vertices = this.Model.Skin.Vertices;
-    for (var i = 0; i < vertices.Count; ++i) {
-      if (vertices[i] is not IVertex vertex) {
-        continue;
-      }
-
-      vertex.SetLocalPosition(
-          morphTarget != null &&
-          morphTarget.PositionMorphs.TryGetValue(vertices[i], out var position)
-              ? position
-              : this.baseVertexPositions_[i]);
-
-      if (vertex is INormalVertex normalVertex) {
-        normalVertex.SetLocalNormal(
-            morphTarget != null &&
-            morphTarget.NormalMorphs.TryGetValue(vertices[i], out var normal)
-                ? normal
-                : this.baseVertexNormals_[i]);
-      }
-    }
-
-    (this.modelRenderer_ as IDynamicModelRenderer)?.UpdateBuffer();
-
-    // The dynamic GL buffer now owns a copy of the pose. Restore the Fin model
-    // immediately so exporting while an animation is playing still uses the
-    // canonical base mesh rather than whichever frame happened to be visible.
-    for (var i = 0; i < vertices.Count; ++i) {
-      if (vertices[i] is not IVertex vertex) {
-        continue;
-      }
-
-      vertex.SetLocalPosition(this.baseVertexPositions_[i]);
-      if (vertex is INormalVertex normalVertex) {
-        normalVertex.SetLocalNormal(this.baseVertexNormals_[i]);
-      }
-    }
-
-    this.displayedMorphFrame_ = frameIndex;
-  }
-
   public void Render(ISceneNodeInstance _) => this.Render();
 
   public void Render(bool allowUpdatingState = true) {
@@ -292,7 +235,6 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
       }
 
       field = value;
-      this.displayedMorphFrame_ = -1;
       this.SimpleBoneTransformView.AnimatedBoneTransformView.Animation = value;
 
       var apm = this.AnimationPlaybackManager;

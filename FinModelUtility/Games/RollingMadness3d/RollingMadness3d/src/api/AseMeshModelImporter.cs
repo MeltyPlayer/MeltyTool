@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 
+using fin.animation.keyframes;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.image;
@@ -20,7 +21,8 @@ public record AseMeshModelFileBundle(
     IReadOnlyTreeDirectory TextureDirectory,
     IReadOnlyList<AseAnimationMetadata>? AnimationMetadata = null,
     float? Specular = null,
-    IReadOnlyList<IReadOnlyTreeFile>? MetadataFiles = null) : IModelFileBundle {
+    IReadOnlyList<IReadOnlyTreeFile>? MetadataFiles = null) 
+    : IModelFileBundle<AseMeshModelFileBundle, AseMeshModelImporter> {
   public IReadOnlyTreeFile MainFile => this.AseMeshFile;
 }
 
@@ -261,14 +263,13 @@ public sealed class AseMeshModelImporter
         animation.FrameCount = frameCount;
         animation.FrameRate = (frameCount - 1) / aseMesh.AnimationDuration;
         animation.UseLoopingInterpolation = metadata.Loop;
-        animation.AnimationInterpolationMagFilter = metadata.NoInterpolation
-            ? fin.animation.AnimationInterpolationMagFilter
-                 .ORIGINAL_FRAME_RATE_NEAREST
-            : fin.animation.AnimationInterpolationMagFilter
-                 .ORIGINAL_FRAME_RATE_LINEAR;
-        animation.SetMorphTargetFrames(metadata.Reverse
-            ? morphTargetFrames.Reverse().ToArray()
-            : morphTargetFrames);
+        animation
+            .UseMorphTrack()
+            .Keyframes.AddRange(
+                (metadata.Reverse
+                    ? morphTargetFrames.Reverse()
+                    : morphTargetFrames)
+                .Select((m, f) => new Keyframe<IReadOnlyMorphTarget>(f, m)));
       }
     }
 
