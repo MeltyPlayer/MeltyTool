@@ -13,7 +13,7 @@ namespace uni.games.chibi_robo;
 ///   - https://github.com/adierking/unplug/blob/main/unplug/src/dvd/archive.rs
 /// </summary>
 public sealed class QpBinArchiveExtractor {
-  public void Extract(IReadOnlyGenericFile qpBinFile,
+  public void Extract(IReadOnlyStandaloneFile qpBinFile,
                       ISystemDirectory outDirectory) {
     using var br =
         new SchemaBinaryReader(qpBinFile.OpenRead(), Endianness.BigEndian);

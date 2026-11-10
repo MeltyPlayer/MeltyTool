@@ -22,7 +22,7 @@ public sealed class Prm {
   public List<uint> Triangles { get; set; }
   public List<GenericVertex> Vertices { get; set; }
 
-  public Prm(IReadOnlyGenericFile prmFile) {
+  public Prm(IReadOnlyStandaloneFile prmFile) {
     using var r = prmFile.OpenReadAsBinary(Endianness.LittleEndian);
     this.Open(r);
   }

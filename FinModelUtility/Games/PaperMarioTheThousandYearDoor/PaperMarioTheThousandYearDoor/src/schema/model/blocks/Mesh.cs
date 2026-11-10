@@ -10,7 +10,9 @@ public sealed partial class Mesh : IBinaryDeserializable {
 
   public int SamplerIndex { get; set; }
 
-  [SequenceLengthSource(9)]
+  public uint TevMode { get; set; }
+
+  [SequenceLengthSource(8)]
   public int[] Unks2 { get; set; }
 
   public int PolygonBaseIndex { get; set; }

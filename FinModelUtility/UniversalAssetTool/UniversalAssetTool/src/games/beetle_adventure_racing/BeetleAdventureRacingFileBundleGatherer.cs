@@ -10,12 +10,16 @@ namespace uni.games.beetle_adventure_racing;
 public sealed class BeetleAdventureRacingFileBundleGatherer
     : BN64FileBundleGatherer {
   public override string Name => "beetle_adventure_racing";
+  public override string Title => "Beetle Adventure Racing!";
 
   protected override void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,
-      ISystemDirectory extractedDir) {
-    new BarFileTableImporter().ExtractInto(romFile, extractedDir);
-  }
+      ISystemDirectory extractedDir,
+      ISystemDirectory prereqsDir)
+    => new BarFileTableImporter()
+        .ExtractInto(
+            new BarRomFileBundle(romFile),
+            extractedDir);
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
@@ -65,7 +69,7 @@ public sealed class BeetleAdventureRacingFileBundleGatherer
     var barSceneUvmoFile
         = fileHierarchy.Root.AssertGetExistingFile($"uvmo/{0x32}.uvmo").Impl;
     foreach (var (sceneIndex, name) in new[] {
-                 (0x5, "Coventry Cove"), 
+                 (0x5, "Coventry Cove"),
                  (0x6, "Wicked Woods"),
                  (0x7, "Mount Mayhem"),
                  (0x8, "Sunset Sands"),

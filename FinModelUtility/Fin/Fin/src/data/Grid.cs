@@ -38,6 +38,20 @@ public sealed class Grid<T> : IGrid<T> {
     }
   }
 
+  public delegate T DefaultValueHandler(int x, int y);
+
+  public Grid(int width, int height, DefaultValueHandler defaultValueHandler) {
+    this.Width = width;
+    this.Height = height;
+
+    this.impl_ = new T[width * height];
+    for (var y = 0; y < height; ++y) {
+      for (var x = 0; x < width; ++x) {
+        this[x, y] = defaultValueHandler(x, y);
+      }
+    }
+  }
+
   public int Width { get; }
   public int Height { get; }
 

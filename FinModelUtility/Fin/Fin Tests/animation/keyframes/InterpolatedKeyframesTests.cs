@@ -133,10 +133,10 @@ public sealed class InterpolatedKeyframesTests {
     impl.SetKeyframe(4, 2);
     impl.SetKeyframe(6, 3);
 
-    Assert.IsFalse(impl.TryGetAtFrame(-1, out _));
+    Assert.IsFalse(impl.TryGetAtFrameWithBinarySearch(-1, out _));
 
-    Assert.IsFalse(impl.TryGetAtFrame(0, out _));
-    Assert.IsFalse(impl.TryGetAtFrame(1, out _));
+    Assert.IsFalse(impl.TryGetAtFrameWithBinarySearch(0, out _));
+    Assert.IsFalse(impl.TryGetAtFrameWithBinarySearch(1, out _));
     AssertFrame_(impl, 2, 1);
     AssertFrame_(impl, 3, 1.5f);
     AssertFrame_(impl, 4, 2);
@@ -233,7 +233,7 @@ public sealed class InterpolatedKeyframesTests {
   private static void AssertFrame_<T>(IInterpolatable<T> impl,
                                       float frame,
                                       T expected) {
-    Assert.IsTrue(impl.TryGetAtFrame(frame, out var actual));
+    Assert.IsTrue(impl.TryGetAtFrameWithBinarySearch(frame, out var actual));
     Assert.AreEqual(expected, actual);
   }
 

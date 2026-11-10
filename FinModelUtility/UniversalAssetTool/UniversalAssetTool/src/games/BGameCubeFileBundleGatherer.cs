@@ -9,11 +9,17 @@ namespace uni.games;
 public abstract class BGameCubeFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.GAMECUBE;
 
   public virtual bool IsListed => true;
   public bool IsAvailable
-    => GcnFileHierarchyExtractor.HasRomOrExtractedDirectory(this.Name);
+    => GcnFileHierarchyExtractor.HasRomOrExtractedDirectory(
+        this.Name,
+        this.GameIDs_);
+
+  private IReadOnlySet<string> GameIDs_
+    => field ??= this.GetSupportedGameIDs().ToHashSet();
 
   public virtual GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Standard();
@@ -28,6 +34,7 @@ public abstract class BGameCubeFileBundleGatherer
       IMutablePercentageProgress mutablePercentageProgress) {
     if (!new GcnFileHierarchyExtractor().TryToExtractFromGame(
             this.Name,
+            this.GameIDs_,
             this.Options,
             out var fileHierarchy)) {
       return;

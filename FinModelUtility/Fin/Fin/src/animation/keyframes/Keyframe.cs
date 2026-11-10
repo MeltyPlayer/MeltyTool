@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace fin.animation.keyframes;
 
-public readonly record struct Keyframe<T>(
+public sealed record Keyframe<T>(
     float Frame,
     T ValueIn,
     T ValueOut)

@@ -22,17 +22,19 @@ public static class TransparencyTypeUtil {
     return TransparencyType.TRANSPARENT;
   }
 
-  public static TransparencyType GetTransparencyType(IReadOnlyImage image) {
+  public static unsafe TransparencyType GetTransparencyType(IReadOnlyImage image) {
     if (!image.HasAlphaChannel) {
       return TransparencyType.OPAQUE;
     }
 
     switch (image) {
       case La16Image la16Image: {
-        using var imgLock = la16Image.Lock();
+        using var imgLock = la16Image.UnsafeLock();
 
         var transparencyType = TransparencyType.OPAQUE;
-        foreach (var pixel in imgLock.Pixels) {
+        var scan0 = imgLock.pixelScan0;
+        for (var i = 0; i < imgLock.lengthInPixels; ++i) {
+          var pixel = scan0[i];
           switch (pixel.A) {
             case 0: {
               transparencyType = TransparencyType.MASK;
@@ -47,10 +49,12 @@ public static class TransparencyTypeUtil {
         return transparencyType;
       }
       case Rgba32Image rgba32Image: {
-        using var imgLock = rgba32Image.Lock();
+        using var imgLock = rgba32Image.UnsafeLock();
 
         var transparencyType = TransparencyType.OPAQUE;
-        foreach (var pixel in imgLock.Pixels) {
+        var scan0 = imgLock.pixelScan0;
+        for (var i = 0; i < imgLock.lengthInPixels; ++i) {
+          var pixel = scan0[i];
           switch (pixel.A) {
             case 0: {
               transparencyType = TransparencyType.MASK;

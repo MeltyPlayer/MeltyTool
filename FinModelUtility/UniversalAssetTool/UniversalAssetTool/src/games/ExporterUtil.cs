@@ -9,7 +9,6 @@ using fin.model;
 using fin.model.io;
 using fin.model.io.exporters;
 using fin.model.io.exporters.assimp.indirect;
-using fin.model.io.importers;
 using fin.model.processing;
 using fin.util.asserts;
 using fin.util.progress;
@@ -33,7 +32,7 @@ public enum ExportResult {
 
 public static class ExporterUtil {
   static ExporterUtil() {
-    logger_ = Logging.Create("exportor");
+    logger_ = Logging.Create("exporter");
   }
 
   private static readonly ILogger logger_;
@@ -62,16 +61,8 @@ public static class ExporterUtil {
   public static bool CheckIfModelFileBundleAlreadyExported(
       IFileBundle annotatedModelFileBundle,
       IEnumerable<ExportedFormat> formats) {
-    // TODO: Clean this up!!
-    var bundle = annotatedModelFileBundle;
-    var mainFile = bundle.MainFile;
-
-    var parentOutputDirectory =
-        ExtractorUtil.GetOutputDirectoryForFileBundle(
-            annotatedModelFileBundle);
-    var outputDirectory = new FinDirectory(
-        Path.Join(parentOutputDirectory.FullPath,
-                  mainFile.NameWithoutExtension));
+    var name = GetExportName(annotatedModelFileBundle);
+    var outputDirectory = GetOutputDirectory_(annotatedModelFileBundle);
 
     if (outputDirectory.Exists) {
       return formats
@@ -80,13 +71,36 @@ public static class ExporterUtil {
                                .GetExistingFiles()
                                .Where(file => extension == file.FileType)
                                .Any(file => file.NameWithoutExtension
-                                                .SequenceEqual(
-                                                    mainFile
-                                                        .NameWithoutExtension)));
+                                                .SequenceEqual(name)));
     }
 
     return false;
   }
+
+  /// <summary>
+  ///   The name a bundle is exported under, which is usually its main file's
+  ///   name. Bundles in a virtual directory that are only part of their main
+  ///   file use their name in the file tree instead, so they don't collide.
+  /// </summary>
+  public static string GetExportName(IFileBundle fileBundle) {
+    var mainFile = fileBundle.MainFile;
+    var rawName = fileBundle.RawName;
+    return fileBundle.VirtualDirectoryPath != null &&
+           !rawName.SequenceEqual(mainFile.Name)
+        ? rawName.ToString()
+        : mainFile.NameWithoutExtension.ToString();
+  }
+
+  /// <summary>
+  ///   Each bundle is exported into a folder of its own, named after it, so
+  ///   bundles that share a parent folder don't overwrite each other's
+  ///   textures.
+  /// </summary>
+  private static FinDirectory GetOutputDirectory_(IFileBundle fileBundle)
+    => new FinDirectory(
+        Path.Join(
+            ExtractorUtil.GetOutputDirectoryForFileBundle(fileBundle).FullPath,
+            GetExportName(fileBundle)));
 
   public static ExportedFormat[] SupportedExportFormats { get; } = [
       ExportedFormat.DAE,
@@ -137,41 +151,15 @@ public static class ExporterUtil {
     return organizer.List;
   }
 
-  public static void ExportAllForCli<T>(
-      IFileBundleGatherer gatherer,
-      IModelImporter<T> reader)
-      where T : IModelFileBundle
+  public static void ExportAllForCli(
+      IFileBundleGatherer gatherer)
     => ExportAllForCli_(
-        gatherer.GatherFileBundles(),
-        reader,
+        gatherer.GatherFileBundles().OfType<IModelFileBundle>(),
         Config.Instance.Exporter.General.ExportedFormats,
         false);
-
-  public static void ExportAllOfTypeForCli<TSubType>(
-      IFileBundleGatherer gatherer,
-      IModelImporter<TSubType> reader)
-      where TSubType : IModelFileBundle
-    => ExportAllForCli_(
-        gatherer.GatherFileBundles().OfType<TSubType>(),
-        reader,
-        Config.Instance.Exporter.General.ExportedFormats,
-        false);
-
-  private static void ExportAllForCli_<T>(
-      IEnumerable<IFileBundle> fileBundles,
-      IModelImporter<T> reader,
-      IReadOnlySet<ExportedFormat> formats,
-      bool overwriteExistingFiles)
-      where T : IModelFileBundle
-    => ExportAllForCli_(
-        fileBundles.OfType<T>(),
-        reader,
-        formats,
-        overwriteExistingFiles);
 
   private static void ExportAllForCli_<T>(
       IEnumerable<T> modelFileBundles,
-      IModelImporter<T> reader,
       IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFiles)
       where T : IModelFileBundle {
@@ -181,7 +169,6 @@ public static class ExporterUtil {
 
     foreach (var modelFileBundle in bundlesArray) {
       Export(modelFileBundle,
-             reader,
              formats,
              overwriteExistingFiles);
     }
@@ -190,7 +177,6 @@ public static class ExporterUtil {
 
   public static ExportResultTuple[] ExportAll<T>(
       IEnumerable<IFileBundle> fileBundles,
-      IModelImporter<T> reader,
       IProgress<(float, T?)> progress,
       CancellationTokenSource cancellationTokenSource,
       IReadOnlySet<ExportedFormat> formats,
@@ -211,7 +197,6 @@ public static class ExporterUtil {
       progress.Report((i * 1f / fileBundleArray.Length, modelFileBundle));
       results[i] = Export(
           modelFileBundle,
-          reader,
           formats,
           overwriteExistingFiles);
     }
@@ -223,12 +208,11 @@ public static class ExporterUtil {
 
   public static ExportResultTuple Export<T>(
       T modelFileBundle,
-      IModelImporter<T> reader,
       IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFile)
       where T : IModelFileBundle
     => Export(modelFileBundle,
-              () => reader.ImportAndProcess(modelFileBundle),
+              () => modelFileBundle.ImportAndProcess(),
               formats,
               overwriteExistingFile);
 
@@ -238,17 +222,9 @@ public static class ExporterUtil {
       IReadOnlySet<ExportedFormat> formats,
       bool overwriteExistingFile)
       where T : I3dFileBundle {
-    var mainFile = Asserts.CastNonnull(threeDFileBundle.MainFile);
-
-    var parentOutputDirectory =
-        ExtractorUtil.GetOutputDirectoryForFileBundle(threeDFileBundle);
-    var outputDirectory = new FinDirectory(
-        Path.Join(parentOutputDirectory.FullPath,
-                  mainFile.NameWithoutExtension));
-
     return Export(threeDFileBundle,
                   loaderHandler,
-                  outputDirectory,
+                  GetOutputDirectory_(threeDFileBundle),
                   formats,
                   overwriteExistingFile);
   }
@@ -278,8 +254,8 @@ public static class ExporterUtil {
       bool overwriteExistingFile,
       string? overrideName = null)
       where T : I3dFileBundle {
-    var mainFile = Asserts.CastNonnull(threeDFileBundle.MainFile);
-    var name = (overrideName ?? mainFile.NameWithoutExtension).ToString();
+    var name = overrideName ?? GetExportName(threeDFileBundle);
+    var displayPath = threeDFileBundle.DisplayFullPath.ToString();
 
     if (threeDFileBundle.UseLowLevelExporter) {
       formats = [AssimpUtil.GetExportFormatFromExtension(".gltf")];
@@ -290,12 +266,12 @@ public static class ExporterUtil {
                                                    $"{name}.{format.FileExtension}")));
     if (!overwriteExistingFile &&
         targetFiles.All(targetFile => targetFile.Exists)) {
-      MessageUtil.LogAlreadyProcessed(logger_, mainFile);
+      MessageUtil.LogAlreadyProcessed(logger_, displayPath);
       return (threeDFileBundle, ExportResult.ALREADY_EXISTS, null);
     }
 
     outputDirectory.Create();
-    MessageUtil.LogExporting(logger_, mainFile);
+    MessageUtil.LogExporting(logger_, displayPath);
 
     Exception? exception = null;
 

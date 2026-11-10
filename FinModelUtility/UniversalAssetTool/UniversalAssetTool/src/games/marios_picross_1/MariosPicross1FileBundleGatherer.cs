@@ -11,6 +11,7 @@ namespace uni.games.marios_picross_1;
 
 public sealed class MariosPicross1FileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "marios_picross_1";
+  public string Title => "Mario's Picross";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.SNES;

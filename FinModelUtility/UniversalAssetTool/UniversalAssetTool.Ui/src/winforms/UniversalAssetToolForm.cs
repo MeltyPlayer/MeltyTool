@@ -18,7 +18,6 @@ using uni.cli;
 using uni.config;
 using uni.games;
 using uni.ui.winforms.common.fileTreeView;
-using uni.api;
 using uni.services;
 
 using DialogResult = System.Windows.Forms.DialogResult;
@@ -147,7 +146,7 @@ public partial class UniversalAssetToolForm : Form {
     }
 
     // TODO: Merge models in a scene instead!
-    var model = new GlobalModelImporter().ImportAndProcess(modelBundle);
+    var model = modelBundle.ImportAndProcess();
 
     var allSupportedExportFormats = AssimpUtil.SupportedExportFormats
                                               .OrderBy(ef => ef.Description)

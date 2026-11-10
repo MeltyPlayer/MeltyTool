@@ -1,75 +1,73 @@
 ﻿using System.Buffers;
 using System.Runtime.CompilerServices;
 
-using fin.color;
+using fin.data;
 using fin.image;
 using fin.image.formats;
-using fin.math.floats;
 using fin.model;
-using fin.ui.rendering.gl.material;
+using fin.util.hash;
 
 using OpenTK.Graphics.OpenGL4;
 
-using FinTextureMinFilter = fin.model.TextureMinFilter;
 using PixelFormat = OpenTK.Graphics.OpenGL4.PixelFormat;
-using TextureMagFilter = fin.model.TextureMagFilter;
-using TextureMinFilter = OpenTK.Graphics.OpenGL4.TextureMinFilter;
-
 
 namespace fin.ui.rendering.gl.texture;
 
-public record GlTextureParams {
+public sealed record GlTextureParams {
+  public static GlTextureParams FromTexture(IReadOnlyTexture texture)
+    => new() {
+        Image = texture.Image,
+        MipmapImages = texture.MipmapImages,
+    };
+
   public required IReadOnlyImage Image { get; init; }
   public required IReadOnlyList<IReadOnlyImage> MipmapImages { get; init; }
 
-  public WrapMode WrapModeU { get; init; }
-  public WrapMode WrapModeV { get; init; }
+  public bool Equals(GlTextureParams? other) {
+    if (other == null) {
+      return false;
+    }
 
-  public required FinTextureMinFilter MinFilter { get; init; }
-  public required TextureMagFilter MagFilter { get; init; }
-  public required IColor? BorderColor { get; init; }
+    if (ReferenceEquals(this, other)) {
+      return true;
+    }
 
-  public required float MinLod { get; init; }
-  public required float MaxLod { get; init; }
-  public required float LodBias { get; init; }
+    return this.Image.Equals(other.Image) &&
+           this.MipmapImages.SequenceEqual(other.MipmapImages);
+  }
 
-  public required bool ThreePointFiltering { get; init; }
+  public override int GetHashCode()
+    => FluentHash.Start()
+                 .With(this.Image)
+                 .With(this.MipmapImages);
 }
 
 public sealed class GlTexture : IGlTexture {
   // Intentionally separates params from texture, so we can share a single GL
   // texture between multiple Fin textures.
-  private static readonly Dictionary<GlTextureParams, GlTexture> cache_ = new();
+  private static ReferenceCountCacheDictionary<GlTextureParams, GlTexture>
+      cache_ = new(
+          prms => new GlTexture(prms),
+          (_, glTexture) => {
+            var id = glTexture.Id;
+            if (id != UNDEFINED_ID) {
+              GL.DeleteTextures(1, ref id);
+              glTexture.Id = UNDEFINED_ID;
+              glTexture.IsDisposed = true;
+            }
+          },
+          count => DebugService.OpenGlTextureCount = count);
 
   private const int UNDEFINED_ID = -1;
   private readonly GlTextureParams? params_;
 
-  public static GlTexture FromTexture(IReadOnlyTexture texture) {
-    var prms = new GlTextureParams {
-        Image = texture.Image,
-        MipmapImages = texture.MipmapImages,
+  private bool canGenerateMipmaps_;
 
-        WrapModeU = texture.WrapModeU,
-        WrapModeV = texture.WrapModeV,
+  public static GlTexture FromTexture(IReadOnlyTexture texture)
+    => FromParams(GlTextureParams.FromTexture(texture));
 
-        MinFilter = texture.MinFilter,
-        MagFilter = texture.MagFilter,
-        BorderColor = texture.BorderColor,
-
-        MinLod = texture.MinLod,
-        MaxLod = texture.MaxLod,
-        LodBias = texture.LodBias,
-
-        ThreePointFiltering = texture.ThreePointFiltering,
-    };
-
-    if (!cache_.TryGetValue(prms, out var glTexture)) {
-      glTexture = new GlTexture(prms);
-      cache_[prms] = glTexture;
-    }
-
-    return glTexture;
-  }
+  public static GlTexture FromParams(GlTextureParams prms)
+    => cache_.GetAndIncrement(prms);
 
   public GlTexture(IReadOnlyImage image) {
     GL.GenTextures(1, out int id);
@@ -77,109 +75,52 @@ public sealed class GlTexture : IGlTexture {
 
     var target = TextureTarget.Texture2D;
     GL.BindTexture(target, this.Id);
-    {
-      this.LoadImageIntoTexture_(image, 0);
-    }
+    GlUtil.BindTexture(0, this.Id);
+    this.LoadImageIntoTexture_(image, 0);
   }
 
   private GlTexture(GlTextureParams prms) {
     this.params_ = prms;
 
-    FinTextureMinFilter minFilter;
-    TextureMagFilter magFilter;
-    if (!prms.ThreePointFiltering) {
-      minFilter = prms.MinFilter;
-      magFilter = prms.MagFilter;
-    } else {
-      // TODO: This is just an assumption for now, what should this be?
-      minFilter = FinTextureMinFilter.NEAR;
-      magFilter = TextureMagFilter.NEAR;
-    }
-
     GL.GenTextures(1, out int id);
     this.Id = id;
 
     var target = TextureTarget.Texture2D;
-    GL.BindTexture(target, this.Id);
+    GlUtil.BindTexture(0, this.Id);
     {
       var mipmapImages = prms.MipmapImages;
 
       this.LoadMipmapImagesIntoTexture_(mipmapImages);
-
-      if (mipmapImages.Count == 1 &&
-          minFilter is FinTextureMinFilter.NEAR_MIPMAP_NEAR
-                       or FinTextureMinFilter.NEAR_MIPMAP_LINEAR
-                       or FinTextureMinFilter.LINEAR_MIPMAP_NEAR
-                       or FinTextureMinFilter.LINEAR_MIPMAP_LINEAR) {
-        GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-      } else {
+      if (mipmapImages.Count > 1) {
         GL.TexParameter(target,
                         TextureParameterName.TextureMaxLevel,
                         mipmapImages.Count - 1);
+      } else {
+        this.canGenerateMipmaps_ = true;
       }
+    }
 
-      var finBorderColor = prms.BorderColor;
-      var hasBorderColor = finBorderColor != null;
-      GL.TexParameter(target,
-                      TextureParameterName.TextureWrapS,
-                      (int) ConvertFinWrapToGlWrap_(
-                          prms.WrapModeU,
-                          hasBorderColor));
-      GL.TexParameter(target,
-                      TextureParameterName.TextureWrapT,
-                      (int) ConvertFinWrapToGlWrap_(
-                          prms.WrapModeV,
-                          hasBorderColor));
-
-      if (hasBorderColor) {
-        var glBorderColor = new[] {
-            finBorderColor.Rf,
-            finBorderColor.Gf,
-            finBorderColor.Bf,
-            finBorderColor.Af
-        };
-
-        GL.TexParameter(target,
-                        TextureParameterName.TextureBorderColor,
-                        glBorderColor);
+    switch (prms.Image) {
+      case La16Image: {
+        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.Green]);
+        break;
       }
-
-      GL.TexParameter(
-          target,
-          TextureParameterName.TextureMinFilter,
-          (int) (minFilter switch {
-              FinTextureMinFilter.NEAR   => TextureMinFilter.Nearest,
-              FinTextureMinFilter.LINEAR => TextureMinFilter.Linear,
-              FinTextureMinFilter.NEAR_MIPMAP_NEAR => TextureMinFilter
-                  .NearestMipmapNearest,
-              FinTextureMinFilter.NEAR_MIPMAP_LINEAR => TextureMinFilter
-                  .NearestMipmapLinear,
-              FinTextureMinFilter.LINEAR_MIPMAP_NEAR => TextureMinFilter
-                  .LinearMipmapNearest,
-              FinTextureMinFilter.LINEAR_MIPMAP_LINEAR => TextureMinFilter
-                  .LinearMipmapLinear,
-          }));
-      GL.TexParameter(
-          target,
-          TextureParameterName.TextureMagFilter,
-          (int) (magFilter switch {
-              TextureMagFilter.NEAR => OpenTK.Graphics.OpenGL.TextureMagFilter
-                                             .Nearest,
-              TextureMagFilter.LINEAR => OpenTK.Graphics.OpenGL
-                                               .TextureMagFilter.Linear,
-              _ => throw new ArgumentOutOfRangeException()
-          }));
-      GL.TexParameter(target,
-                      TextureParameterName.TextureMinLod,
-                      prms.MinLod);
-      GL.TexParameter(target,
-                      TextureParameterName.TextureMaxLod,
-                      prms.MaxLod);
-      if (!prms.LodBias.IsRoughly0()) {
-        GL.TexParameter(target,
-                        TextureParameterName.TextureLodBias,
-                        prms.LodBias);
+      case L8Image: {
+        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.One]);
+        break;
       }
+      case I8Image: {
+        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.Red]);
+        break;
+      }
+    }
+  }
+
+  public void GenerateMipmapsIfHaventYet() {
+    if (this.canGenerateMipmaps_) {
+      this.canGenerateMipmaps_ = false;
+      GlUtil.BindTexture(0, this.Id);
+      GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
     }
   }
 
@@ -217,38 +158,36 @@ public sealed class GlTexture : IGlTexture {
                             fastLock.byteScan0);
         break;
       }
-      // TODO: Luminance/LuminanceAlpha is not supported in OpenGL ES. Implement support for R/RG instead
-      /*
       case La16Image la16Image: {
         using var fastLock = la16Image.UnsafeLock();
         PassBytesIntoImage_(level,
-                            TextureComponentCount.LuminanceAlpha,
+                            PixelInternalFormat.Rg16,
                             imageWidth,
                             imageHeight,
-                            PixelFormat.LuminanceAlpha,
+                            PixelFormat.Rg,
                             fastLock.byteScan0);
         break;
       }
       case L8Image l8Image: {
         using var fastLock = l8Image.UnsafeLock();
         PassBytesIntoImage_(level,
-                            TextureComponentCount.Luminance,
+                            PixelInternalFormat.R8,
                             imageWidth,
                             imageHeight,
-                            PixelFormat.Luminance,
+                            PixelFormat.Red,
                             fastLock.byteScan0);
         break;
       }
       case I8Image i8Image: {
         using var fastLock = i8Image.UnsafeLock();
         PassBytesIntoImage_(level,
-                            TextureComponentCount.LuminanceAlpha,
+                            PixelInternalFormat.R8,
                             imageWidth,
                             imageHeight,
-                            PixelFormat.LuminanceAlpha,
+                            PixelFormat.Red,
                             fastLock.byteScan0);
         break;
-      }*/
+      }
       default: {
         using var rentedBytes = pool_.Rent(4 * imageWidth * imageHeight);
         image.Access(getHandler => {
@@ -312,23 +251,13 @@ public sealed class GlTexture : IGlTexture {
   }
 
   private void ReleaseUnmanagedResources_() {
-    if (GlMaterialConstants.IsCommonTexture(this)) {
-      return;
-    }
-
     if (this.IsDisposed) {
       return;
     }
 
-    this.IsDisposed = true;
     if (this.params_ != null) {
-      cache_.Remove(this.params_);
+      cache_.DecrementAndMaybeDispose(this.params_);
     }
-
-    var id = this.Id;
-    GL.DeleteTextures(1, ref id);
-
-    this.Id = UNDEFINED_ID;
   }
 
   public int Id { get; private set; } = UNDEFINED_ID;
@@ -336,20 +265,4 @@ public sealed class GlTexture : IGlTexture {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0)
     => GlUtil.BindTexture(textureIndex, this.Id);
-
-  private static int ConvertFinWrapToGlWrap_(
-      WrapMode wrapMode,
-      bool hasBorderColor) =>
-      wrapMode switch {
-          WrapMode.CLAMP => hasBorderColor
-              ? (int) TextureWrapMode.ClampToBorder
-              : (int) TextureWrapMode.ClampToEdge,
-          WrapMode.REPEAT        => (int) TextureWrapMode.Repeat,
-          WrapMode.MIRROR_CLAMP  => (int) All.MirrorClampToEdge,
-          WrapMode.MIRROR_REPEAT => (int) All.MirroredRepeat,
-          _ => throw new ArgumentOutOfRangeException(
-              nameof(wrapMode),
-              wrapMode,
-              null)
-      };
 }

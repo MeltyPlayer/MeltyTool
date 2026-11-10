@@ -35,6 +35,25 @@ public struct FluentHash {
     => this.With(other?.GetHashCode() ?? NULL_HASH);
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public FluentHash With<T>(IReadOnlyList<T>? others) where T : notnull {
+    if (others == null) {
+      this.With(NULL_HASH);
+    } else {
+      foreach (var other in others) {
+        this.With(other);
+      }
+    }
+
+    return this;
+  }
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
+  public FluentHash With<T>(T[]? other) where T : notnull
+    => other == null
+        ? this.With(NULL_HASH)
+        : this.With(other.AsSpan());
+
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public FluentHash With<T>(ReadOnlySpan<T> others) where T : notnull {
     foreach (var other in others) {
       this.With(other);

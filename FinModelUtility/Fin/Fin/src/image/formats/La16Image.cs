@@ -6,7 +6,7 @@ namespace fin.image.formats;
 public sealed class La16Image : BImage<La16> {
   public La16Image(PixelFormat format, int width, int height) : this(
       format,
-      new Image<La16>(FinImage.ImageSharpConfig, width, height)) { }
+      new Image<La16>(width, height)) { }
 
   internal La16Image(PixelFormat format, Image<La16> impl) : base(
       format) {

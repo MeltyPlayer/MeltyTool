@@ -20,7 +20,7 @@ public sealed class Mk3dTrackSceneImporter
   public IScene Import(Mk3dTrackSceneFileBundle fileBundle) {
     var rootDir = fileBundle.PlaceholderFile.AssertGetParent();
 
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
     var finScene = new SceneImpl {
         FileBundle = fileBundle,
         Files = fileSet,

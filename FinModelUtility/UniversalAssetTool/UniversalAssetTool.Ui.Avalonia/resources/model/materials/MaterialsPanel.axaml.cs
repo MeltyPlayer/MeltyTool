@@ -5,6 +5,7 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Data.Converters;
 
+using fin.data.dictionaries;
 using fin.model;
 using fin.ui;
 using fin.ui.rendering;
@@ -14,53 +15,64 @@ using ReactiveUI;
 
 namespace uni.ui.avalonia.resources.model.materials;
 
+using MaterialTuple = (int index, IReadOnlyModel model, IReadOnlyMaterial? material);
+
 public sealed class MaterialsPanelViewModelForDesigner
     : MaterialsPanelViewModel {
   public MaterialsPanelViewModelForDesigner() {
     var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
-    this.ModelAndMaterials = (model, [material, material, material]);
+
+    var modelsAndMaterials = new ListDictionary<IReadOnlyModel, IReadOnlyMaterial?>();
+    modelsAndMaterials.Add(model, material);
+    modelsAndMaterials.Add(model, material);
+    modelsAndMaterials.Add(model, material);
+
+    this.ModelsAndMaterials = modelsAndMaterials;
   }
 }
 
-public class MaterialsPanelViewModel : BViewModel {
-  private (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
-      modelAndMaterials_;
-
-  public (IReadOnlyModel, IReadOnlyList<IReadOnlyMaterial?>)
-      ModelAndMaterials {
-    get => this.modelAndMaterials_;
+public class MaterialsPanelViewModel : BViewModel, ISelectablePanelViewModel {
+  public IReadOnlyListDictionary<IReadOnlyModel, IReadOnlyMaterial?>
+      ModelsAndMaterials {
+    get;
     set {
-      this.RaiseAndSetIfChanged(ref this.modelAndMaterials_, value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
-      var (_, materials) = value;
+      var allMaterials = new List<MaterialTuple>(value.TotalCount);
+      foreach (var model in value.Keys) {
+        var materials = value[model];
+        allMaterials.AddRange(
+            materials.OrderBy(m => m?.Name, StringUtil.NaturalSortInstance)
+                     .Select((m, i) => (i, model, m)));
+      }
+
       this.Materials
-          = new ObservableCollection<(int, IReadOnlyMaterial?)>(
-              materials.OrderBy(m => m?.Name,
-                                StringUtil.NaturalSortInstance)
-                       .Select((m, i) => (i, m)));
+          = new ObservableCollection<MaterialTuple>(
+              allMaterials.OrderBy(t => t.Item3?.Name,
+                                   StringUtil.NaturalSortInstance));
     }
   }
 
-  public ObservableCollection<(int, IReadOnlyMaterial?)> Materials {
+  public ObservableCollection<MaterialTuple> Materials {
     get;
     private set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.SelectedMaterial = this.Materials.FirstOrDefault();
+      this.SelectedMaterial
+          = this.Materials.Count > 0 ? this.Materials.First() : null;
     }
   }
 
-  public (int, IReadOnlyMaterial?)? SelectedMaterial {
+  public MaterialTuple? SelectedMaterial {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
       this.SelectedMaterialPanel
           = value != null
               ? new MaterialPanelViewModel {
-                  ModelAndMaterial = (
-                      this.modelAndMaterials_.Item1, value.Value.Item2),
+                  ModelAndMaterial = (value.Value.model, value.Value.material),
               }
               : null;
-      SelectedMaterialsService.SelectMaterial(field?.Item2);
+      SelectedMaterialsService.SelectMaterial(field?.material);
     }
   }
 
@@ -70,6 +82,11 @@ public class MaterialsPanelViewModel : BViewModel {
         ref field,
         value);
   }
+
+  public SelectableType Type => SelectableType.MATERIAL;
+
+  public void ReselectSelectedElementViaService()
+    => SelectedMaterialsService.SelectMaterial(this.SelectedMaterial?.material);
 }
 
 public partial class MaterialsPanel : UserControl {
@@ -78,9 +95,6 @@ public partial class MaterialsPanel : UserControl {
   }
 
   public static readonly IValueConverter GetMaterialLabel =
-      new FuncValueConverter<(int, IReadOnlyMaterial?), string>(
-          x => {
-            var (i, m) = x;
-            return $"Material {i}: {(m?.Name ?? "(null)")}";
-          });
+      new FuncValueConverter<MaterialTuple,
+              string>(t => $"Material {t.index}: {(t.material?.Name ?? "(null)")}");
 }

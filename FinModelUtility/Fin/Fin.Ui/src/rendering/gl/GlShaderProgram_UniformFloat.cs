@@ -16,7 +16,7 @@ public partial class GlShaderProgram {
     }
 
   private class FloatShaderUniform(int location)
-      : BShaderUniform, IShaderUniform<float> {
+      : BShaderUniform(location), IShaderUniform<float> {
     private float value_;
 
     public void SetAndMarkDirty(in float value) {

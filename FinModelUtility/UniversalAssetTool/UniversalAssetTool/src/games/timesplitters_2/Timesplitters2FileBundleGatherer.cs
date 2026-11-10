@@ -5,8 +5,11 @@ using fin.util.progress;
 
 namespace uni.games.timesplitters_2;
 
+// https://wiki.dolphin-emu.org/index.php?title=GTSE4F
+[GameIDs("GTSE4F", "GTSP4F")]
 public sealed class Timesplitters2FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "timesplitters_2";
+  public override string Title => "TimeSplitters 2";
 
   public override bool IsListed => false;
 

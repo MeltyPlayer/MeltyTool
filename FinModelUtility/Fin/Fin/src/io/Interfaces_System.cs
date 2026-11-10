@@ -60,6 +60,6 @@ public partial interface ISystemDirectory
 }
 
 public partial interface ISystemFile
-    : ISystemIoObject, IReadOnlySystemFile, IGenericFile, GMSysFile {
+    : ISystemIoObject, IReadOnlySystemFile, IStandaloneFile, GMSysFile {
   bool Delete();
 }

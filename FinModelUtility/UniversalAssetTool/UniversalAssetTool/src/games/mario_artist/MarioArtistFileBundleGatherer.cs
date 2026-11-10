@@ -10,6 +10,7 @@ namespace uni.games.mario_artist;
 
 public sealed class MarioArtistFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "mario_artist";
+  public override string Title => "Mario Artist";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.N64;

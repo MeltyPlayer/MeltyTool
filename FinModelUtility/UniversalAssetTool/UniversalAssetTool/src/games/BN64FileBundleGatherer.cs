@@ -5,9 +5,9 @@ using fin.util.progress;
 
 namespace uni.games;
 
-public abstract class BN64FileBundleGatherer
-    : INamedFileBundleGatherer {
+public abstract class BN64FileBundleGatherer : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.N64;
 
   public bool IsAvailable
@@ -18,7 +18,8 @@ public abstract class BN64FileBundleGatherer
 
   protected abstract void ExtractFilesFromRom(
       IReadOnlyTreeFile romFile,
-      ISystemDirectory extractedDir);
+      ISystemDirectory extractedDir,
+      ISystemDirectory prereqsDir);
 
   protected abstract void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
@@ -37,10 +38,12 @@ public abstract class BN64FileBundleGatherer
       return;
     }
 
-    var extractedDir = ExtractorUtil.GetOrCreateExtractedDirectory(
-        this.Name);
+    ExtractorUtil.GetOrCreateRomDirectoriesWithPrereqs(
+        this.Name,
+        out var prereqsDir,
+        out var extractedDir);
     if (extractedDir.IsEmpty) {
-      this.ExtractFilesFromRom(romFile, extractedDir);
+      this.ExtractFilesFromRom(romFile, extractedDir, prereqsDir);
     }
 
     var fileHierarchy

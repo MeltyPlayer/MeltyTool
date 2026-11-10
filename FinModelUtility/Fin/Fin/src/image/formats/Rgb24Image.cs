@@ -6,7 +6,7 @@ namespace fin.image.formats;
 public sealed class Rgb24Image : BImage<Rgb24> {
   public Rgb24Image(PixelFormat format, int width, int height) : this(
       format,
-      new Image<Rgb24>(FinImage.ImageSharpConfig, width, height)) { }
+      new Image<Rgb24>(width, height)) { }
 
   internal Rgb24Image(PixelFormat format, Image<Rgb24> impl) : base(
       format) {

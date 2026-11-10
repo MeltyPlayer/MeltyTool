@@ -6,6 +6,7 @@ namespace uni.games.meltyplayer;
 
 public sealed class MeltyPlayerFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "meltyplayer";
+  public override string Title => "MeltyPlayer";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

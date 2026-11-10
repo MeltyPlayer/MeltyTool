@@ -6,11 +6,11 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
-  public int ActiveTexture { get; set; } = -1;
+public partial record GlState {
+  public int ActiveTexture { get; set; }
 
   public int[] CurrentTextureBindings { get; }
-    = Enumerable.Repeat(-1, MaterialConstants.MAX_TEXTURES + 1).ToArray();
+    = Enumerable.Repeat(0, MaterialConstants.MAX_TEXTURES + 1).ToArray();
 }
 
 public static partial class GlUtil {
@@ -26,8 +26,7 @@ public static partial class GlUtil {
     }
 
     GL.BindTexture(TextureTarget.Texture2D,
-                   currentState_.CurrentTextureBindings[textureIndex]
-                       = value);
+                   currentState_.CurrentTextureBindings[textureIndex] = value);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -5,11 +5,12 @@ using fin.color;
 
 namespace fin.model.accessor;
 
-public sealed class MaximalVertexAccessor : IVertexAccessor {
+public sealed class MaximalVertexAccessor 
+    : IVertexAccessor<MaximalVertexAccessor> {
   private IReadOnlyVertex currentVertex_;
 
-  public static IVertexAccessor GetAccessorForModel(IReadOnlyModel model)
-    => new MaximalVertexAccessor();
+  public static MaximalVertexAccessor GetAccessorForModel(IReadOnlyModel model)
+    => new();
 
   private MaximalVertexAccessor() { }
 

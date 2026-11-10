@@ -30,6 +30,7 @@ public enum PixelFormat {
 
   HILO88,
 
+  P2,
   P4,
   P8,
 

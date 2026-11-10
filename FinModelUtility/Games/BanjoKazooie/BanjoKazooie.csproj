@@ -3,7 +3,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>bk</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

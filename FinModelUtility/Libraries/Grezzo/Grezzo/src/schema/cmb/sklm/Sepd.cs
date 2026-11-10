@@ -4,7 +4,9 @@ using schema.binary.attributes;
 namespace grezzo.schema.cmb.sklm;
 
 [BinarySchema]
-public sealed partial class Sepd : IBinaryConvertible {
+public sealed partial class Sepd : IBinaryConvertible, IChildOf<Shp> {
+  public Shp Parent { get; set; }
+
   private readonly string magic_ = "sepd";
 
   public uint chunkSize;
@@ -31,7 +33,7 @@ public sealed partial class Sepd : IBinaryConvertible {
   public float[] positionOffset { get; } = new float[3];
 
   [Skip]
-  private bool hasMinAndMax_ => CmbHeader.Version.SupportsMinAndMaxInSepd();
+  private bool hasMinAndMax_ => this.Parent.Parent.Version.SupportsMinAndMaxInSepd();
 
   // Min coordinate of the shape
   [RIfBoolean(nameof(hasMinAndMax_))]
@@ -47,7 +49,7 @@ public sealed partial class Sepd : IBinaryConvertible {
   public readonly VertexAttribute normal = new();
 
   [Skip]
-  private bool hasTangents_ => CmbHeader.Version.SupportsInSepd();
+  private bool hasTangents_ => this.Parent.Parent.Version.SupportsInSepd();
 
   [RIfBoolean(nameof(hasTangents_))]
   public VertexAttribute? tangents;

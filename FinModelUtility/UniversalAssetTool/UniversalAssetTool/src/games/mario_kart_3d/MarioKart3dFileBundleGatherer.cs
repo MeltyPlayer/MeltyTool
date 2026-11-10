@@ -9,6 +9,7 @@ namespace uni.games.mario_kart_3d;
 
 public sealed class MarioKart3dFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "mario_kart_3d";
+  public override string Title => "Mario Kart 3D";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

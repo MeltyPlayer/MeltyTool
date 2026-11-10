@@ -16,7 +16,7 @@ public static class InterpolatableExtensions {
       float frame,
       IndividualInterpolationConfig<T>? individualConfig,
       out T value) {
-    if (impl.TryGetAtFrame(frame, out value)) {
+    if (impl.TryGetAtFrameWithBinarySearch(frame, out value)) {
       return true;
     }
 

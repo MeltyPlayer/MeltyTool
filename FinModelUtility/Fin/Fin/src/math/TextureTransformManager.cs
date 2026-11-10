@@ -16,8 +16,6 @@ public interface IReadOnlyTextureTransformManager {
 }
 
 public interface ITextureTransformManager : IReadOnlyTextureTransformManager {
-  void Clear();
-
   void CalculateMatrices(
       IReadOnlyList<IReadOnlyTexture> textures,
       (IReadOnlyModelAnimation, float)? animationAndFrame
@@ -25,23 +23,29 @@ public interface ITextureTransformManager : IReadOnlyTextureTransformManager {
 }
 
 public sealed class TextureTransformManager : ITextureTransformManager {
-  private readonly IndexableDictionary<IReadOnlyTexture, (bool is2d, Matrix3x2
-      twoDMatrix, Matrix4x4 threeDMatrix)> texturesToMatrices_ = new();
+  private IndexableArray<IReadOnlyTexture, (bool is2d, Matrix3x2
+      twoDMatrix, Matrix4x4 threeDMatrix)> texturesToMatrices_;
 
   private bool hasInit_;
+  private bool hasScrollingTextures_;
   private (IReadOnlyModelAnimation, float)? previousAnimationAndFrame_;
-
-  public void Clear() => this.texturesToMatrices_.Clear();
 
   public void CalculateMatrices(
       IReadOnlyList<IReadOnlyTexture> textures,
       (IReadOnlyModelAnimation, float)? animationAndFrame) {
-    if (this.hasInit_ && this.previousAnimationAndFrame_ == animationAndFrame) {
+    // Scrolling textures change over time even if the animation/frame
+    // doesn't, so their matrices always need to be recalculated.
+    if (this.hasInit_ &&
+        !this.hasScrollingTextures_ &&
+        this.previousAnimationAndFrame_ == animationAndFrame) {
       return;
     }
 
     this.hasInit_ = true;
+    this.hasScrollingTextures_ = false;
     this.previousAnimationAndFrame_ = animationAndFrame;
+
+    this.texturesToMatrices_ ??= new(textures.Count);
     
     var animation = animationAndFrame?.Item1;
     var frame = animationAndFrame?.Item2;
@@ -49,6 +53,8 @@ public sealed class TextureTransformManager : ITextureTransformManager {
     // Intentionally looping by index to avoid allocating an enumerator.
     for (var i = 0; i < textures.Count; ++i) {
       var texture = textures[i];
+      this.hasScrollingTextures_ |= texture is IScrollingTexture;
+
       Vector3? animationTranslation = null;
       Vector3? animationRotation = null;
       Vector3? animationScale = null;
@@ -59,7 +65,7 @@ public sealed class TextureTransformManager : ITextureTransformManager {
       if (textureTracks != null) {
         // Only gets the values from the animation if the frame is at least partially defined.
         if (textureTracks.Translations?.HasAnyData ?? false) {
-          if (textureTracks.Translations.TryGetAtFrame(
+          if (textureTracks.Translations.TryGetAtFrameWithBinarySearch(
                   frame.Value,
                   out var outAnimationTranslation)) {
             animationTranslation = outAnimationTranslation;
@@ -67,7 +73,7 @@ public sealed class TextureTransformManager : ITextureTransformManager {
         }
 
         if (textureTracks.Rotations?.HasAnyData ?? false) {
-          if (textureTracks.Rotations.TryGetAtFrame(
+          if (textureTracks.Rotations.TryGetAtFrameWithBinarySearch(
                   frame.Value,
                   out var outAnimationRotation)) {
             animationRotation = outAnimationRotation.ToEulerRadians();
@@ -75,7 +81,7 @@ public sealed class TextureTransformManager : ITextureTransformManager {
         }
 
         if (textureTracks.Scales?.HasAnyData ?? false) {
-          if (textureTracks.Scales.TryGetAtFrame(
+          if (textureTracks.Scales.TryGetAtFrameWithBinarySearch(
                   frame.Value,
                   out var outAnimationScale)) {
             animationScale = outAnimationScale;

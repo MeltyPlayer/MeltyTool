@@ -8,7 +8,6 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>UoT</RootNamespace>
     <AssemblyName>Utility of Time CSharp</AssemblyName>
-    <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

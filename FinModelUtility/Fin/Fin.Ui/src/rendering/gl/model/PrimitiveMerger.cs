@@ -32,8 +32,7 @@ public sealed class PrimitiveMerger {
       mergedPrimitive = new MergedPrimitive {
           PrimitiveType = primitive.Type,
           IsFlipped = primitive.VertexOrder == VertexOrder.CLOCKWISE,
-          Vertices = (
-                  primitive, (IEnumerable<IReadOnlyVertex>) primitive.Vertices)
+          Vertices = (primitive, (IEnumerable<IReadOnlyVertex>) primitive.Vertices)
               .Yield(),
           RequiresSeparators = false,
       };

@@ -14,6 +14,7 @@ public interface IFileBundleDirectory {
 
   IFileBundleDirectory AddSubdir(IReadOnlyTreeDirectory directory);
   IFileBundleDirectory AddSubdir(string name);
+  IFileBundleDirectory GetOrAddSubdir(string name);
   void AddFileBundle(IFileBundle fileBundle);
 
   void CleanUp();
@@ -49,6 +50,15 @@ public sealed class FileBundleDirectory : IFileBundleDirectory {
     this.subdirs_.Add(subdir);
     return subdir;
   }
+
+  /// <summary>
+  ///   Gets the virtual (not backed by a directory) subdir with the given
+  ///   name, adding it if it doesn't exist yet.
+  /// </summary>
+  public IFileBundleDirectory GetOrAddSubdir(string name)
+    => this.subdirs_.FirstOrDefault(
+           subdir => subdir.Directory == null && subdir.Name == name) ??
+       this.AddSubdir(name);
 
   public void AddFileBundle(IFileBundle fileBundle)
     => this.fileBundles_.Add(fileBundle);

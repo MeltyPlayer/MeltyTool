@@ -16,7 +16,8 @@ using gm.schema.d3d;
 
 namespace gm.api;
 
-public sealed class D3dModelFileBundle : IModelFileBundle {
+public sealed class D3dModelFileBundle
+    : IModelFileBundle<D3dModelFileBundle, D3dModelImporter> {
   public required IReadOnlyTreeFile D3dFile { get; init; }
 
   public IReadOnlyTreeFile? TextureFile { get; init; }
@@ -31,10 +32,11 @@ public sealed class D3dModelFileBundle : IModelFileBundle {
   public WrapMode TextureWrapMode { get; init; }
 }
 
-public sealed class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
+public sealed class D3dModelImporter
+    : IModelImporter<D3dModelImporter, D3dModelFileBundle> {
   public IModel Import(D3dModelFileBundle modelFileBundle) {
     var d3dFile = modelFileBundle.D3dFile;
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
 
     var (finModel, finRootBone)
         = CreateModel((modelFileBundle, fileSet));
@@ -51,7 +53,7 @@ public sealed class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
   public static void AddToModel(
       D3dModelFileBundle modelFileBundle,
       IModel<ISkin<Normal1Color1UvVertexImpl>> finModel,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       IBone finRootBone,
       bool flipNormals = false) {
     var d3dFile = modelFileBundle.D3dFile;
@@ -76,6 +78,8 @@ public sealed class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
             .Select((frameImage, i) => {
               var frameTexture = finMaterialManager.CreateTexture(
                   frameImage.RemoveTopLeftBackgroundColor());
+              frameImage.Dispose();
+
               frameTexture.Name =
                   frameImages.Length > 0 ? $"{name}_{i}" : name;
               frameTexture.WrapModeU = frameTexture.WrapModeV =
@@ -107,7 +111,7 @@ public sealed class D3dModelImporter : IModelImporter<D3dModelFileBundle> {
   }
 
   public static (IModel<ISkin<Normal1Color1UvVertexImpl>>, IBone) CreateModel(
-      (IFileBundle fileBundle, IReadOnlySet<IReadOnlyGenericFile> files)?
+      (IFileBundle fileBundle, IReadOnlySet<IReadOnlyStandaloneFile> files)?
           modelMetadata = null) {
     var finModel =
         new ModelImpl<Normal1Color1UvVertexImpl>((index, position)

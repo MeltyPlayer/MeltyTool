@@ -1,6 +1,9 @@
-﻿using System.Numerics;
+﻿using System.Drawing;
+using System.Numerics;
 using System.Text;
 using System.Text.RegularExpressions;
+
+using Assimp;
 
 using fin.data.lazy;
 using fin.image;
@@ -40,14 +43,41 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
     var finScene = new SceneImpl { FileBundle = fileBundle, Files = fileSet };
 
     var finArea = finScene.AddArea();
-    finScene.CreateDefaultLighting(finArea.AddRootNode());
+
+    var rawJsonLines = trackJsonFile.ReadAllLines();
+    var validJson = $"[{string.Join(',', rawJsonLines)}]";
+
+    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
+      new JsonSerializerSettings {
+          Converters = [new SingleOrArrayConverter<string>()]
+      })!;
+
+    var visibleItems =
+        trackItems.Where(i => i.type is "Model" or "Object" or "Sprite")
+                  .ToArray();
+
+    var spriteNames
+        = trackItems
+          .SelectMany(i => GetSpriteNamesForModel_(i.my_struct)
+                           .ConcatIfNonnull(i.my_struct?.sprite_index)
+                           .ConcatIfNonnull(i.floortex?.Yield()))
+          .Where(s => s != null && s != "")
+          .Distinct()
+          .ToArray();
 
     var dataDirectory = fileBundle.DataDirectory;
     var spriteDirectory =
         fileBundle.ExtractedDirectory.AssertGetExistingSubdir("dataWin\\sprt");
 
-    var lazySpriteImages
-        = new LazyCaseInvariantStringDictionary<IImage>(spriteName => {
+    var imageBySpriteName = new Dictionary<string, IReadOnlyImage>();
+    Parallel.ForEach(
+        spriteNames,
+        spriteName => {
+          if (spriteName == "<undefined>") {
+            imageBySpriteName[spriteName] = FinImage.Create1x1FromColor(Color.Magenta);
+            return;
+          }
+
           if (!spriteDirectory.TryToGetExistingFile(
                   $"{spriteName}.png",
                   out var spriteFile)) {
@@ -55,26 +85,78 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
                 spriteDirectory.AssertGetExistingFile($"{spriteName}_0.png");
           }
 
-          return FinImage.FromFile(spriteFile);
+          imageBySpriteName[spriteName] = FinImage.FromFile(spriteFile);
+        });
+
+    var lazySpriteModels
+        = new LazyDictionary<(string spriteIndex, Vector2 scale, int flipX), IReadOnlyModel>(tuple => {
+          var (spriteName, scale, flipX) = tuple;
+
+          var spriteModel = new ModelImpl
+              { FileBundle = fileBundle, Files = fileSet };
+
+          var spriteImage = imageBySpriteName[spriteName];
+
+          var (spriteMaterial, spriteTexture) = spriteModel.MaterialManager
+              .AddSimpleTextureMaterialFromImage(spriteImage);
+          spriteMaterial.CullingMode = CullingMode.SHOW_FRONT_ONLY;
+          spriteTexture.MinFilter = TextureMinFilter.NEAR;
+          spriteTexture.MagFilter = TextureMagFilter.NEAR;
+
+          var spriteSkin = spriteModel.Skin;
+          var spriteMesh = spriteSkin.AddMesh();
+          spriteMesh.AddSimpleYawOnlyBillboard(
+              spriteModel.Skeleton.Root,
+              spriteSkin,
+              spriteImage.Width * scale.X,
+              spriteImage.Height * scale.Y,
+              spriteMaterial,
+              true,
+              flipX == -1);
+
+          return spriteModel;
         });
 
     var modelDirectory = dataDirectory.AssertGetExistingSubdir("MODEL");
+    var trackItemIndexAndPaths
+        = visibleItems.Select(i => i.my_struct?.model_index)
+                      .Nonnull()
+                      .Distinct()
+                      .Select(i => (i.Value, GetPathForModelIndex_(i.Value)))
+                      .ToArray();
+
+    var trackItemCtxAndScenesByIndex = new (AssimpContext, Scene)?[
+        trackItemIndexAndPaths.MaxOrDefault(t => t.Value, -1) + 1];
+
+    var importer = new AssimpModelImporter();
+    Parallel.ForEach(
+        trackItemIndexAndPaths,
+        tuple => {
+          var (modelIndex, modelPath) = tuple;
+          if (modelPath == null) {
+            return;
+          }
+          
+          trackItemCtxAndScenesByIndex[modelIndex]
+              = importer.ImportScene(new AssimpModelFileBundle {
+                  MainFile = modelDirectory.AssertGetExistingFile(modelPath)
+              });
+        });
+
     var lazyTrackItemModels
         = new LazyDictionary<(int, string[]), IModel?>(tuple => {
           var (modelIndex, spriteNames) = tuple;
-          var modelPath = GetPathForModelIndex_(modelIndex);
-
-          if (modelPath == null) {
+          
+          var ctxSceneTuple = trackItemCtxAndScenesByIndex[modelIndex];
+          if (ctxSceneTuple == null) {
             return null;
           }
 
-          var finModel = new AssimpModelImporter().Import(
-              new AssimpModelFileBundle {
-                  MainFile = modelDirectory.AssertGetExistingFile(modelPath)
-              });
+          var (ctx, assScene) = ctxSceneTuple.Value;
+          var finModel = importer.Import(fileBundle, ctx, assScene);
 
           var spriteName = spriteNames[0];
-          var spriteImage = lazySpriteImages[spriteName];
+          var spriteImage = imageBySpriteName[spriteName];
           var (finMaterial, finTexture)
               = finModel.MaterialManager.AddSimpleTextureMaterialFromImage(
                   spriteImage,
@@ -113,14 +195,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
       trackObject.AddSceneModel(trackModel);
     }
 
-    var rawJsonLines = trackJsonFile.ReadAllLines();
-    var validJson = $"[{string.Join(',', rawJsonLines)}]";
-
-    var trackItems = JsonConvert.DeserializeObject<List<TrackItem>>(validJson,
-      new JsonSerializerSettings {
-          Converters = [new SingleOrArrayConverter<string>()]
-      })!;
-
     // Gets nodes for track
     var trackNodes = trackItems
                      .Where(i => i is { type: "Node", my_array: not null })
@@ -146,8 +220,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
     }
 
     var trackPath = new TrackPath(trackNodes);
-    var visibleItems =
-        trackItems.Where(i => i.type is "Model" or "Object" or "Sprite");
     foreach (var trackItem in visibleItems) {
       var myStruct = trackItem.my_struct;
 
@@ -205,32 +277,10 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
           break;
         }
         case "Sprite": {
-          var spriteModel = new ModelImpl
-              { FileBundle = fileBundle, Files = fileSet };
-
           var spriteIndex = trackItem.my_struct.sprite_index.AssertNonnull();
-          var spriteImage = lazySpriteImages[spriteIndex];
+          var spriteModel = lazySpriteModels[(spriteIndex, new Vector2(xScale, yScale), myStruct.flip_x ?? 1)];
 
           trackItemObj.Name = $"Sprite {spriteIndex}";
-
-          var (spriteMaterial, spriteTexture) = spriteModel.MaterialManager
-              .AddSimpleTextureMaterialFromImage(
-                  spriteImage);
-          spriteMaterial.CullingMode = CullingMode.SHOW_FRONT_ONLY;
-          spriteTexture.MinFilter = TextureMinFilter.NEAR;
-          spriteTexture.MagFilter = TextureMagFilter.NEAR;
-
-          var spriteSkin = spriteModel.Skin;
-          var spriteMesh = spriteSkin.AddMesh();
-          spriteMesh.AddSimpleYawOnlyBillboard(
-              spriteModel.Skeleton.Root,
-              spriteSkin,
-              spriteImage.Width * xScale,
-              spriteImage.Height * yScale,
-              spriteMaterial,
-              true,
-              (myStruct.flip_x ?? 1) == -1);
-
           trackItemObj.AddSceneModel(spriteModel);
 
           break;
@@ -246,8 +296,7 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
       var floorModel = new ModelImpl
           { FileBundle = fileBundle, Files = fileSet };
 
-      var floorImage
-          = lazySpriteImages[otherTrackItem.floortex.AssertNonnull()];
+      var floorImage = imageBySpriteName[otherTrackItem.floortex.AssertNonnull()];
 
       var (floorMaterial, floorTexture) = floorModel.MaterialManager
                                                     .AddSimpleTextureMaterialFromImage(
@@ -261,7 +310,6 @@ public sealed partial class VictoryHeatRallyTrackSceneImporter
 
       var floorSkin = floorModel.Skin;
       var floorMesh = floorSkin.AddMesh();
-
 
       // TODO: Either off by one tile or flipped
       var ul = (new Vector3(-floorSize / 2, 0, -floorSize / 2), new Vector2(0, 0));

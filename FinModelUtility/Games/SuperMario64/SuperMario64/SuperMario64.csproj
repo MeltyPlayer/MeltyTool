@@ -3,7 +3,6 @@
     <OutputType>Library</OutputType>
     <RootNamespace>sm64</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   

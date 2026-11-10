@@ -3,7 +3,11 @@ using System.Runtime.CompilerServices;
 
 namespace fin.math.interpolation;
 
-public readonly struct Vector3Interpolator : IInterpolator<Vector3> {
+public class Vector3Interpolator : IInterpolator<Vector3> {
+  public static Vector3Interpolator Instance { get; } = new();
+
+  private Vector3Interpolator() { }
+
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public Vector3 Interpolate(in Vector3 lhs, in Vector3 rhs, float progress)
     => Vector3.Lerp(lhs, rhs, progress);

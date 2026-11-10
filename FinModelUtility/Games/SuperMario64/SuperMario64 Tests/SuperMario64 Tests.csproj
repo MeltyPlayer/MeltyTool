@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RootNamespace>sm64</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

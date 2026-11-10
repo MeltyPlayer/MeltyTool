@@ -1,13 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>hm64</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.18" />
+    <PackageReference Include="CsvHelper" Version="33.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
+    <ProjectReference Include="..\..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
   </ItemGroup>
 </Project>

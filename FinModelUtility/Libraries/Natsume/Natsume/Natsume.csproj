@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>natsume</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="src\schema\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
+  </ItemGroup>
+
+</Project>

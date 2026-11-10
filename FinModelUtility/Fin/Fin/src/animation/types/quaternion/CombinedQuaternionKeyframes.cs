@@ -12,7 +12,7 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
     IKeyframeInterpolator<TKeyframe, Quaternion> interpolator,
     IndividualInterpolationConfig<Quaternion>? individualConfig = null)
     : ICombinedQuaternionKeyframes<TKeyframe>
-    where TKeyframe : IKeyframe<Quaternion> {
+    where TKeyframe : class, IKeyframe<Quaternion> {
   private readonly InterpolatedKeyframes<TKeyframe, Quaternion> impl_
       = new(sharedConfig, interpolator, individualConfig);
 
@@ -25,13 +25,16 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
 
   public bool HasAnyData => this.impl_.HasAnyData;
 
+  public void EnsureCapacity(int capacity)
+    => this.impl_.EnsureCapacity(capacity);
+
   public int AnimationLength => sharedConfig.AnimationLength;
   public bool Looping => sharedConfig.Looping;
 
   public void Add(TKeyframe keyframe) => this.impl_.Add(keyframe);
 
-  public bool TryGetAtFrame(float frame, out Quaternion value)
-    => this.impl_.TryGetAtFrame(frame, out value);
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Quaternion value)
+    => this.impl_.TryGetAtFrameWithBinarySearch(frame, out value);
 
   public void GetAllFrames(Span<Quaternion> dst) => this.impl_.GetAllFrames(dst);
 
@@ -39,4 +42,11 @@ public sealed class CombinedQuaternionKeyframes<TKeyframe>(
       out IReadOnlyList<(float frame, Quaternion value)> keyframes,
       out IReadOnlyList<(Quaternion tangentIn, Quaternion tangentOut)>? tangentKeyframes)
     => this.impl_.TryGetSimpleKeyframes(out keyframes, out tangentKeyframes);
+
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator()
+    => new AdvancingInterpolator<Quaternion, TKeyframe>(
+        sharedConfig,
+        individualConfig,
+        this.impl_.Impl,
+        interpolator);
 }

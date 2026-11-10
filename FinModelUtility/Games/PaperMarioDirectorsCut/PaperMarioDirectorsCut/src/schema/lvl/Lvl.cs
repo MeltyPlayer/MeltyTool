@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 
-using fin.schema;
 using fin.util.strings;
 
 using schema.text;

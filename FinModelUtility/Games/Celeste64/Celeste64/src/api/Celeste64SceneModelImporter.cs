@@ -224,7 +224,7 @@ public sealed class Celeste64MapSceneImporter
       }
     }
 
-    finScene.CreateDefaultLighting(finArea.AddRootNode());
+    finScene.CreateDefaultLighting();
 
     return finScene;
   }

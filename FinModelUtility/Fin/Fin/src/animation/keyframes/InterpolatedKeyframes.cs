@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-using fin.animation.interpolation;
+using CommunityToolkit.HighPerformance;
 
+using fin.animation.interpolation;
 using static fin.animation.keyframes.KeyframesUtil;
 
 namespace fin.animation.keyframes;
@@ -18,9 +19,11 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
     IKeyframeInterpolator<TKeyframe, T> interpolator,
     IndividualInterpolationConfig<T>? individualConfig = null)
     : IInterpolatableKeyframes<TKeyframe, T>
-    where TKeyframe : IKeyframe<T> {
+    where TKeyframe : class, IKeyframe<T> {
   private readonly List<TKeyframe> impl_
       = new(individualConfig?.InitialCapacity ?? 0);
+
+  public IReadOnlyList<TKeyframe> Impl => this.impl_;
 
   public ISharedInterpolationConfig SharedConfig => sharedConfig;
 
@@ -28,6 +31,8 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
     => individualConfig ?? IndividualInterpolationConfig<T>.DEFAULT;
 
   public IReadOnlyList<TKeyframe> Definitions => this.impl_;
+  public void EnsureCapacity(int capacity) => this.impl_.EnsureCapacity(capacity);
+
   public bool HasAnyData => this.Definitions.Count > 0;
 
   public int AnimationLength => sharedConfig.AnimationLength;
@@ -36,49 +41,41 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Add(TKeyframe keyframe) => this.impl_.AddKeyframe(keyframe);
 
-  public bool TryGetAtFrame(float frame, out T value) {
-    switch (this.impl_.TryGetPrecedingAndFollowingKeyframes(
-                frame,
-                sharedConfig,
-                this.IndividualConfig,
-                out var precedingKeyframe,
-                out var followingKeyframe,
-                out var normalizedFrame)) {
-      case InterpolationDataType.PRECEDING_AND_FOLLOWING:
-        value = interpolator.Interpolate(precedingKeyframe,
-                                         followingKeyframe,
-                                         normalizedFrame,
-                                         sharedConfig);
-        return true;
-
-      case InterpolationDataType.PRECEDING_ONLY:
-        value = precedingKeyframe.ValueOut;
-        return true;
-
-      default:
-      case InterpolationDataType.NONE:
-        if (this.IndividualConfig.DefaultValue?.Try(out value) ?? false) {
-          return true;
-        }
-
-        value = default!;
-        return false;
-    }
+  public bool TryGetAtFrameWithBinarySearch(float frame, out T value) {
+    var interpolationDataType
+        = this.impl_.AsSpan()
+              .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
+                  frame,
+                  sharedConfig,
+                  this.IndividualConfig,
+                  out var precedingKeyframe,
+                  out var followingKeyframe,
+                  out var normalizedFrame);
+    return TryToInterpolateBetweenKeyframes(
+        sharedConfig,
+        this.IndividualConfig,
+        precedingKeyframe,
+        followingKeyframe,
+        normalizedFrame,
+        interpolator,
+        interpolationDataType,
+        out value);
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
+  public KeyframesUtil.InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
       float frame,
       out TKeyframe precedingKeyframe,
       out TKeyframe followingKeyframe,
       out float normalizedFrame)
-    => this.impl_.TryGetPrecedingAndFollowingKeyframes(
-        frame,
-        sharedConfig,
-        this.IndividualConfig,
-        out precedingKeyframe,
-        out followingKeyframe,
-        out normalizedFrame);
+    => this.impl_.AsSpan()
+           .TryGetPrecedingAndFollowingKeyframesWithBinarySearch(
+               frame,
+               sharedConfig,
+               this.IndividualConfig,
+               out precedingKeyframe,
+               out followingKeyframe,
+               out normalizedFrame);
 
   public void GetAllFrames(Span<T> dst) {
     T defaultValue = default!;
@@ -140,4 +137,11 @@ public sealed class InterpolatedKeyframes<TKeyframe, T>(
 
     return true;
   }
+
+  public IAdvancingInterpolator<T> GetAdvancingInterpolator()
+    => new AdvancingInterpolator<T, TKeyframe>(
+        sharedConfig,
+        individualConfig,
+        this.impl_,
+        interpolator);
 }

@@ -1,0 +1,235 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.4 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+const uint HEADER_COLOR = 0x888888;
+
+const uint ENUM_COLOR = 0xff0000;
+const uint POINTER_COLOR = 0x00ff00;
+const uint COUNT_COLOR = 0x0000ff;
+
+const uint ORIENTATION_COLOR = 0xffff00;
+const uint IMAGE_COLOR = 0x00ffff;
+const uint STRING_COLOR = 0xff00ff;
+
+struct Pointer {
+    local uint currentPosition = FTell();
+    uint offset <bgcolor=POINTER_COLOR>;
+    local uint value = currentPosition + offset;
+};
+
+struct RelativeString(Pointer &pointer) {
+    local uint tmp = FTell();
+    FSeek(pointer.value);
+    string text <bgcolor=STRING_COLOR>;
+    FSeek(tmp);
+};
+
+struct CountAndPointer {
+    uint count <bgcolor=COUNT_COLOR>;
+    Pointer pointer;
+};
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+} Vector3 <bgcolor=ORIENTATION_COLOR>;
+
+float processShort(short value) {
+    return (float)(value) / 16384.0;
+}
+
+typedef struct {
+    short rawX;
+    short rawY;
+    short rawZ;
+    short rawW;
+        
+    local float x = processShort(rawX);
+    local float y = processShort(rawY);
+    local float z = processShort(rawZ);
+    local float w = processShort(rawW);
+    
+    local float length = Sqrt(x * x + y * y + z * z + w * w);
+} FixedPointQuaternion <bgcolor=ORIENTATION_COLOR>;
+
+struct Header {
+    uint unk0;
+
+    ushort unk1;
+    byte version;
+    byte unk2;
+    
+    uint unk3;
+    
+    CountAndPointer meshCountAndPointer;
+    CountAndPointer textureCountAndPointer; 
+   
+    CountAndPointer animationCountAndPointer;
+    CountAndPointer unkBCountAndPointer;
+    
+    CountAndPointer layoutCountAndPointer;
+} header <bgcolor=HEADER_COLOR>;
+
+FSeek(0x64);
+CountAndPointer subFileCountAndPointer;
+
+FSeek(subFileCountAndPointer.pointer.value);
+struct SubFile {
+    uint unk0[7];
+    uint gdtOffset <bgcolor=POINTER_COLOR>;
+    
+    uint unk1[11];
+} subFiles <bgcolor=HEADER_COLOR, optimize=false>;
+
+// From decomp, at 0x80006e68
+FSeek(header.meshCountAndPointer.pointer.value);
+struct Mesh {
+    uint unk0;
+    
+    Pointer namePointer;
+    RelativeString name(namePointer);
+
+    uint unk1;
+    
+    CountAndPointer positionCountAndPointer;
+
+    uint unk2[3];
+    
+    CountAndPointer unkACountAndPointer;
+    CountAndPointer unkBCountAndPointer;
+
+    uint unk3[0x25];
+    
+    typedef enum <uint> {
+        USES_SHORT_POSITIONS = 4,
+        USES_BYTE_NORMALS = 8,
+        USES_SHORT_COLORS = 0x20,
+    } VertexFormat <edit=flags, format=hex>;
+    VertexFormat vertexFormat;
+    
+    uint positionShift;
+    CountAndPointer shiftGroupCountAndPointer;
+
+    CountAndPointer unkCCountAndPointer;
+    
+    uint unk4[4];
+    
+    local uint tmp = FTell();
+
+    FSeek(unkACountAndPointer.pointer.value);    
+    uint unkAStart;
+
+    FSeek(unkBCountAndPointer.pointer.value);    
+    uint unkBStart;
+
+    FSeek(unkCCountAndPointer.pointer.value);    
+    uint unkCStart;
+
+    FSeek(positionCountAndPointer.pointer.value);    
+    Vector3 positions[positionCountAndPointer.count];
+
+    FSeek(tmp);  
+    
+} meshes[header.meshCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
+
+// From decomp, at 0x800057ac
+FSeek(header.textureCountAndPointer.pointer.value);
+struct Texture {
+    uint unk0[0xc];
+    uint width <bgcolor=ORIENTATION_COLOR>;
+    uint height <bgcolor=ORIENTATION_COLOR>;
+    uint wrapModes;
+
+    Pointer namePointer;
+    RelativeString name(namePointer);
+
+    uint unk2[3];
+    
+    // TODO: Not quite right, this uses a lookup table to get the GX format
+    enum GeoTextureFormat {
+        RGB5A3 = 1,
+        CMPR = 2,
+        RGBA8 = 3,
+    } format <bgcolor=ENUM_COLOR>;
+    
+    uint unk3[2];
+    Pointer dataPointer;
+    
+    uint unk4[0x18];
+
+    local uint tileLength = format == CMPR ? 8 : 4;
+    local uint tileSize = format == RGBA8 ? 64 : 32;
+    
+    local uint tmp = FTell();
+    FSeek(dataPointer.value);
+    
+    typedef struct(int width, int height) {
+        local uint tileXCount = (width + tileLength - 1) / tileLength;
+        local uint tileYCount = (height + tileLength - 1) / tileLength;
+        local uint dataSize = tileXCount * tileYCount * tileSize;        
+        byte data[dataSize] <bgcolor=IMAGE_COLOR>;
+    } MipmapLevel <bgcolor=HEADER_COLOR>;
+    
+    local uint mipmapWidth = width;
+    local uint mipmapHeight = height;
+    while (mipmapWidth > 1 && mipmapHeight > 1) {
+        MipmapLevel mipmapLevels(mipmapWidth, mipmapHeight);
+        mipmapWidth >>= 1;
+        mipmapHeight >>= 1;
+    }   
+
+    FSeek(tmp);    
+} texture[header.textureCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;
+
+FSeek(header.animationCountAndPointer.pointer.value);
+struct Animation {
+    ushort unk0;
+    ushort unk1 <bgcolor=COUNT_COLOR>;
+
+    uint unk2;
+
+    uint animationLength <bgcolor=COUNT_COLOR>;
+    uint translationCount <bgcolor=COUNT_COLOR>;    
+    uint unk4 <bgcolor=COUNT_COLOR>;
+    
+    uint unk5[6];
+    
+    uint rotationsPerFrame <bgcolor=COUNT_COLOR>;
+    
+    uint unk6[2];
+    
+    Pointer namePointer;
+    RelativeString name(namePointer);
+    
+    float unk7[0xa];
+    uint unk8[3];
+    
+    uint unkFlags;
+    Pointer rotationsPointer;
+    Pointer translationsPointer;
+
+    uint unk9[0x18];
+    
+    local uint tmp = FTell();
+    
+    FSeek(rotationsPointer.value);
+    FixedPointQuaternion rotations[rotationsPerFrame * animationLength] <bgcolor=HEADER_COLOR, optimize=true>;
+
+    FSeek(translationsPointer.value);
+    Vector3 translations[translationCount];
+
+    FSeek(tmp);
+} animations[header.animationCountAndPointer.count] <bgcolor=HEADER_COLOR, optimize=false>;

@@ -9,6 +9,10 @@ public abstract class BVertexDescriptor(uint value) : IVertexDescriptor {
   public uint Value {
     get;
     set {
+      if (field == value) {
+        return;
+      }
+
       field = value;
       this.cachedEnumerable_ = null;
     }

@@ -68,7 +68,7 @@ public sealed class AotFftRenderer : IRenderable {
     for (var i = 0; i < this.samples_.Length; ++i) {
       var sampleOffset = baseSampleOffset + i;
 
-      sampleOffset = sampleOffset.ModRange(0, source.LengthInSamples);
+      sampleOffset = sampleOffset.Mod0ToMax(source.LengthInSamples);
 
       while (sampleOffset >= source.LengthInSamples) {
         sampleOffset -= source.LengthInSamples;

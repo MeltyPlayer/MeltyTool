@@ -9,10 +9,10 @@ public partial class Offsets : IBinaryDeserializable {
   public uint Offset2 { get; set; }
   public uint Offset3 { get; set; }
   public uint ObjectsOffset { get; set; }
-  public uint Offset5 { get; set; }
-  public uint Offset6 { get; set; }
-  public uint Offset7 { get; set; }
-  public uint Offset8 { get; set; }
+  public uint TileTexturesStart { get; set; }
+  public uint TilePalettesStart { get; set; }
+  public uint ObjectTexturesStart { get; set; }
+  public uint ObjectPalettesStart { get; set; }
   public uint Offset9 { get; set; }
   public uint Offset10 { get; set; }
   public uint Offset11 { get; set; }

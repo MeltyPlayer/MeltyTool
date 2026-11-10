@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using CommunityToolkit.HighPerformance;
+
 using fin.animation.interpolation;
 
 using readOnly;
@@ -26,18 +28,24 @@ public sealed class StairStepKeyframes<T>(
   public IReadOnlyList<Keyframe<T>> Definitions => this.impl_;
   public bool HasAnyData => this.Definitions.Count > 0;
 
+  public void EnsureCapacity(int capacity)
+    => this.impl_.EnsureCapacity(capacity);
+
   public int AnimationLength => sharedConfig.AnimationLength;
   public bool Looping => sharedConfig.Looping;
 
   public void Add(Keyframe<T> keyframe) => this.impl_.AddKeyframe(keyframe);
 
-  public bool TryGetAtFrame(float frame, out T value) {
-    if (this.impl_.TryGetPrecedingKeyframe(frame,
-                                           sharedConfig,
-                                           this.IndividualConfig,
-                                           out var keyframe,
-                                           out _,
-                                           out _)) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out T value) {
+    if (this.impl_
+            .AsSpan()
+            .TryGetPrecedingKeyframe(
+                frame,
+                sharedConfig,
+                this.IndividualConfig,
+                out var keyframe,
+                out _,
+                out _)) {
       value = keyframe.ValueOut;
       return true;
     }
@@ -79,4 +87,10 @@ public sealed class StairStepKeyframes<T>(
     tangentKeyframes = null;
     return false;
   }
+
+  public IAdvancingInterpolator<T> GetAdvancingInterpolator()
+    => new StairStepAdvancingInterpolator<T>(
+        sharedConfig,
+        individualConfig,
+        this.impl_);
 }

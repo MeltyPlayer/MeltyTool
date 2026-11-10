@@ -1,20 +1,20 @@
-using Avalonia.Controls;
-
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
 namespace uni.ui.avalonia.resources.model.skeleton;
 
-public sealed class SkeletonTreeViewModelForDesigner
-    : SkeletonTreeViewModel {
-  public SkeletonTreeViewModelForDesigner() {
+public sealed class SkeletonPanelViewModelForDesigner
+    : SkeletonPanelViewModel {
+  public SkeletonPanelViewModelForDesigner() {
     this.Model = ModelDesignerUtil.CreateStubModel();
   }
 }
 
-public class SkeletonTreeViewModel : BViewModel {
+public class SkeletonPanelViewModel : BViewModel, ISelectablePanelViewModel {
   public required IReadOnlyModel? Model {
     set {
       this.Impl = value != null
@@ -39,10 +39,15 @@ public class SkeletonTreeViewModel : BViewModel {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
+
+  public SelectableType Type => SelectableType.BONE;
+
+  public void ReselectSelectedElementViaService()
+    => this.Impl?.SelectElementViaService();
 }
 
-public partial class SkeletonTree : UserControl {
-  public SkeletonTree() {
+public partial class SkeletonPanel : BUserControl<SkeletonPanelViewModel> {
+  public SkeletonPanel() {
     this.InitializeComponent();
   }
 }

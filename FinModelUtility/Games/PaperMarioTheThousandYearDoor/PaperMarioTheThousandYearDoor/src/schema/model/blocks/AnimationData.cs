@@ -1,4 +1,6 @@
-﻿using schema.binary;
+﻿using fin.schema.vector;
+
+using schema.binary;
 using schema.binary.attributes;
 
 namespace ttyd.schema.model.blocks;
@@ -108,8 +110,7 @@ public sealed partial class AnimationModelFileAnimationVectorDelta
     : IBinaryConvertible {
   public byte IndexDelta { get; set; }
 
-  [SequenceLengthSource(3)]
-  public sbyte[] CoordinateDeltas { get; set; }
+  public Vector3b CoordinateDeltas { get; } = new();
 }
 
 [BinarySchema]

@@ -4,7 +4,9 @@ using schema.binary.attributes;
 namespace grezzo.schema.cmb.sklm;
 
 [BinarySchema]
-public sealed partial class Mshs : IBinaryConvertible {
+public sealed partial class Mshs : IBinaryConvertible, IChildOf<Sklm> {
+  public Sklm Parent { get; set; }
+
   public readonly string magic = "mshs";
   public uint chunkSize;
 

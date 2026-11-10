@@ -38,5 +38,5 @@ public sealed class Tg4hFileIdDictionary : IReadOnlyFileIdDictionary {
 
   public IReadOnlyTreeDirectory BaseDirectory { get; }
   public IReadOnlyTreeFile this[uint id] => this.impl_[id];
-  public void Save(IGenericFile fileIdFile) => this.impl_.Save(fileIdFile);
+  public void Save(IStandaloneFile fileIdFile) => this.impl_.Save(fileIdFile);
 }

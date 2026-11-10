@@ -8,11 +8,13 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
   private readonly IReadOnlyMaterial material_;
   private readonly bool hasColors_;
   private readonly bool hasLighting_;
+  private readonly bool isSelectable_;
 
   public ColorShaderSourceGlsl(IReadOnlyModel model,
                                IModelRequirements modelRequirements,
                                IReadOnlyMaterial material,
-                               IShaderRequirements shaderRequirements) {
+                               IShaderRequirements shaderRequirements,
+                               bool isSelectable) {
     this.VertexShaderSource
         = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
@@ -20,6 +22,7 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
     this.hasColors_ = shaderRequirements.UsedColors.AnyTrue();
     var hasNormals = shaderRequirements.HasNormals;
     this.hasLighting_ = !material.IgnoreLights && hasNormals;
+    this.isSelectable_ = isSelectable;
 
     var sb = new IndentedStringBuilder();
     sb.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
@@ -40,6 +43,8 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
       sb.AppendLine($"uniform bool {GlslConstants.UNIFORM_HAS_SPECULAR_NAME};");
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
+
+    GlslUtil.MaybeAppendPrimitiveMetadataHeader(sb, isSelectable);
 
     sb.AppendLine(
         """
@@ -98,10 +103,11 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
 
            // Have to renormalize because the vertex normals can become distorted when interpolated.
            vec3 fragNormal = normalize(vertexNormal);
-           fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
+           {GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = mix({GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, {GlslConstants.UNIFORM_FRAG_COLOR_NAME}, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
            """);
     }
 
+    GlslUtil.MaybeAppendSelectedColorMutation(sb, this.isSelectable_);
     GlslUtil.AppendAlphaDiscard(sb, this.material_);
   }
 }

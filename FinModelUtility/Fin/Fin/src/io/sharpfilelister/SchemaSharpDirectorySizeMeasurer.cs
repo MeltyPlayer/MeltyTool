@@ -3,8 +3,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-using fin.io.sharpfilelister;
-
 using static fin.io.sharpfilelister.Interop2;
 
 namespace fin.io.sharpDirLister;
@@ -18,14 +16,15 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
     Span<char> pathSpan = stackalloc char[PATH_SPAN_LENGTH];
     fullPath.CopyTo(pathSpan);
 
-    Interop.WIN32_FIND_DATAW findData;
+    WIN32_FIND_DATAW findData = default;
 
     var totalSize = 0L;
     fixed (char* pathPtr = &MemoryMarshal.GetReference(pathSpan)) {
       FindNextFilePInvoke_(
           pathPtr,
-          (uint) fullPath.Length,
+          fullPath.Length,
           ref totalSize,
+          ref findData,
           &findData);
     }
 
@@ -35,39 +34,49 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
   //Code based heavily on https://stackoverflow.com/q/47471744
   private static unsafe void FindNextFilePInvoke_(
       char* pathPtr,
-      uint parentLength,
+      int parentLength,
       ref long totalSize,
-      Interop.WIN32_FIND_DATAW* findDataPtr) {
+      ref WIN32_FIND_DATAW findData,
+      WIN32_FIND_DATAW* findDataPtr) {
     IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
     try {
       pathPtr[parentLength] = '\\';
       pathPtr[parentLength + 1] = '*';
-
-      ClearEndOfPath_(pathPtr, parentLength + 2);
+      pathPtr[parentLength + 2] = '\0';
 
       var subFilePtr = pathPtr + parentLength + 1;
-      var remainingLength = PATH_SPAN_LENGTH - parentLength;
 
-      fileSearchHandle = FindFirstFileW((IntPtr) pathPtr, (IntPtr) findDataPtr);
+      fileSearchHandle = FindFirstFileExW(
+          pathPtr,
+          // Bypasses MS-DOS short name query
+          FIND_EX_INFO_BASIC,
+          findDataPtr,
+          FIND_EX_SEARCH_NAME_MATCH,
+          0,
+          // Uses larger kernel buffer size and case-sensitive search
+          FIND_FIRST_EX_FLAGS);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
-          var findData = *findDataPtr;
-          if (findData.cFileName[0] == '.') {
+          var fileName = findData.FileName;
+          if (fileName is "." or "..") {
             continue;
           }
 
-          var attributes = findData.dwFileAttributes;
-          if ((attributes & FileAttributes.Directory) == 0) {
-            totalSize += GetFileSize_(findData);
-          } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
-            Copy_(subFilePtr, findData.cFileName, remainingLength);
-            var subDirLength = Length_(findData.cFileName);
-            FindNextFilePInvoke_(pathPtr,
-                                 parentLength + 1 + subDirLength,
-                                 ref totalSize,
-                                 findDataPtr);
+          fixed (char* fileNamePtr = &fileName[0]) {
+            var attributes = findData.dwFileAttributes;
+            if ((attributes & FileAttributes.Directory) == 0) {
+              totalSize += findData.FileSize;
+            } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
+              var subDirLength = fileName.Length;
+              Copy_(subFilePtr, fileNamePtr, subDirLength);
+              FindNextFilePInvoke_(pathPtr,
+                                   parentLength + 1 + subDirLength,
+                                   ref totalSize,
+                                   ref findData,
+                                   findDataPtr);
+            }
           }
-        } while (FindNextFile(fileSearchHandle, (IntPtr) findDataPtr));
+        } while (FindNextFile(fileSearchHandle, findDataPtr));
       }
     } finally {
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
@@ -77,27 +86,6 @@ public sealed class SchemaSharpDirectorySizeMeasurer {
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static long GetFileSize_(in Interop.WIN32_FIND_DATAW findData)
-    => ((long) findData.nFileSizeHigh << 32) | (uint) findData.nFileSizeLow;
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static unsafe void Copy_(char* dstPtr, char* srcPtr, uint length)
-    => Unsafe.CopyBlock(dstPtr, srcPtr, 2 * length);
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static unsafe void ClearEndOfPath_(char* pathPtr, uint length)
-    => Unsafe.InitBlockUnaligned(pathPtr + length,
-                                 0,
-                                 2 * (PATH_SPAN_LENGTH - length));
-
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  private static unsafe uint Length_(char* pathPtr) {
-    for (uint i = 0; i < PATH_SPAN_LENGTH; i++) {
-      if (pathPtr[i] == '\0') {
-        return i;
-      }
-    }
-
-    return PATH_SPAN_LENGTH;
-  }
+  private static unsafe void Copy_(char* dstPtr, char* srcPtr, int length)
+    => Unsafe.CopyBlock(dstPtr, srcPtr, (uint) (2 * length));
 }

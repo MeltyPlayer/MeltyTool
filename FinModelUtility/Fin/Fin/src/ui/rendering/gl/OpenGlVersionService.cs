@@ -8,13 +8,17 @@ public static class OpenGlVersionService {
     Es = isOpenGlEs;
 
     if (isOpenGlEs) {
-      MajorVersion = 3;
-      MinorVersion = 1;
+      Init(false, 3, 1);
     } else {
-      MajorVersion = 4;
-      MinorVersion = 6;
+      Init(false, 4, 6);
     }
   } 
+
+  public static void Init(bool isOpenGlEs, int majorVersion, int minorVersion) {
+    Es = isOpenGlEs;
+    MajorVersion = majorVersion;
+    MinorVersion = minorVersion;
+  }
 
   public static bool Es { get; private set; }
   public static int MajorVersion { get; private set; }

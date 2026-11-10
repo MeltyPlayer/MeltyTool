@@ -2,9 +2,9 @@
 
 namespace fin.io.matching;
 /*public interface IMultiMatcher {
-  IEnumerable<IReadOnlyGenericFile> Each(IMatchPattern pattern);
-  IEnumerable<IReadOnlyGenericFile> All(IMatchPattern pattern);
-  IReadOnlyGenericFile One(IMatchPattern pattern);
+  IEnumerable<IReadOnlyStandaloneFile> Each(IMatchPattern pattern);
+  IEnumerable<IReadOnlyStandaloneFile> All(IMatchPattern pattern);
+  IReadOnlyStandaloneFile One(IMatchPattern pattern);
 }*/
 
 // Exact types

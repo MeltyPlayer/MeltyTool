@@ -60,6 +60,8 @@ public sealed class UvtrSceneFileImporter
       node?.SetMatrix(uvtrCell.Data.Transform);
     }
 
+    finScene.CreateDefaultLighting();
+
     return finScene;
   }
 }

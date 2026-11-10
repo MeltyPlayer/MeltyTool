@@ -1,9 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>fin.testing</RootNamespace>
   </PropertyGroup>
 
@@ -13,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fin.Ui\Fin.Ui.csproj" />
     <ProjectReference Include="..\Fin\Fin.csproj" />
   </ItemGroup>
 </Project>

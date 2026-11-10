@@ -12,11 +12,19 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
 
   IReadOnlyTreeFile MainFile { get; }
 
-  IEnumerable<IReadOnlyGenericFile> Files {
+  IEnumerable<IReadOnlyStandaloneFile> Files {
     get { yield return this.MainFile; }
   }
 
   IReadOnlyTreeDirectory Directory => this.MainFile.AssertGetParent();
+
+  /// <summary>
+  ///   Optional '/'-separated path of the folder to show this bundle in,
+  ///   relative to the root of the main file's hierarchy, instead of the main
+  ///   file's own directory. Folders that don't exist on disk are added to the
+  ///   file tree virtually. Useful for bundles that are only part of a file.
+  /// </summary>
+  string? VirtualDirectoryPath => null;
 
   ReadOnlySpan<char> IUiFile.RawName
     => FinIoStatic.GetName(this.DisplayFullPath);
@@ -41,16 +49,19 @@ public interface IFileBundle : IUiFile, IComparable<IFileBundle> {
 
 public enum FileBundleGathererPlatform {
   DESKTOP,
-  SNES,
-  N64,
-  GAMECUBE,
+  DREAMCAST,
   DS,
-  WII,
+  GAMECUBE,
+  N64,
+  PS1,
+  SNES,
   THREE_DS,
+  WII,
 }
 
 public interface INamedFileBundleGatherer : IFileBundleGatherer {
   string Name { get; }
+  string Title { get; }
 
   FileBundleGathererPlatform Platform { get; }
 

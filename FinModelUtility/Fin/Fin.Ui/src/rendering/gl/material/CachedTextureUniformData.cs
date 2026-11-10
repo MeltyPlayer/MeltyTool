@@ -13,8 +13,8 @@ public sealed class CachedTextureUniformData {
 
   private readonly IReadOnlyTextureTransformManager? textureTransformManager_;
 
-  private readonly IReadOnlyTextureFlipbookSwapManager
-      textureFlipbookSwapManager_;
+  private readonly IReadOnlyTextureSwapManager
+      textureSwapManager_;
 
   public int TextureIndex { get; }
   public IReadOnlyTexture? FinTexture { get; }
@@ -33,13 +33,13 @@ public sealed class CachedTextureUniformData {
       IGlTexture fallbackGlTexture,
       IReadOnlyList<IReadOnlyModelAnimation> animations,
       IReadOnlyTextureTransformManager? textureTransformManager,
-      IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager,
+      IReadOnlyTextureSwapManager textureSwapManager,
       GlShaderProgram shaderProgram) {
     this.TextureIndex = textureIndex;
     this.FinTexture = finTexture;
     this.FallbackGlTexture = fallbackGlTexture;
     this.textureTransformManager_ = textureTransformManager;
-    this.textureFlipbookSwapManager_ = textureFlipbookSwapManager;
+    this.textureSwapManager_ = textureSwapManager;
 
     this.needsStruct_ = finTexture.NeedsTextureShaderStruct(animations);
     if (!this.needsStruct_) {
@@ -59,8 +59,8 @@ public sealed class CachedTextureUniformData {
   }
 
   public void BindTextureAndPassInUniforms() {
-    var glTexture = this.FinTexture != null ? this.textureFlipbookSwapManager_.GetCurrentFlipbookSwap(
-            this.FinTexture)
+    var glTexture = this.FinTexture != null
+        ? this.textureSwapManager_.GetCurrentGlTexture(this.FinTexture)
         : this.FallbackGlTexture;
     glTexture.Bind(this.TextureIndex);
     this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);

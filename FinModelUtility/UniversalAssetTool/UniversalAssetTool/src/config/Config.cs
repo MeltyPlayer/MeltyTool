@@ -69,6 +69,12 @@ public partial class ViewerSettings {
   [JsonConverter(typeof(StringEnumConverter))]
   public ScaleSourceType ViewerModelScaleSource { get; set; } =
     ScaleSourceType.MIN_MAX_BOUNDS;
+
+  // If true, the file selector sidebar (left side) will stay open when the mouse leaves it
+  public bool PinFileSelectorSidebar { get; set; }
+
+  // If true, the info sidebar (right side) will stay open when the mouse leaves it
+  public bool PinInfoSidebar { get; set; }
 }
 
 [GenerateInterface]

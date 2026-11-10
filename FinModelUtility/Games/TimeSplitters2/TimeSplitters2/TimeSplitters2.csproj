@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>ts2</RootNamespace>
   </PropertyGroup>
 

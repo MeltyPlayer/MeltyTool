@@ -17,7 +17,7 @@ public partial interface IFileIdsDictionary {
   public void AddFile(uint id, IReadOnlyTreeFile file);
 
   [Const]
-  new void Save(IGenericFile fileIdsFile);
+  new void Save(IStandaloneFile fileIdsFile);
 }
 
 public partial class FileIdsDictionary : IFileIdsDictionary {
@@ -25,7 +25,7 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
   private readonly SetDictionary<uint, string> impl_ = new();
 
   public FileIdsDictionary(IReadOnlyTreeDirectory baseDirectory,
-                           IReadOnlyGenericFile fileIdsFile) {
+                           IReadOnlyStandaloneFile fileIdsFile) {
     this.baseDirectory_ = baseDirectory;
     foreach (var fileIdsPair in fileIdsFile.ReadNew<FileIds>().Pairs) {
       foreach (var filePath in fileIdsPair.FilePaths) {
@@ -56,7 +56,7 @@ public partial class FileIdsDictionary : IFileIdsDictionary {
   public void AddFile(uint id, IReadOnlyTreeFile file)
     => this.impl_.Add(id, file.AssertGetPathRelativeTo(this.baseDirectory_));
 
-  public void Save(IGenericFile fileIdsFile)
+  public void Save(IStandaloneFile fileIdsFile)
     => fileIdsFile.Write(
         new FileIds {
             Pairs = this.impl_

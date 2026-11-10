@@ -10,6 +10,7 @@ namespace fin.shaders.glsl.source;
 public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
   private readonly IReadOnlyMaterial material_;
   private readonly IReadOnlyList<IReadOnlyModelAnimation> animations_;
+  private readonly bool isSelectable_;
 
   private readonly bool hasLighting_;
   private readonly bool hasColors_;
@@ -18,14 +19,17 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
   private readonly IReadOnlyTexture? diffuseTexture_;
   private readonly int uvIndex_;
 
-  public TextureShaderSourceGlsl(IReadOnlyModel model,
-                                 IModelRequirements modelRequirements,
-                                 IReadOnlyTextureMaterial material,
-                                 IShaderRequirements shaderRequirements) {
+  public TextureShaderSourceGlsl(
+      IReadOnlyModel model,
+      IModelRequirements modelRequirements,
+      IReadOnlyTextureMaterial material,
+      IShaderRequirements shaderRequirements,
+      bool isSelectable) {
     this.VertexShaderSource
         = GlslUtil.GetVertexSrc(model, modelRequirements, shaderRequirements);
 
     this.animations_ = model.AnimationManager.Animations;
+    this.isSelectable_ = isSelectable;
 
     this.material_ = material;
 
@@ -62,6 +66,8 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
       sb.AppendLine($"uniform bool {GlslConstants.UNIFORM_HAS_SPECULAR_NAME};");
       sb.AppendLine($"uniform float {GlslConstants.UNIFORM_SHININESS_NAME};");
     }
+
+    GlslUtil.MaybeAppendPrimitiveMetadataHeader(sb, isSelectable);
 
     sb.AppendLine(
         """
@@ -110,7 +116,7 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
   public void AppendFragmentMain(IndentedStringBuilder sb) {
     sb.AppendLine(
-        $"fragColor = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{this.uvIndex_}", this.diffuseTexture_, this.animations_)}" +
+        $"{GlslConstants.UNIFORM_FRAG_COLOR_NAME} = {GlslUtil.ReadColorFromTexture("diffuseTexture", $"uv{this.uvIndex_}", this.diffuseTexture_, this.animations_)}" +
         (this.hasColors_ ? " * vertexColor0" : "") +
         (this.hasDiffuseColor_ ? " * diffuseColor" : "") +
         ";");
@@ -121,10 +127,13 @@ public sealed class TextureShaderSourceGlsl : IShaderSourceGlsl {
 
            // Have to renormalize because the vertex normals can become distorted when interpolated.
            vec3 fragNormal = normalize(vertexNormal);
-           fragColor.rgb = mix(fragColor.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, fragColor, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
+           {GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb = mix({GlslConstants.UNIFORM_FRAG_COLOR_NAME}.rgb, applyMergedLightingColors(vertexPosition, fragNormal, {GlslConstants.UNIFORM_SHININESS_NAME}, {GlslConstants.UNIFORM_FRAG_COLOR_NAME}, vec4(1)).rgb,  {GlslConstants.UNIFORM_USE_LIGHTING_NAME});
            """);
     }
 
+    GlslUtil.MaybeAppendSelectedColorMutation(
+        sb,
+        this.isSelectable_);
     GlslUtil.AppendAlphaDiscard(sb, this.material_);
   }
 }

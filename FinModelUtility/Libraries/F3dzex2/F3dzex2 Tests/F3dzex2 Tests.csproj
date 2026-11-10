@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RootNamespace>f3dzex2</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

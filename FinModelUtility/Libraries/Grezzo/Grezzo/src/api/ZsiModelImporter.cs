@@ -15,7 +15,7 @@ using schema.binary;
 namespace grezzo.api;
 
 // TODO: Have a way to convert the scene to a model instead?
-public sealed class ZsiModelImporter : IModelImporter<ZsiModelFileBundle> {
+public sealed class ZsiModelImporter : IModelImporter<ZsiModelImporter, ZsiModelFileBundle> {
   private readonly CmbModelBuilder cmbModelBuilder_ = new();
 
   public IModel Import(ZsiModelFileBundle fileBundle) {
@@ -23,7 +23,7 @@ public sealed class ZsiModelImporter : IModelImporter<ZsiModelFileBundle> {
 
     var zsi = zsiFile.ReadNew<Zsi>(Endianness.LittleEndian);
 
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
         Files = fileBundle.Files.ToHashSet(),
@@ -44,7 +44,7 @@ public sealed class ZsiModelImporter : IModelImporter<ZsiModelFileBundle> {
 
   private void AddZsiMesh_(ZsiModelFileBundle fileBundle,
                            ModelImpl finModel,
-                           ISet<IReadOnlyGenericFile> fileSet,
+                           ISet<IReadOnlyStandaloneFile> fileSet,
                            Zsi zsi) {
     foreach (var meshHeader in zsi.MeshHeaders) {
       foreach (var meshEntry in meshHeader.MeshEntries) {

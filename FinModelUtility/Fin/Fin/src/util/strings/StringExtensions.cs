@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -7,6 +8,7 @@ using fin.util.asserts;
 namespace fin.util.strings;
 
 public static class StringExtensions {
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string Reverse(this string str) {
     var sb = new StringBuilder();
     for (var i = str.Length - 1; i >= 0; --i) {
@@ -16,6 +18,7 @@ public static class StringExtensions {
     return sb.ToString();
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static bool TryRemoveStart(
       this string str,
       string start,
@@ -29,6 +32,7 @@ public static class StringExtensions {
     return false;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string AssertRemoveStart(this string str, string start) {
     Asserts.True(str.TryRemoveStart(start, out var trimmed));
     return trimmed;
@@ -47,6 +51,7 @@ public static class StringExtensions {
     return false;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string ReplaceFirst(this string str,
                                     char target,
                                     char replacement) {
@@ -62,6 +67,7 @@ public static class StringExtensions {
     return sb.ToString();
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static (string, string) SplitBeforeAndAfterFirst(
       this string text,
       char separator) {
@@ -70,14 +76,17 @@ public static class StringExtensions {
     return (text[..index], text[(index + 1)..]);
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string[] SplitNewlines(this string text)
     => Regex.Split(text, "\r\n|\r|\n");
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string SubstringUpTo(this string str, char c) {
     var indexTo = str.IndexOf(c);
     return indexTo >= 0 ? str[..indexTo] : str;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySpan<char> SubstringUpTo(
       this ReadOnlySpan<char> str,
       char c) {
@@ -85,6 +94,7 @@ public static class StringExtensions {
     return indexTo >= 0 ? str[..indexTo] : str;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static ReadOnlySpan<char> SubstringUpTo(
       this ReadOnlySpan<char> str,
       ReadOnlySpan<char> s) {
@@ -93,11 +103,13 @@ public static class StringExtensions {
   }
 
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string SubstringUpTo(this string str, string substr) {
     var indexTo = str.IndexOf(substr);
     return indexTo >= 0 ? str[..indexTo] : str;
   }
 
+  [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public static string SubstringAfter(this string str, string substr) {
     var indexTo = str.IndexOf(substr);
     return indexTo >= 0 ? str[(indexTo + substr.Length)..] : str;

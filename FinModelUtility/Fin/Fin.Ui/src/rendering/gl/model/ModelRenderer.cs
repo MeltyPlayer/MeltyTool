@@ -16,7 +16,7 @@ namespace fin.ui.rendering.gl.model;
 ///   NOTE: This will only be valid in the GL context this was first rendered in!
 /// </summary>
 public sealed partial class ModelRenderer : IDynamicModelRenderer {
-  private readonly IReadOnlyList<IReadOnlyBone> bonesUsedByVertices_;
+  private readonly IReadOnlyBone[] bonesUsedByVertices_;
   private readonly Matrix4x4[] boneMatrices_;
   private readonly MergedMaterialMeshesRenderer impl_;
 
@@ -26,29 +26,30 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
       IReadOnlyModel model,
       IReadOnlyBoneTransformManager? boneTransformManager = null,
       IReadOnlyTextureTransformManager? textureTransformManager = null,
-      IReadOnlyTextureFlipbookSwapManager? textureFlipbookSwapManager = null)
+      IReadOnlyTextureSwapManager? textureSwapManager = null)
     => new ModelRenderer(model,
                          boneTransformManager,
                          textureTransformManager,
-                         textureFlipbookSwapManager);
+                         textureSwapManager);
 
   public static IDynamicModelRenderer CreateDynamic(
       IReadOnlyModel model,
       IReadOnlyBoneTransformManager? boneTransformManager = null,
       IReadOnlyTextureTransformManager? textureTransformManager = null,
-      IReadOnlyTextureFlipbookSwapManager? textureFlipbookSwapManager = null)
+      IReadOnlyTextureSwapManager? textureSwapManager = null)
     => new ModelRenderer(model,
                          boneTransformManager,
                          textureTransformManager,
-                         textureFlipbookSwapManager,
+                         textureSwapManager,
                          true);
 
 
-  private ModelMatricesUbo? matricesUbo_;
+  private IModelMatricesBo? matricesBo_;
   private readonly IReadOnlyModel model_;
   private readonly IReadOnlyBoneTransformManager? boneTransformManager_;
 
-  public IEnumerable<IMaterialRenderer> MaterialRenderers => this.impl_.MaterialRenderers;
+  public IEnumerable<IMaterialRenderer> MaterialRenderers
+    => this.impl_.MaterialRenderers;
 
   /// <summary>
   ///   A renderer for a Fin model.
@@ -59,18 +60,18 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
       IReadOnlyModel model,
       IReadOnlyBoneTransformManager? boneTransformManager = null,
       IReadOnlyTextureTransformManager? textureTransformManager = null,
-      IReadOnlyTextureFlipbookSwapManager? textureFlipbookSwapManager = null,
+      IReadOnlyTextureSwapManager? textureSwapManager = null,
       bool dynamic = false) {
     this.model_ = model;
     this.boneTransformManager_ = boneTransformManager;
 
     this.bonesUsedByVertices_ = model.Skin.BonesUsedByVertices.ToArray();
-    this.boneMatrices_ = new Matrix4x4[1 + this.bonesUsedByVertices_.Count];
+    this.boneMatrices_ = new Matrix4x4[1 + this.bonesUsedByVertices_.Length];
     this.boneMatrices_[0] = Matrix4x4.Identity;
 
     this.impl_ = new MergedMaterialMeshesRenderer(model,
                                                   textureTransformManager!,
-                                                  textureFlipbookSwapManager!,
+                                                  textureSwapManager!,
                                                   dynamic);
   }
 
@@ -83,7 +84,7 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
 
   private void ReleaseUnmanagedResources_() {
     this.impl_.Dispose();
-    this.matricesUbo_?.Dispose();
+    this.matricesBo_?.Dispose();
     this.LightsUbo?.Dispose();
   }
 
@@ -97,6 +98,14 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
   public LightsUbo? LightsUbo { get; set; }
 
   public void UpdateBuffer() => this.impl_.UpdateBuffer();
+  public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
+    => this.impl_.UpdateBuffer(morphTarget);
+
+  public void UpdateBuffer(
+    IReadOnlyMorphTarget fromMorphTarget,
+    IReadOnlyMorphTarget toMorphTarget,
+    float fraction)
+    => this.impl_.UpdateBuffer(fromMorphTarget, toMorphTarget, fraction);
 
   public void Render() {
     this.UpdateMatricesUbo();
@@ -109,22 +118,26 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
   public void UpdateMatricesUbo() {
     var boneIndex = 1;
     // Intentionally looping by index to avoid allocating an enumerator.
-    for (var i = 0; i < this.bonesUsedByVertices_.Count; ++i) {
-      var bone = this.bonesUsedByVertices_[i];
-      var localToWorldMatrix =
-          this.boneTransformManager_?.GetLocalToWorldMatrix(bone).Impl ??
-          Matrix4x4.Identity;
-      var inverseMatrix =
-          this.boneTransformManager_?.GetInverseBindMatrix(bone).Impl ??
-          Matrix4x4.Identity;
-      this.boneMatrices_[boneIndex++] = inverseMatrix * localToWorldMatrix;
+    if (this.boneTransformManager_ == null) {
+      foreach (var bone in this.bonesUsedByVertices_) {
+        this.boneMatrices_[boneIndex++] = Matrix4x4.Identity;
+      }
+    } else {
+      foreach (var bone in this.bonesUsedByVertices_) {
+        var localToWorldMatrix =
+            this.boneTransformManager_.GetLocalToWorldMatrix(bone).Impl;
+        var inverseMatrix =
+            this.boneTransformManager_.GetInverseBindMatrix(bone).Impl;
+        this.boneMatrices_[boneIndex++] = inverseMatrix * localToWorldMatrix;
+      }
     }
 
-    this.matricesUbo_ ??= new(this.model_.Skin.BonesUsedByVertices.Count);
-    this.matricesUbo_.UpdateData(GlTransform.ModelMatrix, this.boneMatrices_);
+    this.matricesBo_
+        ??= ModelMatricesBo.New(this.model_.Skin.BonesUsedByVertices.Count);
+    this.matricesBo_.UpdateData(GlTransform.ModelMatrix, this.boneMatrices_);
   }
 
-  public void BindMatricesUbo() => this.matricesUbo_.Bind();
+  public void BindMatricesUbo() => this.matricesBo_.Bind();
 
   public void GenerateModelIfNull() => this.impl_.GenerateModelIfNull();
 

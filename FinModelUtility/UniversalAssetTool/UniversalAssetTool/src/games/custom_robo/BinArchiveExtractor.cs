@@ -6,7 +6,7 @@ using schema.util.streams;
 namespace uni.games.custom_robo;
 
 public sealed class BinArchiveExtractor {
-  public void Extract(IReadOnlyGenericFile binFile,
+  public void Extract(IReadOnlyStandaloneFile binFile,
                       ISystemDirectory outDirectory) {
     using var br =
         new SchemaBinaryReader(binFile.OpenRead(), Endianness.BigEndian);

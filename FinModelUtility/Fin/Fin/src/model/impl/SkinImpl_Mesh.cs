@@ -72,7 +72,7 @@ public partial class ModelImpl<TVertex> {
       public IPrimitive
           AddTriangles(IReadOnlyList<IReadOnlyVertex> vertices) {
         Debug.Assert(vertices.Count % 3 == 0);
-        var primitive = new PrimitiveImpl(PrimitiveType.TRIANGLES, vertices) {
+        var primitive = new PrimitiveImpl(this, PrimitiveType.TRIANGLES, vertices) {
             Index = skin.primitiveCounter_.GetAndIncrement(),
         };
         this.primitives_.Add(primitive);
@@ -86,7 +86,7 @@ public partial class ModelImpl<TVertex> {
       public IPrimitive AddTriangleStrip(
           IReadOnlyList<IReadOnlyVertex> vertices) {
         var primitive
-            = new PrimitiveImpl(PrimitiveType.TRIANGLE_STRIP, vertices) {
+            = new PrimitiveImpl(this, PrimitiveType.TRIANGLE_STRIP, vertices) {
                 Index = skin.primitiveCounter_.GetAndIncrement(),
             };
         this.primitives_.Add(primitive);
@@ -100,7 +100,7 @@ public partial class ModelImpl<TVertex> {
       public IPrimitive AddTriangleFan(
           IReadOnlyList<IReadOnlyVertex> vertices) {
         var primitive =
-            new PrimitiveImpl(PrimitiveType.TRIANGLE_FAN, vertices) {
+            new PrimitiveImpl(this, PrimitiveType.TRIANGLE_FAN, vertices) {
                 Index = skin.primitiveCounter_.GetAndIncrement(),
             };
         this.primitives_.Add(primitive);
@@ -136,7 +136,7 @@ public partial class ModelImpl<TVertex> {
 
       public IPrimitive AddQuads(IReadOnlyList<IReadOnlyVertex> vertices) {
         Debug.Assert(vertices.Count % 4 == 0);
-        var primitive = new PrimitiveImpl(PrimitiveType.QUADS, vertices) {
+        var primitive = new PrimitiveImpl(this, PrimitiveType.QUADS, vertices) {
             Index = skin.primitiveCounter_.GetAndIncrement(),
         };
         this.primitives_.Add(primitive);
@@ -145,7 +145,7 @@ public partial class ModelImpl<TVertex> {
 
 
       public IPrimitive AddQuadStrip(IReadOnlyList<IReadOnlyVertex> vertices) {
-        var primitive = new PrimitiveImpl(PrimitiveType.QUAD_STRIP, vertices) {
+        var primitive = new PrimitiveImpl(this, PrimitiveType.QUAD_STRIP, vertices) {
             Index = skin.primitiveCounter_.GetAndIncrement(),
         };
         this.primitives_.Add(primitive);
@@ -175,7 +175,7 @@ public partial class ModelImpl<TVertex> {
 
       public ILinesPrimitive AddLines(IReadOnlyList<IReadOnlyVertex> lines) {
         Debug.Assert(lines.Count % 2 == 0);
-        var primitive = new LinesPrimitiveImpl(PrimitiveType.LINES, lines) {
+        var primitive = new LinesPrimitiveImpl(this, PrimitiveType.LINES, lines) {
             Index = skin.primitiveCounter_.GetAndIncrement(),
         };
         this.primitives_.Add(primitive);
@@ -189,7 +189,7 @@ public partial class ModelImpl<TVertex> {
       public ILinesPrimitive
           AddLineStrip(IReadOnlyList<IReadOnlyVertex> lines) {
         Debug.Assert(lines.Count >= 2);
-        var primitive = new LinesPrimitiveImpl(PrimitiveType.LINE_STRIP, lines) {
+        var primitive = new LinesPrimitiveImpl(this, PrimitiveType.LINE_STRIP, lines) {
             Index = skin.primitiveCounter_.GetAndIncrement(),
         };
         this.primitives_.Add(primitive);
@@ -202,7 +202,7 @@ public partial class ModelImpl<TVertex> {
 
       public IPointsPrimitive AddPoints(
           IReadOnlyList<IReadOnlyVertex> points) {
-        var primitive = new PointsPrimitiveImpl(points) {
+        var primitive = new PointsPrimitiveImpl(this, points) {
             Index = skin.primitiveCounter_.GetAndIncrement(),
         };
         this.primitives_.Add(primitive);

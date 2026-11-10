@@ -3,12 +3,7 @@
   <PropertyGroup>
     <RootNamespace>bar</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="schema" Version="0.6.18" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />

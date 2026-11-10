@@ -22,7 +22,7 @@ using Quaternion = System.Numerics.Quaternion;
 
 namespace level5.api;
 
-public sealed class XcModelImporter : IModelImporter<XcModelFileBundle> {
+public sealed class XcModelImporter : IModelImporter<XcModelImporter, XcModelFileBundle> {
   public IModel Import(XcModelFileBundle modelFileBundle) {
     var endianness = Endianness.LittleEndian;
 

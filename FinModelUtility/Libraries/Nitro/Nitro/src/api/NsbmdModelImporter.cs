@@ -10,7 +10,8 @@ using schema.binary.attributes;
 
 namespace nitro.api;
 
-public sealed class NsbmdModelImporter : IModelImporter<NsbmdModelFileBundle> {
+public sealed class NsbmdModelImporter
+    : IModelImporter<NsbmdModelImporter, NsbmdModelFileBundle> {
   public IModel Import(NsbmdModelFileBundle fileBundle) {
     var nsbmdFile = fileBundle.NsbmdFile;
 

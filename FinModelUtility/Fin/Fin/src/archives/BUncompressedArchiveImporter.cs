@@ -89,7 +89,7 @@ public abstract class BUncompressedArchiveImporter<TBundle>
     public void Dispose() { }
 
     public required IFileBundle FileBundle { get; init; }
-    public required IReadOnlySet<IReadOnlyGenericFile> Files { get; init; }
+    public required IReadOnlySet<IReadOnlyStandaloneFile> Files { get; init; }
 
     public IReadOnlyList<IArchiveSubFile> FileEntries => this.TypedFileEntries;
 

@@ -1,0 +1,171 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+LittleEndian();
+
+local uint COLOR_MAGIC = 0xff00ff;
+local uint COLOR_IMAGE = 0x0000ff;
+local uint COLOR_COUNT = 0x00ff00;
+local uint COLOR_OFFSET = 0xff0000;
+local uint COLOR_ORIENTATION = 0x888800;
+local uint COLOR_HEADER = 0xffffff;
+local uint COLOR_INDEX = 0x00ffff;
+
+typedef struct {
+    float x;
+    float y;
+    float z;
+} Vector3;
+
+uint chunkCount <bgcolor=COLOR_COUNT>;
+uint chunkOffsets[chunkCount] <bgcolor=COLOR_OFFSET>;
+
+local uint baseOffset = FTell();
+
+typedef struct {
+    uint magic <bgcolor=COLOR_MAGIC>;
+    
+    typedef struct {
+        uint njcmSize;
+        
+        local uint baseNjcmOffset = FTell();
+        
+        typedef struct {
+            uint flags;
+            uint meshOffset <bgcolor=COLOR_OFFSET>;
+            
+            float position[3] <bgcolor=COLOR_ORIENTATION>;
+            float rotation[3] <bgcolor=COLOR_ORIENTATION>;
+            float scale[3] <bgcolor=COLOR_ORIENTATION>;
+            
+            uint firstChildOffset <bgcolor=COLOR_OFFSET>;
+            uint nextSiblingOffset <bgcolor=COLOR_OFFSET>;
+            
+            float w;
+            
+            ushort unk;
+                        
+            typedef struct {
+                uint offset0 <bgcolor=COLOR_OFFSET>;
+                uint offset1 <bgcolor=COLOR_OFFSET>;
+                    
+                float center[3] <bgcolor=COLOR_ORIENTATION>;
+                float radius;
+                
+                local uint tmp = FTell();
+
+                if (offset0 != 0) {
+                    FSeek(baseNjcmOffset + offset0);
+                    
+                    uint unk0;
+                    ushort unk1;
+                    ushort count0 <bgcolor=COLOR_COUNT>;                
+
+                    typedef struct {
+                        Vector3 position;
+                        Vector3 unk;
+                    } Value0;
+                    
+                    Value0 values0[count0];
+                }
+            
+                if (offset1 != 0) {
+                    FSeek(baseNjcmOffset + offset1);
+                
+                    uint unk2;
+                    uint unk3;
+                    uint unk4;
+                    ushort unk5;
+                    ushort count1 <bgcolor=COLOR_COUNT>;                
+                    ushort values1[count1];
+                }
+
+                FSeek(tmp);
+            } NjcmMesh <bgcolor=COLOR_HEADER>;
+            
+            local uint tmp = FTell();
+            
+            FSeek(baseNjcmOffset + meshOffset);
+            NjcmMesh mesh;
+
+            if (firstChildOffset != 0) {
+                FSeek(baseNjcmOffset + firstChildOffset);
+                struct NjcmBone firstChild;
+            }
+
+            if (nextSiblingOffset != 0) {
+                FSeek(baseNjcmOffset + nextSiblingOffset);
+                struct NjcmBone nextSibling;
+            }
+                        
+            FSeek(tmp);
+        } NjcmBone <bgcolor=COLOR_HEADER>;
+            
+        NjcmBone root;
+        
+    } Njcm <bgcolor=COLOR_HEADER>;
+    
+    typedef struct {
+        uint unk0 <bgcolor=COLOR_OFFSET>;
+        uint unk1 <bgcolor=COLOR_OFFSET>;
+        uint width;
+        uint height;
+        
+        typedef struct {
+            ushort v;
+            
+            local ubyte r = (ubyte) (((v >> 11) & 0x1F) / 31.0 * 255);
+            local ubyte g = (ubyte) (((v >> 5) & 0x3F) / 63.0 * 255);
+            local ubyte b = (ubyte) (((v) & 0x1F) / 31.0 * 255);
+            
+            local uint color=(((uint) b) << 16) | (((uint) g) << 8) | r;
+            
+            FSeek(FTell() - 2);
+            ushort rgba <bgcolor=color>;            
+        } Rgb565;
+        
+        Rgb565 colors[width * height / 4] <optimize=false>;
+        
+        byte unk[width * height / 4];
+    } Texture <bgcolor=COLOR_HEADER>;
+    
+    switch (magic) {
+        // NJCM
+        case 0x4D434A4E: {
+            Njcm njcm;
+            break;
+        }
+        default: {
+            local uint baseOffset = FTell() - 4;
+            
+            local uint textureCount = magic;
+            uint textureOffsets[textureCount];
+            
+            local uint i;
+            for (i = 0; i < textureCount; ++i) {
+                if (textureOffsets[i] != 0) {
+                    FSeek(baseOffset + textureOffsets[i]);
+                    Texture texture;
+                }
+            }
+        }
+    }
+} Chunk <bgcolor=COLOR_HEADER>;
+
+local uint i;
+for (i = 0; i < chunkCount; ++i) {
+    if (chunkOffsets[i] != 0) {
+        FSeek(chunkOffsets[i]);
+        Chunk chunk;
+    }
+}

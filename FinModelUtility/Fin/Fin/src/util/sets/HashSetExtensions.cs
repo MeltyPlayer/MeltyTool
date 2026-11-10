@@ -8,12 +8,12 @@ namespace fin.util.sets;
 public static class HashSetExtensions {
   public static HashSet<T> AsSet<T>(this T value) => [value];
 
-  public static HashSet<IReadOnlyGenericFile> AsFileSet(
-      this IReadOnlyGenericFile[] values)
+  public static HashSet<IReadOnlyStandaloneFile> AsFileSet(
+      this IReadOnlyStandaloneFile[] values)
     => values.ToHashSet();
 
-  public static HashSet<IReadOnlyGenericFile> AsFileSet<T>(this T value)
-      where T : IReadOnlyGenericFile
+  public static HashSet<IReadOnlyStandaloneFile> AsFileSet<T>(this T value)
+      where T : IReadOnlyStandaloneFile
     => [value];
 
   public static bool Add<T>(this ISet<T> set, IEnumerable<T> values) {

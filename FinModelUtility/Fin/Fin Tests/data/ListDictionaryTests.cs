@@ -13,31 +13,31 @@ public sealed class ListDictionaryTests {
   [Test]
   public void TestClear() {
     var impl = new ListDictionary<string?, string>();
-    Assert.AreEqual(0, impl.Count);
+    Assert.AreEqual(0, impl.TotalCount);
 
     impl.Add("foo", "a");
     impl.Add("foo", "b");
     impl.Add("foo", "c");
-    Assert.AreEqual(3, impl.Count);
+    Assert.AreEqual(3, impl.TotalCount);
 
     impl.Add("bar", "1");
     impl.Add("bar", "2");
     impl.Add("bar", "3");
-    Assert.AreEqual(6, impl.Count);
+    Assert.AreEqual(6, impl.TotalCount);
 
     impl.Add(null, "x");
     impl.Add(null, "y");
     impl.Add(null, "z");
-    Assert.AreEqual(9, impl.Count);
+    Assert.AreEqual(9, impl.TotalCount);
 
     impl.Clear();
-    Assert.AreEqual(0, impl.Count);
+    Assert.AreEqual(0, impl.TotalCount);
   }
 
   [Test]
   public void TestTryGetList() {
     var impl = new ListDictionary<string?, string>();
-    Assert.AreEqual(0, impl.Count);
+    Assert.AreEqual(0, impl.TotalCount);
 
     Assert.AreEqual(false, impl.TryGetList("foo", out _));
     Assert.AreEqual(false, impl.TryGetList("bar", out _));
@@ -46,17 +46,17 @@ public sealed class ListDictionaryTests {
     impl.Add("foo", "a");
     impl.Add("foo", "b");
     impl.Add("foo", "c");
-    Assert.AreEqual(3, impl.Count);
+    Assert.AreEqual(3, impl.TotalCount);
 
     impl.Add("bar", "1");
     impl.Add("bar", "2");
     impl.Add("bar", "3");
-    Assert.AreEqual(6, impl.Count);
+    Assert.AreEqual(6, impl.TotalCount);
 
     impl.Add(null, "x");
     impl.Add(null, "y");
     impl.Add(null, "z");
-    Assert.AreEqual(9, impl.Count);
+    Assert.AreEqual(9, impl.TotalCount);
 
     Assert.AreEqual(true, impl.TryGetList("foo", out var fooList));
     Asserts.SequenceEqual(["a", "b", "c"], fooList!);
@@ -71,22 +71,22 @@ public sealed class ListDictionaryTests {
   [Test]
   public void TestEnumeratorLinq() {
     var impl = new ListDictionary<string?, string>();
-    Assert.AreEqual(0, impl.Count);
+    Assert.AreEqual(0, impl.TotalCount);
 
     impl.Add("foo", "a");
     impl.Add("foo", "b");
     impl.Add("foo", "c");
-    Assert.AreEqual(3, impl.Count);
+    Assert.AreEqual(3, impl.TotalCount);
 
     impl.Add("bar", "1");
     impl.Add("bar", "2");
     impl.Add("bar", "3");
-    Assert.AreEqual(6, impl.Count);
+    Assert.AreEqual(6, impl.TotalCount);
 
     impl.Add(null, "x");
     impl.Add(null, "y");
     impl.Add(null, "z");
-    Assert.AreEqual(9, impl.Count);
+    Assert.AreEqual(9, impl.TotalCount);
 
     var actualValues = impl.GetPairs().ToArray();
 

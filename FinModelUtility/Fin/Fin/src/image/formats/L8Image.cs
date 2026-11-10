@@ -6,7 +6,7 @@ namespace fin.image.formats;
 public sealed class L8Image : BImage<L8> {
   public L8Image(PixelFormat format, int width, int height) : this(
       format,
-      new Image<L8>(FinImage.ImageSharpConfig, width, height)) { }
+      new Image<L8>(width, height)) { }
 
   internal L8Image(PixelFormat format, Image<L8> impl) : base(
       format) {

@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RootNamespace>j3d</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 

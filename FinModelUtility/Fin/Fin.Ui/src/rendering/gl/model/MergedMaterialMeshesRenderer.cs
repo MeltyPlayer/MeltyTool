@@ -14,7 +14,7 @@ public partial class ModelRenderer {
   private sealed class MergedMaterialMeshesRenderer : IDynamicModelRenderer {
     private readonly bool dynamic_;
     private readonly IReadOnlyTextureTransformManager textureTransformManager_;
-    private readonly IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager_;
+    private readonly IReadOnlyTextureSwapManager textureSwapManager_;
 
     private IGlBufferManager? bufferManager_;
     private IDynamicGlBufferManager? dynamicBufferManager_;
@@ -26,13 +26,13 @@ public partial class ModelRenderer {
     public MergedMaterialMeshesRenderer(
         IReadOnlyModel model,
         IReadOnlyTextureTransformManager textureTransformManager,
-        IReadOnlyTextureFlipbookSwapManager? textureFlipbookSwapManager,
+        IReadOnlyTextureSwapManager? textureSwapManager,
         bool dynamic = false) {
       this.Model = model;
       this.textureTransformManager_ = textureTransformManager;
-      this.textureFlipbookSwapManager_ = textureFlipbookSwapManager ??
-                                         new TextureFlipbookSwapManager(
-                                             model.MaterialManager.Textures);
+      this.textureSwapManager_ = textureSwapManager ??
+                                 new TextureSwapManager(
+                                     model.MaterialManager.Textures);
       this.dynamic_ = dynamic;
     }
 
@@ -42,16 +42,18 @@ public partial class ModelRenderer {
         return;
       }
 
-      this.textureFlipbookSwapManager_.GenerateGlTexturesIfNull();
+      this.textureSwapManager_.GenerateGlTexturesIfNull();
 
       var modelRequirements = ModelRequirements.FromModel(this.Model);
 
       if (!this.dynamic_) {
         this.bufferManager_
-            = GlBufferManager.CreateStatic(this.Model, modelRequirements);
+            = GlVertexBufferManager.CreateStatic(this.Model, modelRequirements);
       } else {
         this.bufferManager_ = this.dynamicBufferManager_
-            = GlBufferManager.CreateDynamic(this.Model, modelRequirements);
+            = GlVertexBufferManager.CreateDynamic(
+                this.Model,
+                modelRequirements);
       }
 
       this.materialRenderers_
@@ -59,7 +61,7 @@ public partial class ModelRenderer {
               this.bufferManager_,
               this.Model,
               this.textureTransformManager_,
-              this.textureFlipbookSwapManager_,
+              this.textureSwapManager_,
               modelRequirements,
               this.MeshVisibility);
     }
@@ -87,6 +89,18 @@ public partial class ModelRenderer {
       => this.materialRenderers_;
 
     public void UpdateBuffer() => this.dynamicBufferManager_?.UpdateBuffer();
+
+    public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
+      => this.dynamicBufferManager_?.UpdateBuffer(morphTarget);
+
+    public void UpdateBuffer(
+      IReadOnlyMorphTarget fromMorphTarget,
+      IReadOnlyMorphTarget toMorphTarget,
+      float fraction)
+      => this.dynamicBufferManager_.UpdateBuffer(
+        fromMorphTarget,
+        toMorphTarget,
+        fraction);
 
     public void UpdateMatricesUbo() { }
     public void BindMatricesUbo() { }

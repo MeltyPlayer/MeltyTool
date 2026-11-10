@@ -31,7 +31,7 @@ public sealed class Xi {
 
   private bool SwitchFile { get; set; } = false;
 
-  public void Open(IReadOnlyGenericFile xiFile) {
+  public void Open(IReadOnlyStandaloneFile xiFile) {
     using var r = xiFile.OpenReadAsBinary(Endianness.LittleEndian);
     r.Position = 0x10;
     this.Width = r.ReadInt16();

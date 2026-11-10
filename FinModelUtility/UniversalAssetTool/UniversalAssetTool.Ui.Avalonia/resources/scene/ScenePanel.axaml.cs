@@ -1,12 +1,20 @@
+using System.Collections.Generic;
+using System.Linq;
+
 using Avalonia.Controls;
 
+using fin.data.dictionaries;
+using fin.model;
 using fin.scene;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 
 using ReactiveUI;
 
+using uni.ui.avalonia.resources.model.materials;
 using uni.ui.avalonia.resources.scene.areas;
+using uni.ui.avalonia.resources.texture;
 
 namespace uni.ui.avalonia.resources.scene;
 
@@ -23,6 +31,25 @@ public class ScenePanelViewModel : BViewModel {
       this.RaiseAndSetIfChanged(ref field, value);
       this.AreasPanel = new AreasPanelViewModel { Scene = value, };
       this.FilesPanel = new FilesPanelViewModel(value);
+
+      var models = value.EnumerateAllDistinctModels().ToArray();
+
+      this.MaterialsPanel = new MaterialsPanelViewModel {
+          ModelsAndMaterials
+              = models
+                  .ToListDictionary(
+                      m => m,
+                      m => (IEnumerable<IReadOnlyMaterial?>) m
+                          .MaterialManager.All),
+      };
+      this.TexturesPanel = new TexturesPanelViewModel {
+          ModelsAndTextures
+              = models
+                  .ToListDictionary(
+                      m => m,
+                      m => (IEnumerable<IReadOnlyTexture>) m.MaterialManager
+                          .Textures),
+      };
     }
   }
 
@@ -31,6 +58,15 @@ public class ScenePanelViewModel : BViewModel {
     private set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
+  public MaterialsPanelViewModel MaterialsPanel {
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
+  public TexturesPanelViewModel TexturesPanel {
+    get;
+    private set => this.RaiseAndSetIfChanged(ref field, value);
+  }
 
   public FilesPanelViewModel FilesPanel {
     get;
@@ -38,7 +74,7 @@ public class ScenePanelViewModel : BViewModel {
   }
 }
 
-public partial class ScenePanel : UserControl {
+public partial class ScenePanel : BUserControl<ScenePanelViewModel> {
   public ScenePanel() {
     this.InitializeComponent();
   }
@@ -50,19 +86,29 @@ public partial class ScenePanel : UserControl {
       return;
     }
 
-    var shouldDeselectArea = true;
+    ISelectablePanelViewModel? selectedPanel = null;
+    var viewModel = this.ViewModel;
+
     if (e.AddedItems.Count > 0) {
       if (e.AddedItems[0] is TabItem item) {
         var header = item.Header;
 
         if (header == this.AreasTabHeader) {
-          shouldDeselectArea = true;
+          selectedPanel = viewModel.AreasPanel;
+        }
+
+        if (header == this.MaterialsTabHeader) {
+          selectedPanel = viewModel.MaterialsPanel;
+        }
+
+        if (header == this.TexturesTabHeader) {
+          selectedPanel = viewModel.TexturesPanel;
         }
       }
     }
 
-    if (shouldDeselectArea) {
-      SelectedNodeService.SelectNode(null);
-    }
+    SelectedServiceUtils.SelectableType
+        = selectedPanel?.Type ?? SelectableType.NONE;
+    selectedPanel?.ReselectSelectedElementViaService();
   }
 }

@@ -75,7 +75,7 @@ public sealed class CmbImageReader : IImageReader {
     }
 
     if (format.IsIntensity()) {
-      IPixelReader<La16> pixelReader = format switch {
+      IPixelReader<L8> pixelReader = format switch {
           GlTextureFormat.L4 => new I4PixelReader(),
           GlTextureFormat.L8 or
               GlTextureFormat.Gas or

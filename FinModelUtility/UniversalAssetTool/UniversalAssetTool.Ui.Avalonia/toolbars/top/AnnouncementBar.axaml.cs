@@ -3,6 +3,7 @@ using System.Threading;
 
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 
 using fin.io.web;
 using fin.services;
@@ -34,7 +35,9 @@ public class AnnouncementBarViewModel : BViewModel {
   public AnnouncementBarViewModel() {
     this.Announcement = null;
     AnnouncementService.OnAnnouncement
-        += announcement => this.Announcement = announcement;
+        += announcement
+            => Dispatcher.UIThread.Invoke(() => this.Announcement
+                                              = announcement);
 
     ExportService.OnExportStart
         += () => {

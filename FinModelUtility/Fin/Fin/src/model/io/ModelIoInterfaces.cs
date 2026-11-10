@@ -4,11 +4,21 @@ using System.Linq;
 using fin.importers;
 using fin.io;
 using fin.io.bundles;
+using fin.model.io.importers;
+using fin.util.asserts;
 
 namespace fin.model.io;
 
 public interface IModelFileBundle : I3dFileBundle {
   FileBundleType IFileBundle.Type => FileBundleType.MODEL;
+  IModel Import();
+}
+
+public interface IModelFileBundle<TSelf, TImporter> : IModelFileBundle
+    where TSelf : IModelFileBundle<TSelf, TImporter>
+    where TImporter : IModelImporter<TImporter, TSelf>, new() {
+  static TImporter CreateImporter() => new();
+  IModel IModelFileBundle.Import() => CreateImporter().Import(this.AssertAsA<TSelf>());
 }
 
 public interface IModelPlugin {

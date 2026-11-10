@@ -1,5 +1,4 @@
 ﻿using fin.audio.io.importers.ogg;
-using fin.common;
 using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
@@ -12,6 +11,7 @@ namespace uni.games.glover;
 
 public sealed class GloverFileBundleGatherer : INamedFileBundleGatherer {
   public string Name => "glover";
+  public string Title => "Glover";
 
   public FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

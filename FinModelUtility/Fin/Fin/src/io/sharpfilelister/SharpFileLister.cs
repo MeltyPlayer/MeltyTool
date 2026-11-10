@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 using static fin.io.sharpfilelister.Interop;
 
@@ -10,8 +9,8 @@ namespace fin.io.sharpDirLister;
 
 public sealed class DirectoryInformation {
   public string AbsoluteSubdirPath { get; set; }
-  public LinkedList<string> AbsoluteFilePaths { get; } = [];
-  public LinkedList<DirectoryInformation> Subdirs { get; } = [];
+  public List<string> AbsoluteFilePaths { get; } = [];
+  public List<DirectoryInformation> Subdirs { get; } = [];
 }
 
 public static class SharpFileLister {
@@ -23,14 +22,15 @@ public static class SharpFileLister {
     var fileList = directoryInfo.AbsoluteFilePaths;
     var directoryList = directoryInfo.Subdirs;
 
+    WIN32_FIND_DATAW findData;
+    WIN32_FIND_DATAW* findDataPtr = &findData;
+
     IntPtr fileSearchHandle = INVALID_HANDLE_VALUE;
     try {
-      fileSearchHandle = FindFirstFileWInDirectory_(path, out var findData);
+      fileSearchHandle = FindFirstFileWInDirectory_(path, findDataPtr);
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
         do {
-          var fileName = new ReadOnlySpan<char>(findData.cFileName, 260);
-          fileName = fileName[..fileName.IndexOf('\0')];
-
+          var fileName = findData.FileName;
           if (fileName is "." or "..") {
             continue;
           }
@@ -38,11 +38,11 @@ public static class SharpFileLister {
           var attributes = findData.dwFileAttributes;
           var fullPath = @$"{path}\{fileName}";
           if ((attributes & FileAttributes.Directory) == 0) {
-            fileList.AddLast(fullPath);
+            fileList.Add(fullPath);
           } else if ((attributes & FileAttributes.ReparsePoint) == 0) {
-            directoryList.AddLast(FindNextFilePInvoke(fullPath));
+            directoryList.Add(FindNextFilePInvoke(fullPath));
           }
-        } while (FindNextFile(fileSearchHandle, out findData));
+        } while (FindNextFile(fileSearchHandle, findDataPtr));
       }
     } finally {
       if (fileSearchHandle != INVALID_HANDLE_VALUE) {
@@ -56,14 +56,15 @@ public static class SharpFileLister {
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   private static unsafe nint FindFirstFileWInDirectory_(
       ReadOnlySpan<char> directoryPath,
-      out WIN32_FIND_DATAW findData) {
+      WIN32_FIND_DATAW* findDataPtr) {
     Span<char> pathChars = stackalloc char[directoryPath.Length + 3];
     directoryPath.CopyTo(pathChars);
     pathChars[^3] = '\\';
     pathChars[^2] = '*';
+    pathChars[^1] = '\0';
 
-    fixed (char* ptr = &MemoryMarshal.GetReference(pathChars)) {
-      return FindFirstFileW((IntPtr) ptr, out findData);
+    fixed (char* ptr = &pathChars[0]) {
+      return FindFirstFileW((nint) ptr, findDataPtr);
     }
   }
 }

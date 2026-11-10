@@ -35,7 +35,7 @@ public enum BinaryResourceChunkType : ulong {
 public sealed partial class BinaryResourceChunk : IBinaryDeserializable {
   public BinaryResourceChunkType Type { get; set; }
   public uint Offset { get; set; }
-  public uint Size { get; set;}
+  private uint Size { get; set;}
 
   [SequenceLengthSource(2)]
   private uint[] unk0;

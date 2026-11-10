@@ -12,19 +12,17 @@ using schema.binary;
 
 namespace uni.games.battalion_wars_1;
 
-public sealed record ResArchiveFileBundle(IReadOnlyTreeFile ResFile)
-    : ISimpleArchiveFileBundle<ResArchiveFileBundle> {
-  public static ResArchiveFileBundle FromFile(IReadOnlyTreeFile file)
-    => new(file);
-
+public sealed record ResArchiveFileBundle(ISystemFile ResFile)
+    : ISimpleCleanableArchiveFileBundle {
   public IReadOnlyTreeFile MainFile => this.ResFile;
+  public void CleanUp() => this.ResFile.Delete();
 }
 
 public sealed class ResArchiveImporter
     : BSimpleArchiveImporter<ResArchiveFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
       ResArchiveFileBundle bundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       ISimpleArchiveDirectory builderRoot,
       out Stream baseStream,
       out Stream readStream) {
@@ -70,13 +68,10 @@ public sealed class ResArchiveImporter
         = isGz ? directoryFullName[..^7] : directoryFullName[..^4];
   }
 
-  public static ArchiveExtractionResult Extract(
-      ISystemFile resFile,
-      bool cleanUp) {
+  public static ArchiveExtractionResult Extract(ISystemFile resFile) {
     GetResFileAttributes_(resFile, out _, out var directoryFullName);
-    return new ResArchiveImporter().ExtractInto(
-        resFile,
-        new FinDirectory(directoryFullName.ToString()),
-        cleanUp);
+    return new ResArchiveImporter().ExtractIntoAndMaybeCleanUp(
+        new ResArchiveFileBundle(resFile),
+        new FinDirectory(directoryFullName.ToString()));
   }
 }

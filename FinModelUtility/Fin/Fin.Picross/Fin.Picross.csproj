@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>fin.picross</RootNamespace>
   </PropertyGroup>
 
@@ -11,6 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Generator.Equals" Version="4.0.2" />
+    <PackageReference Include="Generator.Equals" Version="4.1.0" />
   </ItemGroup>
 </Project>

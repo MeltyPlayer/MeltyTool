@@ -9,6 +9,7 @@ using fin.ui.avalonia.controls;
 using uni.config;
 using uni.model;
 using uni.services;
+using uni.ui.avalonia.settings;
 using uni.ui.avalonia.ViewModels;
 
 namespace uni.ui.avalonia.Views;
@@ -21,6 +22,9 @@ public partial class MainView : BUserControl<MainViewModel> {
   private const string FILE_SELECTOR_HOVER_PSEUDOCLASS = ":fileSelectorHover";
   private const string INFO_PANEL_HOVER_PSEUDOCLASS = ":infoPanelHover";
 
+  private const string FILE_SELECTOR_PINNED_PSEUDOCLASS = ":fileSelectorPinned";
+  private const string INFO_PANEL_PINNED_PSEUDOCLASS = ":infoPanelPinned";
+
   public enum PanelType {
     NEITHER,
     FILE_SELECTOR,
@@ -30,7 +34,15 @@ public partial class MainView : BUserControl<MainViewModel> {
   public MainView() {
     this.InitializeComponent();
 
-    // TODO: Handle config changes, update ShowGrid automatically
+    // Handle grid visibility setting changing
+    this.SceneViewerGlPanel.ShowGrid = Config.Instance.Viewer.ShowGrid;
+    SettingsViewModel.OnSettingsChanged
+        += () => this.SceneViewerGlPanel.ShowGrid
+            = Config.Instance.Viewer.ShowGrid;
+
+    // Handle file selector/info sidebar pinned settings changing
+    this.UpdatePinnedPseudoclasses_();
+    SettingsViewModel.OnSettingsChanged += this.UpdatePinnedPseudoclasses_;
 
     SceneInstanceService.OnSceneInstanceOpened
         += (_, sceneInstance) => {
@@ -71,6 +83,14 @@ public partial class MainView : BUserControl<MainViewModel> {
   private void RegisterPanel_(Control panel, PanelType panelType) {
     panel.AddHandler(PointerEnteredEvent,
                      (_, _) => this.activePanelTypeSubject_.OnNext(panelType));
+  }
+
+  private void UpdatePinnedPseudoclasses_() {
+    var viewerSettings = Config.Instance.Viewer;
+    this.PseudoClasses.Set(FILE_SELECTOR_PINNED_PSEUDOCLASS,
+                           viewerSettings.PinFileSelectorSidebar);
+    this.PseudoClasses.Set(INFO_PANEL_PINNED_PSEUDOCLASS,
+                           viewerSettings.PinInfoSidebar);
   }
 
   private void TrySetPanelPseudoclass_(PanelType panelType, bool value) {

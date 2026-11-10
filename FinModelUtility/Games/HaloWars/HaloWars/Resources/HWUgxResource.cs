@@ -47,7 +47,7 @@ public sealed class HWUgxResource : HWBinaryResource {
     resource.Mesh = new ModelImpl {
         // TODO: Fix this
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>(),
+        Files = new HashSet<IReadOnlyStandaloneFile>(),
     };
     resource.FlipFaces_ = flipFaces;
     resource?.Load(File.ReadAllBytes(resource.AbsolutePath));

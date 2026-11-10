@@ -4,9 +4,9 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
-  public CullingMode CurrentCullingMode { get; set; } =
-    CullingMode.SHOW_NEITHER;
+public partial record GlState {
+  // Matches OpenGL's initial state, where face culling is disabled.
+  public CullingMode CurrentCullingMode { get; set; } = CullingMode.SHOW_BOTH;
 }
 
 public static partial class GlUtil {

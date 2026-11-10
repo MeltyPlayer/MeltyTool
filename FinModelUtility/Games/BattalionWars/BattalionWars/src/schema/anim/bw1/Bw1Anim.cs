@@ -126,17 +126,9 @@ public sealed class Bw1Anim : IAnim, IBinaryDeserializable {
     br.Position -= 2;
     var second_ushort = br.ReadUInt16();
 
-    outX =
-        WeirdFloatMath.CreateWeirdDoubleFromUInt32(first_uint >> 0x15) *
-        animBone.XPosDelta + animBone.XPosMin;
-    outY =
-        WeirdFloatMath.CreateWeirdDoubleFromUInt32(
-            (first_uint >> 10) & 0x7ff) * animBone.YPosDelta +
-        animBone.YPosMin;
-    outZ =
-        WeirdFloatMath.CreateWeirdDoubleFromUInt32(
-            (uint) (second_ushort & 0x3ff)) * animBone.ZPosDelta +
-        animBone.ZPosMin;
+    outX = (double) (first_uint >> 0x15) * animBone.XPosDelta + animBone.XPosMin;
+    outY = (double) ((first_uint >> 10) & 0x7ff) * animBone.YPosDelta + animBone.YPosMin;
+    outZ = (double) (second_ushort & 0x3ff) * animBone.ZPosDelta + animBone.ZPosMin;
   }
 
   public bool Parse4RotationValuesFrom3UShorts_(IBinaryReader br,
@@ -151,22 +143,9 @@ public sealed class Bw1Anim : IAnim, IBinaryDeserializable {
     var second_ushort = shorts[1];
     var third_ushort = shorts[2];
 
-    outX =
-        (WeirdFloatMath.CreateWeirdDoubleFromUInt32(
-             (uint) (first_ushort & 0x7fff)) -
-         WeirdFloatMath.C_16384) *
-        WeirdFloatMath.C_6_10351_EN5;
-
-    outY =
-        (WeirdFloatMath.CreateWeirdDoubleFromUInt32(
-             (uint) (second_ushort & 0x7fff)) -
-         WeirdFloatMath.C_16384) *
-        WeirdFloatMath.C_6_10351_EN5;
-
-    outZ =
-        (WeirdFloatMath.CreateWeirdDoubleFromUInt32(third_ushort) -
-         32768f) *
-        WeirdFloatMath.C_3_05175_EN5;
+    outX = ((double) (first_ushort & 0x7fff) - WeirdFloatMath.C_16384) * WeirdFloatMath.C_6_10351_EN5;
+    outY = ((double) (second_ushort & 0x7fff) - WeirdFloatMath.C_16384) * WeirdFloatMath.C_6_10351_EN5;
+    outZ = ((double) (third_ushort) - 32768f) * WeirdFloatMath.C_3_05175_EN5;
 
     var expected_normalized_w =
         ((1 - outX * outX) - outY * outY) - outZ * outZ;

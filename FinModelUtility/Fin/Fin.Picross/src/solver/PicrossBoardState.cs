@@ -45,7 +45,7 @@ public sealed class PicrossBoardState : IPicrossBoardState {
   private readonly IPicrossDefinition definition_;
   private readonly IPicrossCellState[] cellStates_;
 
-  private readonly IReadOnlyIndexableDictionary<IPicrossClue, IPicrossClueState>
+  private readonly IReadOnlySparseIndexableDictionary<IPicrossClue, IPicrossClueState>
       clueStateByClue_;
 
   private readonly IReadOnlyList<IPicrossLineState> columnLineStates_;
@@ -83,7 +83,7 @@ public sealed class PicrossBoardState : IPicrossBoardState {
           .ToArray();
 
     var clueStatesByClue
-        = new IndexableDictionary<IPicrossClue, IPicrossClueState>();
+        = new SparseIndexableDictionary<IPicrossClue, IPicrossClueState>();
     this.clueStateByClue_ = clueStatesByClue;
     foreach (var clueState in columnClueStates.Concat(rowClueStates)
                                               .SelectMany(c => c)) {

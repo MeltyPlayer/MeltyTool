@@ -10,7 +10,7 @@ using modl.schema.xml;
 namespace modl.xml.level;
 
 public sealed class XmlLevelParser {
-  public XmlLevel Parse(IReadOnlyGenericFile levelXmlFile,
+  public XmlLevel Parse(IReadOnlyStandaloneFile levelXmlFile,
                         GameVersion gameVersion) {
     Stream levelXmlStream;
     if (gameVersion == GameVersion.BW2) {

@@ -10,7 +10,8 @@ public static class GlslMaterialExtensions {
   public static IShaderSourceGlsl ToShaderSource(
       this IReadOnlyMaterial? material,
       IReadOnlyModel model,
-      IModelRequirements modelRequirements) {
+      IModelRequirements modelRequirements,
+      bool isSelectable) {
     var shaderRequirements
         = ShaderRequirements.FromModelAndMaterial(model,
                                                   modelRequirements,
@@ -22,28 +23,33 @@ public static class GlslMaterialExtensions {
                 model,
                 modelRequirements,
                 Asserts.AsA<IReadOnlyFixedFunctionMaterial>(material),
-                shaderRequirements),
+                shaderRequirements,
+                isSelectable),
         FinShaderType.TEXTURE => new TextureShaderSourceGlsl(
             model,
             modelRequirements,
             Asserts.AsA<IReadOnlyTextureMaterial>(material),
-            shaderRequirements),
+            shaderRequirements,
+            isSelectable),
         FinShaderType.COLOR => new ColorShaderSourceGlsl(
             model,
             modelRequirements,
             Asserts.AsA<IReadOnlyColorMaterial>(material),
-            shaderRequirements),
+            shaderRequirements,
+            isSelectable),
         FinShaderType.SHADER => new ShaderShaderSourceGlsl(
             Asserts.AsA<IReadOnlyShaderMaterial>(material)),
         FinShaderType.STANDARD => new StandardShaderSourceGlsl(
             model,
             modelRequirements,
             Asserts.AsA<IReadOnlyStandardMaterial>(material),
-            shaderRequirements),
+            shaderRequirements,
+            isSelectable),
         FinShaderType.HIDDEN => new HiddenShaderSourceGlsl(),
         FinShaderType.NULL => new NullShaderSourceGlsl(model,
           modelRequirements,
-          shaderRequirements),
+          shaderRequirements,
+          isSelectable),
         _ => throw new ArgumentOutOfRangeException()
     };
   }

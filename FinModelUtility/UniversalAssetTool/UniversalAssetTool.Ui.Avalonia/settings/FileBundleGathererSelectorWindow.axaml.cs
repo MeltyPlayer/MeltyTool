@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -9,7 +8,6 @@ using Avalonia.Media;
 using fin.io.bundles;
 using fin.ui;
 using fin.ui.avalonia.controls;
-using fin.util.asserts;
 using fin.util.progress;
 
 using ReactiveUI;
@@ -48,6 +46,8 @@ public class FileBundleGathererSelectorWindowViewModelForDesigner
       FileBundleGathererPlatform Platform,
       bool IsAvailable)
       : INamedFileBundleGatherer {
+    public string Title => this.Name;
+
     public void GatherFileBundles(
         IFileBundleOrganizer organizer,
         IMutablePercentageProgress mutablePercentageProgress)

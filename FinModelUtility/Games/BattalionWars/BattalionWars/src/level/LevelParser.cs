@@ -8,7 +8,7 @@ namespace modl.level;
 
 public sealed class LevelParser {
   public IReadOnlyList<IBwObject> Parse(
-      IReadOnlyGenericFile levelXmlFile,
+      IReadOnlyStandaloneFile levelXmlFile,
       GameVersion gameVersion)
     => new XmlLevelParser()
        .Parse(levelXmlFile, gameVersion)

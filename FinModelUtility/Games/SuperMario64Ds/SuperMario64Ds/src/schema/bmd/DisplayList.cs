@@ -18,10 +18,10 @@ public sealed partial class DisplayList : IBinaryConvertible {
 
 [BinarySchema]
 public sealed partial class DisplayListData : IBinaryConvertible {
-  public uint TransformCount { get; set; }
+  private uint TransformCount { get; set; }
   public uint TransformsOffset { get; set; }
 
-  public uint OpcodesByteLength { get; set; }
+  private uint OpcodesByteLength { get; set; }
   public uint OpcodesOffset { get; set; }
 
   [RAtPosition(nameof(TransformsOffset))]

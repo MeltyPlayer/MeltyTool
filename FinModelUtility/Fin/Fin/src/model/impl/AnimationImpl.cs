@@ -3,7 +3,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 
-using fin.animation;
 using fin.animation.interpolation;
 
 namespace fin.model.impl;
@@ -66,11 +65,6 @@ public partial class ModelImpl<TVertex> {
     public bool DisableNearestRotationFix {
       get => this.sharedInterpolationConfig_.DisableNearestRotationFix;
       set => this.sharedInterpolationConfig_.DisableNearestRotationFix = value;
-    }
-
-    public AnimationInterpolationMagFilter AnimationInterpolationMagFilter {
-      get;
-      set;
     }
 
     // TODO: Allow setting looping behavior (once, back and forth, etc.)

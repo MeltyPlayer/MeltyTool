@@ -8,8 +8,7 @@ using fin.testing;
 
 namespace xmod;
 
-public sealed class PedModelGoldenTests
-    : BModelGoldenTests<PedModelFileBundle, PedModelImporter> {
+public sealed class PedModelGoldenTests : BModelGoldenTests<PedModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

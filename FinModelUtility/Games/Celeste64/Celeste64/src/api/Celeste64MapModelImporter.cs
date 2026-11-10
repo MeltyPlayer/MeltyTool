@@ -19,7 +19,7 @@ using SledgeFace = Sledge.Formats.Map.Objects.Face;
 
 namespace Celeste64.api;
 
-public sealed class Celeste64MapModelFileBundle : IModelFileBundle {
+public sealed class Celeste64MapModelFileBundle : IModelFileBundle<Celeste64MapModelFileBundle, Celeste64MapModelImporter> {
   public required IReadOnlyTreeFile MapFile { get; init; }
   public required IReadOnlyTreeDirectory TextureDirectory { get; init; }
 
@@ -31,7 +31,7 @@ public sealed class Celeste64MapModelFileBundle : IModelFileBundle {
 ///   https://github.com/EXOK/Celeste64/blob/bf7b209b7c56dad0e86a225f4d591ae3bccff455/Source/Data/Map.cs#L26
 /// </summary>
 public sealed class Celeste64MapModelImporter
-    : IModelImporter<Celeste64MapModelFileBundle> {
+    : IModelImporter<Celeste64MapModelImporter, Celeste64MapModelFileBundle> {
   public IModel Import(Celeste64MapModelFileBundle fileBundle) {
     using var s = fileBundle.MapFile.OpenRead();
     var celeste64Map = new Map(s);

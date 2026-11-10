@@ -23,4 +23,14 @@ public sealed partial class Rgba4f : IColor, IBinaryConvertible {
 
   [Skip]
   public byte Ab => (byte) (this.Af * 255);
+
+  public override int GetHashCode() => this.ToBgraInt();
+
+  public override bool Equals(object? obj) {
+    if (obj is IColor otherGeneric) {
+      return this.GetHashCode() == otherGeneric.GetHashCode();
+    }
+
+    return false;
+  }
 }

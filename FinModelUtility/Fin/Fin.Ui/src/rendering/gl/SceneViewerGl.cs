@@ -9,7 +9,6 @@ using fin.services;
 using fin.ui.rendering.gl.scene;
 using fin.ui.rendering.gl.ubo;
 using fin.ui.rendering.viewer;
-using fin.util.time;
 
 namespace fin.ui.rendering.gl;
 
@@ -78,7 +77,7 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
   }
 
   public IAnimatableModel? FirstSceneModel
-    => this.Scene?.EnumerateAllAnimatableModels().FirstOrDefault();
+    => this.Scene?.EnumerateAllNonSkyboxAnimatableModels().FirstOrDefault();
 
   public IAnimationPlaybackManager? AnimationPlaybackManager
     => this.FirstSceneModel?.AnimationPlaybackManager;
@@ -114,7 +113,8 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
   public IOrthoRenderable? BackdropRenderer { get; set; } = new SkyboxRenderer();
 
   public void Render() {
-    FrameTime.MarkStartOfFrame();
+    GlUtil.MarkStartOfFrame();
+
     this.singleArea_?.CustomSkyboxObject?.Tick();
     this.Scene?.Tick();
 
@@ -190,7 +190,7 @@ public sealed class SceneViewerGl : ISceneViewer, IRenderable {
     this.RenderSkybox_();
     this.RenderScene_();
 
-    FrameTime.MarkEndOfFrameForFpsDisplay();
+    GlUtil.MarkEndOfFrame();
   }
 
   private void RenderSkybox_() {

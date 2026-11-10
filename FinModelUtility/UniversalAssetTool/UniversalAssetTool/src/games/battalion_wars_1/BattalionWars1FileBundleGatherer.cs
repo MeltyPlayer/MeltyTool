@@ -1,5 +1,4 @@
-﻿using fin.config;
-using fin.data.sets;
+﻿using fin.data.sets;
 using fin.io;
 using fin.io.archive;
 using fin.io.bundles;
@@ -11,8 +10,11 @@ using uni.util.io;
 
 namespace uni.games.battalion_wars_1;
 
+// https://wiki.dolphin-emu.org/index.php?title=G8WE01
+[GameIDs("G8WE01", "G8WJ01", "G8WP01")]
 public sealed class BattalionWars1FileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "battalion_wars_1";
+  public override string Title => "Battalion Wars";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,
@@ -24,8 +26,7 @@ public sealed class BattalionWars1FileBundleGatherer : BGameCubeFileBundleGather
       var resFiles = directory.FilesWithExtension(".res");
       foreach (var resFile in resFiles) {
         didUpdateAny |= didUpdate
-            |= (ResArchiveImporter.Extract(resFile.Impl,
-                                           FinConfig.CleanUpArchives) ==
+            |= (ResArchiveImporter.Extract(resFile.Impl) ==
                 ArchiveExtractionResult.NEWLY_EXTRACTED);
       }
 

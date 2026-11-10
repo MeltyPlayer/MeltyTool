@@ -3,20 +3,25 @@ using System.Linq;
 
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Media;
 
 using fin.model;
 using fin.scene;
 using fin.scene.components;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 using fin.util.enumerables;
 using fin.util.enums;
 
 using Material.Icons;
 using Material.Icons.Avalonia;
+
+using ReactiveUI;
 
 using uni.ui.avalonia.resources.scene;
 
@@ -43,11 +48,13 @@ public sealed class FullHierarchyTreeViewModelForDesigner
 }
 
 public class FullHierarchyTreeViewModel : BViewModel {
+  private IFullHierarchyNode? selectedFullHierarchyNode_;
+
   public static FullHierarchyTreeViewModel FromScene(
       IReadOnlyScene scene,
       FullHierarchyTreeType type = FullHierarchyTreeType.ALL)
     => new(scene.Areas.Select(a => new AreaFullHierarchyNode(a, type))
-                .ToArray());
+      .ToArray());
 
   public static FullHierarchyTreeViewModel FromModel(
       IReadOnlyModel model,
@@ -64,10 +71,34 @@ public class FullHierarchyTreeViewModel : BViewModel {
                 "Name",
                 new TreeDataGridTemplateColumn {
                     Width = GridLength.Star,
-                    CellTemplate = new FuncDataTemplate<IFullHierarchyNode>((_, _) => {
-                      var stackPanel = new StackPanel {
-                          Orientation = Orientation.Horizontal,
+                    CellTemplate = new FuncDataTemplate<IFullHierarchyNode>((node, _) => {
+                      StackPanel stackPanel = new() {
+                        Orientation = Orientation.Horizontal,
                       };
+
+                      if (node is MeshFullHierarchyNode) {
+                        // Add visibility toggle for meshes only - can expand to other node types in the future
+                        // Scaled down so the default checkbox fits in a single row.
+                        var checkbox = new CheckBox {
+                          MinWidth = 0,
+                          MinHeight = 0,
+                          Padding = new Thickness(0, 0, 2, 0),
+                          [!ToggleButton.IsCheckedProperty]
+                                = new Binding(nameof(MeshFullHierarchyNode.IsVisible)) {
+                                  Mode = BindingMode.TwoWay
+                                }
+                        };
+
+                        // Prevent double clicks on the checkbox from expanding the row
+                        checkbox.DoubleTapped += (_, e) => e.Handled = true;
+
+                        stackPanel.Children.Add(new LayoutTransformControl {
+                          LayoutTransform = new ScaleTransform(.8, .8), // Checkboxes are too tall for a row at full scale - scale them down to 80%
+                          VerticalAlignment = VerticalAlignment.Center,
+                          Child = checkbox
+                        });
+                      }
+
                       stackPanel.Children.AddRange([
                           new MaterialIcon {
                               Height = regularFontSize,
@@ -83,6 +114,7 @@ public class FullHierarchyTreeViewModel : BViewModel {
                                   = new Binding(nameof(IFullHierarchyNode.Name)),
                           }
                       ]);
+
                       return stackPanel;
                     })
                 },
@@ -94,39 +126,44 @@ public class FullHierarchyTreeViewModel : BViewModel {
     this.Source.ShowColumnHeaders = false;
     this.Source.CanUserResizeColumns = false;
 
-    this.Source.RowSelection!.SelectionChanged += (_, e) => {
-      IReadOnlyBone? selectedBone = null;
-      IReadOnlyMesh? selectedMesh = null;
-      IReadOnlySceneNode? selectedNode = null;
-
-      if (e.SelectedItems.Count == 1) {
-        var selectedFullHierarchyNode = e.SelectedItems[0];
-        switch (selectedFullHierarchyNode) {
-          case BoneFullHierarchyNode boneNode: {
-            selectedBone = boneNode.Bone;
-            break;
-          }
-          case MeshFullHierarchyNode meshNode: {
-            selectedMesh = meshNode.Mesh;
-            break;
-          }
-          case NodeFullHierarchyNode nodeNode: {
-            selectedNode = nodeNode.Node;
-            break;
-          }
-        }
-      }
-
-      SelectedBoneService.SelectBone(selectedBone);
-      SelectedMeshService.SelectMesh(selectedMesh);
-      SelectedNodeService.SelectNode(selectedNode);
-    };
+    this.Source.RowSelection!.SelectionChanged
+        += (_, e) => {
+          this.selectedFullHierarchyNode_ = e.SelectedItems.FirstOrDefault();
+          this.SelectElementViaService();
+        };
   }
 
   public HierarchicalTreeDataGridSource<IFullHierarchyNode> Source { get; }
 
   public void ExpandCollapse(FullHierarchyTreeType type)
     => this.Source.ExpandCollapseRecursive(n => type.CheckFlag(n.Type));
+
+  public void ExpandAll() => this.Source.ExpandAll();
+
+  public void SelectElementViaService() {
+    IReadOnlyBone? selectedBone = null;
+    IReadOnlyMesh? selectedMesh = null;
+    IReadOnlySceneNode? selectedNode = null;
+
+    switch (this.selectedFullHierarchyNode_) {
+      case BoneFullHierarchyNode boneNode: {
+        selectedBone = boneNode.Bone;
+        break;
+      }
+      case MeshFullHierarchyNode meshNode: {
+        selectedMesh = meshNode.Mesh;
+        break;
+      }
+      case NodeFullHierarchyNode nodeNode: {
+        selectedNode = nodeNode.Node;
+        break;
+      }
+    }
+
+    SelectedBoneService.SelectBone(selectedBone);
+    SelectedMeshService.SelectMesh(selectedMesh);
+    SelectedNodeService.SelectNode(selectedNode);
+  }
 }
 
 public interface IFullHierarchyNode {
@@ -265,12 +302,20 @@ public sealed class BoneFullHierarchyNode(
 public sealed class MeshFullHierarchyNode(
     IReadOnlyMesh mesh,
     IFullHierarchyNode[] children)
-    : IFullHierarchyNode {
+    : BViewModel, IFullHierarchyNode {
   public IReadOnlyMesh Mesh => mesh;
   public string Name => mesh.Name ?? $"Mesh {mesh.Index}";
   public MaterialIconKind Icon => MaterialIconKind.ShapeOutline;
   public FullHierarchyTreeType Type => FullHierarchyTreeType.BONES;
   public IFullHierarchyNode[] Children => children;
+
+  public bool IsVisible {
+    get;
+    set {
+      this.RaiseAndSetIfChanged(ref field, value);
+      MeshVisibilityService.SetVisibility(mesh, value);
+    }
+  } = mesh.DefaultDisplayState != MeshDisplayState.HIDDEN;
 
   public MeshFullHierarchyNode(
       IReadOnlyMesh mesh,
@@ -316,7 +361,7 @@ public sealed class PrimitiveFullHierarchyNode(IReadOnlyPrimitive primitive)
   public IFullHierarchyNode[] Children => [];
 }
 
-public partial class FullHierarchyTree : UserControl {
+public partial class FullHierarchyTree : BUserControl<FullHierarchyTreeViewModel> {
   public FullHierarchyTree() {
     this.InitializeComponent();
   }

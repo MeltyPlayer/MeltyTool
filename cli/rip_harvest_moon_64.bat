@@ -1,0 +1,3 @@
+tools\universal_asset_tool\universal_asset_tool.exe harvest_moon_64
+
+pause

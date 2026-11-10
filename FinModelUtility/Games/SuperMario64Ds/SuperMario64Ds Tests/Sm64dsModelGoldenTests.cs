@@ -9,7 +9,7 @@ using sm64ds.api;
 namespace sm64ds;
 
 public sealed class Sm64dsModelGoldenTests
-    : BModelGoldenTests<Sm64dsModelFileBundle, Sm64dsModelImporter> {
+    : BModelGoldenTests<Sm64dsModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

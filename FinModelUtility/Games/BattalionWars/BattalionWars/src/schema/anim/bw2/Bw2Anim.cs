@@ -117,24 +117,9 @@ public sealed class Bw2Anim : IAnim, IBinaryDeserializable {
     br.Position -= 2;
     var second_ushort = br.ReadUInt16();
 
-    outValues[0] =
-        (WeirdFloatMath.InterpretAsDouble(
-             WeirdFloatMath.Concat44(0x43300000,
-                                     (uint) (first_uint >> 0x15))) -
-         WeirdFloatMath.C_4503599627370496) *
-        animBone.XPosDelta + animBone.XPosMin;
-    outValues[1] =
-        (WeirdFloatMath.InterpretAsDouble(
-             WeirdFloatMath.Concat44(0x43300000,
-                                     (uint) ((first_uint >> 10) & 0x7ff))) -
-         WeirdFloatMath.C_4503599627370496) *
-        animBone.YPosDelta + animBone.YPosMin;
-    outValues[2] =
-        (WeirdFloatMath.InterpretAsDouble(
-             WeirdFloatMath.Concat44(0x43300000,
-                                     (uint) (second_ushort & 0x3ff))) -
-         WeirdFloatMath.C_4503599627370496) *
-        animBone.ZPosDelta + animBone.ZPosMin;
+    outValues[0] = (double) (first_uint >> 0x15) * animBone.XPosDelta + animBone.XPosMin;
+    outValues[1] = (double) ((first_uint >> 10) & 0x7ff) * animBone.YPosDelta + animBone.YPosMin;
+    outValues[2] = (double) (second_ushort & 0x3ff) * animBone.ZPosDelta + animBone.ZPosMin;
   }
 
   public bool Parse4RotationValuesFrom4UShorts_(IBinaryReader br,
@@ -147,33 +132,12 @@ public sealed class Bw2Anim : IAnim, IBinaryDeserializable {
     var third_ushort = shorts[2];
     var fourth_ushort = shorts[3];
 
-    const double DOUBLE_80600f40 = 4.503601774854144E15;
     const double FLOAT_80603708 = 3.0517578E-5;
 
-    var outX = (float) (WeirdFloatMath.InterpretAsDouble(
-                            WeirdFloatMath.Concat44(0x43300000,
-                                                    ((first_ushort & 0x3fffU) <<
-                                                        1) ^
-                                                    0x80000000)) -
-                        DOUBLE_80600f40) * FLOAT_80603708;
-    var outY = (float) (WeirdFloatMath.InterpretAsDouble(
-                            WeirdFloatMath.Concat44(0x43300000,
-                                                    (uint) ((second_ushort &
-                                                            0x3fff) <<
-                                                        1) ^
-                                                    0x80000000)) -
-                        DOUBLE_80600f40)
-               * FLOAT_80603708;
-    var outZ = (float) (WeirdFloatMath.InterpretAsDouble(
-                            WeirdFloatMath.Concat44(0x43300000,
-                                                    third_ushort & 0x7fffU ^
-                                                    0x80000000)) -
-                        DOUBLE_80600f40) * FLOAT_80603708;
-    var outW = (float) (WeirdFloatMath.InterpretAsDouble(
-                            WeirdFloatMath.Concat44(0x43300000,
-                                                    fourth_ushort & 0x7fffU ^
-                                                    0x80000000)) -
-                        DOUBLE_80600f40) * FLOAT_80603708;
+    var outX = (float) ((first_ushort & 0x3fffU) << 1) * FLOAT_80603708;
+    var outY = (float) ((second_ushort & 0x3fff) << 1) * FLOAT_80603708;
+    var outZ = (float) (third_ushort & 0x7fffU) * FLOAT_80603708;
+    var outW = (float) (fourth_ushort & 0x7fffU) * FLOAT_80603708;
     if (((int) first_ushort & 0x4000U) != 0) {
       outX = -outX;
     }

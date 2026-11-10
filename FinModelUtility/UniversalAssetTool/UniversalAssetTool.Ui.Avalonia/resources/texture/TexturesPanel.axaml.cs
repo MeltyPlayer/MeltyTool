@@ -2,12 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Avalonia;
-using Avalonia.Controls;
 
+using fin.data.dictionaries;
 using fin.math;
 using fin.model;
 using fin.ui;
-using fin.util.asserts;
+using fin.ui.avalonia.controls;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
@@ -22,8 +23,8 @@ public sealed class NullTexturesPanelViewModelForDesigner
 public class EmptyTexturesPanelViewModelForDesigner
     : TexturesPanelViewModel {
   public EmptyTexturesPanelViewModelForDesigner() {
-    this.ModelAndTextures = (ModelDesignerUtil.CreateStubModel(),
-                             []);
+    this.ModelsAndTextures
+        = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
   }
 }
 
@@ -31,7 +32,12 @@ public sealed class PopulatedTexturesPanelViewModelForDesigner
     : TexturesPanelViewModel {
   public PopulatedTexturesPanelViewModelForDesigner() {
     var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
-    this.ModelAndTextures = (model, material.Textures.ToArray());
+
+    var modelsAndTextures
+        = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
+    modelsAndTextures.AddRange(model, material.Textures);
+
+    this.ModelsAndTextures = modelsAndTextures;
   }
 }
 
@@ -45,13 +51,13 @@ public sealed class KeyValuePairViewModel(string key, string? value)
     => new(tuple.key, tuple.value?.ToString());
 }
 
-public class TexturesPanelViewModel : BViewModel {
-  public (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)? ModelAndTextures {
+public class TexturesPanelViewModel : BViewModel, ISelectablePanelViewModel {
+  public IReadOnlyListDictionary<IReadOnlyModel, IReadOnlyTexture>
+      ModelsAndTextures {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.TextureList = new TextureListViewModel
-          { ModelAndTextures = value };
+      this.TextureList = new TextureListViewModel { ModelsAndTextures = value };
     }
   }
 
@@ -125,19 +131,27 @@ public class TexturesPanelViewModel : BViewModel {
       => this.RaiseAndSetIfChanged(ref field,
                                    value);
   }
+
+  public SelectableType Type => SelectableType.TEXTURE;
+
+  public void ReselectSelectedElementViaService() {
+    var selectedTextureViewModel = this.TextureList.SelectedTextureViewModel;
+   
+    var model = selectedTextureViewModel?.Model;
+    var texture = selectedTextureViewModel?.Texture;
+    
+    SelectedTextureService.SelectTexture(
+        model != null && texture != null ? (model, texture) : null);
+  }
 }
 
-public partial class TexturesPanel : UserControl {
+public partial class TexturesPanel : BUserControl<TexturesPanelViewModel> {
   public TexturesPanel() {
     this.InitializeComponent();
   }
 
-  protected TexturesPanelViewModel ViewModel
-    => Asserts.AsA<TexturesPanelViewModel>(this.DataContext);
-
   protected void TextureList_OnTextureSelected(
       object? sender,
-      TextureSelectedEventArgs e) {
-    this.ViewModel.SelectedTexture = e.Texture;
-  }
+      TextureSelectedEventArgs e)
+    => this.ViewModel.SelectedTexture = e.Texture;
 }

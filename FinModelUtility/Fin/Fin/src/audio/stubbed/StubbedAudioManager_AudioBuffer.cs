@@ -9,16 +9,16 @@ namespace fin.audio.stubbed;
 
 public partial class StubbedAudioManager {
   public IAudioBuffer<short> CreateAudioBuffer()
-    => new StubbedAudioBuffer(null, new HashSet<IReadOnlyGenericFile>());
+    => new StubbedAudioBuffer(null, new HashSet<IReadOnlyStandaloneFile>());
 
   public ILoadedAudioBuffer<short> CreateLoadedAudioBuffer(
       IFileBundle fileBundle,
-      IReadOnlySet<IReadOnlyGenericFile> files)
+      IReadOnlySet<IReadOnlyStandaloneFile> files)
     => new StubbedAudioBuffer(fileBundle, files);
 
   private sealed class StubbedAudioBuffer(
       IFileBundle fileBundle,
-      IReadOnlySet<IReadOnlyGenericFile> files)
+      IReadOnlySet<IReadOnlyStandaloneFile> files)
       : ILoadedAudioBuffer<short> {
     private short[][] channels_;
 
@@ -69,6 +69,6 @@ public partial class StubbedAudioManager {
       }][sampleOffset];
 
     public IFileBundle FileBundle => fileBundle;
-    public IReadOnlySet<IReadOnlyGenericFile> Files => files;
+    public IReadOnlySet<IReadOnlyStandaloneFile> Files => files;
   }
 }

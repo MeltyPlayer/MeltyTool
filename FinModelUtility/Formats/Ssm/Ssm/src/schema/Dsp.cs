@@ -7,7 +7,7 @@ namespace ssm.schema;
 public sealed partial class Dsp : IBinaryDeserializable, IChildOf<Ssm> {
   public Ssm Parent { get; set; }
 
-  public uint ChannelCount { get; set; }
+  public uint ChannelCount { get; private set; }
   public uint Frequency { get; set; }
 
   [RSequenceLengthSource(nameof(ChannelCount))]

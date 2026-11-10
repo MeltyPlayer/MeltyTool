@@ -9,7 +9,7 @@ using fin.util.sets;
 namespace games.pikmin2.route;
 
 public sealed class RouteModelImporter {
-  public IModel Import(IReadOnlyGenericFile routeTxt) {
+  public IModel Import(IReadOnlyStandaloneFile routeTxt) {
       using var routeReader = routeTxt.OpenReadAsText();
       var route = new RouteParser().Parse(routeReader);
 

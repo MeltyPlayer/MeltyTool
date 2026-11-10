@@ -6,6 +6,9 @@ namespace grezzo.schema.cmb.vatr;
 [BinarySchema]
 [LocalPositions]
 public partial class Vatr : IBinaryConvertible {
+  [Skip]
+  public required Version Version { get; init; }
+
   private readonly string magic_ = "vatr";
 
   public uint chunkSize;
@@ -18,8 +21,7 @@ public partial class Vatr : IBinaryConvertible {
   public readonly AttributeSlice normal = new();
 
   [Skip]
-  private bool hasTangent_ 
-    => CmbHeader.Version > Version.OCARINA_OF_TIME_3D;
+  private bool hasTangent_ => this.Version > Version.OCARINA_OF_TIME_3D;
 
   [RIfBoolean(nameof(hasTangent_))]
   public AttributeSlice? tangent;

@@ -174,7 +174,8 @@ public partial class FileSelectTopBar : UserControl {
                        "file_select/top_bar/export_current/disabled.png"),
                    AssetLoaderUtil.LoadBitmap(
                        "file_select/top_bar/export_current/click_0.png"),
-                   () => ExportFileBundles_([dataContext.CurrentModelFileBundle]));
+                   () => ExportFileBundles_(
+                       [dataContext.CurrentModelFileBundle]));
   }
 
   private static async Task ExportFileBundles_(
@@ -266,4 +267,8 @@ public partial class FileSelectTopBar : UserControl {
 
   private void MeltyButton_OnClick(object? sender, RoutedEventArgs e)
     => WebBrowserUtil.OpenGithub();
+
+  private void ToggleBallMode_(object? sender, RoutedEventArgs e)
+    => EasterEggService.ΔIsInBallMode.OnNext(
+        this.BallModeToggleButton.IsChecked ?? false);
 }

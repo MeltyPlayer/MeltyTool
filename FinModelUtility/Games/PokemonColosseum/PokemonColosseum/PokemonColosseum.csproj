@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-	<Nullable>enable</Nullable>
-	<RootNamespace>pc</RootNamespace>
+  	<RootNamespace>pc</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

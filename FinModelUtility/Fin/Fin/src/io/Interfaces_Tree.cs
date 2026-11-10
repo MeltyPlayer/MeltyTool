@@ -85,7 +85,7 @@ public partial interface ITreeDirectory<TIoObject, TDirectory, TFile,
 [GenerateReadOnly]
 public partial interface ITreeFile<TIoObject, TDirectory, TFile, TFileType>
     : ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>,
-      IGenericFile
+      IStandaloneFile
     where TIoObject :
     ITreeIoObject<TIoObject, TDirectory, TFile, TFileType>
     where TDirectory :

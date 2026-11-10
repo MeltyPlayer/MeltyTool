@@ -5,14 +5,14 @@ using fin.util.enumerables;
 
 namespace level5.api;
 
-public sealed class XcModelFileBundle : IModelFileBundle {
+public sealed class XcModelFileBundle : IModelFileBundle<XcModelFileBundle, XcModelImporter> {
   public string? HumanReadableName { get; set; }
 
   public IReadOnlyTreeFile MainFile
     => this.ModelDirectory.AssertGetParent()
            .AssertGetExistingFile($"{this.ModelDirectory.Name}.xc");
 
-  public IEnumerable<IReadOnlyGenericFile> Files
+  public IEnumerable<IReadOnlyStandaloneFile> Files
     => this.MainFile.Yield()
            .Concat(this.ModelDirectory.GetExistingFiles())
            .ConcatIfNonnull(

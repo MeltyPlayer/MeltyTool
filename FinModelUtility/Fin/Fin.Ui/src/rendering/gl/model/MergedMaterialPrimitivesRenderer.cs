@@ -37,7 +37,7 @@ public partial class ModelRenderer {
         IGlBufferManager bufferManager,
         IReadOnlyModel model,
         IReadOnlyTextureTransformManager textureTransformManager,
-        IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager,
+        IReadOnlyTextureSwapManager textureSwapManager,
         IModelRequirements modelRequirements,
         IReadOnlyMeshVisibilityDictionary? meshVisibility) {
       // Gathers up which meshes have visibility toggled on and off.
@@ -64,8 +64,8 @@ public partial class ModelRenderer {
           new RenderPriorityOrderedSet<VisibilityMeshMaterialTuple>();
       var primitivesByMaterial
           = new ListDictionary<VisibilityMeshMaterialTuple, IReadOnlyPrimitive>(
-              new NullFriendlyDictionary<VisibilityMeshMaterialTuple,
-                  IList<IReadOnlyPrimitive>>());
+              new SimpleDictionary<VisibilityMeshMaterialTuple,
+                  List<IReadOnlyPrimitive>>());
 
       foreach (var mesh in model.Skin.Meshes) {
         var isVisibilityAnimated
@@ -87,9 +87,9 @@ public partial class ModelRenderer {
                 isTransparent);
           }
 
-          // Need to always include this to support rendering meshes when
-          // selected in the viewer.
-          if (SceneTypeService.IsASingleModel) {
+          // Need to include this to support rendering meshes when selected or
+          // when other meshes are hidden in the viewer.
+          if (isVisibilityAnimated || SceneTypeService.IsASingleModel) {
             var visibilityMeshMaterialTuple
                 = (primitive.Material, (mesh, isVisibilityAnimated));
             primitivesByMaterial.Add(visibilityMeshMaterialTuple, primitive);
@@ -161,7 +161,7 @@ public partial class ModelRenderer {
                var mergedPrimitive = mergedPrimitives[i];
                var renderer = new MergedMaterialPrimitivesRenderer(
                    textureTransformManager,
-                   textureFlipbookSwapManager,
+                   textureSwapManager,
                    model,
                    modelRequirements,
                    visibilityMeshTuple,
@@ -186,7 +186,7 @@ public partial class ModelRenderer {
 
     public MergedMaterialPrimitivesRenderer(
         IReadOnlyTextureTransformManager textureTransformManager,
-        IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager,
+        IReadOnlyTextureSwapManager textureSwapManager,
         IReadOnlyModel model,
         IModelRequirements modelRequirements,
         (IReadOnlyMesh mesh, bool isVisibilityAnimated)? meshTuple,
@@ -204,7 +204,7 @@ public partial class ModelRenderer {
               modelRequirements,
               material,
               textureTransformManager,
-              textureFlipbookSwapManager);
+              textureSwapManager);
 
       this.bufferRenderer_ = bufferRenderer;
 
@@ -236,8 +236,15 @@ public partial class ModelRenderer {
     public bool IsSelected => this.isMaterialSelected_ || this.isMeshSelected_;
 
     public void Render() {
+      // Merged renderers can't hide individual meshes, so while the user has
+      // any meshes hidden, draw the per-mesh renderers instead.
+      var anyUserHidden = this.MeshVisibility?.AnyUserHidden ?? false;
+      if (this.Mesh == null && anyUserHidden) {
+        return;
+      }
+
       var isSelected = this.IsSelected;
-      if (this.renderOnlyWhenSelected_ && !isSelected) {
+      if (this.renderOnlyWhenSelected_ && !isSelected && !anyUserHidden) {
         return;
       }
 

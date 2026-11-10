@@ -8,6 +8,7 @@ namespace uni.games.facade;
 
 public sealed class FacadeFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "facade";
+  public override string Title => "Façade";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

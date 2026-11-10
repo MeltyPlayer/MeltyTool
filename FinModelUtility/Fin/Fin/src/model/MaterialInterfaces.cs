@@ -407,8 +407,12 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
   IFixedFunctionMaterial DisableAlphaCompare()
     => this.SetAlphaCompare(AlphaCompareType.Always, 0);
 
-  IFixedFunctionMaterial SetDefaultAlphaCompare() {
-    switch (this.GetTransparencyType()) {
+  IFixedFunctionMaterial SetDefaultAlphaCompare()
+    => this.SetDefaultAlphaCompare(this.GetTransparencyType());
+
+  IFixedFunctionMaterial SetDefaultAlphaCompare(
+      TransparencyType transparencyType) {
+    switch (transparencyType) {
       case TransparencyType.MASK: {
         this.SetAlphaCompare(AlphaCompareType.Greater,
                              GlslConstants.MIN_ALPHA_BEFORE_DISCARD_MASK);
@@ -420,7 +424,11 @@ public partial interface IFixedFunctionMaterial : IMaterialWithNormalTexture {
                                  .MIN_ALPHA_BEFORE_DISCARD_TRANSPARENT);
         break;
       }
-    }
+      default: {
+        this.DisableAlphaCompare();
+        break;
+      }
+  }
 
     return this;
   }

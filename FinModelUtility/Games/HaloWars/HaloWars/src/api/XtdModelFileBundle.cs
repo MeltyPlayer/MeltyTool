@@ -6,7 +6,7 @@ namespace hw.api;
 public sealed class XtdModelFileBundle(
     IReadOnlyTreeFile xtdFile,
     IReadOnlyTreeFile xttFile)
-    : IHaloWarsFileBundle, IModelFileBundle {
+    : IModelFileBundle<XtdModelFileBundle, XtdModelImporter> {
   public IReadOnlyTreeFile MainFile => this.XtdFile;
   public IReadOnlyTreeFile XttFile { get; } = xttFile;
   public IReadOnlyTreeFile XtdFile { get; } = xtdFile;

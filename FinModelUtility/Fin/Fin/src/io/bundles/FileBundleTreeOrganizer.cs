@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using fin.data.lazy;
 
@@ -25,9 +26,38 @@ public sealed class FileBundleTreeOrganizer : IFileBundleOrganizer {
     });
   }
 
-  public void Add(IFileBundle fileBundle) {
-    this.lazyDirToBundleDir_[fileBundle.MainFile.AssertGetParent()]
-        .AddFileBundle(fileBundle);
+  public void Add(IFileBundle fileBundle)
+    => this.GetBundleDirectory_(fileBundle).AddFileBundle(fileBundle);
+
+  private IFileBundleDirectory GetBundleDirectory_(IFileBundle fileBundle) {
+    IReadOnlyTreeDirectory dir = fileBundle.MainFile.AssertGetParent();
+    string? virtualPath = fileBundle.VirtualDirectoryPath;
+    if (virtualPath == null) {
+      return this.lazyDirToBundleDir_[dir];
+    }
+
+    while (dir.TryGetParent(out IReadOnlyTreeDirectory? parent)) {
+      dir = parent;
+    }
+
+    // Real directories along the path are reused, so bundles are shown
+    // alongside any files that are actually there. Once a folder doesn't
+    // exist on disk, the rest of the path is virtual.
+    IFileBundleDirectory? virtualDir = null;
+    foreach (string name in virtualPath.Split('/',
+                                              StringSplitOptions
+                                                  .RemoveEmptyEntries)) {
+      if (virtualDir == null &&
+          dir.TryToGetExistingSubdir(name, out IReadOnlyTreeDirectory? subdir)) {
+        dir = subdir;
+        continue;
+      }
+
+      virtualDir = (virtualDir ?? this.lazyDirToBundleDir_[dir])
+          .GetOrAddSubdir(name);
+    }
+
+    return virtualDir ?? this.lazyDirToBundleDir_[dir];
   }
 
   public IFileBundleDirectory CleanUpAndGetRoot() {

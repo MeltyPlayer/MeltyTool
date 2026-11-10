@@ -6,7 +6,7 @@ using fin.model;
 namespace uni.thirdparty;
 
 public sealed class BoneScaleAnimationExporter {
-  public void Export(IGenericFile luaFile, IReadOnlyModel model) {
+  public void Export(IStandaloneFile luaFile, IReadOnlyModel model) {
       var animations = model.AnimationManager.Animations;
       if (animations.Count == 0) {
         return;
@@ -31,7 +31,7 @@ public sealed class BoneScaleAnimationExporter {
           }
 
           for (var f = 0; f < animation.FrameCount; ++f) {
-            scales.TryGetAtFrame(f, out var scale);
+            scales.TryGetAtFrameWithBinarySearch(f, out var scale);
 
             if (!scale.IsRoughly1()) {
               definedBones[bone] = boneTracks;
@@ -52,7 +52,7 @@ public sealed class BoneScaleAnimationExporter {
           fw.WriteLine($"    [\"{bone.Name}\"] = {{");
 
           for (var f = 0; f < animation.FrameCount; ++f) {
-            scales.TryGetAtFrame(f, out var scale);
+            scales.TryGetAtFrameWithBinarySearch(f, out var scale);
 
             if (scale.IsRoughly1()) {
               fw.WriteLine("      defScale,");

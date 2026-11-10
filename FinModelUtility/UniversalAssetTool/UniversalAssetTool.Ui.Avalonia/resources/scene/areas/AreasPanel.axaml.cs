@@ -2,6 +2,7 @@ using Avalonia.Controls;
 
 using fin.scene;
 using fin.ui;
+using fin.ui.rendering;
 
 using ReactiveUI;
 
@@ -14,7 +15,7 @@ public sealed class AreasPanelViewModelForDesigner
   }
 }
 
-public class AreasPanelViewModel : BViewModel {
+public class AreasPanelViewModel : BViewModel, ISelectablePanelViewModel {
   public required IReadOnlyScene? Scene {
     set {
       this.Impl = value != null
@@ -40,6 +41,11 @@ public class AreasPanelViewModel : BViewModel {
     get;
     set => this.RaiseAndSetIfChanged(ref field, value);
   }
+
+  public SelectableType Type => SelectableType.NODE;
+
+  public void ReselectSelectedElementViaService()
+    => this.Impl?.SelectElementViaService();
 }
 
 public partial class AreasPanel : UserControl {

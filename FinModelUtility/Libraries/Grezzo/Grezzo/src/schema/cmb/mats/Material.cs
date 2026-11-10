@@ -4,10 +4,13 @@ using fin.schema;
 using fin.schema.color;
 
 using schema.binary;
+using schema.binary.attributes;
 
 namespace grezzo.schema.cmb.mats;
 
-public sealed class Material : IBinaryConvertible {
+public sealed class Material : IBinaryConvertible, IChildOf<Mats> {
+  public Mats Parent { get; set; }
+
   public bool isFragmentLightingEnabled;
   public bool isVertexLightingEnabled;
   public bool IsFogEnabled { get; set; }
@@ -99,7 +102,7 @@ public sealed class Material : IBinaryConvertible {
       this.isPolygonOffsetEnabled = br.ReadByte() != 0;
       this.polygonOffset = br.ReadInt16() / 65534f;
 
-      if (CmbHeader.Version > Version.MAJORAS_MASK_3D) {
+      if (this.Parent.Version > Version.MAJORAS_MASK_3D) {
         this.unk0 = br.ReadUInt32();
         this.textureMappersUsed = (uint) br.ReadInt16();
         this.textureCoordsUsed = (uint) br.ReadInt16();
@@ -177,7 +180,7 @@ public sealed class Material : IBinaryConvertible {
       this.alphaEquation = (BlendEquation) (br.ReadUInt32());
       br.ReadSingles(this.blendColor);
 
-      if (CmbHeader.Version.SupportsStencilBuffer()) {
+      if (this.Parent.Version.SupportsStencilBuffer()) {
         this.stencilEnabled = br.ReadByte() != 0;
         this.stencilReferenceValue = br.ReadByte();
         this.stencilBufferMask = br.ReadByte();

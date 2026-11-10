@@ -14,10 +14,7 @@ using schema.binary.testing;
 
 namespace glo;
 
-public sealed class
-    GloModelGoldenTests
-    : BModelGoldenTests<GloModelFileBundle,
-        GloModelImporter> {
+public sealed class GloModelGoldenTests : BModelGoldenTests<GloModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestReadsAndWritesIdentically(

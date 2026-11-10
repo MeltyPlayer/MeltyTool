@@ -11,6 +11,7 @@ namespace uni.games.vrwdw;
 
 public sealed class VrwdwFileBundleGatherer : BPrereqsFileBundleGatherer {
   public override string Name => "vrwdw";
+  public override string Title => "Virtual Reality Walt Disney World";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

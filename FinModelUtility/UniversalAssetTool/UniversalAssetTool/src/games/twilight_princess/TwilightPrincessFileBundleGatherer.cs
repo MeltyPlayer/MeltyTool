@@ -1,17 +1,20 @@
-﻿using fin.io;
+﻿using fin.compression;
+using fin.io;
 using fin.io.bundles;
 using fin.util.progress;
 
 using gx.archives.rarc;
-using gx.compression.yaz0;
 
 using jsystem.api;
 
 
 namespace uni.games.twilight_princess;
 
+// https://wiki.dolphin-emu.org/index.php?title=GZ2E01
+[GameIDs("GZ2E01", "GZ2J01", "GZ2K01", "GZ2P01")]
 public sealed class TwilightPrincessFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "twilight_princess";
+  public override string Title => "The Legend of Zelda: Twilight Princess";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

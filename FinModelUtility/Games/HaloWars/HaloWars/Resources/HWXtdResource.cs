@@ -90,7 +90,7 @@ public sealed class HWXtdResource : HWBinaryResource {
         (index, position) => new NormalUvVertexImpl(index, position)) {
         // TODO: Fix this
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>(),
+        Files = new HashSet<IReadOnlyStandaloneFile>(),
     };
     var finMesh = finModel.Skin.AddMesh();
 

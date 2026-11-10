@@ -4,6 +4,8 @@ using System.Numerics;
 
 using fin.animation.interpolation;
 using fin.animation.keyframes;
+using fin.animation.types.vector3;
+using fin.util.asserts;
 
 namespace fin.animation.types.quaternion;
 
@@ -15,7 +17,7 @@ public sealed class SeparateQuaternionKeyframes<TKeyframe>(
     IndividualInterpolationConfig<float>? individualConfigZ,
     IndividualInterpolationConfig<float>? individualConfigW)
     : ISeparateQuaternionKeyframes<TKeyframe>
-    where TKeyframe : IKeyframe<float> {
+    where TKeyframe : class, IKeyframe<float> {
   public SeparateQuaternionKeyframes(
       ISharedInterpolationConfig sharedConfig,
       IKeyframeInterpolator<TKeyframe, float> interpolator,
@@ -50,7 +52,7 @@ public sealed class SeparateQuaternionKeyframes<TKeyframe>(
             individualConfigW),
     ];
 
-  public bool TryGetAtFrame(float frame, out Quaternion value) {
+  public bool TryGetAtFrameWithBinarySearch(float frame, out Quaternion value) {
     value = default;
 
     if (!this.Axes[0]
@@ -96,9 +98,23 @@ public sealed class SeparateQuaternionKeyframes<TKeyframe>(
   // TODO: Implement this
   public bool TryGetSimpleKeyframes(
       out IReadOnlyList<(float frame, Quaternion value)> keyframes,
-      out IReadOnlyList<(Quaternion tangentIn, Quaternion tangentOut)>? tangentKeyframes) {
+      out IReadOnlyList<(Quaternion tangentIn, Quaternion tangentOut)>?
+          tangentKeyframes) {
     keyframes = null;
     tangentKeyframes = null;
     return false;
   }
+
+  public IAdvancingInterpolator<Quaternion> GetAdvancingInterpolator()
+    => new SeparateQuaternionAdvancingInterpolator<TKeyframe>(
+        sharedConfig,
+        individualConfigX,
+        individualConfigY,
+        individualConfigZ,
+        individualConfigW,
+        this.Axes[0].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[1].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[2].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        this.Axes[3].AssertAsA<InterpolatedKeyframes<TKeyframe, float>>().Impl,
+        interpolator);
 }

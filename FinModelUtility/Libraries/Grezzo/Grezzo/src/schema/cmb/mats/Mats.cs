@@ -7,6 +7,9 @@ namespace grezzo.schema.cmb.mats;
 
 [BinarySchema]
 public sealed partial class Mats : IBinaryConvertible {
+  [Skip]
+  public required Version Version { get; init; }
+
   [SequenceLengthSource(SchemaIntegerType.UINT32)]
   public Material[] Materials { get; set; }
 

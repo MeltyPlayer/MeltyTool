@@ -32,7 +32,7 @@ public static class LocalImageFormatExtensions {
 
 
 [GenerateReadOnly]
-public partial interface IImage : IDisposable {
+public partial interface IImage : IDisposable, IEquatable<IReadOnlyImage> {
   new PixelFormat PixelFormat { get; }
   new int Width { get; }
   new int Height { get; }

@@ -97,7 +97,7 @@ public sealed class SubObjectModels : IBinaryDeserializable, IChildOf<Object> {
 
         if (!signal.IsValid) {
           Asserts.Fail(
-              $"Invalid signal at offset ${startingOffset.ToHexString()}: {signal}");
+              $"Invalid signal at offset {startingOffset.ToHexString()}: {signal}");
         }
 
         if (signal.Mode is SignalMode.NULL

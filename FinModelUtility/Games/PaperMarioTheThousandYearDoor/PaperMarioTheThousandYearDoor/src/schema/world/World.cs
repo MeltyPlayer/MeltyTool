@@ -13,7 +13,7 @@ public sealed partial class World : IBinaryDeserializable {
   private uint mainDataSize_;
   private uint pointerFixupTableCount_;
   
-  public uint NamedChunkTableCount { get; set; }
+  public uint NamedChunkTableCount { get; private set; }
 
   [Skip]
   public uint MainDataOffset => 0x20;

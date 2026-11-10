@@ -43,8 +43,8 @@ public sealed class BnkReader {
   }
 
   public void ReadBnk(IModel model,
-                      IReadOnlyGenericFile bnkFile,
-                      IReadOnlyGenericFile? rcbFile,
+                      IReadOnlyStandaloneFile bnkFile,
+                      IReadOnlyStandaloneFile? rcbFile,
                       IBone[] bones) {
     using var bnkBr =
         new SchemaBinaryReader(bnkFile.OpenRead(), Endianness.LittleEndian);
@@ -76,7 +76,7 @@ public sealed class BnkReader {
   }
 
   private void ReadIntoAnimation_(IBinaryReader bnkBr,
-                                  IReadOnlyGenericFile? rcbFile,
+                                  IReadOnlyStandaloneFile? rcbFile,
                                   IBone[] bones,
                                   IModelAnimation finAnimation) {
     {

@@ -25,7 +25,7 @@ public sealed partial class Uven : IBinaryDeserializable {
   [SequenceLengthSource(5)]
   public byte[] Unk1 { get; set; }
 
-  public byte UvmdCount { get; set; }
+  private byte UvmdCount { get; set; }
 
   [SequenceLengthSource(43)]
   public byte[] Unk2 { get; set; }

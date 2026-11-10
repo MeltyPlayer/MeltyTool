@@ -23,20 +23,20 @@ public partial class ModelImpl<TVertex>
   }
 
   public required IFileBundle FileBundle { get; init; }
-  public required IReadOnlySet<IReadOnlyGenericFile> Files { get; init; }
+  public required IReadOnlySet<IReadOnlyStandaloneFile> Files { get; init; }
 }
 
 public sealed class ModelImpl : ModelImpl<NormalTangentMultiColorMultiUvVertexImpl> {
   public static ModelImpl CreateForViewer()
     => new() {
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>()
+        Files = new HashSet<IReadOnlyStandaloneFile>()
     };
 
   public static ModelImpl CreateForViewer(int vertexCount)
     => new(vertexCount) {
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>()
+        Files = new HashSet<IReadOnlyStandaloneFile>()
     };
 
   public ModelImpl() : base(

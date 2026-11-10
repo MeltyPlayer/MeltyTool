@@ -29,11 +29,15 @@ public sealed class GlUbo : IDisposable {
 
   private void ReleaseUnmanagedResources_() => GL.DeleteBuffer(this.id_);
 
-  public unsafe void UpdateDataIfChanged(ReadOnlySpan<byte> newData) {
+  public void UpdateDataIfChanged(ReadOnlySpan<byte> newData) {
     if (newData.SequenceEqual(this.buffer_)) {
       return;
     }
 
+    this.UpdateData(newData);
+  }
+
+  public unsafe void UpdateData(ReadOnlySpan<byte> newData) {
     newData.CopyTo(this.buffer_);
     fixed (byte* bufferPtr = &newData.GetPinnableReference()) {
       GlUtil.BindUboData(this.id_);

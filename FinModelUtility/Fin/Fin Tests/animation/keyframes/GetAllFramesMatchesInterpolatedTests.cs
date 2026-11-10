@@ -243,7 +243,7 @@ public sealed class GetAllFramesMatchesInterpolatedTests {
       int length) where T : unmanaged {
     Span<T> interpolatedFrames = stackalloc T[length];
     for (var i = 0; i < length; i++) {
-      Asserts.True(impl.TryGetAtFrame(i, out var value));
+      Asserts.True(impl.TryGetAtFrameWithBinarySearch(i, out var value));
       interpolatedFrames[i] = value;
     }
 

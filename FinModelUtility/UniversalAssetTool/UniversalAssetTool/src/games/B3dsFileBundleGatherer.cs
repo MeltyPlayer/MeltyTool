@@ -9,6 +9,7 @@ namespace uni.games;
 public abstract class B3dsFileBundleGatherer
     : INamedFileBundleGatherer {
   public abstract string Name { get; }
+  public abstract string Title { get; }
   public FileBundleGathererPlatform Platform => FileBundleGathererPlatform.THREE_DS;
 
   public virtual bool IsListed => true;

@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.util.strings;
 
 using Material.Icons;
@@ -81,7 +82,7 @@ public sealed class AnimationViewModel : BViewModel {
   }
 }
 
-public partial class AnimationList : UserControl {
+public partial class AnimationList : BUserControl<AnimationListViewModel> {
   public AnimationList() {
     this.InitializeComponent();
   }

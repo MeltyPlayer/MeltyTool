@@ -3,6 +3,7 @@
 using fin.animation.keyframes;
 using fin.animation.types.quaternion;
 using fin.animation.types.vector3;
+using fin.data.dictionaries;
 using fin.data.indexable;
 using fin.data.lazy;
 using fin.data.nodes;
@@ -25,12 +26,14 @@ using ttyd.schema.tpl;
 
 namespace ttyd.api;
 
-public sealed class TtydModelFileBundle : IModelFileBundle {
+public sealed class TtydModelFileBundle
+    : IModelFileBundle<TtydModelFileBundle, TtydModelImporter> {
   public required IReadOnlyTreeFile ModelFile { get; init; }
   public IReadOnlyTreeFile MainFile => this.ModelFile;
 }
 
-public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
+public sealed class TtydModelImporter
+    : IModelImporter<TtydModelImporter, TtydModelFileBundle> {
   public IModel Import(TtydModelFileBundle fileBundle) {
     var modelFile = fileBundle.ModelFile;
     var ttydModel = modelFile.ReadNew<Model>(Endianness.BigEndian);
@@ -48,54 +51,53 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
 
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
-        Files = new HashSet<IReadOnlyGenericFile>(
+        Files = new HashSet<IReadOnlyStandaloneFile>(
             textureFile != null ? [modelFile, textureFile] : [modelFile])
     };
 
     // Sets up materials
-    var finTextureMap = new LazyDictionary<Sampler, ITexture>(
-        sampler => {
-          var ttydTextureIndex = sampler.TextureIndex;
-          var ttydTexture = ttydModel.Textures[ttydTextureIndex];
+    var finTextureMap = new LazyDictionary<Sampler, ITexture>(sampler => {
+      var ttydTextureIndex = sampler.TextureIndex;
+      var ttydTexture = ttydModel.Textures[ttydTextureIndex];
 
-          var tplTextureIndex = ttydTexture.TplTextureIndex;
-          var tplTexture = tpl.AssertNonnull().Textures[tplTextureIndex];
+      var tplTextureIndex = ttydTexture.TplTextureIndex;
+      var tplTexture = tpl.AssertNonnull().Textures[tplTextureIndex];
 
-          var finTexture
-              = finModel.MaterialManager.CreateTexture(tplTexture.Image);
-          finTexture.Name = ttydTexture.Name;
+      var finTexture
+          = finModel.MaterialManager.CreateTexture(tplTexture.Image);
+      finTexture.Name = ttydTexture.Name;
 
-          var wrapFlags = sampler.WrapFlags;
-          finTexture.WrapModeU = WrapModeUtil.FromMirrorAndRepeat(
-              wrapFlags.CheckFlag(WrapFlags.MIRROR_S),
-              wrapFlags.CheckFlag(WrapFlags.REPEAT_S));
-          finTexture.WrapModeV = WrapModeUtil.FromMirrorAndRepeat(
-              wrapFlags.CheckFlag(WrapFlags.MIRROR_T),
-              wrapFlags.CheckFlag(WrapFlags.REPEAT_T));
+      var wrapFlags = sampler.WrapFlags;
+      finTexture.WrapModeU = WrapModeUtil.FromMirrorAndRepeat(
+          wrapFlags.CheckFlag(WrapFlags.MIRROR_S),
+          wrapFlags.CheckFlag(WrapFlags.REPEAT_S));
+      finTexture.WrapModeV = WrapModeUtil.FromMirrorAndRepeat(
+          wrapFlags.CheckFlag(WrapFlags.MIRROR_T),
+          wrapFlags.CheckFlag(WrapFlags.REPEAT_T));
 
-          return finTexture;
-        });
+      return finTexture;
+    });
     var finMaterialMap
-        = new LazyDictionary<(Sampler?, BlendMode, CullMode), IMaterial?>(
-            tuple => {
-              var (sampler, blendMode, cullMode) = tuple;
-              if (sampler == null) {
-                return null;
-              }
+        = new LazyDictionary<(Sampler?, BlendMode, CullMode), IMaterial?>(tuple
+            => {
+          var (sampler, blendMode, cullMode) = tuple;
+          if (sampler == null) {
+            return null;
+          }
 
-              var finTexture = finTextureMap[sampler];
-              var finMaterial
-                  = finModel.MaterialManager.AddTextureMaterial(finTexture);
-              finMaterial.Name = $"texMap{sampler.TextureIndex}";
-              finMaterial.CullingMode = cullMode switch {
-                  CullMode.BACK  => CullingMode.SHOW_FRONT_ONLY,
-                  CullMode.FRONT => CullingMode.SHOW_BACK_ONLY,
-                  CullMode.ALL   => CullingMode.SHOW_NEITHER,
-                  CullMode.NONE  => CullingMode.SHOW_BOTH,
-              };
+          var finTexture = finTextureMap[sampler];
+          var finMaterial
+              = finModel.MaterialManager.AddTextureMaterial(finTexture);
+          finMaterial.Name = $"texMap{sampler.TextureIndex}";
+          finMaterial.CullingMode = cullMode switch {
+              CullMode.BACK  => CullingMode.SHOW_FRONT_ONLY,
+              CullMode.FRONT => CullingMode.SHOW_BACK_ONLY,
+              CullMode.ALL   => CullingMode.SHOW_NEITHER,
+              CullMode.NONE  => CullingMode.SHOW_BOTH,
+          };
 
-              return finMaterial;
-            });
+          return finMaterial;
+        });
 
 
     // Adds bones/meshes
@@ -253,6 +255,11 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
     // Sets up meshes
     var groupMeshesByVisibilityIndex
         = new IndexedSetDictionary<IReadOnlyMesh>();
+
+    var allVertices = new IndexableSet<IReadOnlyVertex>();
+    var verticesByPositionIndex = new ListDictionary<int, IReadOnlyVertex>();
+    var verticesByNormalIndex = new ListDictionary<int, IReadOnlyVertex>();
+
     foreach (var (ttydGroup, finBone, finMesh) in groupBoneMeshTuples) {
       if (ttydGroup.SceneGraphObjectIndex == -1) {
         continue;
@@ -271,10 +278,6 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
       var ttydSceneGraphObject = ttydModel.SceneGraphObjects[
           ttydGroup.SceneGraphObjectIndex];
 
-      var objectPositions = ttydModel.Vertices.AsSpan(
-          ttydSceneGraphObject.VertexPosition.BaseIndex);
-      var objectNormals = ttydModel.Normals.AsSpan(
-          ttydSceneGraphObject.VertexNormal.BaseIndex);
       var objectColors = ttydModel.Colors.AsSpan(
           ttydSceneGraphObject.VertexColor.BaseIndex);
       var objectTexCoords = ttydModel.TexCoords.AsSpan(
@@ -302,16 +305,21 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
         foreach (var ttydPolygon in ttydPolygons) {
           var finVertices = new IVertex[ttydPolygon.VertexCount];
           for (var i = 0; i < ttydPolygon.VertexCount; i++) {
-            var vertexPosition = objectPositions[
+            var positionIndex
+              = ttydSceneGraphObject.VertexPosition.BaseIndex +
                 ttydModel.VertexIndices[
-                    ttydMesh.VertexPositionBaseIndex +
-                    ttydPolygon.VertexBaseIndex +
-                    i]];
-            var vertexNormal = objectNormals[
+                  ttydMesh.VertexPositionBaseIndex +
+                  ttydPolygon.VertexBaseIndex +
+                  i];
+            var normalIndex
+              = ttydSceneGraphObject.VertexNormal.BaseIndex +
                 ttydModel.NormalIndices[
-                    ttydMesh.VertexNormalBaseIndex +
-                    ttydPolygon.VertexBaseIndex +
-                    i]];
+                  ttydMesh.VertexNormalBaseIndex +
+                  ttydPolygon.VertexBaseIndex +
+                  i];
+
+            var vertexPosition = ttydModel.Vertices[positionIndex];
+            var vertexNormal = ttydModel.Normals[normalIndex];
             var vertexColor = objectColors[
                 ttydModel.ColorIndices[
                     ttydMesh.VertexColorBaseIndex +
@@ -322,6 +330,10 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
             finVertex.SetLocalNormal(vertexNormal);
             finVertex.SetColor(vertexColor);
             finVertex.SetBoneWeights(boneWeights);
+
+            allVertices.Add(finVertex);
+            verticesByPositionIndex.Add(positionIndex, finVertex);
+            verticesByNormalIndex.Add(normalIndex, finVertex);
 
             if (ttydMesh.SamplerIndex != -1) {
               var vertexTexCoord = objectTexCoords[
@@ -457,8 +469,9 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
       var keyframes
           = new TtydGroupTransformKeyframes(ttydModel.GroupTransforms,
                                             finAnimation.FrameCount);
+
       foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
-        var keyframe = (int) ttydKeyframe.Time;
+        var keyframe = ttydKeyframe.Time;
 
         var groupTransformDataDeltaCount
             = ttydKeyframe.GroupTransformDataDeltaCount;
@@ -492,12 +505,95 @@ public sealed class TtydModelImporter : IModelImporter<TtydModelFileBundle> {
             if (groupMeshTracksByVisibilityIndex.TryGetSet(
                     visibilityIndexAccumulator,
                     out var groupMeshTracksWithVisibilityIndex)) {
-              foreach (var groupMeshTracks in groupMeshTracksWithVisibilityIndex) {
+              foreach (var groupMeshTracks in
+                       groupMeshTracksWithVisibilityIndex) {
                 groupMeshTracks.DisplayStates.SetKeyframe(
                     keyframe,
                     visibilityGroupDelta.Visible == 1
                         ? MeshDisplayState.VISIBLE
                         : MeshDisplayState.HIDDEN);
+              }
+            }
+          }
+        }
+      }
+
+      // Sets up morph keyframes
+      {
+        var previousMorphTarget = finModel.AnimationManager.DefaultMorphTarget;
+
+        if (ttydAnimationData.Keyframes.Sum(f => f.VertexPositionDeltaCount +
+                                                 f.VertexNormalDeltaCount) > 0) {
+          var morphTrack = finAnimation.UseMorphTrack();
+
+          var vertexPositions = ttydModel.Vertices.ToArray();
+          var vertexNormals = ttydModel.Normals.ToArray();
+          foreach (var ttydKeyframe in ttydAnimationData.Keyframes) {
+            var keyframe = ttydKeyframe.Time;
+
+            var vertexPositionDeltaCount = ttydKeyframe.VertexPositionDeltaCount;
+            var vertexNormalDeltaCount = ttydKeyframe.VertexNormalDeltaCount;
+            if (vertexPositionDeltaCount == 0 && vertexNormalDeltaCount == 0) {
+              morphTrack.Keyframes.Add(
+                new Keyframe<IReadOnlyMorphTarget>(
+                  keyframe,
+                  previousMorphTarget));
+            } else {
+              var currentMorphTarget = previousMorphTarget.Clone();
+              currentMorphTarget.Name = $"{finAnimation.Name}_morph_{keyframe}";
+
+              previousMorphTarget = currentMorphTarget;
+
+              morphTrack.Keyframes.Add(
+                  new Keyframe<IReadOnlyMorphTarget>(
+                      keyframe,
+                      currentMorphTarget));
+
+              if (vertexPositionDeltaCount > 0) {
+                var vertexPositionDeltas =
+                    ttydAnimationData.VertexPositionDeltas.AsSpan(
+                        (int) ttydKeyframe.VertexPositionDeltaBaseIndex,
+                        (int) vertexPositionDeltaCount);
+
+                var positionVertexIndex = 0;
+
+                foreach (var vertexPositionDelta in vertexPositionDeltas) {
+                  positionVertexIndex += vertexPositionDelta.IndexDelta;
+
+                  var currentVertexPosition
+                    = vertexPositions[positionVertexIndex]
+                      += vertexPositionDelta.CoordinateDeltas.AsVector3() / 16;
+
+                  foreach (var positionVertex in verticesByPositionIndex[
+                               positionVertexIndex]) {
+                    currentMorphTarget.SetNewLocalPosition(
+                        positionVertex,
+                        currentVertexPosition);
+                  }
+                }
+              }
+
+              if (vertexNormalDeltaCount > 0) {
+                var vertexNormalDeltas =
+                    ttydAnimationData.VertexNormalDeltas.AsSpan(
+                        (int) ttydKeyframe.VertexNormalDeltaBaseIndex,
+                        (int) vertexNormalDeltaCount);
+
+                var normalVertexIndex = 0;
+
+                foreach (var vertexNormalDelta in vertexNormalDeltas) {
+                  normalVertexIndex += vertexNormalDelta.IndexDelta;
+                  var currentVertexNormal
+                    = vertexNormals[normalVertexIndex]
+                      += vertexNormalDelta.CoordinateDeltas.AsVector3() / 16;
+
+                  foreach (var normalVertex in verticesByNormalIndex[
+                               normalVertexIndex]) {
+                    currentMorphTarget.SetNewLocalNormal(
+                        normalVertex,
+                        currentVertexNormal);
+                  }
+                }
               }
             }
           }

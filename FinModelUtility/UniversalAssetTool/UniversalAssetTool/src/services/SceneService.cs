@@ -18,12 +18,14 @@ public static class SceneService {
             SceneTypeService.IsASingleModel = false;
             LoadingStatusService.IsLoading = true;
 
-            try {
-              var scene = new GlobalSceneImporter().Import(sceneFileBundle);
-              OpenScene(fileTreeLeafNode, scene);
-            } catch (Exception e) {
-              FailToOpenScene(fileBundle, e);
-            }
+            Task.Run(() => {
+              try {
+                var scene = new GlobalSceneImporter().Import(sceneFileBundle);
+                OpenScene(fileTreeLeafNode, scene);
+              } catch (Exception e) {
+                FailToOpenScene(fileBundle, e);
+              }
+            });
 
             LoadingStatusService.IsLoading = false;
           }

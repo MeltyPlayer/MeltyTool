@@ -1,11 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
 
-using Avalonia.Controls;
-
 using fin.model;
 using fin.model.impl;
 using fin.shaders.glsl;
 using fin.ui;
+using fin.ui.avalonia.controls;
 
 using ReactiveUI;
 
@@ -27,7 +26,8 @@ public class MaterialShadersPanelViewModel : BViewModel {
       var (model, material) = field;
       var shaderSource
           = material.ToShaderSource(model,
-                                    ModelRequirements.FromModel(model));
+                                    ModelRequirements.FromModel(model),
+                                    true);
       this.VertexShaderSource = shaderSource.VertexShaderSource;
       this.FragmentShaderSource = shaderSource.FragmentShaderSource;
     }
@@ -46,7 +46,8 @@ public class MaterialShadersPanelViewModel : BViewModel {
   }
 }
 
-public partial class MaterialShadersPanel : UserControl {
+public partial class MaterialShadersPanel
+    : BUserControl<MaterialShadersPanelViewModel> {
   public MaterialShadersPanel() {
     this.InitializeComponent();
   }

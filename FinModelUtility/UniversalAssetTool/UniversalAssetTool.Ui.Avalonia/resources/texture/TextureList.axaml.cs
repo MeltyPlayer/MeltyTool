@@ -6,8 +6,10 @@ using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
+using fin.data.dictionaries;
 using fin.model;
 using fin.ui;
+using fin.ui.avalonia.controls;
 using fin.ui.rendering;
 using fin.util.strings;
 
@@ -21,35 +23,31 @@ public sealed class TextureListViewModelForDesigner
     : TextureListViewModel {
   public TextureListViewModelForDesigner() {
     var (model, material) = ModelDesignerUtil.CreateStubModelAndMaterial();
-    this.ModelAndTextures = (model, material.Textures.ToArray());
+
+    var modelsAndTextures
+        = new ListDictionary<IReadOnlyModel, IReadOnlyTexture>();
+    modelsAndTextures.AddRange(model, material.Textures);
+
+    this.ModelsAndTextures = modelsAndTextures;
   }
 }
 
 public class TextureListViewModel : BViewModel {
-  private (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
-      modelAndTextures_;
-
-  public required (IReadOnlyModel, IReadOnlyList<IReadOnlyTexture>)?
-      ModelAndTextures {
-    get => this.modelAndTextures_;
-    set {
-      this.RaiseAndSetIfChanged(ref this.modelAndTextures_, value);
-      this.Textures = value?.Item2;
-    }
-  }
-
-
-  public IReadOnlyList<IReadOnlyTexture>? Textures {
+  public IReadOnlyListDictionary<IReadOnlyModel, IReadOnlyTexture>
+      ModelsAndTextures {
     get;
-    private set {
+    set {
       this.RaiseAndSetIfChanged(ref field, value);
-      this.TextureViewModels = new ObservableCollection<TextureViewModel>(
-          value?.Select(texture => new TextureViewModel
-                            { Texture = texture })
-               .OrderBy(
-                   t => t.Texture.Name,
-                   StringUtil.NaturalSortInstance) ??
-          Enumerable.Empty<TextureViewModel>());
+      this.TextureViewModels = [
+          .. value.GetPairs()
+                  .SelectMany(tuple => tuple.value.Select(t => (tuple.key, t)))
+                  .Select(tuple => new TextureViewModel {
+                      Model = tuple.key,
+                      Texture = tuple.t
+                  })
+                  .OrderBy(t => t.Texture.Name, StringUtil.NaturalSortInstance)
+                  .ThenBy(t => t.Texture.Image.GetHashCode())
+      ];
     }
   }
 
@@ -64,10 +62,9 @@ public class TextureListViewModel : BViewModel {
   public TextureViewModel? SelectedTextureViewModel {
     get;
     set {
-      this.RaiseAndSetIfChanged(ref field,
-                                value);
+      this.RaiseAndSetIfChanged(ref field, value);
 
-      var model = this.modelAndTextures_?.Item1;
+      var model = field?.Model;
       var texture = field?.Texture;
       SelectedTextureService.SelectTexture(
           model != null && texture != null ? (model, texture) : null);
@@ -78,14 +75,16 @@ public class TextureListViewModel : BViewModel {
 public sealed class TextureViewModel : BViewModel {
   public TexturePreviewViewModel texturePreviewViewModel_;
 
+  public required IReadOnlyModel Model {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
+  }
+
   public required IReadOnlyTexture Texture {
     get;
     set {
       this.RaiseAndSetIfChanged(ref field, value);
-
       this.TexturePreview = new TexturePreviewViewModel { Texture = value };
-
-      var image = value.Image;
     }
   }
 
@@ -97,7 +96,7 @@ public sealed class TextureViewModel : BViewModel {
   }
 }
 
-public partial class TextureList : UserControl {
+public partial class TextureList : BUserControl<TextureListViewModel> {
   public TextureList() {
     this.InitializeComponent();
   }

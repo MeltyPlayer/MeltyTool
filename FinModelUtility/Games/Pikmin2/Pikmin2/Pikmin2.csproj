@@ -2,7 +2,6 @@
 
  <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>games.pikmin2</RootNamespace>
   </PropertyGroup>
 

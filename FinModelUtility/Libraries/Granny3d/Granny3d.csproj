@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>granny3d</RootNamespace>
   </PropertyGroup>
 

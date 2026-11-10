@@ -24,7 +24,7 @@ public partial class InfoTab : UserControl {
         }
 
         IEnumerable<string> paths;
-        if (value.Files.WhereIs<IReadOnlyGenericFile, IFileHierarchyFile>()
+        if (value.Files.WhereIs<IReadOnlyStandaloneFile, IFileHierarchyFile>()
                  .TryGetFirst(out var fileHierarchyFile)) {
           var hierarchy = fileHierarchyFile.Hierarchy;
 

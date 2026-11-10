@@ -47,7 +47,7 @@ public sealed class CmbModelBuilder {
       IReadOnlyList<Ctxb>? ctxbs = null,
       IReadOnlyList<(string name, Csab csab)>? namesAndCsabs = null,
       IReadOnlyList<(string name, Shpa shpa)>? namesAndShpas = null) {
-    var fileSet = new HashSet<IReadOnlyGenericFile>();
+    var fileSet = new HashSet<IReadOnlyStandaloneFile>();
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
         Files = fileSet,
@@ -68,7 +68,7 @@ public sealed class CmbModelBuilder {
   public IModel AddToModel(
       ModelImpl finModel,
       IFileBundle fileBundle,
-      ISet<IReadOnlyGenericFile> fileSet,
+      ISet<IReadOnlyStandaloneFile> fileSet,
       Cmb cmb,
       IReadOnlyList<Ctxb>? ctxbs = null,
       IReadOnlyList<(string name, Csab csab)>? namesAndCsabs = null,

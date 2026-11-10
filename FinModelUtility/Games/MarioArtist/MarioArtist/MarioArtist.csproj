@@ -2,15 +2,15 @@
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <RootNamespace>marioartist</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.10" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="10.0.14" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Fin\Fin.Ui\Fin.Ui.csproj" />
     <ProjectReference Include="..\..\..\Fin\Fin\Fin.csproj" />
     <ProjectReference Include="..\..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
   </ItemGroup>

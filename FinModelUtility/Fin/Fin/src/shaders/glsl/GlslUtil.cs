@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Text;
 
 using fin.data.indexable;
 using fin.math;
 using fin.model;
-using fin.util.enums;
 using fin.image.util;
 using fin.model.util;
+using fin.ui.rendering.gl;
+using fin.util.enums;
 using fin.util.strings;
 
 namespace fin.shaders.glsl;
@@ -36,7 +38,7 @@ public static class TextureTransformTypeExtensions {
     => lhs | rhs;
 }
 
-public static class GlslUtil {
+public static partial class GlslUtil {
   public static FinShaderType
       GetShaderType(this IReadOnlyMaterial? material) {
     if (DebugFlags.ENABLE_FIXED_FUNCTION_SHADER &&
@@ -60,9 +62,10 @@ public static class GlslUtil {
   }
 
   // TODO: Only include uvs/colors as needed
-  public static string GetVertexSrc(IReadOnlyModel model,
-                                    IModelRequirements modelRequirements,
-                                    IShaderRequirements shaderRequirements) {
+  public static string GetVertexSrc(
+      IReadOnlyModel model,
+      IModelRequirements modelRequirements,
+      IShaderRequirements shaderRequirements) {
     var usedUvs = shaderRequirements.UsedUvs;
     var usedColors = shaderRequirements.UsedColors;
 
@@ -77,15 +80,16 @@ public static class GlslUtil {
 
     var numBones = modelRequirements.NumBones;
 
-    vertexSrc.AppendLine($"""
-                          #version {GlslConstants.VERTEX_SHADER_VERSION}
+    vertexSrc.AppendLine(
+        $"""
+         #version {GlslConstants.VERTEX_SHADER_VERSION}
 
-                          {GetMatricesHeaders(model)}
-
-                          uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
-
-                          layout(location = {location++}) in vec3 in_Position;
-                          """);
+         {GetMatricesHeaders(model)}
+         
+         uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
+         
+         layout(location = {location++}) in vec3 in_Position;
+         """);
 
     if (hasNormals) {
       vertexSrc.AppendLine(
@@ -167,130 +171,150 @@ public static class GlslUtil {
       }
     }
 
-    vertexSrc.Append($$"""
-
-                       void main() {
-                         mat4 mvpMatrix = {{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}} * {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-
-                       """);
-
-    if (modelRequirements.NumBones > 0) {
-      switch (numBones) {
-        case 1: {
+    vertexSrc.AppendLine();
+    vertexSrc.AppendBlock(
+        "void main()",
+        () => {
           vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds] * in_BoneWeights;
-               """);
-          break;
-        }
-        case 2: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y;
-               """);
-          break;
-        }
-        case 3: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z;
-               """);
-          break;
-        }
-        case 4: {
-          vertexSrc.AppendLine(
-              $"""
-                 mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
-                                         {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
-               """);
-          break;
-        }
-        default: throw new NotImplementedException();
-      }
+              $"mat4 mvpMatrix = {GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME} * {GlslConstants.UNIFORM_MODEL_MATRIX_NAME};");
 
-      vertexSrc.AppendLine(
-          $"""
+          if (modelRequirements.NumBones > 0) {
+            switch (numBones) {
+              case 1: {
+                vertexSrc.AppendLine(
+                    $"mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds] * in_BoneWeights;");
+                break;
+              }
+              case 2: {
+                vertexSrc.AppendLine(
+                    $"""
+                     mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y;
+                     """);
+                break;
+              }
+              case 3: {
+                vertexSrc.AppendLine(
+                    $"""
+                     mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z;
+                     """);
+                break;
+              }
+              case 4: {
+                vertexSrc.AppendLine(
+                    $"""
+                     mat4 mergedBoneMatrix = {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.x] * in_BoneWeights.x +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.y] * in_BoneWeights.y +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.z] * in_BoneWeights.z +
+                                             {GlslConstants.UNIFORM_BONE_MATRICES_NAME}[in_BoneIds.w] * in_BoneWeights.w;
+                     """);
+                break;
+              }
+              default: throw new NotImplementedException();
+            }
+
+            vertexSrc.AppendLine(
+                $"""
 
 
-             mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
-             mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
+                 mat4 vertexModelMatrix = {GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * mergedBoneMatrix;
+                 mat4 projectionVertexModelMatrix = mvpMatrix * mergedBoneMatrix;
 
-             gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
+                 gl_Position = projectionVertexModelMatrix * vec4(in_Position, 1);
 
-             vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
-           """);
+                 vertexPosition = vec3(vertexModelMatrix * vec4(in_Position, 1));
+                 """);
 
-      if (hasNormals) {
-        vertexSrc.AppendLine(
-            "  vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;");
-      }
+            if (hasNormals) {
+              vertexSrc.AppendLine(
+                  "vertexNormal = normalize(vertexModelMatrix * vec4(in_Normal, 0)).xyz;");
+            }
 
-      if (hasTangents) {
-        vertexSrc.AppendLine(
-            "  tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;");
-      }
+            if (hasTangents) {
+              vertexSrc.AppendLine(
+                  "tangent = normalize(vertexModelMatrix * vec4(in_Tangent)).xyz;");
+            }
 
-      if (hasBinormals) {
-        vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
-      }
-    } else {
-      vertexSrc.AppendLine(
-          $"""
+            if (hasBinormals) {
+              vertexSrc.AppendLine(
+                  "binormal = cross(vertexNormal, tangent);");
+            }
+          } else {
+            vertexSrc.AppendLine(
+                $"""
 
-             gl_Position = mvpMatrix * vec4(in_Position, 1);
+                 gl_Position = mvpMatrix * vec4(in_Position, 1);
 
-             vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
-           """);
+                 vertexPosition = vec3({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Position, 1));
+                 """);
 
-      if (hasNormals) {
-        vertexSrc.AppendLine(
-            $"  vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
-      }
+            if (hasNormals) {
+              vertexSrc.AppendLine(
+                  $"vertexNormal = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Normal, 0)).xyz;");
+            }
 
-      if (hasTangents) {
-        vertexSrc.AppendLine(
-            $"  tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;");
-      }
+            if (hasTangents) {
+              vertexSrc.AppendLine(
+                  $"tangent = normalize({GlslConstants.UNIFORM_MODEL_MATRIX_NAME} * vec4(in_Tangent)).xyz;");
+            }
 
-      if (hasBinormals) {
-        vertexSrc.AppendLine("  binormal = cross(vertexNormal, tangent);");
-      }
-    }
+            if (hasBinormals) {
+              vertexSrc.AppendLine(
+                  "binormal = cross(vertexNormal, tangent);");
+            }
+          }
 
-    for (var i = 0; i < usedUvs.Length; ++i) {
-      if (usedUvs[i]) {
-        vertexSrc.AppendLine($"  {GlslConstants.IN_UV_NAME}{i} = in_Uv{i};");
-      }
-    }
+          for (var i = 0; i < usedUvs.Length; ++i) {
+            if (usedUvs[i]) {
+              vertexSrc.AppendLine(
+                  $"{GlslConstants.IN_UV_NAME}{i} = in_Uv{i};");
+            }
+          }
 
-    for (var i = 0; i < usedColors.Length; ++i) {
-      if (usedColors[i]) {
-        vertexSrc.AppendLine(
-            $"  {GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Color{i};");
-      }
-    }
-
-    vertexSrc.AppendLine("}");
+          for (var i = 0; i < usedColors.Length; ++i) {
+            if (usedColors[i]) {
+              vertexSrc.AppendLine(
+                  $"{GlslConstants.IN_VERTEX_COLOR_NAME}{i} = in_Color{i};");
+            }
+          }
+        });
+    vertexSrc.AppendLine();
 
     return vertexSrc.ToString();
   }
 
-  public static string GetMatricesHeaders(IReadOnlyModel model)
-    => $$"""
-         layout (std140, binding = {{GlslConstants.UBO_GLOBAL_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_GLOBAL_MATRICES_NAME}} {
-           mat4 {{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}};
-         };
-         
-         layout (std140, binding = {{GlslConstants.UBO_CURRENT_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_CURRENT_MATRICES_NAME}} {
-           mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
-           mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
-         };
-         """;
+  public static string GetMatricesHeaders(IReadOnlyModel model) {
+    var sb = new StringBuilder();
+    sb.Append(
+        $$"""
+          layout (std140, binding = {{GlslConstants.UBO_GLOBAL_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_GLOBAL_MATRICES_NAME}} {
+            mat4 {{GlslConstants.UNIFORM_PROJECTION_VIEW_MATRIX_NAME}};
+          };
+
+          """);
+
+    if (OpenGlFeatureService.SupportsSsbos) {
+      sb.Append(
+          $$"""
+            layout (std430, binding = {{GlslConstants.UBO_CURRENT_MATRICES_BINDING_INDEX}}) readonly buffer {{GlslConstants.UBO_CURRENT_MATRICES_NAME}} {
+              mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+              mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[];  
+            };
+            """);
+    } else {
+      sb.Append(
+          $$"""
+            layout (std140, binding = {{GlslConstants.UBO_CURRENT_MATRICES_BINDING_INDEX}}) uniform {{GlslConstants.UBO_CURRENT_MATRICES_NAME}} {
+              mat4 {{GlslConstants.UNIFORM_MODEL_MATRIX_NAME}};
+              mat4 {{GlslConstants.UNIFORM_BONE_MATRICES_NAME}}[{{1 + model.Skin.BonesUsedByVertices.Count}}];  
+            };
+            """);
+    }
+
+    return sb.ToString();
+  }
 
   public static string LIGHT_HEADER { get; }
     = $$"""
@@ -531,116 +555,116 @@ public static class GlslUtil {
     sb.Append(
         $$"""
 
-        vec2 norm2denorm(sampler2D tex, vec2 uv) {
-          return uv * vec2(textureSize(tex, 0)) - 0.5;
-        }
-        
-        ivec2 denorm2idx(vec2 d_uv) {
-          return ivec2(floor(d_uv));
-        }
-        
-        ivec2 norm2idx(sampler2D tex, vec2 uv) {
-          return denorm2idx(norm2denorm(tex, uv));
-        }
-        
-        vec2 idx2norm(sampler2D tex, ivec2 idx) {
-          vec2 denorm_uv = vec2(idx) + 0.5;
-          vec2 size = vec2(textureSize(tex, 0));
-          return denorm_uv / size;
-        }
-        
-        vec4 texel_fetch(sampler2D tex, ivec2 idx) {
-          vec2 uv = idx2norm(tex, idx);
-          return texture(tex, uv);
-        }
-        
-        #if 0
-        float find_mipmap_level(in vec2 texture_coordinate) // in texel units {
-            vec2  dx_vtc        = dFdx(texture_coordinate);
-            vec2  dy_vtc        = dFdy(texture_coordinate);
-            float delta_max_sqr = max(dot(dx_vtc, dx_vtc), dot(dy_vtc, dy_vtc));
-            float mml = 0.5 * log2(delta_max_sqr);
-            return max( 0, mml ); // Thanks @Nims
-        }
-        #endif
-        
-        
-        /*
-         * Unlike Nintendo's documentation, the N64 does not use
-         * the 3 closest texels.
-         * The texel grid is triangulated:
-         *
-         *     0 .. 1        0 .. 1
-         *   0 +----+      0 +----+
-         *     |   /|        |\   |
-         *   . |  / |        | \  |
-         *   . | /  |        |  \ |
-         *     |/   |        |   \|
-         *   1 +----+      1 +----+
-         *
-         * If the sampled point falls above the diagonal,
-         * The top triangle is used; otherwise, it's the bottom.
-         */
-        
-        vec4 {{GlslConstants.TEXTURE_3_POINT_NAME}}(sampler2D tex, vec2 uv) {
-            vec2 denorm_uv = norm2denorm(tex, uv);
-            ivec2 idx_low = denorm2idx(denorm_uv);
-            vec2 ratio = denorm_uv - vec2(idx_low);
-        
-        #define FLIP_DIAGONAL
-        
-        #ifndef FLIP_DIAGONAL
-            // this uses one diagonal orientation
-            #if 0
-            // using conditional, might not be optimal
-            bool lower_flag = 1.0 < ratio.s + ratio.t;
-            ivec2 corner0 = lower_flag ? ivec2(1, 1) : ivec2(0, 0);
-            #else
-            // using step() function, might be faster
-            int lower_flag = int(step(1.0, ratio.s + ratio.t));
-            ivec2 corner0 = ivec2(lower_flag, lower_flag);
-            #endif
-            ivec2 corner1 = ivec2(0, 1);
-            ivec2 corner2 = ivec2(1, 0);
-        #else
-            // orient the triangulated mesh diagonals the other way
-            #if 0
-            bool lower_flag = ratio.s - ratio.t > 0.0;
-            ivec2 corner0 = lower_flag ? ivec2(1, 0) : ivec2(0, 1);
-            #else
-            int lower_flag = int(step(0.0, ratio.s - ratio.t));
-            ivec2 corner0 = ivec2(lower_flag, 1 - lower_flag);
-            #endif
-            ivec2 corner1 = ivec2(0, 0);
-            ivec2 corner2 = ivec2(1, 1);
-        #endif
-            ivec2 idx0 = idx_low + corner0;
-            ivec2 idx1 = idx_low + corner1;
-            ivec2 idx2 = idx_low + corner2;
-        
-            vec4 t0 = texel_fetch(tex, idx0);
-            vec4 t1 = texel_fetch(tex, idx1);
-            vec4 t2 = texel_fetch(tex, idx2);
-        
-            // This is standard (Crammer's rule) barycentric coordinates calculation.
-            vec2 v0 = vec2(corner1 - corner0);
-            vec2 v1 = vec2(corner2 - corner0);
-            vec2 v2 = ratio   - vec2(corner0);
-            float den = v0.x * v1.y - v1.x * v0.y;
-            /*
-             * Note: the abs() here is necessary because we don't guarantee
-             * the proper order of vertices, so some signed areas are negative.
-             * But since we only interpolate inside the triangle, the areas
-             * are guaranteed to be positive, if we did the math more carefully.
-             */
-            float lambda1 = abs((v2.x * v1.y - v1.x * v2.y) / den);
-            float lambda2 = abs((v0.x * v2.y - v2.x * v0.y) / den);
-            float lambda0 = 1.0 - lambda1 - lambda2;
-        
-            return lambda0*t0 + lambda1*t1 + lambda2*t2;
-        }
-        
-        """);
+          vec2 norm2denorm(sampler2D tex, vec2 uv) {
+            return uv * vec2(textureSize(tex, 0)) - 0.5;
+          }
+
+          ivec2 denorm2idx(vec2 d_uv) {
+            return ivec2(floor(d_uv));
+          }
+
+          ivec2 norm2idx(sampler2D tex, vec2 uv) {
+            return denorm2idx(norm2denorm(tex, uv));
+          }
+
+          vec2 idx2norm(sampler2D tex, ivec2 idx) {
+            vec2 denorm_uv = vec2(idx) + 0.5;
+            vec2 size = vec2(textureSize(tex, 0));
+            return denorm_uv / size;
+          }
+
+          vec4 texel_fetch(sampler2D tex, ivec2 idx) {
+            vec2 uv = idx2norm(tex, idx);
+            return texture(tex, uv);
+          }
+
+          #if 0
+          float find_mipmap_level(in vec2 texture_coordinate) // in texel units {
+              vec2  dx_vtc        = dFdx(texture_coordinate);
+              vec2  dy_vtc        = dFdy(texture_coordinate);
+              float delta_max_sqr = max(dot(dx_vtc, dx_vtc), dot(dy_vtc, dy_vtc));
+              float mml = 0.5 * log2(delta_max_sqr);
+              return max( 0, mml ); // Thanks @Nims
+          }
+          #endif
+
+
+          /*
+           * Unlike Nintendo's documentation, the N64 does not use
+           * the 3 closest texels.
+           * The texel grid is triangulated:
+           *
+           *     0 .. 1        0 .. 1
+           *   0 +----+      0 +----+
+           *     |   /|        |\   |
+           *   . |  / |        | \  |
+           *   . | /  |        |  \ |
+           *     |/   |        |   \|
+           *   1 +----+      1 +----+
+           *
+           * If the sampled point falls above the diagonal,
+           * The top triangle is used; otherwise, it's the bottom.
+           */
+
+          vec4 {{GlslConstants.TEXTURE_3_POINT_NAME}}(sampler2D tex, vec2 uv) {
+              vec2 denorm_uv = norm2denorm(tex, uv);
+              ivec2 idx_low = denorm2idx(denorm_uv);
+              vec2 ratio = denorm_uv - vec2(idx_low);
+
+          #define FLIP_DIAGONAL
+
+          #ifndef FLIP_DIAGONAL
+              // this uses one diagonal orientation
+              #if 0
+              // using conditional, might not be optimal
+              bool lower_flag = 1.0 < ratio.s + ratio.t;
+              ivec2 corner0 = lower_flag ? ivec2(1, 1) : ivec2(0, 0);
+              #else
+              // using step() function, might be faster
+              int lower_flag = int(step(1.0, ratio.s + ratio.t));
+              ivec2 corner0 = ivec2(lower_flag, lower_flag);
+              #endif
+              ivec2 corner1 = ivec2(0, 1);
+              ivec2 corner2 = ivec2(1, 0);
+          #else
+              // orient the triangulated mesh diagonals the other way
+              #if 0
+              bool lower_flag = ratio.s - ratio.t > 0.0;
+              ivec2 corner0 = lower_flag ? ivec2(1, 0) : ivec2(0, 1);
+              #else
+              int lower_flag = int(step(0.0, ratio.s - ratio.t));
+              ivec2 corner0 = ivec2(lower_flag, 1 - lower_flag);
+              #endif
+              ivec2 corner1 = ivec2(0, 0);
+              ivec2 corner2 = ivec2(1, 1);
+          #endif
+              ivec2 idx0 = idx_low + corner0;
+              ivec2 idx1 = idx_low + corner1;
+              ivec2 idx2 = idx_low + corner2;
+
+              vec4 t0 = texel_fetch(tex, idx0);
+              vec4 t1 = texel_fetch(tex, idx1);
+              vec4 t2 = texel_fetch(tex, idx2);
+
+              // This is standard (Crammer's rule) barycentric coordinates calculation.
+              vec2 v0 = vec2(corner1 - corner0);
+              vec2 v1 = vec2(corner2 - corner0);
+              vec2 v2 = ratio   - vec2(corner0);
+              float den = v0.x * v1.y - v1.x * v0.y;
+              /*
+               * Note: the abs() here is necessary because we don't guarantee
+               * the proper order of vertices, so some signed areas are negative.
+               * But since we only interpolate inside the triangle, the areas
+               * are guaranteed to be positive, if we did the math more carefully.
+               */
+              float lambda1 = abs((v2.x * v1.y - v1.x * v2.y) / den);
+              float lambda2 = abs((v0.x * v2.y - v2.x * v0.y) / den);
+              float lambda0 = 1.0 - lambda1 - lambda2;
+
+              return lambda0*t0 + lambda1*t1 + lambda2*t2;
+          }
+
+          """);
   }
 
   public static string GetTypeOfTexture(

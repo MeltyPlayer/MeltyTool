@@ -3,8 +3,7 @@
   <PropertyGroup>
     <RootNamespace>MarioArtist_Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<RootNamespace>marioartist</RootNamespace>
+  	<RootNamespace>marioartist</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

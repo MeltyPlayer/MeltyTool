@@ -13,7 +13,6 @@ using fin.util.strings;
 using fin.util.tasks;
 using fin.util.types;
 
-using uni.api;
 using uni.config;
 using uni.games;
 
@@ -46,9 +45,8 @@ public static class FileBundleExportService {
               DirectoryConstants.OUT_DIRECTORY.FullPath);
     var defaultExtension = lastExtension_ ?? ".fbx";
 
-    var mainFile = modelFileBundle.MainFile;
-    var suggestedFileName = mainFile != null
-        ? $"{mainFile.NameWithoutExtension}{defaultExtension.ReplaceFirst('*', '.')}"
+    var suggestedFileName = modelFileBundle.MainFile != null
+        ? $"{ExporterUtil.GetExportName(modelFileBundle)}{defaultExtension.ReplaceFirst('*', '.')}"
         : null;
 
     var selectedStorageFile
@@ -83,7 +81,7 @@ public static class FileBundleExportService {
 
     ExporterUtil.Export(
         modelFileBundle,
-        () => new GlobalModelImporter().ImportAndProcess(modelFileBundle),
+        () => modelFileBundle.ImportAndProcess(),
         outputDirectory,
         outputExportFormat.AsSet(),
         true,

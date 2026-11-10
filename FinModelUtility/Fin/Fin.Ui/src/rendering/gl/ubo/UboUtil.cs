@@ -32,9 +32,8 @@ public static class UboUtil {
 
   public static void AppendVector3(Span<byte> buffer,
                                    ref int offset,
-                                   Vector3? vector3) {
-    buffer.Slice(offset, SIZE_OF_VECTOR3).Cast<byte, Vector3>()[0]
-        = vector3 ?? Vector3.Zero;
+                                   in Vector3 vector3) {
+    buffer.Slice(offset, SIZE_OF_VECTOR3).Cast<byte, Vector3>()[0] = vector3;
     offset += SIZE_OF_VECTOR3;
   }
 
@@ -48,15 +47,14 @@ public static class UboUtil {
 
   public static void AppendVector4(Span<byte> buffer,
                                    ref int offset,
-                                   Vector4? vector4) {
-    buffer.Slice(offset, SIZE_OF_VECTOR4).Cast<byte, Vector4>()[0]
-        = vector4 ?? Vector4.Zero;
+                                   in Vector4 vector4) {
+    buffer.Slice(offset, SIZE_OF_VECTOR4).Cast<byte, Vector4>()[0] = vector4;
     offset += SIZE_OF_VECTOR4;
   }
 
   public static void AppendMatrix4x4(Span<byte> buffer,
                                      ref int offset,
-                                     Matrix4x4 matrix4X4) {
+                                     in Matrix4x4 matrix4X4) {
     buffer.Slice(offset, SIZE_OF_MATRIX4X4).Cast<byte, Matrix4x4>()[0]
         = matrix4X4;
     offset += SIZE_OF_MATRIX4X4;

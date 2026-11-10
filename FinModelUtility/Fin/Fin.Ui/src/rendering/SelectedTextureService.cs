@@ -7,6 +7,10 @@ public static class SelectedTextureService {
       OnTextureSelected;
 
   public static void SelectTexture(
-      (IReadOnlyModel, IReadOnlyTexture)? modelAndTexture)
-    => OnTextureSelected?.Invoke(modelAndTexture);
+      (IReadOnlyModel, IReadOnlyTexture)? modelAndTexture) {
+    if (SelectedServiceUtils.SelectableType is SelectableType.TEXTURE ||
+        modelAndTexture == null) {
+      OnTextureSelected?.Invoke(modelAndTexture);
+    }
+  }
 }

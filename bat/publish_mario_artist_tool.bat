@@ -17,6 +17,6 @@ cd "FinModelUtility\MarioArtistTool\MarioArtistTool.Desktop"
 dotnet publish -c Release
 
 echo Copying new universal asset tool...
-move "bin\Release\net10.0\win-x64\publish\*" "!marioArtistToolBasePath!"
+move "bin\Release\net11.0\win-x64\publish\*" "!marioArtistToolBasePath!"
 
 pause

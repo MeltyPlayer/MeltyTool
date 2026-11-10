@@ -18,7 +18,7 @@ public partial class GlShaderProgram {
   }
 
   private class Mat3x2ShaderUniform(int location)
-      : BShaderUniform, IShaderUniform<Matrix3x2> {
+      : BShaderUniform(location), IShaderUniform<Matrix3x2> {
     private Matrix3x2 value_;
 
     public void SetAndMarkDirty(in Matrix3x2 value) {

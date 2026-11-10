@@ -67,7 +67,7 @@ public partial class Bti : IBinaryConvertible {
   public GxPaletteFormat PaletteFormat;
 
   [WLengthOfSequence(nameof(PaletteEntries))]
-  public ushort NrPaletteEntries;
+  private ushort NrPaletteEntries;
 
   [WPointerToOrNull(nameof(PaletteEntries))]
   public uint PaletteOffset;

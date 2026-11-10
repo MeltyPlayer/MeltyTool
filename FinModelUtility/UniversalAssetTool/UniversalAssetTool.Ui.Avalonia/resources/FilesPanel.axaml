@@ -6,6 +6,7 @@
              xmlns:converters="clr-namespace:uni.ui.avalonia.util.converters"
              xmlns:controls="clr-namespace:fin.ui.avalonia.controls;assembly=Fin.Ui.Avalonia"
              xmlns:controls1="clr-namespace:uni.ui.avalonia.common.controls"
+             xmlns:avalonia="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="450"
              x:Class="uni.ui.avalonia.resources.FilesPanel"
              x:DataType="resource:FilesPanelViewModel">
@@ -27,7 +28,7 @@
                     HeadersVisibility="None">
             <DataGrid.Styles>
               <Style Selector="DataGridRow /template/ Rectangle#BackgroundRectangle">
-                <Setter Property="IsVisible" Value="false"/>
+                <Setter Property="IsVisible" Value="false" />
               </Style>
               <Style Selector="DataGridCell:current /template/ Grid#FocusVisual">
                 <Setter Property="IsVisible" Value="false" />
@@ -45,7 +46,17 @@
                         Margin="7 0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left"
-                        Text="{Binding}" />
+                        Text="{Binding}">
+                      <TextBlock.ContextMenu>
+                        <ContextMenu>
+                          <MenuItem Header="Copy all files to directory" Click="CopyAllToDirectory_">
+                            <MenuItem.Icon>
+                              <avalonia:MaterialIcon Kind="InvoiceOutboundOutline" />
+                            </MenuItem.Icon>
+                          </MenuItem>
+                        </ContextMenu>
+                      </TextBlock.ContextMenu>
+                    </TextBlock>
                   </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
               </DataGridTemplateColumn>
@@ -56,8 +67,8 @@
     </controls:If.ContentWhenTrue>
     <controls:If.ContentWhenFalse>
       <controls1:EmptyState
-          Text="No files to display."
-          Icon="FileOutline" />
+        Text="No files to display."
+        Icon="FileOutline" />
     </controls:If.ContentWhenFalse>
   </controls:If>
 </UserControl>

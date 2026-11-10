@@ -37,10 +37,10 @@ public sealed partial class DlModelBuilder {
   public const bool DEDUPLICATE_TEXTURES = true;
   public const bool DEDUPLICATE_MATERIALS = true;
 
-  private readonly LazyDictionary<(ISegment?, ImageParams), IReadOnlyImage>
+  private readonly LazyDictionary<(ISegmentChunk?, ImageParams), IReadOnlyImage>
       lazyImageDictionary_;
 
-  private readonly LazyDictionary<(ISegment?, TextureParams)?, IReadOnlyTexture?>
+  private readonly LazyDictionary<(ISegmentChunk?, TextureParams)?, IReadOnlyTexture?>
       lazyTextureDictionary_;
 
   private readonly LazyDictionary<MaterialParams, IReadOnlyMaterial>
@@ -60,7 +60,7 @@ public sealed partial class DlModelBuilder {
   /// </summary>
   public DlModelBuilder(IN64Hardware n64Hardware,
                         IFileBundle? fileBundle = null,
-                        IReadOnlySet<IReadOnlyGenericFile>? files = null) {
+                        IReadOnlySet<IReadOnlyStandaloneFile>? files = null) {
     this.n64Hardware_ = n64Hardware;
     this.Model
         = new ModelImpl<Normal1Color2UvVertexImpl>((index, position) => new
@@ -68,7 +68,7 @@ public sealed partial class DlModelBuilder {
                                                            index,
                                                            position)) {
             FileBundle = fileBundle,
-            Files = files ?? new HashSet<IReadOnlyGenericFile>(),
+            Files = files ?? new HashSet<IReadOnlyStandaloneFile>(),
         };
 
     this.vertices_ = new F3dVertices(n64Hardware, this.Model);
@@ -246,7 +246,7 @@ public sealed partial class DlModelBuilder {
               if (materialParams.HardcodedTexture0 != null) {
                 texture0 = materialParams.HardcodedTexture0;
               } else {
-                (ISegment?, TextureParams)? segmentAndTextureParams0
+                (ISegmentChunk?, TextureParams)? segmentAndTextureParams0
                     = materialParams.TextureParams0 != null
                         ? (n64Hardware.Memory.GetSegmentOrNull(
                                materialParams.TextureParams0
@@ -267,7 +267,7 @@ public sealed partial class DlModelBuilder {
               if (materialParams.HardcodedTexture1 != null) {
                 texture1 = materialParams.HardcodedTexture1;
               } else {
-                (ISegment?, TextureParams)? segmentAndTextureParams1
+                (ISegmentChunk?, TextureParams)? segmentAndTextureParams1
                     = materialParams.TextureParams1 != null
                         ? (n64Hardware.Memory.GetSegmentOrNull(
                                materialParams.TextureParams1.SegmentedAddress >>
@@ -537,8 +537,14 @@ public sealed partial class DlModelBuilder {
 
               ApplyBlendMode_(n64Hardware, finMaterial);
 
-              // TODO: I'm not sure if alpha compare is ever used on the N64
-              finMaterial.DisableAlphaCompare();
+              finMaterial.SetDefaultAlphaCompare(
+                  n64Hardware.IgnoreZMode
+                      ? TransparencyType.TRANSPARENT
+                      : rdp.ZMode switch {
+                          ZMode.ZMODE_OPA => TransparencyType.OPAQUE,
+                          ZMode.ZMODE_DEC => TransparencyType.MASK,
+                          _               => TransparencyType.TRANSPARENT,
+                      });
 
               // Shamelessly stolen from:
               // https://github.com/magcius/noclip.website/blob/main/src/zelview/f3dzex.ts#L109
@@ -584,17 +590,9 @@ public sealed partial class DlModelBuilder {
     };
 
     if (doAdditiveBlending && !useCoverageInsteadOfAlpha) {
-      finMaterial.SetBlending(
-          BlendEquation.ADD,
-          BlendFactor.SRC_ALPHA,
-          BlendFactor.ONE_MINUS_SRC_ALPHA,
-          LogicOp.UNDEFINED);
+      finMaterial.SetSimpleBlending(SimpleBlendMode.NORMAL);
     } else {
-      finMaterial.SetBlending(
-          BlendEquation.ADD,
-          BlendFactor.ONE,
-          BlendFactor.ZERO,
-          LogicOp.UNDEFINED);
+      finMaterial.SetSimpleBlending(SimpleBlendMode.NONE);
     }
   }
 
@@ -621,7 +619,10 @@ public sealed partial class DlModelBuilder {
     return this.currentMesh_;
   }
 
-  private IMesh CurrentMesh => this.currentMesh_ ??= this.Model.Skin.AddMesh();
+  public IMesh CurrentMesh {
+    get => this.currentMesh_ ??= this.Model.Skin.AddMesh();
+    set => this.currentMesh_ = value;
+  }
 
   public int GetNumberOfTriangles() =>
       this.Model.Skin.Meshes

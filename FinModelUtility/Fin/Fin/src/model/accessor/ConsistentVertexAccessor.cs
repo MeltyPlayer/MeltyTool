@@ -9,15 +9,16 @@ namespace fin.model.accessor;
 /// <summary>
 ///   Assumes all vertices are the same, consistent type.
 /// </summary>
-public partial class ConsistentVertexAccessor : IVertexAccessor {
+public partial class ConsistentVertexAccessor
+    : IVertexAccessor<ConsistentVertexAccessor> {
   private IReadOnlyVertex currentVertex_;
   private readonly IVertexNormalAccessor normalAccessor_;
   private readonly IVertexTangentAccessor tangentAccessor_;
   private readonly IVertexColorAccessor colorAccessor_;
   private readonly IVertexUvAccessor uvAccessor_;
 
-  public static IVertexAccessor GetAccessorForModel(IReadOnlyModel model)
-    => new ConsistentVertexAccessor(model);
+  public static ConsistentVertexAccessor GetAccessorForModel(IReadOnlyModel model)
+    => new(model);
 
   private ConsistentVertexAccessor(IReadOnlyModel model) {
     var skin = model.Skin;

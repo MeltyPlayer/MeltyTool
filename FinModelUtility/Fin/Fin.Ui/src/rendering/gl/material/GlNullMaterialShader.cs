@@ -10,12 +10,12 @@ public sealed class GlNullMaterialShader(
     IReadOnlyModel model,
     IModelRequirements modelRequirements,
     IReadOnlyTextureTransformManager textureTransformManager,
-    IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager)
+    IReadOnlyTextureSwapManager textureSwapManager)
     : BGlMaterialShader<IReadOnlyMaterial?>(model,
                                             modelRequirements,
                                             null,
                                             textureTransformManager,
-                                            textureFlipbookSwapManager) {
+                                            textureSwapManager) {
   protected override void DisposeInternal() { }
 
   protected override IShaderSourceGlsl GenerateShaderSource(
@@ -27,7 +27,8 @@ public sealed class GlNullMaterialShader(
                                 ShaderRequirements.FromModelAndMaterial(
                                     model,
                                     modelRequirements,
-                                    material));
+                                    material),
+                                true);
 
   protected override void Setup(IReadOnlyMaterial? material,
                                 GlShaderProgram shaderProgram) { }

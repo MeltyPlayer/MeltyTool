@@ -7,7 +7,7 @@ namespace hw.api;
 
 // TODO: Switch this to a scene model or nested model file bundle?
 public sealed class VisSceneFileBundle(IReadOnlyTreeFile visFile, HWContext context)
-    : IHaloWarsFileBundle, ISceneFileBundle {
+    : ISceneFileBundle {
   public IReadOnlyTreeFile MainFile => this.VisFile;
   public IReadOnlyTreeFile VisFile { get; } = visFile;
 

@@ -87,14 +87,19 @@ public static partial class ExtractorUtil {
   }
 
 
+  /// <summary>
+  ///   Mirrors where the bundle is shown in the file tree: its virtual
+  ///   directory if it has one, otherwise its main file's directory.
+  /// </summary>
   public static ISystemDirectory GetOutputDirectoryForFileBundle(
       IFileBundle annotatedFileBundle) {
     Asserts.True(annotatedFileBundle.MainFile.HasRoot(out var gameName, out var localPath));
-    var gameAndLocalPath = Path.Join(gameName, localPath);
-    return new FinFile(Path.Join(
-                           DirectoryConstants.OUT_DIRECTORY.FullPath,
-                           gameAndLocalPath))
-        .AssertGetParent();
+    var gameOutputPath
+        = Path.Join(DirectoryConstants.OUT_DIRECTORY.FullPath, gameName);
+    return annotatedFileBundle.VirtualDirectoryPath != null
+        ? new FinDirectory(Path.Join(gameOutputPath,
+                                     annotatedFileBundle.VirtualDirectoryPath))
+        : new FinFile(Path.Join(gameOutputPath, localPath)).AssertGetParent();
   }
 
   [GenerateServiceRegistrations(AssignableTo

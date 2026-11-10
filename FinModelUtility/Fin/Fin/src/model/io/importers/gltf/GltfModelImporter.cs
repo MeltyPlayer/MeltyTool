@@ -30,12 +30,13 @@ using TextureWrapMode = SharpGLTF.Schema2.TextureWrapMode;
 namespace fin.model.io.importers.gltf;
 
 public record GltfModelFileBundle(IReadOnlyTreeFile GltfFile)
-    : IModelFileBundle {
+    : IModelFileBundle<GltfModelFileBundle, GltfModelImporter> {
   public IReadOnlyTreeFile MainFile => this.GltfFile;
   public Action<IModel>? AdditionalProcessing { get; init; }
 }
 
-public sealed class GltfModelImporter : IModelImporter<GltfModelFileBundle> {
+public sealed class GltfModelImporter
+    : IModelImporter<GltfModelImporter, GltfModelFileBundle> {
   public IModel Import(GltfModelFileBundle modelFileBundle) {
     var gltfFile = modelFileBundle.GltfFile;
 

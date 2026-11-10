@@ -16,7 +16,7 @@ public partial class GlShaderProgram {
   }
 
   private class LongShaderUniform(int location)
-      : BShaderUniform, IShaderUniform<long> {
+      : BShaderUniform(location), IShaderUniform<long> {
     private long value_;
 
     public void SetAndMarkDirty(in long value) {

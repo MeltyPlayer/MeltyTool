@@ -10,6 +10,8 @@ using uni.util.io;
 
 namespace uni.games.pikmin_1;
 
+// https://wiki.dolphin-emu.org/index.php?title=GPIE01
+[GameIDs("GPIE01", "GPIJ01", "GPIP01")]
 public sealed class Pikmin1FileBundleGatherer : BGameCubeFileBundleGatherer {
   private readonly IModelSeparator separator_
       = new ModelSeparator(directory => directory.LocalPath)
@@ -17,6 +19,7 @@ public sealed class Pikmin1FileBundleGatherer : BGameCubeFileBundleGatherer {
                     @"\dataDir\pikis");
 
   public override string Name => "pikmin_1";
+  public override string Title => "Pikmin";
 
   public override GcnFileHierarchyExtractor.Options Options
     => GcnFileHierarchyExtractor.Options.Empty();

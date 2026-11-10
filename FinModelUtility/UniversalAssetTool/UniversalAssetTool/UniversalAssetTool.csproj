@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <RootNamespace>uni</RootNamespace>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
@@ -112,6 +111,7 @@
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="DiscUtils" Version="0.16.13" />
     <PackageReference Include="Gameloop.Vdf" Version="0.6.2" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="5.6.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.10" />
@@ -122,7 +122,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Reactive" Version="5.0.0" />
+    <PackageReference Include="System.Reactive" Version="7.0.0" />
     <PackageReference Include="Yarhl" Version="4.2.0" />
   </ItemGroup>
 
@@ -133,6 +133,12 @@
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
+    <ProjectReference Include="..\..\Games\DonkeyKong64\DonkeyKong64\DonkeyKong64.csproj" />
+    <ProjectReference Include="..\..\Games\MarioParty\MarioParty\MarioParty.csproj" />
+    <ProjectReference Include="..\..\Games\PaperMario\PaperMario\PaperMario.csproj" />
+    <ProjectReference Include="..\..\Games\PokemonSnap\PokemonSnap\PokemonSnap.csproj" />
+    <ProjectReference Include="..\..\Games\HPChamberOfSecrets\HPChamberOfSecrets\HPChamberOfSecrets.csproj" />
+    <ProjectReference Include="..\..\Games\SwordOfTheBerserkGutsRage\SwordOfTheBerserkGutsRage\SwordOfTheBerserkGutsRage.csproj" />
 
     <ProjectReference Include="..\..\Libraries\AngelStudios\AngelStudios\AngelStudios.csproj" />
     <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
@@ -140,6 +146,7 @@
     <ProjectReference Include="..\..\Libraries\Grezzo\Grezzo\Grezzo.csproj" />
     <ProjectReference Include="..\..\Libraries\JSystem\JSystem\JSystem.csproj" />
     <ProjectReference Include="..\..\Libraries\Level5\Level5\Level5.csproj" />
+    <ProjectReference Include="..\..\Libraries\Natsume\Natsume\Natsume.csproj" />
     <ProjectReference Include="..\..\Libraries\Nitro\Nitro\Nitro.csproj" />
     <ProjectReference Include="..\..\Libraries\Sysdolphin\Sysdolphin\Sysdolphin.csproj" />
     <ProjectReference Include="..\..\Libraries\VisceralGames\VisceralGames\VisceralGames.csproj" />

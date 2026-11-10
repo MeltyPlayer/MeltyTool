@@ -7,9 +7,8 @@ using schema.binary;
 
 namespace sysdolphin.schema.mesh;
 
-[BinarySchema]
 public sealed partial class VertexDescriptors
-    : IVertexDescriptor, IBinaryConvertible {
+    : IVertexDescriptor, IBinaryDeserializable {
   private readonly Dictionary<GxVertexAttribute, VertexDescriptor> map_ = new();
 
   private IEnumerable<(GxVertexAttribute, GxAttributeType?, GxColorComponentType

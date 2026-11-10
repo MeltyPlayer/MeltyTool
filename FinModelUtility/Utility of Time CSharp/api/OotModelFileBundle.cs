@@ -7,7 +7,7 @@ namespace UoT.api {
   public sealed class OotModelFileBundle(
       IReadOnlyTreeFile ootRom,
       IReadOnlyTreeFile zObjectFile,
-      IZFile zFile) : IModelFileBundle {
+      IZFile zFile) : IModelFileBundle<OotModelFileBundle, OotModelImporter> {
     public IReadOnlyTreeFile MainFile => zObjectFile;
 
     public IReadOnlyTreeFile OotRom => ootRom;

@@ -1,4 +1,5 @@
 ﻿using fin.model;
+using fin.model.util;
 
 namespace gx;
 
@@ -12,11 +13,7 @@ public sealed class GxFixedFunctionBlending {
       // https://github.com/magcius/noclip.website/blob/c5a6d0137128065068b5842ffa9dff04f03eefdb/src/gx/gx_render.ts#L405-L423
       switch (blendMode) {
         case GxBlendMode.NONE: {
-          material.SetBlending(
-              BlendEquation.ADD,
-              BlendFactor.ONE,
-              BlendFactor.ZERO,
-              LogicOp.UNDEFINED);
+          material.SetSimpleBlending(SimpleBlendMode.NONE);
           break;
         }
         case GxBlendMode.BLEND: {
@@ -37,11 +34,7 @@ public sealed class GxFixedFunctionBlending {
           break;
         }
         case GxBlendMode.SUBTRACT: {
-          material.SetBlending(
-              BlendEquation.REVERSE_SUBTRACT,
-              BlendFactor.ONE,
-              BlendFactor.ONE,
-              LogicOp.UNDEFINED);
+          material.SetSimpleBlending(SimpleBlendMode.DIFFERENCE);
           break;
         }
         default: throw new ArgumentOutOfRangeException();

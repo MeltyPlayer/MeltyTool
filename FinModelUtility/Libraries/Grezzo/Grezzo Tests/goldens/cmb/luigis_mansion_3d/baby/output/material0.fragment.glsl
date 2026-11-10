@@ -1,13 +1,12 @@
-#version 460
+#version 450
 precision mediump float;
 
 layout (std140, binding = 1) uniform GlobalMatrices {
   mat4 projectionViewMatrix;
 };
-
-layout (std140, binding = 2) uniform CurrentMatrices {
+layout (std430, binding = 2) readonly buffer CurrentMatrices {
   mat4 modelMatrix;
-  mat4 boneMatrices[30];  
+  mat4 boneMatrices[];  
 };
 
 struct Light {

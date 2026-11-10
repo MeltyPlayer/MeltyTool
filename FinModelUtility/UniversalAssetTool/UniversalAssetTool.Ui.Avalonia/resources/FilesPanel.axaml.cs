@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
-using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.Platform.Storage;
 
+using fin.config.avalonia.services;
 using fin.importers;
 using fin.io;
 using fin.ui;
@@ -32,8 +35,10 @@ public class FilesPanelViewModel : BViewModel {
       return;
     }
 
+    this.Files = files;
+
     IEnumerable<string> paths;
-    if (resource.Files.WhereIs<IReadOnlyGenericFile, IFileHierarchyFile>()
+    if (resource.Files.WhereIs<IReadOnlyStandaloneFile, IFileHierarchyFile>()
                 .TryGetFirst(out var fileHierarchyFile)) {
       var hierarchy = fileHierarchyFile.Hierarchy;
 
@@ -52,7 +57,12 @@ public class FilesPanelViewModel : BViewModel {
       paths = files.Select(file => file.DisplayFullPath);
     }
 
-    this.Paths = paths.Distinct().Order().ToArray();
+    this.Paths = [.. paths.Distinct().Order(StringUtil.NaturalSortInstance)];
+  }
+
+  public IReadOnlySet<IReadOnlyStandaloneFile> Files {
+    get;
+    set => this.RaiseAndSetIfChanged(ref field, value);
   }
 
   public IReadOnlyList<string> Paths {
@@ -64,5 +74,30 @@ public class FilesPanelViewModel : BViewModel {
 public partial class FilesPanel : BUserControl<FilesPanelViewModel> {
   public FilesPanel() {
     this.InitializeComponent();
+  }
+
+  private async void CopyAllToDirectory_(object? sender, RoutedEventArgs e) {
+    var storageProvider = TopLevelService.Instance.StorageProvider;
+
+    var selectedStorageFolders
+        = await storageProvider
+            .OpenFolderPickerAsync(new FolderPickerOpenOptions {
+                Title = "Select directory to copy files to",
+            });
+    if (selectedStorageFolders is not { Count: 1 }) {
+      return;
+    }
+
+    var selectedStorageFolder = selectedStorageFolders[0];
+    var outputDirectory
+        = new FinDirectory(selectedStorageFolder.Path.LocalPath);
+    outputDirectory.Create();
+
+    foreach (var file in this.ViewModel.Files) {
+      var outputFile = new FinFile(
+          Path.Join(outputDirectory.FullPath,
+                    FinIoStatic.GetName(file.DisplayFullPath)));
+      file.CopyTo(outputFile);
+    }
   }
 }

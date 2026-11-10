@@ -9,7 +9,7 @@ public sealed partial class GrMapHead : IDatNode, IBinaryDeserializable {
   public uint GeneralPointsCount { get; set; }
 
   public uint ModelGroupsOffset { get; set; }
-  public uint ModelGroupsCount { get; set; }
+  private uint ModelGroupsCount { get; set; }
 
   [RAtPositionOrNull(nameof(ModelGroupsOffset))]
   [RSequenceLengthSource(nameof(ModelGroupsCount))]

@@ -13,7 +13,9 @@ using fin.util.sets;
 
 namespace ac.api;
 
-public sealed class AnimalCrossingModelFileBundle : IModelFileBundle {
+public sealed class AnimalCrossingModelFileBundle
+    : IModelFileBundle<AnimalCrossingModelFileBundle,
+        AnimalCrossingModelImporter> {
   public required IReadOnlyTreeFile ModelFile { get; init; }
   public required IReadOnlyTreeFile VertexFile { get; init; }
 
@@ -21,7 +23,7 @@ public sealed class AnimalCrossingModelFileBundle : IModelFileBundle {
 }
 
 public sealed class AnimalCrossingModelImporter
-    : IModelImporter<AnimalCrossingModelFileBundle> {
+    : IModelImporter<AnimalCrossingModelImporter, AnimalCrossingModelFileBundle> {
   public IModel Import(AnimalCrossingModelFileBundle fileBundle) {
     var n64Hardware = new N64Hardware<SlicedN64Memory>();
     var rdp = n64Hardware.Rdp = new Rdp {

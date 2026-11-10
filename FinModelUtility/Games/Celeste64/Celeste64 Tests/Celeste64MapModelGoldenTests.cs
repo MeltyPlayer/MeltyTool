@@ -9,8 +9,7 @@ using fin.testing;
 namespace Celeste64;
 
 public sealed class Celeste64MapModelGoldenTests
-    : BModelGoldenTests<Celeste64MapModelFileBundle,
-        Celeste64MapModelImporter> {
+    : BModelGoldenTests<Celeste64MapModelFileBundle> {
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
   public async Task TestExportsGoldenAsExpected(

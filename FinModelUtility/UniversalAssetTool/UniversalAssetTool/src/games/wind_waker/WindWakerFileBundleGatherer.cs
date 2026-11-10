@@ -1,4 +1,5 @@
-﻿using fin.io;
+﻿using fin.compression;
+using fin.io;
 using fin.io.bundles;
 using fin.util.asserts;
 using fin.util.lists;
@@ -6,7 +7,6 @@ using fin.util.progress;
 using fin.util.strings;
 
 using gx.archives.rarc;
-using gx.compression.yaz0;
 
 using jsystem.api;
 
@@ -15,8 +15,11 @@ using jsystem.api;
 
 namespace uni.games.wind_waker;
 
+// https://wiki.dolphin-emu.org/index.php?title=GZLE01
+[GameIDs("GZLE01", "GZLJ01", "GZLK01", "GZLP01")]
 public sealed class WindWakerFileBundleGatherer : BGameCubeFileBundleGatherer {
   public override string Name => "wind_waker";
+  public override string Title => "The Legend of Zelda: The Wind Waker";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

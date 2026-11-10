@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <RootNamespace>grezzo</RootNamespace>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

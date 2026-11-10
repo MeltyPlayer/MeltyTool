@@ -13,7 +13,7 @@ public static class BarUtils {
 
   public static ILazyDictionary<short, IReadOnlyModel>
       CreateLazyUvmdModelDictionary(
-          HashSet<IReadOnlyGenericFile> files,
+          HashSet<IReadOnlyStandaloneFile> files,
           IReadOnlyTreeDirectory rootDirectory)
     => new LazyDictionary<short, IReadOnlyModel>(uvmdIndex => {
       var finModel = UvmdModelFileImporter.Import(

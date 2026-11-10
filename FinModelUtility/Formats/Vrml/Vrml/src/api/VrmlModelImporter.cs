@@ -38,7 +38,7 @@ namespace vrml.api;
 
 using IndexedFaceGroup = (int coordIndex, int? texCoordIndex, int? colorIndex);
 
-public sealed class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
+public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlModelFileBundle> {
   public IModel Import(VrmlModelFileBundle fileBundle) {
     var wrlFile = fileBundle.WrlFile;
     using var wrlFileStream = wrlFile.OpenRead();
@@ -50,7 +50,7 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
   public static IModel Import(IGroupNode vrmlScene,
                               IReadOnlyDictionary<string, INode> definitions,
                               IVrmlFileBundle fileBundle,
-                              HashSet<IReadOnlyGenericFile> fileSet) {
+                              HashSet<IReadOnlyStandaloneFile> fileSet) {
     var orientationInterpolatorNodes = new HashSet<OrientationInterpolatorNode>();
     var positionInterpolatorNodes = new HashSet<PositionInterpolatorNode>();
     var routeNodes = new HashSet<RouteNode>();
@@ -347,14 +347,14 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelFileBundle> {
         var scaleOrientation = transform.ScaleOrientation;
         if (scaleOrientation != null &&
             scaleOrientation != Quaternion.Identity) {
-          finBone = finBone.AddChild(
-              SystemMatrix4x4Util.FromRotation(scaleOrientation.Value));
+          finBone = finBone.AddChild(Vector3.Zero);
+          finBone.Transform.SetRotation(scaleOrientation.Value);
         }
 
         var scale = transform.Scale;
         if (scale != null && !scale.Value.IsRoughly1()) {
-          finBone = finBone.AddChild(
-              SystemMatrix4x4Util.FromScale(scale.Value));
+          finBone = finBone.AddChild(Vector3.Zero);
+          finBone.Transform.SetScale(scale.Value);
         }
 
         if (scaleOrientation != null &&

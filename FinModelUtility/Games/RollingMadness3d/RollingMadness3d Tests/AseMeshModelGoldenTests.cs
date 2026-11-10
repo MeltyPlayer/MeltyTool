@@ -13,7 +13,7 @@ using rollingMadness.schema;
 namespace rollingMadness;
 
 public sealed class AseMeshModelGoldenTests
-    : BModelGoldenTests<AseMeshModelFileBundle, AseMeshModelImporter> {
+    : BModelGoldenTests<AseMeshModelFileBundle> {
   [Test]
   public void TestParsesAuthoritativeActorAndSidecarMetadata() {
     var bridge = RollingMadnessMetadataParser.ParseActor(

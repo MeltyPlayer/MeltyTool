@@ -10,6 +10,7 @@ namespace uni.games.odyssey_of_hyrule;
 public sealed class OdysseyOfHyruleFileBundleGatherer
     : BPrereqsFileBundleGatherer {
   public override string Name => "odyssey_of_hyrule";
+  public override string Title => "The Odyssey of Hyrule";
 
   public override FileBundleGathererPlatform Platform
     => FileBundleGathererPlatform.DESKTOP;

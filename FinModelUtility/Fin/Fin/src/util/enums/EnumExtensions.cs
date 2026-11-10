@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
+using CommunityToolkit.Diagnostics;
+
 namespace fin.util.enums;
 
 public static class EnumExtensions {
@@ -21,5 +23,13 @@ public static class EnumExtensions {
     }
 
     return true;
+  }
+
+  extension<TEnum>(TEnum)
+      where TEnum : unmanaged, Enum {
+    public static TEnum Parse(ReadOnlySpan<char> text) {
+      Guard.IsTrue(Enum.TryParse(text, out TEnum value));
+      return value;
+    }
   }
 }

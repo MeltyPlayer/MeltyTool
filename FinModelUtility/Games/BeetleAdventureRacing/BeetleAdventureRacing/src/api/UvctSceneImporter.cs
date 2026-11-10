@@ -37,12 +37,14 @@ public sealed class UvctSceneFileImporter
 
     AddToScene(fileBundle, files, lazyUvmdModelDictionary, rootNode);
 
+    finScene.CreateDefaultLighting();
+
     return finScene;
   }
 
   public static ISceneNode? AddToScene(
       UvctSceneFileBundle fileBundle,
-      HashSet<IReadOnlyGenericFile> files,
+      HashSet<IReadOnlyStandaloneFile> files,
       ILazyDictionary<short, IReadOnlyModel> lazyUvmdModelDictionary,
       ISceneNode rootNode) {
     var fileChunks

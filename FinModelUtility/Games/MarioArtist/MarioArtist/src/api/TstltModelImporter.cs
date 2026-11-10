@@ -29,6 +29,7 @@ using fin.util.sets;
 
 using marioartist.schema;
 using marioartist.schema.talent_studio;
+using marioartist.schema.talent_studio.face;
 
 using OneOf;
 
@@ -40,18 +41,18 @@ namespace marioartist.api;
 
 using BoneTuple = (IReadOnlyBone bone, Joint joint, int jointIndex);
 using ChosenPart0Tuple =
-    (ISegment segment, MeshDefinition meshDefinition, SubUnkSection5 unkSection5
-    ,
+    (SliceSegmentChunk segment, MeshDefinition meshDefinition, SubUnkSection5
+    unkSection5,
     ChosenPart0 chosenPart, int unkSection5I, int subUnkSection5I);
 using ChosenPart1Tuple
-    = (ISegment segment, ChosenPart1 chosenPart, IReadOnlyBone bone, bool isHead
-    );
+    = (SliceSegmentChunk segment, ChosenPart1 chosenPart, IReadOnlyBone bone,
+    bool isHead);
 
 public record TstltModelFileBundle(
     IReadOnlyTreeFile MainFile,
     IReadOnlyTreeDirectory? AnimationsDirectory = null,
     IReadOnlyTreeFile? RomFile = null)
-    : IModelFileBundle;
+    : IModelFileBundle<TstltModelFileBundle, TstltModelImporter>;
 
 public enum JointIndex {
   // Head bones
@@ -97,7 +98,8 @@ public enum JointIndex {
   FOOT_1 = 29,
 }
 
-public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
+public sealed class TstltModelImporter
+    : IModelImporter<TstltModelImporter, TstltModelFileBundle> {
   public const int HARDCODED_MESH_SET_ID = -1;
   public const bool INCLUDE_FACE = true;
 
@@ -106,10 +108,11 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
   public const bool USE_GRANULAR_MESHES = false;
 
   public IModel Import(TstltModelFileBundle fileBundle)
-    => Import(fileBundle, out _);
+    => Import(fileBundle, out _, out _);
 
   public static IModel Import(TstltModelFileBundle fileBundle,
-                              out Gender gender) {
+                              out Gender gender,
+                              out Expression[] expressions) {
     using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
 
     var n64Hardware = new N64Hardware<SlicedN64Memory>();
@@ -135,11 +138,13 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
     var bodySectionOffset = headSectionOffset + headSectionLength;
     var bodySectionLength = br.Length - bodySectionOffset;
 
-    var headSegment = new SliceSegment {
-        Offset = (uint) headSectionOffset, Length = headSectionLength
+    var headSegment = new SliceSegmentChunk {
+        OffsetInRom = (uint) headSectionOffset,
+        Length = headSectionLength
     };
-    var bodySegment = new SliceSegment {
-        Offset = (uint) bodySectionOffset, Length = (uint) bodySectionLength
+    var bodySegment = new SliceSegmentChunk {
+        OffsetInRom = (uint) bodySectionOffset,
+        Length = (uint) bodySectionLength
     };
 
     br.Position = 0x166ab;
@@ -153,6 +158,9 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     var skinChosenPart = new ChosenPart0();
     skinChosenPart.ChosenColor0.Color = skinColor;
+
+    br.Position = 0x9344;
+    expressions = br.ReadNews<Expression>(6);
 
     br.Position = 0xb840;
     var headChosenPart0s = br.ReadNews<ChosenPart0>(5);
@@ -191,7 +199,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
 
     foreach (var joint in joints) {
       var matrix = Matrix4x4.Transpose(joint.matrix);
-      
+
       // Have to do this to flip the scale correctly. Decomposing, replacing
       // the rotation, and then recomposing does not preserve the rotation.
       var scaleX = joint.isFlipped ? -1 : 1;
@@ -329,11 +337,11 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
       }
     }
 
-    MocapAnimationsUtil.TryToAddAnimations(
+    /*MocapAnimationsUtil.TryToAddAnimations(
         model,
         finBonesAndJoints,
         fileBundle.AnimationsDirectory);
-    //TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);
+    TryToAddAnimations_(model, finBonesAndJoints, fileBundle.RomFile);*/
 
     // Adds face
     if (INCLUDE_FACE) {
@@ -360,6 +368,13 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                                 return faceTexture;
                               })
                               .ToArray());
+
+      TstltExpressionImageGenerator
+          .GenerateExpressionTextures(
+              model.MaterialManager,
+              model.AnimationManager,
+              faceTextures[0],
+              expressions);
 
       var faceMeshes = new List<IMesh>();
       if (!USE_GRANULAR_MESHES) {
@@ -743,7 +758,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
                        out var possibilities) &&
         possibilities.TryGetFirst(out var sbr)) {
       var relativeMeshBaseOffset = sbr.Position;
-      var absoluteMeshOffset = segment.Offset + relativeMeshBaseOffset;
+      var absoluteMeshOffset = segment.OffsetInRom + relativeMeshBaseOffset;
 
       sbr.Position = relativeMeshBaseOffset + 4 * 3;
       var vertexSectionSize = sbr.ReadUInt32();
@@ -1182,7 +1197,7 @@ public sealed class TstltModelImporter : IModelImporter<TstltModelFileBundle> {
   }
 
   private static Quaternion GetDefaultRotation_(IReadOnlyBone bone)
-    => bone.Transform.LocalRotation ?? Quaternion.Identity;
+    => bone.Transform.LocalRotation;
 
   private static Quaternion GetPose1Rotation_(bool isHand,
                                               short degreesTimesTen) {

@@ -28,7 +28,7 @@ public sealed class GauntletDarkLegacySceneImporter
   public IScene Import(GauntletDarkLegacySceneFileBundle fileBundle) {
     var finScene = new SceneImpl {
         FileBundle = fileBundle,
-        Files = new HashSet<IReadOnlyGenericFile>([
+        Files = new HashSet<IReadOnlyStandaloneFile>([
             fileBundle.WorldsFile,
             fileBundle.ObjectsFile,
             fileBundle.AnimFile,

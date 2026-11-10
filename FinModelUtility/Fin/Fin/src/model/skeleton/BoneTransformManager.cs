@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using fin.data.indexable;
 using fin.math.matrix.four;
 using fin.model.accessor;
+using fin.model.skeleton.boneTransformViews;
 
 namespace fin.model.skeleton;
 
@@ -18,16 +19,18 @@ public interface IVertexProjector {
       IReadOnlyVertex vertex,
       out Vector3 outPosition);
 
-  void ProjectVertexPositionNormal(
-      IReadOnlyNormalVertex vertex,
+  void ProjectVertexPositionNormal<TVertexAccessor>(
+      TVertexAccessor vertex,
       out Vector3 outPosition,
-      out Vector3 outNormal);
+      out Vector3 outNormal)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor>;
 
-  void ProjectVertexPositionNormalTangent(
-      IVertexAccessor vertex,
+  void ProjectVertexPositionNormalTangent<TVertexAccessor>(
+      TVertexAccessor vertex,
       out Vector3 outPosition,
       out Vector3 outNormal,
-      out Vector4 outTangent);
+      out Vector4 outTangent)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor>;
 
   void ProjectPosition(IReadOnlyBone bone, ref Vector3 xyz);
 
@@ -47,8 +50,6 @@ public interface IReadOnlyBoneTransformManager : IVertexProjector {
 }
 
 public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
-  void Clear();
-
   // TODO: Switch this to a thing that returns a projector instance
   void CalculateStaticMatricesForManualProjection(
       IReadOnlyModel model,
@@ -59,27 +60,26 @@ public interface IBoneTransformManager : IReadOnlyBoneTransformManager {
   void CalculateMatrices(
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
-      IBoneTransformView? boneTransformView,
+      ITargetedBoneTransformView? boneTransformView,
       BoneWeightTransformType boneWeightTransformType,
       in Matrix4x4 modelMatrix);
 }
 
 public sealed class BoneTransformManager : IBoneTransformManager {
   // TODO: This is going to be slow, can we put this somewhere else for O(1) access?
-  private readonly IndexableDictionary<IReadOnlyBone, IFinMatrix4x4>
-      bonesToWorldMatrices_ = new();
+  private IndexableArray<IReadOnlyBone, IFinMatrix4x4> bonesToWorldMatrices_;
 
-  private readonly IndexableDictionary<IReadOnlyBone, IReadOnlyFinMatrix4x4>
-      bonesToInverseWorldMatrices_ = new();
+  private IndexableArray<IReadOnlyBone, IReadOnlyFinMatrix4x4>
+      bonesToInverseWorldMatrices_;
 
-  private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
-      boneWeightsToWorldMatrices_ = new();
+  private IndexableArray<IReadOnlyBoneWeights, IFinMatrix4x4>
+      boneWeightsToWorldMatrices_;
 
-  private readonly IndexableDictionary<IReadOnlyBoneWeights, IFinMatrix4x4>
-      boneWeightsInverseMatrices_ = new();
+  private IndexableArray<IReadOnlyBoneWeights, IFinMatrix4x4>
+      boneWeightsInverseMatrices_;
 
-  private IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>
-      verticesToWorldMatrices_ = new();
+  private IndexableArray<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>
+      verticesToWorldMatrices_;
 
   public (IReadOnlyBoneTransformManager, IReadOnlyBone)? Parent { get; }
   public IReadOnlyFinMatrix4x4 ManagerMatrix { get; }
@@ -95,20 +95,20 @@ public sealed class BoneTransformManager : IBoneTransformManager {
     this.ManagerMatrix = parentManager.GetWorldMatrix(parentBone);
   }
 
-  public void Clear() {
-    this.bonesToWorldMatrices_.Clear();
-    this.bonesToInverseWorldMatrices_.Clear();
-    this.boneWeightsToWorldMatrices_.Clear();
-    this.boneWeightsInverseMatrices_.Clear();
-    this.verticesToWorldMatrices_.Clear();
+  private void InitDictionaries_(IReadOnlyModel model) {
+    var boneCount = model.Skeleton.Bones.Count;
+    this.bonesToWorldMatrices_ = new(boneCount);
+    this.bonesToInverseWorldMatrices_ = new(boneCount);
+
+    var boneWeightCount = model.Skin.BoneWeights.Count;
+    this.boneWeightsToWorldMatrices_ = new(boneWeightCount);
+    this.boneWeightsInverseMatrices_ = new(boneWeightCount);
   }
 
   private void InitModelVertices_(IReadOnlyModel model,
                                   bool forcePreproject = false) {
     var vertices = model.Skin.Vertices;
-    this.verticesToWorldMatrices_ =
-        new IndexableDictionary<IReadOnlyVertex, IReadOnlyFinMatrix4x4?>(
-            vertices.Count);
+    this.verticesToWorldMatrices_ = new(vertices.Count);
     foreach (var vertex in vertices) {
       this.verticesToWorldMatrices_[vertex] =
           this.DetermineTransformMatrix_(vertex.BoneWeights, forcePreproject);
@@ -118,6 +118,7 @@ public sealed class BoneTransformManager : IBoneTransformManager {
   public void CalculateStaticMatricesForManualProjection(
       IReadOnlyModel model,
       bool forcePreproject = false) {
+    this.InitDictionaries_(model);
     this.CalculateMatrices(
         model.Skeleton.Root,
         model.Skin.BoneWeights,
@@ -128,6 +129,7 @@ public sealed class BoneTransformManager : IBoneTransformManager {
   }
 
   public void CalculateStaticMatricesForRendering(IReadOnlyModel model) {
+    this.InitDictionaries_(model);
     this.CalculateMatrices(
         model.Skeleton.Root,
         model.Skin.BoneWeights,
@@ -143,7 +145,7 @@ public sealed class BoneTransformManager : IBoneTransformManager {
   public void CalculateMatrices(
       IReadOnlyBone rootBone,
       IReadOnlyList<IReadOnlyBoneWeights> boneWeightsList,
-      IBoneTransformView? boneTransformView,
+      ITargetedBoneTransformView? boneTransformView,
       BoneWeightTransformType boneWeightTransformType,
       in Matrix4x4 modelMatrix) {
     var isFirstPass = boneTransformView == null;
@@ -178,8 +180,8 @@ public sealed class BoneTransformManager : IBoneTransformManager {
         boneTransformView.TargetBone(bone);
         boneToWorldMatrix.Impl = BoneTransformUtils.CalculateBoneToWorldMatrix(
             boneTransformView,
-            parentMatrix,
-            modelMatrix);
+            in parentMatrix,
+            in modelMatrix);
       } else {
         boneToWorldMatrix.Impl = parentMatrix;
         boneToWorldMatrix.MultiplyInPlace(bone.Transform.LocalMatrix);
@@ -190,14 +192,9 @@ public sealed class BoneTransformManager : IBoneTransformManager {
 
     if (isFirstPass) {
       foreach (var boneWeights in boneWeightsList) {
-        if (!this.boneWeightsInverseMatrices_.TryGetValue(
-                boneWeights,
-                out var boneWeightInverseMatrix)) {
-          this.boneWeightsInverseMatrices_[boneWeights] =
-              boneWeightInverseMatrix = new FinMatrix4x4();
-        }
+        var boneWeightInverseMatrix = new FinMatrix4x4();
+        this.boneWeightsInverseMatrices_[boneWeights] = boneWeightInverseMatrix;
 
-        boneWeightInverseMatrix.SetZero();
         foreach (var boneWeight in boneWeights.Weights) {
           var bone = boneWeight.Bone;
           var weight = boneWeight.Weight;
@@ -213,14 +210,9 @@ public sealed class BoneTransformManager : IBoneTransformManager {
         BoneWeightTransformType.FOR_EXPORT_OR_CPU_PROJECTION ||
         isFirstPass) {
       foreach (var boneWeights in boneWeightsList) {
-        if (!this.boneWeightsToWorldMatrices_.TryGetValue(
-                boneWeights,
-                out var boneWeightMatrix)) {
-          this.boneWeightsToWorldMatrices_[boneWeights] =
-              boneWeightMatrix = new FinMatrix4x4();
-        }
+        var boneWeightMatrix = new FinMatrix4x4();
+        this.boneWeightsToWorldMatrices_[boneWeights] = boneWeightMatrix;
 
-        boneWeightMatrix.SetZero();
         foreach (var boneWeight in boneWeights.Weights) {
           var bone = boneWeight.Bone;
           var weight = boneWeight.Weight;
@@ -284,15 +276,17 @@ public sealed class BoneTransformManager : IBoneTransformManager {
     ProjectionUtil.ProjectPosition(transformMatrix, ref outPosition);
   }
 
-  public void ProjectVertexPositionNormal(
-      IReadOnlyNormalVertex vertex,
+  public void ProjectVertexPositionNormal<TVertexAccessor>(
+      TVertexAccessor vertex,
       out Vector3 outPosition,
-      out Vector3 outNormal) {
+      out Vector3 outNormal)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor> {
     outPosition = vertex.LocalPosition;
+
     outNormal = vertex.LocalNormal.GetValueOrDefault();
 
     var finTransformMatrix = this.GetTransformMatrix(vertex);
-    if (finTransformMatrix == null) {
+    if (finTransformMatrix == null || finTransformMatrix.Impl.IsIdentity) {
       return;
     }
 
@@ -303,11 +297,12 @@ public sealed class BoneTransformManager : IBoneTransformManager {
     }
   }
 
-  public void ProjectVertexPositionNormalTangent(
-      IVertexAccessor vertex,
+  public void ProjectVertexPositionNormalTangent<TVertexAccessor>(
+      TVertexAccessor vertex,
       out Vector3 outPosition,
       out Vector3 outNormal,
-      out Vector4 outTangent) {
+      out Vector4 outTangent)
+      where TVertexAccessor : IVertexAccessor<TVertexAccessor> {
     outPosition = vertex.LocalPosition;
 
     outNormal = vertex.LocalNormal.GetValueOrDefault();

@@ -9,7 +9,6 @@ using fin.util.progress;
 using fin.util.tasks;
 using fin.util.types;
 
-using uni.api;
 using uni.config;
 using uni.games;
 using uni.ui.winforms.common.fileTreeView;
@@ -94,7 +93,6 @@ public static class ExportService {
 
         var results = ExporterUtil.ExportAll(
             modelFileBundles,
-            new GlobalModelImporter(),
             Progress,
             CancellationToken,
             Config.Instance.Exporter.General.ExportedFormats,

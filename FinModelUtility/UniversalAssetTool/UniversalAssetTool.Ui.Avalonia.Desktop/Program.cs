@@ -3,7 +3,6 @@
 using Avalonia;
 
 using fin.services;
-using fin.ui;
 using fin.ui.avalonia;
 using fin.ui.avalonia.util;
 

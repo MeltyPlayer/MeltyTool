@@ -64,7 +64,7 @@ public sealed class BarSceneFileImporter
   public static void AddUvtrToScene(
       IReadOnlyTreeFile uvtrFile,
       IReadOnlyTreeDirectory rootDirectory,
-      HashSet<IReadOnlyGenericFile> files,
+      HashSet<IReadOnlyStandaloneFile> files,
       ILazyDictionary<short, IReadOnlyModel> lazyUvmdModelDictionary,
       ISceneNode rootNode) {
     var fileChunks = uvtrFile.ReadNew<FileChunks>(Endianness.BigEndian);
@@ -95,7 +95,7 @@ public sealed class BarSceneFileImporter
   public static void AddUvenToScene(
       IReadOnlyTreeFile uvenFile,
       IReadOnlyTreeDirectory rootDirectory,
-      HashSet<IReadOnlyGenericFile> files,
+      HashSet<IReadOnlyStandaloneFile> files,
       ISceneArea area,
       ISceneNode rootNode) {
     var fileChunks = uvenFile.ReadNew<FileChunks>(Endianness.BigEndian);

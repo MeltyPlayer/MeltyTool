@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>hw</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

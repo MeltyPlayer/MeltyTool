@@ -7,10 +7,10 @@
              xmlns:controls1="clr-namespace:uni.ui.avalonia.common.controls"
              xmlns:resources="clr-namespace:uni.ui.avalonia.resources"
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="450"
-             x:Class="uni.ui.avalonia.resources.model.skeleton.SkeletonTree"
-             x:DataType="skeleton:SkeletonTreeViewModel">
+             x:Class="uni.ui.avalonia.resources.model.skeleton.SkeletonPanel"
+             x:DataType="skeleton:SkeletonPanelViewModel">
   <Design.DataContext>
-    <skeleton:SkeletonTreeViewModelForDesigner />
+    <skeleton:SkeletonPanelViewModelForDesigner />
   </Design.DataContext>
 
   <controls:If Condition="{Binding IsPopulated}">

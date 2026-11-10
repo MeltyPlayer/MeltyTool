@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 
 using fin.math.matrix.four;
+using fin.model.skeleton.boneTransformViews;
 
 namespace fin.model.skeleton;
 

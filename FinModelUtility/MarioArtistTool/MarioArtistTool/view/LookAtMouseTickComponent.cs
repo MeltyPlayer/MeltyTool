@@ -5,7 +5,7 @@ using fin.config.avalonia.services;
 using fin.math;
 using fin.math.rotations;
 using fin.model;
-using fin.model.skeleton;
+using fin.model.skeleton.boneTransformViews;
 using fin.scene;
 using fin.util.time;
 
@@ -43,7 +43,7 @@ public class LookAtMouseTickComponent(
 
     var bodyNode = self.ChildNodes[0];
 
-    var bodyRotation = bodyNode.Transform.LocalEulerRadians.Value;
+    var bodyRotation = bodyNode.Transform.LocalEulerRadians;
     var bodyYRadiansForNeck = bodyRotation.Y + MathF.PI / 2;
     var bodyYRadiansForTorso = bodyRotation.Y;
 

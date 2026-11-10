@@ -2,13 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using fin.util.linq;
+
 namespace fin.data.dictionaries;
 
 public static class ListDictionaryExtensions {
+  public static TValue? GetSingleOrDefault<TKey, TValue>(
+      this IListDictionary<TKey, TValue> impl,
+      TKey key) {
+    if (impl.TryGetList(key, out var list) &&
+        list.TryGetSingle(out var value)) {
+      return value;
+    }
+
+    return default;
+  }
+
   public static bool TryGetList<TKey, TValue>(
       this IListDictionary<TKey, TValue> impl,
       TKey key,
-      out IList<TValue> list) {
+      out List<TValue> list) {
     if (impl.HasList(key)) {
       list = impl[key];
       return true;
@@ -31,13 +44,13 @@ public static class ListDictionaryExtensions {
     return false;
   }
 
-  public static IEnumerable<(TKey key, IList<TValue> value)> GetPairs<
+  public static IEnumerable<(TKey key, List<TValue> value)> GetPairs<
       TKey, TValue>(this IListDictionary<TKey, TValue> impl)
     => impl.Keys.Select(key => (key, impl[key]));
 
   public static IEnumerable<(TKey key, IReadOnlyList<TValue> value)> GetPairs<
       TKey, TValue>(this IReadOnlyListDictionary<TKey, TValue> impl)
-    => impl.Keys.Select(key => (key, impl[key]));
+    => impl.Keys.Select(key => (key, (IReadOnlyList<TValue>) impl[key]));
 
   public static IListDictionary<TKey, T> ToListDictionary<T, TKey>(
       this IEnumerable<T> enumerable,
@@ -49,8 +62,20 @@ public static class ListDictionaryExtensions {
       Func<T, TKey> keySelector,
       Func<T, TValue> valueSelector) {
     var listDictionary = new ListDictionary<TKey, TValue>();
-    foreach (var value in enumerable) {
-      listDictionary.Add(keySelector(value), valueSelector(value));
+    foreach (var input in enumerable) {
+      listDictionary.Add(keySelector(input), valueSelector(input));
+    }
+
+    return listDictionary;
+  }
+
+  public static IListDictionary<TKey, TValue> ToListDictionary<T, TKey, TValue>(
+      this IEnumerable<T> enumerable,
+      Func<T, TKey> keySelector,
+      Func<T, IEnumerable<TValue>> rangeSelector) {
+    var listDictionary = new ListDictionary<TKey, TValue>();
+    foreach (var input in enumerable) {
+      listDictionary.AddRange(keySelector(input), rangeSelector(input));
     }
 
     return listDictionary;

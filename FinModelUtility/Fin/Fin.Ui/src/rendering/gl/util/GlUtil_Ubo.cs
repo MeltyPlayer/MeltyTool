@@ -2,9 +2,9 @@
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
-  public int CurrentUboDataId { get; set; } = -1;
-  public int[] CurrentUboBufferBaseIdByIndex { get; } = [-1, -1, -1, -1];
+public partial record GlState {
+  public int CurrentUboDataId { get; set; }
+  public int[] CurrentUboBufferBaseIdByIndex { get; } = [0, 0, 0, 0, 0];
 }
 
 public static partial class GlUtil {
@@ -19,10 +19,11 @@ public static partial class GlUtil {
   }
 
   public static void ResetUboBufferBase() {
-    BindUboBufferBase(0, 0);
-    BindUboBufferBase(1, 0);
-    BindUboBufferBase(2, 0);
-    BindUboBufferBase(3, 0);
+    for (var i = 0;
+         i < currentState_.CurrentUboBufferBaseIdByIndex.Length;
+         ++i) {
+      BindUboBufferBase(i, 0);
+    }
   }
 
   public static void BindUboBufferBase(int bindingIndex, int uboId) {

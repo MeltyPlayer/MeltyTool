@@ -9,7 +9,7 @@ public static class SceneDesignerUtil {
   public static IReadOnlyScene CreateStubScene() {
     var scene = new SceneImpl {
         FileBundle = null,
-        Files = new HashSet<IReadOnlyGenericFile>([
+        Files = new HashSet<IReadOnlyStandaloneFile>([
             new FinFile(@"C:\Users\Foo\Documents\Bar\123.txt"),
             new FinFile(@"C:\Users\Foo\Documents\Bar\123_model.model"),
             new FinFile(@"C:\Users\Foo\Documents\Bar\123_animation.anim"),

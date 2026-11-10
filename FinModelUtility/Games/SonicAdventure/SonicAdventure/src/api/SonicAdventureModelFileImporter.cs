@@ -20,7 +20,7 @@ using Object = sonicadventure.schema.model.Object;
 namespace sonicadventure.api;
 
 public sealed class SonicAdventureModelFileImporter
-    : IModelImporter<SonicAdventureModelFileBundle> {
+    : IModelImporter<SonicAdventureModelFileImporter, SonicAdventureModelFileBundle> {
   public IModel Import(SonicAdventureModelFileBundle fileBundle) {
     using var fs = fileBundle.ModelFile.OpenRead();
     fs.Position = fileBundle.ModelFileOffset;

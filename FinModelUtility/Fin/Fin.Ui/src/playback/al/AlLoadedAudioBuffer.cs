@@ -8,12 +8,12 @@ namespace fin.ui.playback.al;
 public partial class AlAudioManager {
   public ILoadedAudioBuffer<short> CreateLoadedAudioBuffer(
       IFileBundle fileBundle,
-      IReadOnlySet<IReadOnlyGenericFile> files)
+      IReadOnlySet<IReadOnlyStandaloneFile> files)
     => new AlLoadedAudioBuffer(fileBundle, files);
 
   private class AlLoadedAudioBuffer(
       IFileBundle fileBundle,
-      IReadOnlySet<IReadOnlyGenericFile> files)
+      IReadOnlySet<IReadOnlyStandaloneFile> files)
       : AlAudioBuffer, ILoadedAudioBuffer<short> {
     private short[][] channels_;
 
@@ -64,6 +64,6 @@ public partial class AlAudioManager {
       }][sampleOffset];
 
     public IFileBundle FileBundle => fileBundle;
-    public IReadOnlySet<IReadOnlyGenericFile> Files => files;
+    public IReadOnlySet<IReadOnlyStandaloneFile> Files => files;
   }
 }

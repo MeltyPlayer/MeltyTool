@@ -10,7 +10,7 @@ using schema.binary;
 namespace MariosPicross;
 
 public sealed class GameBoyPicrossDefinitionReader {
-  public IPicrossDefinition[]? Read(IReadOnlyGenericFile romFile) {
+  public IPicrossDefinition[]? Read(IReadOnlyStandaloneFile romFile) {
     var romData = romFile.ReadAllBytes();
     var romCrc32 = Crc32.HashToUInt32(romData);
     if (!Constants.CONSTANTS_BY_FILE_CRC_32.TryGetValue(

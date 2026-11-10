@@ -4,7 +4,7 @@ using OpenTK.Graphics.OpenGL4;
 
 namespace fin.ui.rendering.gl;
 
-public partial class GlState {
+public partial record GlState {
   public bool UpdateColorChannel { get; set; } = true;
   public bool UpdateAlphaChannel { get; set; } = true;
 }

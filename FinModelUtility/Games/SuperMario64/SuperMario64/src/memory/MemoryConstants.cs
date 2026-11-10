@@ -4,16 +4,15 @@ namespace sm64.memory {
   public struct MemoryConstants {
     public required uint MacroPresetTable { get; init; }
     public required uint SpecialPresetTable { get; init; }
-    public required ISegment Segment2 { get; set; }
-    public required ISegment Segment15 { get; init; }
+    public required SliceSegmentChunk Segment2 { get; set; }
+    public required SliceSegmentChunk Segment15 { get; init; }
 
 
     public static MemoryConstants NA_CONSTANTS { get; } = new() {
         MacroPresetTable = 0xEC7E0,
         SpecialPresetTable = 0xED350,
-        Segment2 =
-            new SliceSegment { Offset = 0x108A40, Length = 0x114750 - 0x108A40, },
-        Segment15 = new SliceSegment { Offset = 0, Length = 0, },
+        Segment2 = new SliceSegmentChunk { OffsetInRom = 0x108A40, Length = 0x114750 - 0x108A40, },
+        Segment15 = new SliceSegmentChunk { OffsetInRom = 0, Length = 0, },
     };
 
     /*

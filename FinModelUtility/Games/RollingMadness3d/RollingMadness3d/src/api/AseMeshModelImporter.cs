@@ -25,7 +25,7 @@ public record AseMeshModelFileBundle(
 }
 
 public sealed class AseMeshModelImporter
-    : IModelImporter<AseMeshModelFileBundle> {
+    : IModelImporter<AseMeshModelImporter, AseMeshModelFileBundle> {
   public IModel Import(AseMeshModelFileBundle fileBundle) {
     var aseMesh = fileBundle.AseMeshFile.ReadNew<AseMesh>();
 

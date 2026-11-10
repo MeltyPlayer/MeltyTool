@@ -14,13 +14,13 @@ public sealed class GlFixedFunctionMaterialShader(
     IModelRequirements modelRequirements,
     IReadOnlyFixedFunctionMaterial fixedFunctionMaterial,
     IReadOnlyTextureTransformManager textureTransformManager,
-    IReadOnlyTextureFlipbookSwapManager textureFlipbookSwapManager)
+    IReadOnlyTextureSwapManager textureSwapManager)
     : BGlMaterialShader<IReadOnlyFixedFunctionMaterial>(
         model,
         modelRequirements,
         fixedFunctionMaterial,
         textureTransformManager,
-        textureFlipbookSwapManager) {
+        textureSwapManager) {
   private IShaderUniform<Vector4>? blendColorUniform_;
 
   private (IColorRegister, IShaderUniform<Vector3>)[]
@@ -29,7 +29,13 @@ public sealed class GlFixedFunctionMaterialShader(
   private (IScalarRegister, IShaderUniform<float>)[]
       scalarRegistersAndUniforms_;
 
-  protected override void DisposeInternal() { }
+  private readonly List<IGlTexture> glTextures_ = [];
+
+  protected override void DisposeInternal() {
+    foreach (var texture in this.glTextures_) {
+      texture.Dispose();
+    }
+  }
 
   protected override void Setup(
       IReadOnlyFixedFunctionMaterial material,
@@ -53,15 +59,17 @@ public sealed class GlFixedFunctionMaterialShader(
           ? finTextures[i]
           : null;
       var glTexture = finTexture != null
-          ? GlTexture.FromTexture(finTexture)
+          ? GlTextureSamplerTuple.FromTexture(finTexture)
           : GlMaterialConstants.NULL_WHITE_TEXTURE;
+      this.glTextures_.Add(glTexture);
 
       this.SetUpTexture($"texture{i}", i, finTexture, glTexture);
     }
 
     var normalTexture = material.NormalTexture;
     if (normalTexture != null) {
-      var glTexture = GlTexture.FromTexture(normalTexture);
+      var glTexture = GlTextureSamplerTuple.FromTexture(normalTexture);
+      this.glTextures_.Add(glTexture);
       this.SetUpTexture("normalTexture",
                         MaterialConstants.MAX_TEXTURES,
                         normalTexture,

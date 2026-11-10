@@ -145,7 +145,7 @@ public sealed class SubArchiveExtractor : IArchiveExtractor<SubArchiveContentFil
 
 
   public static ArchiveExtractionResult ExtractRelativeToRoot<TArchiveReader>(
-      IReadOnlyGenericFile archiveFile,
+      IReadOnlyStandaloneFile archiveFile,
       IReadOnlyTreeDirectory rootDirectory)
       where TArchiveReader : IArchiveReader<SubArchiveContentFile>, new() {
     using var archive = archiveFile.OpenRead();

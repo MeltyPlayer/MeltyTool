@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
 using fin.compression;
 using fin.util.types;
@@ -20,20 +22,22 @@ public interface IReadOnlyN64Memory {
       out IEnumerable<SchemaBinaryReader> possibilities);
 
   SchemaBinaryReader OpenSegment(uint segmentIndex);
-  SchemaBinaryReader OpenSegment(ISegment segment, uint? offset = null);
+
+  SchemaBinaryReader OpenSegment(ISegmentChunk segmentChunk,
+                                 uint? offset = null);
 
   IEnumerable<SchemaBinaryReader> OpenPossibilitiesForSegment(
       uint segmentIndex);
 
-  ISegment GetSegment(uint segmentIndex);
+  ISegmentChunk GetSegment(uint segmentIndex);
   bool IsValidSegment(uint segmentIndex);
   bool IsValidSegmentedAddress(uint segmentedAddress);
   bool IsSegmentCompressed(uint segmentIndex);
 }
 
 public interface IN64Memory : IReadOnlyN64Memory {
-  void AddSegment(uint segmentIndex, ISegment segment);
-  void SetSegment(uint segmentIndex, ISegment segment);
+  void AddSegment(uint segmentIndex, ISegmentChunk segmentChunk);
+  void SetSegment(uint segmentIndex, ISegmentChunk segmentChunk);
 }
 
 public interface ISeparateN64Memory : IN64Memory {
@@ -51,22 +55,33 @@ public interface ISlicedN64Memory : ISeparateN64Memory {
                   uint offset,
                   uint length,
                   IArrayToArrayDecompressor? decompressor = null);
+
+  void SetJitSegment(
+      uint segmentIndex,
+      Func<uint, Stream> getStreamFromAddress);
 }
 
 [UnionCandidate]
-public interface ISegment {
-  uint Offset { get; }
+public interface ISegmentChunk {
+  uint OffsetInSegment { get; }
   uint Length { get; }
 }
 
-public class SliceSegment : ISegment {
-  public required uint Offset { get; init; }
+public class SliceSegmentChunk : ISegmentChunk {
+  public required uint OffsetInRom { get; init; }
+  public uint OffsetInSegment { get; init; }
   public required uint Length { get; init; }
   public IArrayToArrayDecompressor? Decompressor { get; init; }
 }
 
-public class BytesSegment : ISegment {
-  public required uint Offset { get; init; }
+public class BytesSegmentChunk : ISegmentChunk {
+  public required uint OffsetInSegment { get; init; }
   public uint Length => (uint) this.Bytes.Length;
   public required byte[] Bytes { get; init; }
+}
+
+public class JitSegment : ISegmentChunk {
+  public uint OffsetInSegment => 0;
+  public uint Length => 0x01000000;
+  public required Func<uint, Stream> GetStreamFromAddress { get; init; }
 }

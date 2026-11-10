@@ -31,4 +31,14 @@ public partial struct Rgba32(byte r, byte g, byte b, byte a)
 
   public override string ToString()
     => $"rgba({this.Rf}, {this.Gf}, {this.Bf}, {this.Af})";
+
+  public override int GetHashCode() => this.ToBgraInt();
+
+  public override bool Equals(object? obj) {
+    if (obj is IColor otherGeneric) {
+      return this.GetHashCode() == otherGeneric.GetHashCode();
+    }
+
+    return false;
+  }
 }

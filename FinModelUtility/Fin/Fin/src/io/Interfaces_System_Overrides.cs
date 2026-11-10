@@ -251,11 +251,14 @@ public partial interface ISystemDirectory {
   bool GROTreeDir.TryToGetExistingFileWithFileType(
       string pathWithoutExtension,
       out IReadOnlyTreeFile outFile,
-      params string[] fileTypes)
-    => this.TryToGetExistingFileWithFileType(
+      params string[] fileTypes) {
+    var returnValue = this.TryToGetExistingFileWithFileType(
         pathWithoutExtension,
-        out outFile,
+        out var outSystemFile,
         fileTypes);
+    outFile = outSystemFile;
+    return returnValue;
+  }
 
   bool GROSysDir.TryToGetExistingFileWithFileType(
       string pathWithoutExtension,

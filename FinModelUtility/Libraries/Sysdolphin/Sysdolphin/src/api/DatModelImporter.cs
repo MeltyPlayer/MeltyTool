@@ -33,13 +33,14 @@ using sysdolphin.schema.texture;
 
 namespace sysdolphin.api;
 
-public sealed class DatModelImporter : IModelImporter<DatModelFileBundle> {
+public sealed class DatModelImporter
+    : IModelImporter<DatModelImporter, DatModelFileBundle> {
   public IModel Import(DatModelFileBundle modelFileBundle)
     => this.Import(modelFileBundle, out _, out _, out _, out _, out _);
 
   public unsafe IModel Import(
       DatModelFileBundle modelFileBundle,
-      out HashSet<IReadOnlyGenericFile> files,
+      out HashSet<IReadOnlyStandaloneFile> files,
       out DatSubfile datSubfile,
       out IReadOnlyDictionary<JObj, IReadOnlyBone> outFinBoneByJObj,
       out IReadOnlyList<(JObj jObj,

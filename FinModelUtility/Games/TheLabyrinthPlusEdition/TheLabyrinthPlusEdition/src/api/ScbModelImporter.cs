@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 
 using fin.animation.keyframes;
-using fin.color;
 using fin.data.dictionaries;
 using fin.data.lazy;
 using fin.image;
@@ -26,11 +25,11 @@ public sealed record ScbModelFileBundle(
     IReadOnlyTreeFile ScbFile,
     IReadOnlyTreeFile BallsFile,
     IReadOnlyTreeDirectory TexturesDir)
-    : IModelFileBundle {
+    : IModelFileBundle<ScbModelFileBundle, ScbModelImporter> {
   public IReadOnlyTreeFile MainFile => this.ScbFile;
 }
 
-public sealed class ScbModelImporter : IModelImporter<ScbModelFileBundle> {
+public sealed class ScbModelImporter : IModelImporter<ScbModelImporter, ScbModelFileBundle> {
   public IModel Import(ScbModelFileBundle fileBundle) {
     var scb = fileBundle.ScbFile.ReadNew<Scb>();
 
@@ -146,7 +145,7 @@ public sealed class ScbModelImporter : IModelImporter<ScbModelFileBundle> {
 
             finAnimation.FrameCount = (int) Math.Max(finAnimation.FrameCount, frame);
 
-            var rotation = currentBone.Transform.LocalRotation.Value *
+            var rotation = currentBone.Transform.LocalRotation *
                            ConvertRotationToQuaternion_(keyframe.EulerRadians);
             rotationTrack.SetKeyframe(frame, rotation);
           }

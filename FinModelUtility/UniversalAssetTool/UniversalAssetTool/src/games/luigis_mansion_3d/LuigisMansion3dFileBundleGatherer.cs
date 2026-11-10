@@ -25,6 +25,7 @@ public sealed class LuigisMansion3dFileBundleGatherer
                     new NameModelSeparatorMethod("Luigi.cmb"));
 
   public override string Name => "luigis_mansion_3d";
+  public override string Title => "Luigi's Mansion";
 
   protected override void GatherFileBundlesFromHierarchy(
       IFileBundleOrganizer organizer,

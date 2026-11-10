@@ -7,6 +7,7 @@ namespace uni.games.phantom_hourglass;
 public sealed class PhantomHourglassFileBundleGatherer
     : BDsFileBundleGatherer {
   public override string Name => "phantom_hourglass";
+  public override string Title => "The Legend of Zelda: Phantom Hourglass";
 
   public override bool IsListed => false;
 

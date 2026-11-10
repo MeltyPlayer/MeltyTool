@@ -203,9 +203,6 @@ public sealed class SceneStaticRenderGraph : IRenderable {
   private ISkeletonRenderer[] skeletonRenderers_;
 
   private IReadOnlyBone? selectedBone_;
-  private IReadOnlySceneNode? selectedNode_;
-  private IReadOnlyMesh? selectedMesh_;
-  private IReadOnlySet<IReadOnlyMaterial>? selectedMaterials_;
 
   public float Scale { get; set; }
   public float NearPlane { get; set; }
@@ -216,12 +213,6 @@ public sealed class SceneStaticRenderGraph : IRenderable {
 
     SelectedBoneService.OnBoneSelected += selectedBone
         => this.selectedBone_ = selectedBone;
-    SelectedNodeService.OnNodeSelected += selectedNode
-        => this.selectedNode_ = selectedNode;
-    SelectedMeshService.OnMeshSelected += selectedMesh
-        => this.selectedMesh_ = selectedMesh;
-    SelectedMaterialsService.OnMaterialsSelected += selectedMaterials
-        => this.selectedMaterials_ = selectedMaterials;
   }
 
   ~SceneStaticRenderGraph() => this.ReleaseUnmanagedResources_();
@@ -282,6 +273,7 @@ public sealed class SceneStaticRenderGraph : IRenderable {
     foreach (var element in this.opaqueElements_) {
       element.UpdateSortKey(camera, this.NearPlane, this.FarPlane, this.Scale);
     }
+
     Array.Sort(this.opaqueElements_, comparer_);
 
     this.transparentElements_
@@ -293,21 +285,40 @@ public sealed class SceneStaticRenderGraph : IRenderable {
               .Nonnull()
               .ToArray();
 
-    var uniqueModels = this.modelRenderComponents_
-                           .Select(m => m.Item2.Model)
-                           .Distinct()
-                           .ToArray();
+    var uniqueModels
+        = this.modelRenderComponents_
+              .Select(m => m.Item2.Model)
+              .Concat(
+                  this.scene_.Areas.Select(a => a.CustomSkyboxObject)
+                      .Nonnull()
+                      .SelectMany(n => n.EnumerateSelfAndDescendants())
+                      .SelectMany(n => n.EnumerateAllAnimatableModelsInSelf())
+                      .Select(m => m.Model))
+              .Distinct()
+              .ToArray();
     var uniqueMaterials = uniqueModels
                           .SelectMany(m => m.MaterialManager.All)
                           .Distinct()
                           .ToArray();
+    var uniqueTextures = uniqueMaterials
+                         .SelectMany(m => m.Textures)
+                         .Distinct()
+                         .ToArray();
+    var backgroundImageCount
+        = this.scene_.Areas
+              .Select(a => a.Definition.BackgroundImage)
+              .Nonnull()
+              .Count();
 
     DebugService.RenderGraphElementCount = elements.Count;
     DebugService.ModelCount = uniqueModels.Length;
     DebugService.MaterialCount = uniqueMaterials.Length;
-    DebugService.OpaqueMaterialCount = uniqueMaterials.Count(m => m.GetTransparencyType() is TransparencyType.OPAQUE);
+    DebugService.OpaqueMaterialCount
+        = uniqueMaterials.Count(m => m.GetTransparencyType() is TransparencyType
+                                    .OPAQUE);
     DebugService.TransparentMaterialCount = DebugService.MaterialCount -
                                             DebugService.OpaqueMaterialCount;
+    DebugService.FinTextureCount = uniqueTextures.Length + backgroundImageCount;
   }
 
   public void Render() {
@@ -327,47 +338,17 @@ public sealed class SceneStaticRenderGraph : IRenderable {
     foreach (var element in this.transparentElements_) {
       element.UpdateSortKey(camera, this.NearPlane, this.FarPlane, this.Scale);
     }
+
     this.SortTransparentElements_();
-
-    var isSomethingSelected = this.selectedNode_ != null ||
-                              this.selectedMesh_ != null ||
-                              (this.selectedMaterials_?.Any() ?? false);
-
-    /*if (isSomethingSelected) {
-      foreach (var element in this.elements_) {
-        var prms = element.Params;
-        if (prms.IsSelected || this.selectedNode_ == prms.Node.Definition) {
-          GlUtil.RenderOutline(() => RenderParams_(prms));
-        }
-      }
-    }*/
 
     foreach (var element in this.opaqueElements_) {
       var prms = element.Params;
       RenderParams_(prms);
     }
 
-    if (isSomethingSelected) {
-      foreach (var element in this.opaqueElements_) {
-        var prms = element.Params;
-        if (prms.IsSelected || this.selectedNode_ == prms.Node.Definition) {
-          GlUtil.RenderHighlight(() => RenderParams_(prms));
-        }
-      }
-    }
-
     foreach (var element in this.transparentElements_) {
       var prms = element.Params;
       RenderParams_(prms);
-    }
-
-    if (isSomethingSelected) {
-      foreach (var element in this.transparentElements_) {
-        var prms = element.Params;
-        if (prms.IsSelected || this.selectedNode_ == prms.Node.Definition) {
-          GlUtil.RenderHighlight(() => RenderParams_(prms));
-        }
-      }
     }
 
     if (this.selectedBone_ != null) {
