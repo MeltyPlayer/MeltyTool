@@ -99,7 +99,13 @@ public sealed partial class ModelRenderer : IDynamicModelRenderer {
 
   public void UpdateBuffer() => this.impl_.UpdateBuffer();
   public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
-    => this.impl_?.UpdateBuffer(morphTarget);
+    => this.impl_.UpdateBuffer(morphTarget);
+
+  public void UpdateBuffer(
+    IReadOnlyMorphTarget fromMorphTarget,
+    IReadOnlyMorphTarget toMorphTarget,
+    float fraction)
+    => this.impl_.UpdateBuffer(fromMorphTarget, toMorphTarget, fraction);
 
   public void Render() {
     this.UpdateMatricesUbo();

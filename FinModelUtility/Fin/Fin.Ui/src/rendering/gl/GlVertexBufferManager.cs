@@ -13,6 +13,10 @@ public partial interface IGlBufferManager : IDisposable {
 public interface IDynamicGlBufferManager : IGlBufferManager {
   void UpdateBuffer();
   void UpdateBuffer(IReadOnlyMorphTarget morphTarget);
+  void UpdateBuffer(
+    IReadOnlyMorphTarget fromMorphTarget,
+    IReadOnlyMorphTarget toMorphTarget,
+    float fraction);
 }
 
 public sealed partial class GlVertexBufferManager : IDynamicGlBufferManager {
@@ -73,4 +77,10 @@ public sealed partial class GlVertexBufferManager : IDynamicGlBufferManager {
 
   public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
     => this.vao_.UpdateBuffer(morphTarget);
+
+  public void UpdateBuffer(
+    IReadOnlyMorphTarget fromMorphTarget,
+    IReadOnlyMorphTarget toMorphTarget,
+    float fraction)
+    => this.vao_.UpdateBuffer(fromMorphTarget, toMorphTarget, fraction);
 }

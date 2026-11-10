@@ -21,6 +21,11 @@ public interface IModelRenderer : IRenderable {
 public interface IDynamicModelRenderer : IModelRenderer {
   void UpdateBuffer();
   void UpdateBuffer(IReadOnlyMorphTarget morphTarget);
+
+  void UpdateBuffer(
+    IReadOnlyMorphTarget fromMorphTarget,
+    IReadOnlyMorphTarget toMorphTarget,
+    float fraction);
 }
 
 public interface IMaterialRenderer : IRenderable {

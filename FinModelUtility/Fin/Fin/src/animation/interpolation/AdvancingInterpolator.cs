@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using fin.animation.keyframes;
@@ -19,7 +20,6 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
 
   private KeyframesUtil.InterpolationDataType interpolationDataType_;
   private TKeyframe? precedingKeyframe_;
-  private int precedingKeyframeI_;
   private TKeyframe? followingKeyframe_;
   private float normalizedFrame_;
   private readonly ISharedInterpolationConfig sharedConfig_;
@@ -85,27 +85,30 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
         out value);
   }
 
-  [MethodImpl(MethodImplOptions.AggressiveInlining)]
-  public bool TryToGetPrecedingKeyframe(
-      float frame,
-      out TKeyframe keyframe,
-      out int keyframeIndex,
-      out float normalizedFrame) {
+  public KeyframesUtil.InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
+    float frame,
+    out TKeyframe precedingKeyframe,
+    out TKeyframe followingKeyframe) {
     this.UpdateKeyframeMetadata_(frame);
-    keyframe = this.precedingKeyframe_;
-    keyframeIndex = this.precedingKeyframeI_;
-    normalizedFrame = this.normalizedFrame_;
-    return this.interpolationDataType_ is not KeyframesUtil.InterpolationDataType.NONE;
+    precedingKeyframe = this.precedingKeyframe_;
+    followingKeyframe = this.followingKeyframe_;
+    return this.interpolationDataType_;
   }
 
   public KeyframesUtil.InterpolationDataType TryGetPrecedingAndFollowingKeyframes(
       float frame,
       out TKeyframe precedingKeyframe,
-      out TKeyframe followingKeyframe) {
-    this.UpdateKeyframeMetadata_(frame);
-    precedingKeyframe = this.precedingKeyframe_;
-    followingKeyframe = this.followingKeyframe_;
-    return this.interpolationDataType_;
+      out TKeyframe followingKeyframe,
+      out float fraction) {
+    var returnValue = this.TryGetPrecedingAndFollowingKeyframes(
+      frame,
+      out precedingKeyframe,
+      out followingKeyframe);
+    fraction
+      = ((this.normalizedFrame_ - (precedingKeyframe?.Frame ?? 0)) /
+         ((this.followingKeyframe_?.Frame ?? 0) - (this.precedingKeyframe_?.Frame ?? 0)))
+      .Clamp(0, 1);
+    return returnValue;
   }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -115,13 +118,10 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
             out this.precedingKeyframe_,
             out var precedingKeyframeIndex,
             out this.normalizedFrame_)) {
-      this.precedingKeyframeI_ = precedingKeyframeIndex;
-
       if (this.sharedConfig_.Looping) {
         // TODO: Should it be allowed to loop into itself?
         if (this.keyframes_.Count == 1) {
           this.precedingKeyframe_ = this.keyframes_[0];
-          this.precedingKeyframeI_ = 0;
           this.followingKeyframe_ = null;
           this.interpolationDataType_ = KeyframesUtil.InterpolationDataType.PRECEDING_ONLY;
           return;
@@ -129,7 +129,6 @@ public sealed class AdvancingInterpolator<T, TKeyframe>
 
         if (this.keyframes_.Count > 1) {
           this.precedingKeyframe_ = this.keyframes_[^1];
-          this.precedingKeyframeI_ = this.keyframes_.Count - 1;
           this.followingKeyframe_ = this.keyframes_[0];
           this.interpolationDataType_
               = KeyframesUtil.InterpolationDataType.PRECEDING_AND_FOLLOWING;

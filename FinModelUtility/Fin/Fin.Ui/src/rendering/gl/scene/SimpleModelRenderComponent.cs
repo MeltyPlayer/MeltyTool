@@ -2,6 +2,7 @@
 using fin.animation.interpolation;
 using fin.config;
 using fin.math;
+using fin.math.floats;
 using fin.model;
 using fin.model.skeleton;
 using fin.model.skeleton.boneTransformViews;
@@ -22,10 +23,11 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   private (IReadOnlyMesh, IAdvancingInterpolator<MeshDisplayState>)[]
       meshDisplayStateTuples_ = [];
 
-  private IAdvancingInterpolator<IReadOnlyMorphTarget>?
+  private StairStepAdvancingInterpolator<IReadOnlyMorphTarget>?
       morphTargetInterpolator_;
 
-  private IReadOnlyMorphTarget? appliedMorphTarget_;
+  private (IReadOnlyMorphTarget fromMorphTarget, IReadOnlyMorphTarget
+    toMorphTarget, float fraction) appliedMorphTarget_;
 
   private bool needsToAlwaysUpdateMatrices_;
 
@@ -176,17 +178,30 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
   }
 
   private void ApplyMorphFrame_(float frame) {
-    IReadOnlyMorphTarget? morphTarget = null;
-    this.morphTargetInterpolator_?.TryGetAtFrame(
+    IReadOnlyMorphTarget? fromMorphTarget = null;
+    IReadOnlyMorphTarget? toMorphTarget = null;
+    float fraction = 0;
+    this.morphTargetInterpolator_?.TryGetPrecedingAndFollowingValues(
         frame,
-        out morphTarget);
-    morphTarget ??= this.Model.AnimationManager.DefaultMorphTarget;
+        out fromMorphTarget,
+        out toMorphTarget,
+        out fraction);
+    fromMorphTarget ??= this.Model.AnimationManager.DefaultMorphTarget;
 
-    if (this.appliedMorphTarget_ == morphTarget) {
+    if (this.appliedMorphTarget_.fromMorphTarget == fromMorphTarget &&
+        this.appliedMorphTarget_.toMorphTarget == toMorphTarget &&
+        this.appliedMorphTarget_.fraction.IsRoughly(fraction)) {
       return;
     }
 
-    (this.modelRenderer_ as IDynamicModelRenderer)?.UpdateBuffer(morphTarget);
+    if (toMorphTarget == null) {
+      (this.modelRenderer_ as IDynamicModelRenderer)?.UpdateBuffer(fromMorphTarget);
+    } else {
+      (this.modelRenderer_ as IDynamicModelRenderer)?.UpdateBuffer(
+        fromMorphTarget,
+        toMorphTarget,
+        fraction);
+    }
   }
 
   public void Render(ISceneNodeInstance _) => this.Render();
@@ -235,7 +250,8 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
             .ToArray() ??
             [];
       this.morphTargetInterpolator_
-          = value?.MorphTrack?.Keyframes.GetAdvancingInterpolator();
+        = value?.MorphTrack?.Keyframes.GetAdvancingInterpolator() as
+          StairStepAdvancingInterpolator<IReadOnlyMorphTarget>;
     }
   }
 

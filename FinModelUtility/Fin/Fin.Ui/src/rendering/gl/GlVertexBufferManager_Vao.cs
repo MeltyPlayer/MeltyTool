@@ -218,6 +218,82 @@ public sealed partial class GlVertexBufferManager {
       this.PassInData_(numBones);
     }
 
+    public void UpdateBuffer(
+      IReadOnlyMorphTarget fromMorphTarget,
+      IReadOnlyMorphTarget toMorphTarget,
+      float fraction) {
+      var boneTransformManager = new BoneTransformManager();
+      boneTransformManager.CalculateStaticMatricesForRendering(this.model_);
+
+      var fromPositionMorphs = fromMorphTarget.PositionMorphs;
+      var fromNormalMorphs = fromMorphTarget.NormalMorphs;
+
+      var toPositionMorphs = toMorphTarget.PositionMorphs;
+      var toNormalMorphs = toMorphTarget.NormalMorphs;
+
+      if (!this.modelRequirements_.HasNormals) {
+        for (var i = 0; i < this.vertices_.Count; ++i) {
+          var vertex = this.vertices_[i];
+
+          if (!fromPositionMorphs.TryGetValue(vertex, out var fromPosition)) {
+            fromPosition = vertex.LocalPosition;
+          }
+          if (!toPositionMorphs.TryGetValue(vertex, out var toPosition)) {
+            toPosition = vertex.LocalPosition;
+          }
+
+          var finTransformMatrix
+            = boneTransformManager.GetTransformMatrix(vertex);
+          if (finTransformMatrix != null) {
+            var transformMatrix = finTransformMatrix.Impl;
+            ProjectionUtil.ProjectPosition(transformMatrix, ref fromPosition);
+            ProjectionUtil.ProjectPosition(transformMatrix, ref toPosition);
+          }
+
+          this.positionData_[i] = Vector3.Lerp(fromPosition, toPosition, fraction);
+        }
+      } else {
+        for (var i = 0; i < this.vertices_.Count; ++i) {
+          var vertex = this.vertices_[i];
+
+          if (!fromPositionMorphs.TryGetValue(vertex, out var fromPosition)) {
+            fromPosition = vertex.LocalPosition;
+          }
+          if (!toPositionMorphs.TryGetValue(vertex, out var toPosition)) {
+            toPosition = vertex.LocalPosition;
+          }
+          
+          if (!fromNormalMorphs.TryGetValue(vertex, out var fromNormal)) {
+            this.vertexAccessor_.Target(vertex);
+            fromNormal = this.vertexAccessor_.LocalNormal.GetValueOrDefault();
+          }
+          if (!toNormalMorphs.TryGetValue(vertex, out var toNormal)) {
+            this.vertexAccessor_.Target(vertex);
+            toNormal = this.vertexAccessor_.LocalNormal.GetValueOrDefault();
+          }
+
+          var finTransformMatrix
+            = boneTransformManager.GetTransformMatrix(vertex);
+          if (finTransformMatrix != null) {
+            var transformMatrix = finTransformMatrix.Impl;
+            ProjectionUtil.ProjectPosition(transformMatrix, ref fromPosition);
+            ProjectionUtil.ProjectPosition(transformMatrix, ref toPosition);
+            ProjectionUtil.ProjectNormal(transformMatrix, ref fromNormal);
+            ProjectionUtil.ProjectNormal(transformMatrix, ref toNormal);
+          }
+
+          this.positionData_[i] = Vector3.Lerp(fromPosition, toPosition, fraction);
+          this.normalData_[i]
+            = Vector3.Normalize(Vector3.Lerp(fromNormal, toNormal, fraction));
+
+          // TODO: Support tangent morphs...
+        }
+      }
+
+      this.PopulateNonPositionData_(out var numBones);
+      this.PassInData_(numBones);
+    }
+
     private void PopulateNonPositionData_(out int numBones) {
       numBones = (int) this.modelRequirements_.NumBones;
       for (var i = 0; i < this.vertices_.Count; ++i) {

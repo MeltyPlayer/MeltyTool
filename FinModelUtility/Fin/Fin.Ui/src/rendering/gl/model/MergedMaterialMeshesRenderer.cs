@@ -93,6 +93,15 @@ public partial class ModelRenderer {
     public void UpdateBuffer(IReadOnlyMorphTarget morphTarget)
       => this.dynamicBufferManager_?.UpdateBuffer(morphTarget);
 
+    public void UpdateBuffer(
+      IReadOnlyMorphTarget fromMorphTarget,
+      IReadOnlyMorphTarget toMorphTarget,
+      float fraction)
+      => this.dynamicBufferManager_.UpdateBuffer(
+        fromMorphTarget,
+        toMorphTarget,
+        fraction);
+
     public void UpdateMatricesUbo() { }
     public void BindMatricesUbo() { }
 
