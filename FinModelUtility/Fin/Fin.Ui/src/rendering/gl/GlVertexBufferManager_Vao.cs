@@ -195,7 +195,7 @@ public sealed partial class GlVertexBufferManager {
             position = vertex.LocalPosition;
           }
           if (!normalMorphs.TryGetValue(vertex, out var normal)) {
-            this.vertexAccessor_.Target(this.vertices_[i]);
+            this.vertexAccessor_.Target(vertex);
             normal = this.vertexAccessor_.LocalNormal.GetValueOrDefault();
           }
 

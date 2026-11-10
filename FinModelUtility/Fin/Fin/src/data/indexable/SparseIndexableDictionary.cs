@@ -116,4 +116,10 @@ public sealed class SparseIndexableDictionary<TIndexable, TValue>(int capacity)
     => this.impl_.Where(pair => pair.hasValue)
            .Select(pair => pair.value)
            .GetEnumerator();
+
+  public SparseIndexableDictionary<TIndexable, TValue> Clone() {
+    var copy = new SparseIndexableDictionary<TIndexable, TValue>(this.impl_.Capacity);
+    copy.impl_.AddRange(this.impl_);
+    return copy;
+  }
 }

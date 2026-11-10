@@ -17,7 +17,7 @@ public partial interface IAnimationManager {
   void RemoveAnimation(IModelAnimation animation);
 
   new IReadOnlyList<IMorphTarget> MorphTargets { get; }
-  IReadOnlyMorphTarget DefaultMorph { get; }
+  IReadOnlyMorphTarget DefaultMorphTarget { get; }
   IMorphTarget AddMorphTarget();
 }
 
@@ -33,6 +33,9 @@ public partial interface IMorphTarget : INamed {
 
   IMorphTarget SetNewLocalPosition(IReadOnlyVertex vertex, Vector3 position);
   IMorphTarget SetNewLocalNormal(IReadOnlyVertex vertex, Vector3 normal);
+
+  [Const]
+  [KeepMutableType] IMorphTarget Clone();
 }
 
 [GenerateReadOnly]

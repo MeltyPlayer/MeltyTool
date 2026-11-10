@@ -180,7 +180,7 @@ public sealed class SimpleModelRenderComponent : IModelRenderComponent {
     this.morphTargetInterpolator_?.TryGetAtFrame(
         frame,
         out morphTarget);
-    morphTarget ??= this.Model.AnimationManager.DefaultMorph;
+    morphTarget ??= this.Model.AnimationManager.DefaultMorphTarget;
 
     if (this.appliedMorphTarget_ == morphTarget) {
       return;
