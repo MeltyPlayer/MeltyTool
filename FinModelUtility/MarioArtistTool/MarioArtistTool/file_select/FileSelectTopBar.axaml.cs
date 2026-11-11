@@ -226,7 +226,7 @@ public partial class FileSelectTopBar : UserControl {
 
     var isClickedSubject = new BehaviorSubject<bool>(false);
 
-    var currentBitmap =
+    var currentBitmapObservable =
         Observable.CombineLatest(isClickedSubject,
                                  isEnabledObservable,
                                  isFocusedObservable,
@@ -254,8 +254,8 @@ public partial class FileSelectTopBar : UserControl {
                     }
 
                     return new LoopingObservable<Bitmap>(.1f, hoverBitmaps);
-                  })
-                  .Switch();
+                  });
+    var currentBitmap = Observable.Switch(currentBitmapObservable);
     icon.Bind(Image.SourceProperty, currentBitmap);
 
     button.Click += async (_, _) => {
