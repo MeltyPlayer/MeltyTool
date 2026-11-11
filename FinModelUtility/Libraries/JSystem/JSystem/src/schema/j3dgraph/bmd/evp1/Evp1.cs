@@ -27,7 +27,7 @@ public sealed partial class Evp1Data : IBinaryConvertible {
   private ushort envelopeCount_;
   private readonly ushort padding_ = ushort.MaxValue;
 
-  [WPointerTo(nameof(envelopeSizes_))]
+  [WPointerToOrNull(nameof(envelopeSizes_))]
   private uint envelopeSizeOffset_;
 
   [WPointerTo(nameof(envelopeIndices_))]

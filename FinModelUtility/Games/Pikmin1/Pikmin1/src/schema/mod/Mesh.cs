@@ -17,10 +17,12 @@ namespace pikmin1.schema.mod {
     public ModCullMode CullMode { get; set; }
 
     // THANKS: Yoshi2's mod2obj
-    public uint cmdCount = 0;
+    private uint cmdCount;
 
+    private uint dlistSize_;
+    
     [AlignStart(0x20)]
-    [SequenceLengthSource(SchemaIntegerType.INT32)]
+    [RSequenceLengthSource(nameof(dlistSize_))]
     public byte[] dlistData { get; set; }
   }
 
