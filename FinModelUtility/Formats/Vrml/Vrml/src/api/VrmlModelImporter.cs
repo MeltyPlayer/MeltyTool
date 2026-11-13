@@ -55,14 +55,10 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
       IVrmlFileBundle fileBundle,
       HashSet<IReadOnlyStandaloneFile> fileSet) {
     var task = Task.Run(() => {
-      HeadlessGl.MakeCurrent();
-      FreeTypeFontUtil.InitIfNeeded();
-
-      var model = ImportImpl_(vrmlScene, definitions, fileBundle, fileSet);
-
-      HeadlessGl.Release();
-
-      return model;
+      return HeadlessGl.UseForBlock(() => {
+        FreeTypeFontUtil.InitIfNeeded();
+        return ImportImpl_(vrmlScene, definitions, fileBundle, fileSet);
+      });
     });
 
     return task.Result;
@@ -164,6 +160,10 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
 
     var charsByFont = new SetDictionary<(Family family, Style style), char>();
     foreach (var textNode in textNodes) {
+      if (textNode.String.Count == 0) {
+        continue;
+      }
+
       var fontStyleNode = textNode.FontStyle;
       charsByFont.Add((fontStyleNode.Family, fontStyleNode.Style),
                       textNode.String.SelectMany(s => s));
@@ -174,14 +174,15 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
       var baseFontName = family switch {
         Family.SANS => "OpenSans",
         Family.SERIF => "Merriweather",
+        Family.TYPEWRITER => "CourierPrime",
         _ => throw new ArgumentOutOfRangeException()
       };
 
       var styleText = style switch {
-        Style.BOLD => "Bold",
-        Style.BOLD_ITALIC => "BoldItalic",
-        Style.ITALIC => "Italic",
-        Style.PLAIN => "Regular",
+        Style.BOLD                   => "Bold",
+        Style.BOLD_ITALIC            => "BoldItalic",
+        Style.ITALIC                 => "Italic",
+        Style.PLAIN or Style.REGULAR => "Regular",
       };
 
       var fontFile = CommonFiles.COMMON_DIRECTORY.AssertGetExistingFile(
@@ -426,6 +427,11 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
             var geometry = shapeNode.Geometry;
             var hasVertexColor
                 = (shapeNode.Geometry as IndexedFaceSetNode)?.Color != null;
+
+            if (shapeNode.Appearance == null) {
+              ;
+            }
+
             var finMaterial = lazyMaterialDictionary[
                 (shapeNode.Appearance.Material,
                  shapeNode.Appearance.Texture != null

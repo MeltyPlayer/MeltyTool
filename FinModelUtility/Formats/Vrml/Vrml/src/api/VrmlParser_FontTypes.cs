@@ -68,6 +68,7 @@ public partial class VrmlParser {
         "BOLDITALIC" => Style.BOLD_ITALIC,
         "ITALIC"     => Style.ITALIC,
         "PLAIN"      => Style.PLAIN,
+        "REGULAR"    => Style.REGULAR,
         _            => throw new ArgumentOutOfRangeException()
     };
 }

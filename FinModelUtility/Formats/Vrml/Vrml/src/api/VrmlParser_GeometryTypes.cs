@@ -128,7 +128,7 @@ public partial class VrmlParser {
   private static TextNode ReadTextNode_(
       ITextReader tr,
       IDictionary<string, INode> definitions) {
-    IReadOnlyList<string> @string = null!;
+    IReadOnlyList<string> @string = [];
     IEnumerable<float> length = null;
     FontStyleNode fontStyle = new FontStyleNode();
 

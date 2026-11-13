@@ -596,9 +596,13 @@ public partial class VrmlParser {
   private static void ReadArray_(ITextReader tr,
                                  Action<ITextReader> lineHandler) {
     tr.SkipWhitespace();
-    tr.AssertChar('[');
 
-    var arrayText = tr.ReadUpToAndPastTerminator(']');
+    string arrayText;
+    if (tr.Matches('[')) {
+      arrayText = tr.ReadUpToAndPastTerminator(']');
+    } else {
+      arrayText = tr.ReadLine();
+    }
 
     var subTr = new SchemaTextReader(arrayText);
 

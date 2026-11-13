@@ -18,6 +18,7 @@ public enum Style {
   BOLD_ITALIC,
   ITALIC,
   PLAIN,
+  REGULAR,
 }
 
 public record FontStyleNode : BNode {

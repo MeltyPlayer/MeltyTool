@@ -39,4 +39,14 @@ public static class HeadlessGl {
   }
 
   public static void Release() => GlUtil.SwitchContext(null);
+
+  public static T UseForBlock<T>(Func<T> handler) {
+    MakeCurrent();
+
+    try {
+      return handler();
+    } finally {
+      Release();
+    }
+  }
 }
