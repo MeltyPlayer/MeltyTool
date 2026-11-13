@@ -33,8 +33,6 @@ using QuickFont.Configuration;
 
 using vrml.schema;
 
-using GlUtil = fin.ui.rendering.gl.GlUtil;
-
 
 namespace vrml.api;
 
@@ -54,11 +52,9 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
       IReadOnlyDictionary<string, INode> definitions,
       IVrmlFileBundle fileBundle,
       HashSet<IReadOnlyStandaloneFile> fileSet) {
-    var task = Task.Run(() => {
-      return HeadlessGl.UseForBlock(() => {
-        FreeTypeFontUtil.InitIfNeeded();
-        return ImportImpl_(vrmlScene, definitions, fileBundle, fileSet);
-      });
+    var task = HeadlessGl.InvokeOnHeadlessGlThread(() => {
+      FreeTypeFontUtil.InitIfNeeded();
+      return ImportImpl_(vrmlScene, definitions, fileBundle, fileSet);
     });
 
     return task.Result;
@@ -425,12 +421,12 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
           }
         case IShapeNode shapeNode: {
             var geometry = shapeNode.Geometry;
+            if (geometry is TextNode { String: { Count: 0 } }) {
+              continue;
+            }
+
             var hasVertexColor
                 = (shapeNode.Geometry as IndexedFaceSetNode)?.Color != null;
-
-            if (shapeNode.Appearance == null) {
-              ;
-            }
 
             var finMaterial = lazyMaterialDictionary[
                 (shapeNode.Appearance.Material,

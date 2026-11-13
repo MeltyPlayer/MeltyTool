@@ -21,12 +21,8 @@ public static partial class GlUtil {
     }
 
     currentState_ = state;
-    if (context != null) {
-      if (context is { IsCurrent: false }) {
-        context.MakeCurrent();
-      }
-    } else {
-      GLFW.MakeContextCurrent(null);
+    if (context is { IsCurrent: false }) {
+      context.MakeCurrent();
     }
   }
 
