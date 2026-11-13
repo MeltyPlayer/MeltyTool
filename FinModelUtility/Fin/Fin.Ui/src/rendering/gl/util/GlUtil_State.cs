@@ -2,6 +2,7 @@
 using fin.model;
 
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
 
 namespace fin.ui.rendering.gl;
 
@@ -14,14 +15,18 @@ public static partial class GlUtil {
 
   private static GlState currentState_;
 
-  public static void SwitchContext(IGraphicsContext? context) {
+  public static unsafe void SwitchContext(IGraphicsContext? context) {
     if (!stateByKey_.TryGetValue(context, out var state)) {
       stateByKey_.Add(context, state = new GlState());
     }
 
     currentState_ = state;
-    if (context is { IsCurrent: false }) {
-      context.MakeCurrent();
+    if (context != null) {
+      if (context is { IsCurrent: false }) {
+        context.MakeCurrent();
+      }
+    } else {
+      GLFW.MakeContextCurrent(null);
     }
   }
 

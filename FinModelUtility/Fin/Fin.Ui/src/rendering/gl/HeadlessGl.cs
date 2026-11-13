@@ -34,8 +34,9 @@ public static class HeadlessGl {
   public static void MakeCurrent() {
     InitIfNull_();
 
-    GlUtil.SwitchContext(headlessWindow_);
-    headlessWindow_.MakeCurrent();
+    GlUtil.SwitchContext(headlessWindow_?.Context);
     GlUtil.InitGl();
   }
+
+  public static void Release() => GlUtil.SwitchContext(null);
 }

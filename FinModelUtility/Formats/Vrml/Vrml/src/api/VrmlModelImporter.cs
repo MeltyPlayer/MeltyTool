@@ -33,6 +33,8 @@ using QuickFont.Configuration;
 
 using vrml.schema;
 
+using GlUtil = fin.ui.rendering.gl.GlUtil;
+
 
 namespace vrml.api;
 
@@ -47,10 +49,30 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
     return Import(vrmlScene, definitions, fileBundle, fileSet);
   }
 
-  public static IModel Import(IGroupNode vrmlScene,
-                              IReadOnlyDictionary<string, INode> definitions,
-                              IVrmlFileBundle fileBundle,
-                              HashSet<IReadOnlyStandaloneFile> fileSet) {
+  public static IModel Import(
+      IGroupNode vrmlScene,
+      IReadOnlyDictionary<string, INode> definitions,
+      IVrmlFileBundle fileBundle,
+      HashSet<IReadOnlyStandaloneFile> fileSet) {
+    var task = Task.Run(() => {
+      HeadlessGl.MakeCurrent();
+      FreeTypeFontUtil.InitIfNeeded();
+
+      var model = ImportImpl_(vrmlScene, definitions, fileBundle, fileSet);
+
+      HeadlessGl.Release();
+
+      return model;
+    });
+
+    return task.Result;
+  }
+
+  public static IModel ImportImpl_(
+      IGroupNode vrmlScene,
+      IReadOnlyDictionary<string, INode> definitions,
+      IVrmlFileBundle fileBundle,
+      HashSet<IReadOnlyStandaloneFile> fileSet) {
     var orientationInterpolatorNodes = new HashSet<OrientationInterpolatorNode>();
     var positionInterpolatorNodes = new HashSet<PositionInterpolatorNode>();
     var routeNodes = new HashSet<RouteNode>();
@@ -137,9 +159,6 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
 
               return finTexture;
             });
-
-    HeadlessGl.MakeCurrent();
-    FreeTypeFontUtil.InitIfNeeded();
 
     var fontSize = 72f;
 
