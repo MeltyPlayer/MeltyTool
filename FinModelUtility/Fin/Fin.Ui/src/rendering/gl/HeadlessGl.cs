@@ -10,25 +10,36 @@ public static class HeadlessGl {
   private static readonly DedicatedBackgroundWorker BACKGROUND_WORKER_ = new();
   private static GameWindow? headlessWindow_;
 
-  public static void MakeCurrent() {
-    InitIfNull_();
+  public static Task InvokeOnHeadlessGlThread(Action handler) {
+    return BACKGROUND_WORKER_.EnqueueWorkAsync(() => {
+      try {
+        MakeCurrent_();
+        handler();
+      } finally {
+        MakeNoneCurrent_();
+      }
 
-    GlUtil.SwitchContext(headlessWindow_?.Context);
-    GlUtil.InitGl();
+      return BACKGROUND_WORKER_;
+    });
   }
-
-  private static readonly Lock LOCK_ = new();
 
   public static Task<T> InvokeOnHeadlessGlThread<T>(Func<T> handler)
       where T : class {
     return BACKGROUND_WORKER_.EnqueueWorkAsync(() => {
       try {
-        MakeCurrent();
+        MakeCurrent_();
         return handler();
       } finally {
-        headlessWindow_.Context.MakeNoneCurrent();
+        MakeNoneCurrent_();
       }
     });
+  }
+
+  private static void MakeCurrent_() {
+    InitIfNull_();
+
+    GlUtil.SwitchContext(headlessWindow_?.Context);
+    GlUtil.InitGl();
   }
 
   private static void InitIfNull_() {
@@ -54,4 +65,7 @@ public static class HeadlessGl {
         GameWindowSettings.Default,
         headlessWindowSettings);
   }
+
+  private static void MakeNoneCurrent_()
+    => headlessWindow_?.Context.MakeNoneCurrent();
 }

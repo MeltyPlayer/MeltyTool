@@ -14,13 +14,14 @@ namespace vrml;
 public sealed class VrmlModelGoldenTests
     : BModelGoldenTests<VrmlModelFileBundle> {
   [OneTimeSetUp]
-  public void OneTimeSetUp() {
-    // Initialize plugin
-    TestingGl.InitOneTimeSetup();
-    FreeTypeFontUtil.InitIfNeeded();
-    // Initialize shared state
-    var _ = new QFontDrawing();
-  }
+  public Task OneTimeSetUp()
+    => HeadlessGl.InvokeOnHeadlessGlThread(() => {
+      // Initialize plugin
+      TestingGl.InitOneTimeSetup();
+      FreeTypeFontUtil.InitIfNeeded();
+      // Initialize shared state
+      _ = new QFontDrawing();
+    });
 
   [Test]
   [TestCaseSource(nameof(GetGoldenDirectories_))]
