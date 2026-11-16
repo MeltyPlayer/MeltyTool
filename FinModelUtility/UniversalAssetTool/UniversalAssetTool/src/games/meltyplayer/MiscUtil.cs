@@ -1,6 +1,7 @@
 ﻿using fin.io;
 using fin.io.bundles;
 using fin.model;
+using fin.model.io.importers.assimp;
 using fin.model.io.importers.gltf;
 
 using gm.api;
@@ -34,6 +35,12 @@ public static class MiscUtil {
               texture.WrapModeU = texture.WrapModeV = WrapMode.REPEAT;
             }
           }
+      });
+    }
+
+    foreach (var assimpFile in rootDir.FilesWithExtensions(".obj", ".3ds")) {
+      organizer.Add(new AssimpModelFileBundle {
+          MainFile = assimpFile
       });
     }
   }

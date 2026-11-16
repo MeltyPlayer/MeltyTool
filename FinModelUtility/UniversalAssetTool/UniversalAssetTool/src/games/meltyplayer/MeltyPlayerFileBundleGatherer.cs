@@ -18,9 +18,13 @@ public sealed class MeltyPlayerFileBundleGatherer : BPrereqsFileBundleGatherer {
     new FileBundleGathererAccumulatorWithInput<IFileHierarchy>(
             fileHierarchy)
         .Add(_ => {
-          Earthbound3dUtil.GatherFileBundlesFromHierarchy(
-              organizer,
-              fileHierarchy.Root.AssertGetExistingSubdir("earthbound_3d"));
+          if (fileHierarchy.Root.TryToGetExistingSubdir(
+                  "earthbound_3d",
+                  out var earthbound3dDir)) {
+            Earthbound3dUtil.GatherFileBundlesFromHierarchy(
+                organizer,
+                earthbound3dDir);
+          }
         })
         .Add(_ => {
           MiscUtil.GatherFileBundlesFromHierarchy(
