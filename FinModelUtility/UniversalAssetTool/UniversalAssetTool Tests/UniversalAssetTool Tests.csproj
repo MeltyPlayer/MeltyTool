@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TestableIO.System.IO.Abstractions.TestingHelpers" Version="23.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\Fin\Fin\Fin.csproj" />
     <ProjectReference Include="..\UniversalAssetTool\UniversalAssetTool.csproj" />
   </ItemGroup>
