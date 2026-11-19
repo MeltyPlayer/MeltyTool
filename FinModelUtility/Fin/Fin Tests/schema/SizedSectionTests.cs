@@ -9,6 +9,8 @@ using NUnit.Framework;
 using schema.binary;
 using schema.binary.testing;
 
+using CollectionAssert = NUnit.Framework.CollectionAssert;
+
 namespace fin.schema;
 
 internal partial class SizedSectionTests {

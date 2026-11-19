@@ -23,10 +23,10 @@
     <PackageReference Include="AvaloniaUIRibbon" Version="1.1.0-beta" />
     <PackageReference Include="ConfigFactory" Version="0.6.0" />
     <PackageReference Include="ConfigFactory.Avalonia" Version="0.6.0" />
-    <PackageReference Include="Optris.LoadingIndicators.Avalonia" Version="12.0.4" />
-    <PackageReference Include="MessageBox.Avalonia" Version="12.0.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
-    <PackageReference Include="OxyPlot.Avalonia" Version="2.1.0" />
+    <PackageReference Include="Optris.LoadingIndicators.Avalonia" Version="12.1.0" />
+    <PackageReference Include="MessageBox.Avalonia" Version="12.1.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.12.0" />
+    <PackageReference Include="OxyPlot.Avalonia" Version="2.2.0" />
     <PackageReference Include="ObservableCollections" Version="3.3.4" />
     <PackageReference Include="TextMateSharp" Version="2.0.5" />
     <PackageReference Include="TextMateSharp.Grammars" Version="2.0.5" />

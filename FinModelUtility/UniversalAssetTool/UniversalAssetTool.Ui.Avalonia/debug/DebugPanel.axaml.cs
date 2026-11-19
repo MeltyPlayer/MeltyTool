@@ -8,6 +8,7 @@ using fin.ui.avalonia.util;
 using fin.ui.rendering;
 
 using ReactiveUI;
+using ReactiveUI.Binding;
 
 namespace uni.ui.avalonia.debug;
 

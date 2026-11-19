@@ -1,8 +1,6 @@
 ﻿using System.Globalization;
 
 using CsvHelper;
-using CsvHelper.Configuration;
-using CsvHelper.Configuration.Attributes;
 
 using fin.archives;
 using fin.io;
@@ -27,11 +25,9 @@ public sealed class Hm64FileTableImporter(
       out Stream readStream) {
     baseStream = readStream = bundle.MainFile.OpenRead();
 
-    using var mapAddressesCsv = new CsvReader(
-        mapAddressesFile.OpenReadAsText(),
-        new CsvConfiguration(CultureInfo.InvariantCulture) {
-            HasHeaderRecord = false,
-        });
+    using var mapAddressesCsv = CsvReader.FromText(
+        mapAddressesFile.ReadAllText(),
+        new CsvReaderOptions { HasHeader = false });
     var mapDatas = mapAddressesCsv
                    .GetRecords<MapData>()
                    .Select(mapData => {
@@ -58,10 +54,7 @@ public sealed class Hm64FileTableImporter(
   }
 
   public sealed class MapData {
-    [Index(0)]
     public string OffsetHex { get; set; }
-
-    [Index(1)]
     public string Name { get; set; }
   }
 }

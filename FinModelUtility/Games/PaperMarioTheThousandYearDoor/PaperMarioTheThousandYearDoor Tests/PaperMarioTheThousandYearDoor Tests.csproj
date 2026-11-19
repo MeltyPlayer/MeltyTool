@@ -16,8 +16,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="NUnit.Analyzers" Version="4.14.0" />
-    <PackageReference Update="NUnit3TestAdapter" Version="6.2.0" />
+    <PackageReference Update="coverlet.msbuild" Version="10.1.1" />
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="18.12.0" />
+    <PackageReference Update="NUnit" Version="5.0.0" />
+    <PackageReference Update="NUnit.Analyzers" Version="4.15.0" />
+    <PackageReference Update="NUnit3TestAdapter" Version="6.3.1" />
   </ItemGroup>
 
 </Project>
