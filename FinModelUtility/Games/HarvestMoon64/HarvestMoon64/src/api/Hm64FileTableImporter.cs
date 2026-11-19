@@ -14,7 +14,7 @@ public sealed record Hm64RomFileBundle(IReadOnlyTreeFile MainFile)
 ///   Shamelessly stolen from:
 ///   https://github.com/harvestwhisperer/hm64-decomp/blob/58900b4b770b24e6982316c6e88d4d12b8eea84c/tools/modding/map/prep_blender.py
 /// </summary>
-public sealed class Hm64FileTableImporter(
+public sealed partial class Hm64FileTableImporter(
     IReadOnlyTreeFile mapAddressesFile)
     : BSimpleArchiveImporter<Hm64RomFileBundle> {
   protected override void BuildHierarchyAndGetFileStream(
@@ -53,8 +53,11 @@ public sealed class Hm64FileTableImporter(
     }
   }
 
-  public sealed class MapData {
+  [CsvRecord]
+  public sealed partial class MapData {
+    [CsvColumn(Index = 0)]
     public string OffsetHex { get; set; }
+    [CsvColumn(Index = 1)]
     public string Name { get; set; }
   }
 }
