@@ -193,24 +193,32 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
           });
     }
 
-    var lazyTextTextureDictionary = new LazyDictionary<TextNode, ITexture>(
-        textNode => {
-          var text = string.Join('\n', textNode.String);
+    // First, we queue up all of the draws.
+    var textNodesAndTextures = textNodes.Select(textNode => {
+      var text = string.Join('\n', textNode.String);
 
-          var fontAlignment = textNode.FontStyle.MajorJustify switch {
-            Justify.BEGIN or Justify.FIRST => QFontAlignment.LEFT,
-            Justify.MIDDLE => QFontAlignment.CENTRE,
-            Justify.END => QFontAlignment.RIGHT,
-          };
+      var fontAlignment = textNode.FontStyle.MajorJustify switch {
+          Justify.BEGIN or Justify.FIRST => QFontAlignment.LEFT,
+          Justify.MIDDLE                 => QFontAlignment.CENTRE,
+          Justify.END                    => QFontAlignment.RIGHT,
+      };
 
-          var fontStyleNode = textNode.FontStyle;
-          var qFont = fontDictionary[(fontStyleNode.Family, fontStyleNode.Style)];
-          using var glTextTexture
-              = new GlTextTexture(text, qFont, Color.White, fontAlignment);
-          var image = glTextTexture.ConvertToImage(true);
+      var fontStyleNode = textNode.FontStyle;
+      var qFont = fontDictionary[(fontStyleNode.Family, fontStyleNode.Style)];
+      var glTextTexture
+          = new GlTextTexture(text, qFont, Color.White, fontAlignment);
+
+      return (textNode, text, glTextTexture);
+    }).ToArray();
+
+    var textTextTextureDictionary = textNodesAndTextures.ToDictionary(
+        tuple => tuple.textNode,
+        tuple => {
+          var image = tuple.glTextTexture.ConvertToImage(true);
+          tuple.glTextTexture.Dispose();
 
           var finTexture = finModel.MaterialManager.CreateTexture(image);
-          finTexture.Name = text;
+          finTexture.Name = tuple.text;
 
           return finTexture;
         });
@@ -256,7 +264,7 @@ public sealed class VrmlModelImporter : IModelImporter<VrmlModelImporter, VrmlMo
                   }
                 }
               } else if (textNode != null) {
-                finTexture = lazyTextTextureDictionary[textNode];
+                finTexture = textTextTextureDictionary[textNode];
               }
 
               if (finTexture != null) {
