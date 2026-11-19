@@ -295,18 +295,18 @@ public sealed partial class GlVertexBufferManager {
     }
 
     private void PopulateNonPositionData_(out int numBones) {
+      var usedBoneIndexMap = this.model_.Skin.BonesUsedByVertices
+                                 .Select((bone, index) => (index, bone))
+                                 .ToDictionary(
+                                     pair => pair.bone,
+                                     pair => pair.index);
+
       numBones = (int) this.modelRequirements_.NumBones;
       for (var i = 0; i < this.vertices_.Count; ++i) {
         this.vertexAccessor_.Target(this.vertices_[i]);
         var vertex = this.vertexAccessor_;
 
         if (numBones > 0) {
-          var usedBoneIndexMap = this.model_.Skin.BonesUsedByVertices
-                                     .Select((bone, index) => (index, bone))
-                                     .ToDictionary(
-                                         pair => (IReadOnlyBone) pair.bone,
-                                         pair => pair.index);
-
           if ((vertex.BoneWeights?.Weights.Count ?? 0) == 0) {
             this.boneIdsData_[numBones * i] = 0;
             this.boneWeightsData_[numBones * i] = 1;
