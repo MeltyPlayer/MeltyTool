@@ -36,9 +36,7 @@ public sealed class StandardShaderSourceGlsl : IShaderSourceGlsl {
     this.animations_ = model.AnimationManager.Animations;
 
     var sb = new IndentedStringBuilder();
-    sb.AppendLine(
-        $"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
-    sb.AppendLine(GlslConstants.FLOAT_PRECISION);
+    sb.AppendLine(GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES);
     sb.AppendLine();
 
     this.hasColor_ = shaderRequirements.UsedColors.AnyTrue();

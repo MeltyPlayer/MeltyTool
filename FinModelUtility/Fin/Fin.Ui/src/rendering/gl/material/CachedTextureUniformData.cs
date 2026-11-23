@@ -20,7 +20,7 @@ public sealed class CachedTextureUniformData {
   public IReadOnlyTexture? FinTexture { get; }
   public IGlTexture FallbackGlTexture { get; }
 
-  public IShaderUniform<int> SamplerUniform { get; }
+  public IShaderUniform<long> SamplerUniform { get; }
   public IShaderUniform<Vector2> ClampMinUniform { get; }
   public IShaderUniform<Vector2> ClampMaxUniform { get; }
   public IShaderUniform<Matrix3x2> Transform2dUniform { get; }
@@ -43,10 +43,13 @@ public sealed class CachedTextureUniformData {
 
     this.needsStruct_ = finTexture.NeedsTextureShaderStruct(animations);
     if (!this.needsStruct_) {
-      this.SamplerUniform = shaderProgram.GetUniformInt($"{textureName}");
+      this.SamplerUniform = OpenGlFeatureService.SupportsBindlessTextures
+          ? shaderProgram.GetUniformSampler2d($"{textureName}")
+          : shaderProgram.GetUniformLong($"{textureName}");
     } else {
-      this.SamplerUniform =
-          shaderProgram.GetUniformInt($"{textureName}.sampler");
+      this.SamplerUniform = OpenGlFeatureService.SupportsBindlessTextures
+          ? shaderProgram.GetUniformSampler2d($"{textureName}.sampler")
+          : shaderProgram.GetUniformLong($"{textureName}.sampler");
       this.ClampMinUniform =
           shaderProgram.GetUniformVec2($"{textureName}.clampMin");
       this.ClampMaxUniform =
@@ -62,8 +65,15 @@ public sealed class CachedTextureUniformData {
     var glTexture = this.FinTexture != null
         ? this.textureSwapManager_.GetCurrentGlTexture(this.FinTexture)
         : this.FallbackGlTexture;
-    glTexture.Bind(this.TextureIndex);
-    this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);
+    if (OpenGlFeatureService.SupportsBindlessTextures &&
+        glTexture is GlTextureSamplerTuple tuple) {
+      tuple.TryToMakeHandleResident();
+      // TODO: Can we switch to maybe mark dirty here?
+      this.SamplerUniform.SetAndMarkDirty(tuple.Handle);
+    } else {
+      glTexture.Bind(this.TextureIndex);
+      this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);
+    }
 
     if (this.needsStruct_) {
       Vector2 clampMin = new(-10000);

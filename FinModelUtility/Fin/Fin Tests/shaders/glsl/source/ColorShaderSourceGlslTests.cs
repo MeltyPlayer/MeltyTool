@@ -17,8 +17,7 @@ public sealed class ColorShaderSourceGlslTests {
             WithNormals = false,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES}}
 
           uniform vec4 diffuseColor;
 
@@ -40,8 +39,7 @@ public sealed class ColorShaderSourceGlslTests {
             WithNormals = false,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES}}
 
           uniform vec4 diffuseColor;
 
@@ -60,8 +58,7 @@ public sealed class ColorShaderSourceGlslTests {
             WithColors = true,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES}}
 
           {{GlslUtil.LIGHT_HEADER}}
 

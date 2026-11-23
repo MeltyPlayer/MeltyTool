@@ -24,8 +24,7 @@ public sealed class NullShaderSourceGlslTests {
             WithUvs = withUvs,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           out vec4 fragColor;
 
@@ -52,8 +51,7 @@ public sealed class NullShaderSourceGlslTests {
             WithUvs = withUvs,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES}}
 
           out vec4 fragColor;
 

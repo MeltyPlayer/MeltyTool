@@ -19,8 +19,7 @@ public sealed class TextureShaderSourceGlslTests {
             WithUvs = true,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           uniform sampler2D diffuseTexture;
 
@@ -47,8 +46,7 @@ public sealed class TextureShaderSourceGlslTests {
             WithUvs = true,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           uniform sampler2D diffuseTexture;
 
@@ -75,8 +73,7 @@ public sealed class TextureShaderSourceGlslTests {
             WithUvs = true,
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           {{GlslUtil.LIGHT_HEADER}}
 

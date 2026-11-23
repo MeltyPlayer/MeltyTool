@@ -99,8 +99,7 @@ public sealed class SkyboxRenderer : ISkyboxRenderer {
           }
           """,
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES}}
 
           {{GlslUtil.GetMatricesHeaders(model)}}
 

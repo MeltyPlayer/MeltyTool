@@ -3,6 +3,8 @@
 using fin.data;
 using fin.model;
 
+using OpenTK.Graphics.OpenGL;
+
 using TextureMinFilter = fin.model.TextureMinFilter;
 
 namespace fin.ui.rendering.gl.texture;
@@ -20,15 +22,27 @@ public sealed class GlTextureSamplerTuple : IGlTexture {
               prms,
               GlTexture.FromParams(prms.TextureParams),
               GlSampler.FromParams(prms.SamplerParams)),
-          (_, glTextureSamplerTuple) => {
-            glTextureSamplerTuple.texture_.Dispose();
-            glTextureSamplerTuple.sampler_.Dispose();
-            glTextureSamplerTuple.IsDisposed = true;
+          (_, tuple) => {
+            var handle = tuple.Handle;
+            if (OpenGlFeatureService.SupportsBindlessTextures) {
+              if (tuple.isHandleResident_) {
+                tuple.Handle = UNDEFINED_ID;
+                tuple.isHandleResident_ = false;
+                GL.Arb.MakeTextureHandleNonResident(handle);
+              }
+            }
+
+            tuple.texture_.Dispose();
+            tuple.sampler_.Dispose();
+            tuple.IsDisposed = true;
           });
 
   private readonly GlTextureSamplerTupleParams params_;
   private readonly GlTexture texture_;
   private readonly GlSampler sampler_;
+
+  private const int UNDEFINED_ID = -1;
+  private bool isHandleResident_;
 
   public static GlTextureSamplerTuple FromTexture(IReadOnlyTexture texture) {
     return cache_.GetAndIncrement(new GlTextureSamplerTupleParams {
@@ -74,6 +88,17 @@ public sealed class GlTextureSamplerTuple : IGlTexture {
   }
 
   public int Id => this.texture_.Id;
+  public long Handle { get; private set; } = UNDEFINED_ID;
+
+  public void TryToMakeHandleResident() {
+    if (OpenGlFeatureService.SupportsBindlessTextures &&
+        !this.isHandleResident_) {
+      this.Handle
+          = GL.Arb.GetTextureSamplerHandle(this.texture_.Id, this.sampler_.Id);
+      GL.Arb.MakeTextureHandleResident(this.Handle);
+      this.isHandleResident_ = true;
+    }
+  }
 
   [MethodImpl(MethodImplOptions.AggressiveInlining)]
   public void Bind(int textureIndex = 0) {

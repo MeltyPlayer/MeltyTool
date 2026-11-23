@@ -154,10 +154,9 @@ public sealed class BackgroundRenderer : IRenderable, IDisposable {
           }
           """,
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
-          uniform sampler2D diffuseTexture;
+          uniform {{GlslConstants.SAMPLER_2D_TYPE}} diffuseTexture;
 
           in vec2 uv;
 

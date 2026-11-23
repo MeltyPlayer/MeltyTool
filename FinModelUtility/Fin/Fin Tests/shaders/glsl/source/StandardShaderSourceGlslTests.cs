@@ -18,8 +18,7 @@ public sealed class StandardShaderSourceGlslTests {
         default,
         (m, t) => { },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           out vec4 fragColor;
 
@@ -36,8 +35,7 @@ public sealed class StandardShaderSourceGlslTests {
         },
         (m, t) => { },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           out vec4 fragColor;
 
@@ -52,8 +50,7 @@ public sealed class StandardShaderSourceGlslTests {
         new MockMaterialOptions { WithColors = true, },
         (m, t) => { },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           out vec4 fragColor;
 
@@ -74,8 +71,7 @@ public sealed class StandardShaderSourceGlslTests {
         },
         (m, t) => m.DiffuseTexture = t,
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           uniform sampler2D diffuseTexture;
 
@@ -101,8 +97,7 @@ public sealed class StandardShaderSourceGlslTests {
         },
         (m, t) => m.EmissiveTexture = t,
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           uniform sampler2D emissiveTexture;
 
@@ -127,8 +122,7 @@ public sealed class StandardShaderSourceGlslTests {
         },
         (m, t) => { },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           {{GlslUtil.LIGHT_HEADER}}
 
@@ -165,8 +159,7 @@ public sealed class StandardShaderSourceGlslTests {
         },
         (m, t) => m.DiffuseTexture = t,
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           {{GlslUtil.LIGHT_HEADER}}
 
@@ -208,8 +201,7 @@ public sealed class StandardShaderSourceGlslTests {
         },
         (m, t) => m.EmissiveTexture = t,
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           {{GlslUtil.LIGHT_HEADER}}
 

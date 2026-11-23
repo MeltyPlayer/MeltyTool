@@ -53,8 +53,9 @@ public sealed class GlTexture : IGlTexture {
             if (id != UNDEFINED_ID) {
               GL.DeleteTextures(1, ref id);
               glTexture.Id = UNDEFINED_ID;
-              glTexture.IsDisposed = true;
             }
+
+            glTexture.IsDisposed = true;
           },
           count => DebugService.OpenGlTextureCount = count);
 
@@ -76,6 +77,7 @@ public sealed class GlTexture : IGlTexture {
     var target = TextureTarget.Texture2D;
     GL.BindTexture(target, this.Id);
     GlUtil.BindTexture(0, this.Id);
+
     this.LoadImageIntoTexture_(image, 0);
   }
 
@@ -102,15 +104,30 @@ public sealed class GlTexture : IGlTexture {
 
     switch (prms.Image) {
       case La16Image: {
-        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.Green]);
+        GL.TexParameter(target,
+                        TextureParameterName.TextureSwizzleRgba,
+                        [
+                            (int) All.Red, (int) All.Red, (int) All.Red,
+                            (int) All.Green
+                        ]);
         break;
       }
       case L8Image: {
-        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.One]);
+        GL.TexParameter(target,
+                        TextureParameterName.TextureSwizzleRgba,
+                        [
+                            (int) All.Red, (int) All.Red, (int) All.Red,
+                            (int) All.One
+                        ]);
         break;
       }
       case I8Image: {
-        GL.TexParameter(target, TextureParameterName.TextureSwizzleRgba, [(int) All.Red, (int) All.Red, (int) All.Red, (int) All.Red]);
+        GL.TexParameter(target,
+                        TextureParameterName.TextureSwizzleRgba,
+                        [
+                            (int) All.Red, (int) All.Red, (int) All.Red,
+                            (int) All.Red
+                        ]);
         break;
       }
     }

@@ -36,8 +36,10 @@ public sealed class FixedFunctionEquationsGlslPrinter(
     var normalTexture = material.NormalTexture;
     var hasNormalTexture = normalTexture != null;
 
-    sb.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
-    sb.AppendLine(GlslConstants.FLOAT_PRECISION);
+    var usesAnyTextures = textures.Concat(normalTexture).Nonnull().Any();
+    sb.AppendLine(usesAnyTextures
+                      ? GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES
+                      : GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES);
     sb.AppendLine();
 
     var usesSphericalReflectionMapping

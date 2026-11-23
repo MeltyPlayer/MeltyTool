@@ -25,8 +25,7 @@ public sealed class ColorShaderSourceGlsl : IShaderSourceGlsl {
     this.isSelectable_ = isSelectable;
 
     var sb = new IndentedStringBuilder();
-    sb.AppendLine($"#version {GlslConstants.FRAGMENT_SHADER_VERSION}");
-    sb.AppendLine(GlslConstants.FLOAT_PRECISION);
+    sb.AppendLine(GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES);
     sb.AppendLine();
 
     if (this.hasLighting_) {

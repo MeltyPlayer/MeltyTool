@@ -13,4 +13,10 @@ public static class OpenGlFeatureService {
     => !OpenGlVersionService.Es &&
        OpenGlVersionService.MajorVersion >= 4 &&
        OpenGlVersionService.MinorVersion >= 3;
+
+  public static bool SupportsBindlessTextures
+    => !OpenGlVersionService.Es &&
+       OpenGlVersionService.MajorVersion >= 4 &&
+       OpenGlVersionService.MinorVersion >= 4;
+
 }

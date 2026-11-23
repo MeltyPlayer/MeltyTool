@@ -16,10 +16,9 @@ public sealed class NullShaderSourceGlsl(
   public string FragmentShaderSource {
     get {
       var sb = new IndentedStringBuilder();
+      sb.AppendLine(GlslConstants.FRAGMENT_HEADER_WITHOUT_TEXTURES);
       sb.AppendLine(
           $"""
-           #version {GlslConstants.FRAGMENT_SHADER_VERSION}
-           {GlslConstants.FLOAT_PRECISION}
 
            out vec4 {GlslConstants.UNIFORM_FRAG_COLOR_NAME};
            """);

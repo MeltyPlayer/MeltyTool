@@ -1,4 +1,6 @@
-﻿using fin.ui.rendering.gl;
+﻿using System.Text;
+
+using fin.ui.rendering.gl;
 
 namespace fin.shaders.glsl;
 
@@ -10,12 +12,37 @@ public static class GlslConstants {
   public static string VERTEX_SHADER_VERSION => SHADER_VERSION;
   public static string FRAGMENT_SHADER_VERSION => SHADER_VERSION;
 
+  public static string GetFragmentHeader(
+      bool withFloatPrecision,
+      bool withTextures) {
+    var sb = new StringBuilder();
+
+    sb.AppendLine($"#version {FRAGMENT_SHADER_VERSION}");
+    if (OpenGlFeatureService.SupportsBindlessTextures && withTextures) {
+      sb.AppendLine("#extension GL_ARB_bindless_texture : require");
+      sb.AppendLine("layout(bindless_sampler) uniform;");
+      sb.AppendLine("layout(bindless_image) uniform;");
+    }
+
+    if (withFloatPrecision) {
+      sb.AppendLine(FLOAT_PRECISION);
+    }
+
+    return sb.ToString();
+  }
+
+  public static string FRAGMENT_HEADER_WITH_TEXTURES => GetFragmentHeader(true, true);
+  public static string FRAGMENT_HEADER_WITHOUT_TEXTURES => GetFragmentHeader(true, false);
+
+  public static string SAMPLER_2D_TYPE => "sampler2D";
+
   public const string FLOAT_PRECISION = "precision mediump float;";
 
   public const int UBO_GLOBAL_MATRICES_BINDING_INDEX = 1;
   public const string UBO_GLOBAL_MATRICES_NAME = "GlobalMatrices";
 
-  public const string UNIFORM_PROJECTION_VIEW_MATRIX_NAME = "projectionViewMatrix";
+  public const string UNIFORM_PROJECTION_VIEW_MATRIX_NAME
+      = "projectionViewMatrix";
 
   public const int UBO_CURRENT_MATRICES_BINDING_INDEX = 2;
   public const string UBO_CURRENT_MATRICES_NAME = "CurrentMatrices";

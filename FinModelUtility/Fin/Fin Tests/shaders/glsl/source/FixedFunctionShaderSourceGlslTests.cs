@@ -19,8 +19,7 @@ public sealed class FixedFunctionShaderSourceGlslTests {
         default,
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, false, false),
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           out vec4 fragColor;
 
@@ -39,8 +38,7 @@ public sealed class FixedFunctionShaderSourceGlslTests {
         new MockMaterialOptions { WithColors = true, },
         (m, t) => CreateFixedFunctionMaterial_(m, t, false, false, true),
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           in vec4 vertexColor0;
 
@@ -68,8 +66,7 @@ public sealed class FixedFunctionShaderSourceGlslTests {
                             0);
         },
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           uniform sampler2D texture0;
 
@@ -100,8 +97,7 @@ public sealed class FixedFunctionShaderSourceGlslTests {
         },
         (m, t) => CreateFixedFunctionMaterial_(m, t, true, true, true),
         $$"""
-          #version {{GlslConstants.FRAGMENT_SHADER_VERSION}}
-          {{GlslConstants.FLOAT_PRECISION}}
+          {{GlslConstants.FRAGMENT_HEADER_WITH_TEXTURES}}
 
           {{GlslUtil.LIGHT_HEADER}}
           uniform bool hasSpecular;

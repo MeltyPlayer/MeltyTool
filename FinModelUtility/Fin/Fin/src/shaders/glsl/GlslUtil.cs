@@ -85,9 +85,9 @@ public static partial class GlslUtil {
          #version {GlslConstants.VERTEX_SHADER_VERSION}
 
          {GetMatricesHeaders(model)}
-         
+
          uniform vec3 {GlslConstants.UNIFORM_CAMERA_POSITION_NAME};
-         
+
          layout(location = {location++}) in vec3 in_Position;
          """);
 
@@ -490,13 +490,12 @@ public static partial class GlslUtil {
     }
 
     sb.Append(
-        """
+        $$"""
 
-        struct Texture {
-          sampler2D sampler;
+          struct Texture {
+             {{GlslConstants.SAMPLER_2D_TYPE}} sampler;
 
-        """);
-
+          """);
 
     if (usesClamping) {
       sb.Append(
@@ -555,7 +554,7 @@ public static partial class GlslUtil {
     sb.Append(
         $$"""
 
-          vec2 norm2denorm(sampler2D tex, vec2 uv) {
+          vec2 norm2denorm({{GlslConstants.SAMPLER_2D_TYPE}} tex, vec2 uv) {
             return uv * vec2(textureSize(tex, 0)) - 0.5;
           }
 
@@ -563,17 +562,17 @@ public static partial class GlslUtil {
             return ivec2(floor(d_uv));
           }
 
-          ivec2 norm2idx(sampler2D tex, vec2 uv) {
+          ivec2 norm2idx({{GlslConstants.SAMPLER_2D_TYPE}} tex, vec2 uv) {
             return denorm2idx(norm2denorm(tex, uv));
           }
 
-          vec2 idx2norm(sampler2D tex, ivec2 idx) {
+          vec2 idx2norm({{GlslConstants.SAMPLER_2D_TYPE}} tex, ivec2 idx) {
             vec2 denorm_uv = vec2(idx) + 0.5;
             vec2 size = vec2(textureSize(tex, 0));
             return denorm_uv / size;
           }
 
-          vec4 texel_fetch(sampler2D tex, ivec2 idx) {
+          vec4 texel_fetch({{GlslConstants.SAMPLER_2D_TYPE}} tex, ivec2 idx) {
             vec2 uv = idx2norm(tex, idx);
             return texture(tex, uv);
           }
@@ -606,7 +605,7 @@ public static partial class GlslUtil {
            * The top triangle is used; otherwise, it's the bottom.
            */
 
-          vec4 {{GlslConstants.TEXTURE_3_POINT_NAME}}(sampler2D tex, vec2 uv) {
+          vec4 {{GlslConstants.TEXTURE_3_POINT_NAME}}({{GlslConstants.SAMPLER_2D_TYPE}} tex, vec2 uv) {
               vec2 denorm_uv = norm2denorm(tex, uv);
               ivec2 idx_low = denorm2idx(denorm_uv);
               vec2 ratio = denorm_uv - vec2(idx_low);
@@ -672,7 +671,7 @@ public static partial class GlslUtil {
       IReadOnlyList<IReadOnlyModelAnimation> animations)
     => finTexture.NeedsTextureShaderStruct(animations)
         ? "Texture"
-        : "sampler2D";
+        : GlslConstants.SAMPLER_2D_TYPE;
 
   public static string ReadColorFromTexture(
       string textureName,
