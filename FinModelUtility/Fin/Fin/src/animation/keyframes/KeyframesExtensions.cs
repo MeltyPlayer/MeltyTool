@@ -70,4 +70,13 @@ public static class KeyframesExtensions {
       float frame,
       float value)
     => keyframes.Axes[axis].Add(new Keyframe<float>(frame, value));
+
+  extension<TKeyframe>(IKeyframes<TKeyframe> keyframes)
+      where TKeyframe : IKeyframe {
+    public void AddRange(IEnumerable<TKeyframe> values) {
+      foreach (var value in values) {
+        keyframes.Add(value);
+      }
+    }
+  }
 }

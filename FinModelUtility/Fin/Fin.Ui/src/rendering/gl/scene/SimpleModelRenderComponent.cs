@@ -1,4 +1,6 @@
-﻿using fin.animation;
+﻿using System.Numerics;
+
+using fin.animation;
 using fin.animation.interpolation;
 using fin.config;
 using fin.math;

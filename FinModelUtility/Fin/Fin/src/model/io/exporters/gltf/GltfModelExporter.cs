@@ -1,5 +1,7 @@
 ﻿using System;
 
+using System.Linq;
+
 using fin.log;
 using fin.util.asserts;
 
@@ -24,7 +26,6 @@ public sealed class GltfModelExporter : IGltfModelExporter {
     var modelRoot = ModelRoot.CreateModel();
 
     var scene = modelRoot.UseScene("default");
-    var gltfSkin = modelRoot.CreateSkin();
 
     var animations = model.AnimationManager.Animations;
     var firstAnimation = (animations?.Count ?? 0) > 0 ? animations[0] : null;
@@ -38,13 +39,27 @@ public sealed class GltfModelExporter : IGltfModelExporter {
       //this.ApplyFirstFrameToSkeleton_(model.Skeleton, firstAnimation);
     }
 
-    // Builds skeleton.
     var rootNode = scene.CreateNode();
-    var skinNodeAndBones = GltfSkeletonBuilder.BuildAndBindSkeleton(
-        rootNode,
-        gltfSkin,
-        scale,
-        model.Skeleton);
+    var hasSkinning = model.Skin.BoneWeights.Any(
+        boneWeights => boneWeights.Weights.Count > 0);
+    var hasBoneAnimation = animations?.Any(
+        animation => animation.BoneTracks.Any(
+            track => (track.Translations?.HasAnyData ?? false) ||
+                     (track.Rotations?.HasAnyData ?? false) ||
+                     (track.Scales?.HasAnyData ?? false))) ?? false;
+
+    // Morph-only ASE meshes do not need a skin. An unused glTF skin makes
+    // importers such as Blender create artificial Armature/Node_0 objects.
+    Skin? gltfSkin = null;
+    (Node, IReadOnlyBone)[] skinNodeAndBones = [];
+    if (hasSkinning || hasBoneAnimation) {
+      gltfSkin = modelRoot.CreateSkin();
+      skinNodeAndBones = GltfSkeletonBuilder.BuildAndBindSkeleton(
+          rootNode,
+          gltfSkin,
+          scale,
+          model.Skeleton);
+    }
 
     // Builds materials.
     var finToTexCoordAndGltfMaterial =
@@ -67,6 +82,7 @@ public sealed class GltfModelExporter : IGltfModelExporter {
         skinNodeAndBones,
         gltfNodeByFinMesh,
         scale,
+        model.AnimationManager.MorphTargets,
         model.AnimationManager.Animations);
 
     return modelRoot;
