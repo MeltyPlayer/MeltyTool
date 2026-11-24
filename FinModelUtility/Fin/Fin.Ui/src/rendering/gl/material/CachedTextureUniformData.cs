@@ -20,7 +20,7 @@ public sealed class CachedTextureUniformData {
   public IReadOnlyTexture? FinTexture { get; }
   public IGlTexture FallbackGlTexture { get; }
 
-  public IShaderUniform<long> SamplerUniform { get; }
+  public ISamplerShaderUniform SamplerUniform { get; }
   public IShaderUniform<Vector2> ClampMinUniform { get; }
   public IShaderUniform<Vector2> ClampMaxUniform { get; }
   public IShaderUniform<Matrix3x2> Transform2dUniform { get; }
@@ -43,13 +43,10 @@ public sealed class CachedTextureUniformData {
 
     this.needsStruct_ = finTexture.NeedsTextureShaderStruct(animations);
     if (!this.needsStruct_) {
-      this.SamplerUniform = OpenGlFeatureService.SupportsBindlessTextures
-          ? shaderProgram.GetUniformSampler2d($"{textureName}")
-          : shaderProgram.GetUniformLong($"{textureName}");
+      this.SamplerUniform = shaderProgram.GetUniformSampler2d($"{textureName}");
     } else {
-      this.SamplerUniform = OpenGlFeatureService.SupportsBindlessTextures
-          ? shaderProgram.GetUniformSampler2d($"{textureName}.sampler")
-          : shaderProgram.GetUniformLong($"{textureName}.sampler");
+      this.SamplerUniform
+          = shaderProgram.GetUniformSampler2d($"{textureName}.sampler");
       this.ClampMinUniform =
           shaderProgram.GetUniformVec2($"{textureName}.clampMin");
       this.ClampMaxUniform =
@@ -68,11 +65,10 @@ public sealed class CachedTextureUniformData {
     if (OpenGlFeatureService.SupportsBindlessTextures &&
         glTexture is GlTextureSamplerTuple tuple) {
       tuple.TryToMakeHandleResident();
-      // TODO: Can we switch to maybe mark dirty here?
-      this.SamplerUniform.SetAndMarkDirty(tuple.Handle);
+      this.SamplerUniform.SetHandle(tuple.Handle);
     } else {
       glTexture.Bind(this.TextureIndex);
-      this.SamplerUniform.SetAndMaybeMarkDirty(this.TextureIndex);
+      this.SamplerUniform.SetTextureIndex(this.TextureIndex);
     }
 
     if (this.needsStruct_) {

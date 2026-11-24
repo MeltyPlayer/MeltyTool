@@ -52,6 +52,7 @@ public static partial class GlUtil {
         },
         0);
 
+    OpenGlFeatureServiceTester.TestForFeatures();
     GlMaterialConstants.Initialize();
 
     ResetGl();

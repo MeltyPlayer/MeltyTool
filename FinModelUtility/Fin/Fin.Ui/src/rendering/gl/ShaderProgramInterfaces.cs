@@ -14,6 +14,11 @@ public interface IShaderUniform<T> : IShaderUniform {
   void SetAndMaybeMarkDirty(in T value);
 }
 
+public interface ISamplerShaderUniform : IShaderUniform {
+  void SetTextureIndex(int textureIndex);
+  void SetHandle(long handle);
+}
+
 public interface IShaderUniformArray<T> {
   void SetAndMarkDirty(int index, in T value);
   void SetAndMaybeMarkDirty(int index, in T value);
@@ -26,7 +31,7 @@ public partial interface IShaderProgram : IDisposable {
   IShaderUniform<bool> GetUniformBool(string name);
   IShaderUniform<int> GetUniformInt(string name);
   IShaderUniform<float> GetUniformFloat(string name);
-  IShaderUniform<long> GetUniformSampler2d(string name);
+  ISamplerShaderUniform GetUniformSampler2d(string name);
   IShaderUniform<Vector2> GetUniformVec2(string name);
   IShaderUniform<Vector3> GetUniformVec3(string name);
   IShaderUniform<Vector4> GetUniformVec4(string name);

@@ -4,19 +4,7 @@ namespace fin.ui.rendering.gl;
 
 [IocCandiate]
 public static class OpenGlFeatureService {
-  public static bool SupportsNamedBufferStorage
-    => !OpenGlVersionService.Es &&
-       OpenGlVersionService.MajorVersion >= 4 &&
-       OpenGlVersionService.MinorVersion >= 5;
-  
-  public static bool SupportsSsbos
-    => !OpenGlVersionService.Es &&
-       OpenGlVersionService.MajorVersion >= 4 &&
-       OpenGlVersionService.MinorVersion >= 3;
-
-  public static bool SupportsBindlessTextures
-    => !OpenGlVersionService.Es &&
-       OpenGlVersionService.MajorVersion >= 4 &&
-       OpenGlVersionService.MinorVersion >= 4;
-
+  public static bool SupportsBindlessTextures { get; set; }
+  public static bool SupportsNamedBufferStorage { get; set; }
+  public static bool SupportsSsbos { get; set; }
 }
