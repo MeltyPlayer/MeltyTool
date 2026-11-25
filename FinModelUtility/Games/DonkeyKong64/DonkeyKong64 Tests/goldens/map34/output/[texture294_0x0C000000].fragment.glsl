@@ -3,7 +3,7 @@ precision mediump float;
 
 
 struct Texture {
-  sampler2D sampler;
+   sampler2D sampler;
   vec2 clampMin;
   vec2 clampMax;
 };

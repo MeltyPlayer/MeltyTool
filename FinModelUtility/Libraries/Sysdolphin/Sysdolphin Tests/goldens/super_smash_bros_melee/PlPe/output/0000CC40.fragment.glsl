@@ -33,7 +33,7 @@ uniform bool hasSpecular;
 uniform float shininess;
 
 struct Texture {
-  sampler2D sampler;
+   sampler2D sampler;
   mat4 transform3d;
 };
 

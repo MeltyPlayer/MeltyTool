@@ -4,9 +4,9 @@ precision mediump float;
 layout (std140, binding = 1) uniform GlobalMatrices {
   mat4 projectionViewMatrix;
 };
-layout (std430, binding = 2) readonly buffer CurrentMatrices {
+layout (std140, binding = 2) uniform CurrentMatrices {
   mat4 modelMatrix;
-  mat4 boneMatrices[];  
+  mat4 boneMatrices[21];  
 };
 
 struct Light {
@@ -41,7 +41,7 @@ uniform bool hasSpecular;
 uniform float shininess;
 
 struct Texture {
-  sampler2D sampler;
+   sampler2D sampler;
   vec2 clampMin;
   vec2 clampMax;
 };

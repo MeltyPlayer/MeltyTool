@@ -17,15 +17,17 @@ public static class GlslConstants {
       bool withTextures) {
     var sb = new StringBuilder();
 
-    sb.AppendLine($"#version {FRAGMENT_SHADER_VERSION}");
+    sb.Append($"#version {FRAGMENT_SHADER_VERSION}");
     if (OpenGlFeatureService.SupportsBindlessTextures && withTextures) {
+      sb.AppendLine();
       sb.AppendLine("#extension GL_ARB_bindless_texture : require");
       sb.AppendLine("layout(bindless_sampler) uniform;");
-      sb.AppendLine("layout(bindless_image) uniform;");
+      sb.Append("layout(bindless_image) uniform;");
     }
 
     if (withFloatPrecision) {
-      sb.AppendLine(FLOAT_PRECISION);
+      sb.AppendLine();
+      sb.Append(FLOAT_PRECISION);
     }
 
     return sb.ToString();

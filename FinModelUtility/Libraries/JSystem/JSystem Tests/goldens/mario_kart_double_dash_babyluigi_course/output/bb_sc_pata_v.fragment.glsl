@@ -3,7 +3,7 @@ precision mediump float;
 
 
 struct Texture {
-  sampler2D sampler;
+   sampler2D sampler;
   mat3x2 transform2d;
 };
 

@@ -4,9 +4,9 @@ precision mediump float;
 layout (std140, binding = 1) uniform GlobalMatrices {
   mat4 projectionViewMatrix;
 };
-layout (std430, binding = 2) readonly buffer CurrentMatrices {
+layout (std140, binding = 2) uniform CurrentMatrices {
   mat4 modelMatrix;
-  mat4 boneMatrices[];  
+  mat4 boneMatrices[16];  
 };
 
 struct Light {
@@ -41,7 +41,7 @@ uniform bool hasSpecular;
 uniform float shininess;
 
 struct Texture {
-  sampler2D sampler;
+   sampler2D sampler;
   mat3x2 transform2d;
 };
 
@@ -133,15 +133,23 @@ void main() {
   // Have to renormalize because the vertex normals can become distorted when interpolated.
   vec3 fragNormal = normalize(vertexNormal);
 
-  vec3 Q1 = dFdx(vertexPosition);
-  vec3 Q2 = dFdy(vertexPosition);
-  vec2 st1 = dFdx(uv0);
-  vec2 st2 = dFdy(uv0);
-  vec3 tangent = normalize(Q1*st2.t - Q2*st1.t);
-  vec3 binormal = normalize(-Q1*st2.s + Q2*st1.s);
+  vec3 dp1 = dFdx(vertexPosition);
+  vec3 dp2 = dFdy(vertexPosition);
+  vec2 normalTexCoord =uv0;
+  vec2 duv1 = dFdx(normalTexCoord);
+  vec2 duv2 = dFdy(normalTexCoord);
+
+  vec3 dp2perp = cross(dp2, fragNormal);
+  vec3 dp1perp = cross(fragNormal, dp1);
+  vec3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+  vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+
+  // Construct scale-invariant frame (avoids NaN on degenerate UVs)
+  float invmax = inversesqrt(max(dot(T, T), dot(B, B)));
+  mat3 TBN = mat3(T * invmax, B * invmax, fragNormal);
 
   vec3 textureNormal = texture(normalTexture, uv0).xyz * 2.0 - 1.0;
-  fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
+  fragNormal = normalize(TBN * textureNormal);
 
   vec2 sphericalReflectionUv = acos(normalize(projectionViewMatrix * vec4(fragNormal, 0)).xy) / 3.14159;
 

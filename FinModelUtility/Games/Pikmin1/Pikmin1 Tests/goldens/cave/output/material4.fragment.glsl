@@ -4,14 +4,14 @@ precision mediump float;
 layout (std140, binding = 1) uniform GlobalMatrices {
   mat4 projectionViewMatrix;
 };
-layout (std430, binding = 2) readonly buffer CurrentMatrices {
+layout (std140, binding = 2) uniform CurrentMatrices {
   mat4 modelMatrix;
-  mat4 boneMatrices[];  
+  mat4 boneMatrices[19];  
 };
 
 
 struct Texture {
-  sampler2D sampler;
+   sampler2D sampler;
   mat3x2 transform2d;
 };
 
