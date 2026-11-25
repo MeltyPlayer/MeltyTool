@@ -11,6 +11,7 @@ using fin.io;
 using fin.language.equations.fixedFunction;
 using fin.shaders.glsl;
 using fin.image.util;
+using fin.math;
 using fin.model.util;
 
 using readOnly;
@@ -455,6 +456,21 @@ public static class WrapModeUtil {
         (true, false)  => WrapMode.MIRROR_CLAMP,
         (true, true)   => WrapMode.MIRROR_REPEAT,
     };
+
+  extension(WrapMode wrapMode) {
+    public TNumber GetWrappedCoord<TNumber>(TNumber number, TNumber max)
+        where TNumber : INumber<TNumber> {
+      switch (wrapMode) {
+        case WrapMode.CLAMP: {
+          return number.Clamp(TNumber.Zero, max);
+        }
+        case WrapMode.REPEAT: {
+          return number.Mod0ToMax(max);
+        }
+        default: throw new NotImplementedException();
+      }
+    }
+  }
 }
 
 public enum ColorType {

@@ -70,6 +70,7 @@ public partial class GxFixedFunctionMaterial {
 
     this.Material = material;
 
+    // TODO: Do all the extra indirect tev stuff here
     var indirectTexture = populatedMaterial.IndirectTexture;
     if (indirectTexture != null) {
       var textureIndex = indirectTexture.TexMap;

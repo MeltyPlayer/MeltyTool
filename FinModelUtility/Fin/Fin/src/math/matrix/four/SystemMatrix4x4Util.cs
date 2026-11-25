@@ -112,12 +112,12 @@ public static class SystemMatrix4x4Util {
       Vector3? scale) {
     var dst = Matrix4x4.Identity;
 
-    if (center != null) {
-      dst = Matrix4x4.Multiply(FromTranslation(center.Value), dst);
-    }
-
     if (translation != null) {
       dst = Matrix4x4.Multiply(FromTranslation(translation.Value), dst);
+    }
+
+    if (center != null) {
+      dst = Matrix4x4.Multiply(FromTranslation(center.Value), dst);
     }
 
     if (rotation != null) {

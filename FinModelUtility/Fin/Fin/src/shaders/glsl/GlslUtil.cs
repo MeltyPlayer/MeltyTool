@@ -696,8 +696,27 @@ public static partial class GlslUtil {
         ? GlslConstants.TEXTURE_3_POINT_NAME
         : "texture";
 
+    var samplerName
+        = !needsClamp && textureTransformType == TextureTransformType.NONE
+            ? textureName
+            : $"{textureName}.sampler";
+
+    sb.Append($"{sampleMethod}({samplerName}, ");
+    AppendGetTextureUv(sb, textureName, uvName, finTexture, animations);
+    sb.Append(")");
+  }
+
+  public static void AppendGetTextureUv(
+      IndentedStringBuilder sb,
+      string textureName,
+      string uvName,
+      IReadOnlyTexture? finTexture,
+      IReadOnlyList<IReadOnlyModelAnimation> animations) {
+    var needsClamp = finTexture.UsesShaderClamping();
+    var textureTransformType = finTexture.GetTextureTransformType_(animations);
+
     if (!needsClamp && textureTransformType == TextureTransformType.NONE) {
-      sb.Append($"{sampleMethod}({textureName}, {uvName})");
+      sb.Append(uvName);
       return;
     }
 
@@ -710,14 +729,12 @@ public static partial class GlslUtil {
     };
 
     if (needsClamp) {
-      sb.Append($"{sampleMethod}({textureName}.sampler, ")
-        .Append(
-            $"clamp({transformedUv}, {textureName}.clampMin, {textureName}.clampMax)")
-        .Append(')');
+      sb.Append(
+          $"clamp({transformedUv}, {textureName}.clampMin, {textureName}.clampMax)");
       return;
     }
 
-    sb.Append($"{sampleMethod}({textureName}.sampler, {transformedUv})");
+    sb.Append(transformedUv);
   }
 
   public static bool NeedsTextureShaderStruct(

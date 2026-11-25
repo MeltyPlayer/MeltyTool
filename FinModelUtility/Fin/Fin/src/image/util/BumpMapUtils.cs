@@ -1,4 +1,7 @@
-﻿using fin.image.formats;
+﻿using System;
+using System.Numerics;
+
+using fin.image.formats;
 using fin.model;
 
 using SixLabors.ImageSharp.PixelFormats;
@@ -15,113 +18,45 @@ public static class BumpMapUtils {
       WrapMode wrapModeS,
       WrapMode wrapModeT) {
     var normalImage =
-        new Rgb24Image(PixelFormat.RGB888, image.Width, image.Height);
+        new Rgb24Image(PixelFormat.RGB888, image.Width - 1, image.Height - 1);
     using var normalImageLock = normalImage.UnsafeLock();
     var normalImageScan0 = normalImageLock.pixelScan0;
 
-    image.Access(bumpGetHandler => {
+    image.Access(bumpGetRgbaHandler => {
+      Func<int, int, float> bumpGetHandler = (x, y) => {
+        bumpGetRgbaHandler(x, y, out var value, out _, out _, out _);
+        return value / 255f;
+      };
+
       for (var y = 0; y < image.Height; ++y) {
         for (var x = 0; x < image.Width; ++x) {
-          bumpGetHandler(
-              x,
-              y,
-              out var centerIntensity,
-              out _,
-              out _,
-              out _);
+          var leftX = wrapModeS.GetWrappedCoord(x - 1, image.Width);
+          var rightX = wrapModeS.GetWrappedCoord(x + 1, image.Width);
+          var upY = wrapModeT.GetWrappedCoord(y - 1, image.Height);
+          var downY = wrapModeT.GetWrappedCoord(y + 1, image.Height);
 
-          byte leftIntensity;
-          if (x > 0) {
-            bumpGetHandler(
-                x - 1,
-                y,
-                out leftIntensity,
-                out _,
-                out _,
-                out _);
-          } else if (wrapModeS is WrapMode.REPEAT) {
-            bumpGetHandler(
-                image.Width - 1,
-                y,
-                out leftIntensity,
-                out _,
-                out _,
-                out _);
-          } else {
-            leftIntensity = centerIntensity;
-          }
+          // Sample 3x3 neighborhood normalized to [0, 1]
+          var tl = bumpGetHandler(leftX, upY);
+          var t = bumpGetHandler(x, upY);
+          var tr = bumpGetHandler(rightX, upY);
 
-          byte rightIntensity;
-          if (x < image.Width - 1) {
-            bumpGetHandler(
-                x + 1,
-                y,
-                out rightIntensity,
-                out _,
-                out _,
-                out _);
-          } else if (wrapModeS is WrapMode.REPEAT) {
-            bumpGetHandler(
-                0,
-                y,
-                out rightIntensity,
-                out _,
-                out _,
-                out _);
-          } else {
-            rightIntensity = centerIntensity;
-          }
+          var l = bumpGetHandler(leftX, y);
+          var r = bumpGetHandler(rightX, y);
 
-          byte upIntensity;
-          if (y > 0) {
-            bumpGetHandler(
-                x,
-                y - 1,
-                out upIntensity,
-                out _,
-                out _,
-                out _);
-          } else if (wrapModeT is WrapMode.REPEAT) {
-            bumpGetHandler(
-                x,
-                image.Height - 1,
-                out upIntensity,
-                out _,
-                out _,
-                out _);
-          } else {
-            upIntensity = centerIntensity;
-          }
+          var bl = bumpGetHandler(leftX, downY);
+          var b = bumpGetHandler(x, downY);
+          var br = bumpGetHandler(rightX, downY);
 
-          byte downIntensity;
-          if (y < image.Height - 1) {
-            bumpGetHandler(
-                x,
-                y + 1,
-                out downIntensity,
-                out _,
-                out _,
-                out _);
-          } else if (wrapModeT is WrapMode.REPEAT) {
-            bumpGetHandler(
-                x,
-                0,
-                out downIntensity,
-                out _,
-                out _,
-                out _);
-          } else {
-            downIntensity = centerIntensity;
-          }
+          // Sobel kernels (divided by 4 to match central-difference scale)
+          var dx = ((tl + 2f * l + bl) - (tr + 2f * r + br)) * 0.25f;
+          var dy = ((tl + 2f * t + tr) - (bl + 2f * b + br)) * 0.25f;
+          var dz = 1f;
 
-          var xIntensity
-              = ((rightIntensity / 255f - leftIntensity / 255f + 1) * .5f) *
-                255;
-          var yIntensity
-              = ((downIntensity / 255f - upIntensity / 255f + 1) * .5f) * 255;
-
-          normalImageScan0[y * image.Width + x]
-              = new Rgb24((byte) xIntensity, (byte) yIntensity, 255);
+          var normal = Vector3.Normalize(new Vector3(dx, dy, dz));
+          normalImageScan0[y * image.Width + x] = new Rgb24(
+              (byte) ((normal.X * 0.5f + 0.5f) * 255f),
+              (byte) ((normal.Y * 0.5f + 0.5f) * 255f),
+              (byte) ((normal.Z * 0.5f + 0.5f) * 255f));
         }
       }
     });

@@ -235,22 +235,40 @@ public sealed class FixedFunctionEquationsGlslPrinter(
                 // https://community.khronos.org/t/computing-the-tangent-space-in-the-fragment-shader/52861
                 var texCoordName
                     = $"{GlslConstants.IN_UV_NAME}{normalTexture.UvIndex}";
+                sb.Append(
+                    """
+                    vec3 dp1 = dFdx(vertexPosition);
+                    vec3 dp2 = dFdy(vertexPosition);
+                    vec2 normalTexCoord =
+                    """);
+                GlslUtil.AppendGetTextureUv(
+                    sb,
+                    "normalTexture",
+                    texCoordName,
+                    normalTexture,
+                    this.animations_);
                 sb.AppendLine(
-                    $"""
-                     vec3 Q1 = dFdx(vertexPosition);
-                     vec3 Q2 = dFdy(vertexPosition);
-                     vec2 st1 = dFdx({texCoordName});
-                     vec2 st2 = dFdy({texCoordName});
-                     vec3 tangent = normalize(Q1*st2.t - Q2*st1.t);
-                     vec3 binormal = normalize(-Q1*st2.s + Q2*st1.s);
+                    """
+                    ;
+                    vec2 duv1 = dFdx(normalTexCoord);
+                    vec2 duv2 = dFdy(normalTexCoord);
+                    
+                    vec3 dp2perp = cross(dp2, fragNormal);
+                    vec3 dp1perp = cross(fragNormal, dp1);
+                    vec3 T = dp2perp * duv1.x + dp1perp * duv2.x;
+                    vec3 B = dp2perp * duv1.y + dp1perp * duv2.y;
+                    
+                    // Construct scale-invariant frame (avoids NaN on degenerate UVs)
+                    float invmax = inversesqrt(max(dot(T, T), dot(B, B)));
+                    mat3 TBN = mat3(T * invmax, B * invmax, fragNormal);
 
-                     """);
+                    """);
               }
 
               sb.AppendLine(
                   $"""
                    vec3 textureNormal = {GlslUtil.ReadColorFromTexture("normalTexture", $"{GlslConstants.IN_UV_NAME}{normalTexture?.UvIndex ?? 0}", normalTexture, this.animations_)}.xyz * 2.0 - 1.0;
-                   fragNormal = normalize(mat3(tangent, binormal, fragNormal) * textureNormal);
+                   fragNormal = normalize(TBN * textureNormal);
 
                    """);
             }

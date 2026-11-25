@@ -30,6 +30,7 @@ public sealed partial class IndirectTexture : IIndirectTexture, IBinaryConvertib
   [SequenceLengthSource(16)]
   public TevIndirect[] TevIndirect { get; set; }
 
+  // TODO: Super incorrect...
   [Skip]
   public GxTexCoord TexCoord => this.IndTexOrder[0].TexCoord;
 

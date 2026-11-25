@@ -83,12 +83,12 @@ public static class SystemMatrix3x2Util {
       float? skewXRadians) {
     var dst = Matrix3x2.Identity;
 
-    if (center != null) {
-      dst = Matrix3x2.Multiply(FromTranslation(center.Value), dst);
-    }
-
     if (translation != null) {
       dst = Matrix3x2.Multiply(FromTranslation(translation.Value), dst);
+    }
+
+    if (center != null) {
+      dst = Matrix3x2.Multiply(FromTranslation(center.Value), dst);
     }
 
     if (rotationRadians != null) {
