@@ -1,0 +1,28 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+uint magic;
+
+uint fileCount;
+struct FileHeader {
+    string name;
+    uint size;
+} fileHeaders[fileCount] <optimize=false>;
+
+for (local int i = 0; i < fileCount; ++i) {
+    struct FileData {
+        byte bytes[fileHeaders[i].size];
+    } data;
+}

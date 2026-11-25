@@ -133,6 +133,7 @@
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
+    <ProjectReference Include="..\..\Games\DanDare\DanDare\DanDare.csproj" />
     <ProjectReference Include="..\..\Games\DonkeyKong64\DonkeyKong64\DonkeyKong64.csproj" />
     <ProjectReference Include="..\..\Games\MarioParty\MarioParty\MarioParty.csproj" />
     <ProjectReference Include="..\..\Games\PaperMario\PaperMario\PaperMario.csproj" />
