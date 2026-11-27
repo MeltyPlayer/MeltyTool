@@ -205,12 +205,12 @@ public sealed class A3dMeshNode : BA3dNode {
     set => this.vertexIndex_.Value = value;
   }
 
-  public float[] Normal {
+  public float[] Normals {
     get => this.normal_.Value;
     set => this.normal_.Value = value;
   }
 
-  public int[] NormalIndex {
+  public int[] NormalIndices {
     get => this.normalIndex_.Value;
     set => this.normalIndex_.Value = value;
   }

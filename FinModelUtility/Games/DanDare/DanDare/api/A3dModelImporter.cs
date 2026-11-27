@@ -66,10 +66,9 @@ public sealed partial class A3dModelImporter
                     .AsSystemColor();
 
                 if (a3dTextureNode == null) {
-                  /*var colorMaterial = finModel.MaterialManager.AddColorMaterial(color);
+                  var colorMaterial = finModel.MaterialManager.AddColorMaterial(color);
                   colorMaterial.Name = a3dMaterialNode!.Name;
-                  return colorMaterial;*/
-                  return null;
+                  return colorMaterial;
                 }
 
                 var textureMaterial
@@ -105,27 +104,50 @@ public sealed partial class A3dModelImporter
                     VertexSpace.RELATIVE_TO_BONE,
                     parentFinBone);
 
-            var triangleVertices = new List<IReadOnlyVertex>();
-
             var a3dPositions = a3dMeshNode.Positions.Cast<float, Vector3>();
+            var a3dNormals = a3dMeshNode.Normals.Cast<float, Vector3>();
             var a3dUvs = a3dMeshNode.Uvs.Cast<float, Vector2>();
 
-            for (var i = 0; i < a3dMeshNode.PositionIndices.Length; ++i) {
-              var a3dPositionIndex = a3dMeshNode.PositionIndices[i];
-              if (a3dPositionIndex == -1) {
-                continue;
+            var triangleVertices = new List<IReadOnlyVertex>();
+
+            if (a3dMeshNode.PositionIndices.Length == 0) {
+              for (var i = 0; i < a3dPositions.Length; ++i) {
+                var finVertex = finModel.Skin.AddVertex(a3dPositions[i]);
+
+                if (a3dNormals.Length > 0) {
+                  finVertex.SetLocalNormal(a3dNormals[i]);
+                }
+
+                if (a3dUvs.Length > 0) {
+                  finVertex.SetUv(a3dUvs[i]);
+                }
+
+                finVertex.SetBoneWeights(boneWeights);
+
+                triangleVertices.Add(finVertex);
               }
+            } else {
+              for (var i = 0; i < a3dMeshNode.PositionIndices.Length; ++i) {
+                var a3dPositionIndex = a3dMeshNode.PositionIndices[i];
+                if (a3dPositionIndex == -1) {
+                  continue;
+                }
 
-              var finVertex
-                  = finModel.Skin.AddVertex(a3dPositions[a3dPositionIndex]);
+                var finVertex
+                    = finModel.Skin.AddVertex(a3dPositions[a3dPositionIndex]);
 
-              if (a3dMeshNode.UvIndices.Length > 0) {
-                finVertex.SetUv(a3dUvs[a3dMeshNode.UvIndices[i]]);
+                if (a3dMeshNode.NormalIndices.Length > 0) {
+                  finVertex.SetLocalNormal(a3dNormals[a3dMeshNode.NormalIndices[i]]);
+                }
+
+                if (a3dMeshNode.UvIndices.Length > 0) {
+                  finVertex.SetUv(a3dUvs[a3dMeshNode.UvIndices[i]]);
+                }
+
+                finVertex.SetBoneWeights(boneWeights);
+
+                triangleVertices.Add(finVertex);
               }
-
-              finVertex.SetBoneWeights(boneWeights);
-
-              triangleVertices.Add(finVertex);
             }
 
             var triangles = mesh.AddTriangles(triangleVertices);
