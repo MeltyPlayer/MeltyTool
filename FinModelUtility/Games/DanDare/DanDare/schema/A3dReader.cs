@@ -47,7 +47,7 @@ public sealed class A3dReader {
       "fogColor", "fogNear", "fogFar", "fogActive"
   };
 
-  private readonly Dictionary<string, A3dNode> namedNodes_ = new();
+  private readonly Dictionary<string, BA3dNode> namedNodes_ = new();
 
   public A3dScene Load(Stream stream) {
     using var br = new SchemaBinaryReader(stream, Endianness.BigEndian);
@@ -88,7 +88,11 @@ public sealed class A3dReader {
 
     Stream baseStream = new MemoryStream(data);
     if (data.Length >= 2 && data[0] == 0x1F && data[1] == 0x8B) {
-      baseStream = new GZipStream(baseStream, CompressionMode.Decompress);
+      using var gZipStream = new GZipStream(baseStream, CompressionMode.Decompress);
+      baseStream = new MemoryStream();
+
+      gZipStream.CopyTo(baseStream);
+      baseStream.Position = 0;
     }
 
     using (baseStream) {
@@ -131,10 +135,10 @@ public sealed class A3dReader {
       case A3dField<string> f:
         f.Value = br.ReadStringNT();
         break;
-      case A3dField<A3dNode?> f:
+      case A3dField<BA3dNode?> f:
         f.Value = this.ReadNode_(br);
         break;
-      case A3dField<List<A3dNode>> f:
+      case A3dField<List<BA3dNode>> f:
         this.ReadNodeArrayInto_(br, f.Value);
         break;
       case A3dField<Vector3> f:
@@ -155,7 +159,7 @@ public sealed class A3dReader {
   }
 
   private void ReadNodeArrayInto_(IBinaryReader br,
-                                  List<A3dNode> targetList) {
+                                  List<BA3dNode> targetList) {
     int count = br.ReadInt32();
     targetList.EnsureCapacity(targetList.Count + count);
     for (int i = 0; i < count; i++) {
@@ -244,7 +248,7 @@ public sealed class A3dReader {
     return result;
   }
 
-  private A3dNode? ReadNode_(IBinaryReader br) {
+  private BA3dNode? ReadNode_(IBinaryReader br) {
     byte typeId = br.ReadByte();
     string nodeType = NODE_TYPES_[typeId];
 
@@ -263,10 +267,10 @@ public sealed class A3dReader {
     return this.ReadNodeBody_(br, nodeType, nodeName);
   }
 
-  private A3dNode ReadNodeBody_(IBinaryReader br,
+  private BA3dNode ReadNodeBody_(IBinaryReader br,
                                 string nodeType,
                                 string nodeName) {
-    var node = A3dNode.Create(nodeType, nodeName);
+    var node = BA3dNode.Create(nodeType, nodeName);
     this.namedNodes_[nodeName] = node;
     while (true) {
       int rawId = br.ReadByte();
@@ -391,6 +395,8 @@ public sealed class A3dReader {
           or "color") => A3dFieldType.FLOAT3,
       (_, "orientation" or "rotation" or "scaleRotation") =>
           A3dFieldType.FLOAT4,
+      ("aPositionLinear", "value") => A3dFieldType.FLOAT3,
+      ("aRotationLinear", "value") => A3dFieldType.FLOAT4,
       _ => throw new KeyNotFoundException(
           $"Unknown field '{nodeType}.{fieldName}'.")
   };

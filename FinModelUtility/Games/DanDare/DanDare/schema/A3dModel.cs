@@ -35,12 +35,12 @@ public sealed class A3dField<T> : IA3dField {
   }
 }
 
-public abstract class A3dNode {
+public abstract class BA3dNode {
   public string Type { get; }
   public string Name { get; }
   public Dictionary<string, IA3dField> Fields { get; } = new();
 
-  protected A3dNode(string type, string name) {
+  protected BA3dNode(string type, string name) {
     this.Type = type;
     this.Name = name;
   }
@@ -71,11 +71,11 @@ public abstract class A3dNode {
             Array.Empty<float>()),
         A3dFieldType.DOUBLE => new A3dField<double>(name, type),
         A3dFieldType.STRING => new A3dField<string>(name, type, string.Empty),
-        A3dFieldType.NODE   => new A3dField<A3dNode?>(name, type),
-        A3dFieldType.NODE_ARRAY => new A3dField<List<A3dNode>>(
+        A3dFieldType.NODE   => new A3dField<BA3dNode?>(name, type),
+        A3dFieldType.NODE_ARRAY => new A3dField<List<BA3dNode>>(
             name,
             type,
-            new List<A3dNode>()),
+            new List<BA3dNode>()),
         A3dFieldType.FLOAT3 => new A3dField<Vector3>(name, type),
         A3dFieldType.FLOAT4 => new A3dField<Vector4>(name, type),
         _ => throw new NotSupportedException(
@@ -86,7 +86,7 @@ public abstract class A3dNode {
     return created;
   }
 
-  public static A3dNode Create(string type, string name) => type switch {
+  public static BA3dNode Create(string type, string name) => type switch {
       "aTransform"        => new A3dTransformNode(name),
       "aMesh"             => new A3dMeshNode(name),
       "aMaterial"         => new A3dMaterialNode(name),
@@ -108,12 +108,12 @@ public abstract class A3dNode {
   };
 }
 
-public sealed class A3dUnknownNode : A3dNode {
+public sealed class A3dUnknownNode : BA3dNode {
   public A3dUnknownNode(string type, string name) : base(type, name) { }
 }
 
-public sealed class A3dTransformNode : A3dNode {
-  private readonly A3dField<List<A3dNode>> children_;
+public sealed class A3dTransformNode : BA3dNode {
+  private readonly A3dField<List<BA3dNode>> children_;
   private readonly A3dField<Vector3> position_;
   private readonly A3dField<Vector4> rotation_;
   private readonly A3dField<Vector3> scale_;
@@ -121,7 +121,7 @@ public sealed class A3dTransformNode : A3dNode {
   private readonly A3dField<Vector3> center_;
   private readonly A3dField<int> choice_;
 
-  public List<A3dNode> Children {
+  public List<BA3dNode> Children {
     get => this.children_.Value;
     set => this.children_.Value = value;
   }
@@ -131,9 +131,9 @@ public sealed class A3dTransformNode : A3dNode {
     set => this.position_.Value = value;
   }
 
-  public Vector4 Rotation {
-    get => this.rotation_.Value;
-    set => this.rotation_.Value = value;
+  public Quaternion Rotation {
+    get => this.rotation_.Value.AsQuaternion();
+    set => this.rotation_.Value = value.AsVector4();
   }
 
   public Vector3 Scale {
@@ -159,12 +159,12 @@ public sealed class A3dTransformNode : A3dNode {
   public A3dTransformNode(string name) : base("aTransform", name) {
     this.children_ = this.RegisterField("children",
                                         A3dFieldType.NODE_ARRAY,
-                                        new List<A3dNode>());
+                                        new List<BA3dNode>());
     this.position_
         = this.RegisterField("position", A3dFieldType.FLOAT3, Vector3.Zero);
     this.rotation_ = this.RegisterField("rotation",
                                         A3dFieldType.FLOAT4,
-                                        new Vector4(0, 0, 1, 0));
+                                        Quaternion.Identity.AsVector4());
     this.scale_ = this.RegisterField("scale", A3dFieldType.FLOAT3, Vector3.One);
     this.scaleRotation_ = this.RegisterField("scaleRotation",
                                              A3dFieldType.FLOAT4,
@@ -175,7 +175,7 @@ public sealed class A3dTransformNode : A3dNode {
   }
 }
 
-public sealed class A3dMeshNode : A3dNode {
+public sealed class A3dMeshNode : BA3dNode {
   private readonly A3dField<bool> ccw_;
   private readonly A3dField<float[]> vertex_;
   private readonly A3dField<int[]> vertexIndex_;
@@ -185,8 +185,9 @@ public sealed class A3dMeshNode : A3dNode {
   private readonly A3dField<int[]> mapIndex_;
   private readonly A3dField<float[]> color_;
   private readonly A3dField<int[]> colorIndex_;
-  private readonly A3dField<A3dNode?> material_;
+  private readonly A3dField<BA3dNode?> material_;
   private readonly A3dField<int[]> materialIndex_;
+  private readonly A3dField<BA3dNode?> texture_;
   private readonly A3dField<float> crease_;
 
   public bool Ccw {
@@ -194,12 +195,12 @@ public sealed class A3dMeshNode : A3dNode {
     set => this.ccw_.Value = value;
   }
 
-  public float[] Vertex {
+  public float[] Positions {
     get => this.vertex_.Value;
     set => this.vertex_.Value = value;
   }
 
-  public int[] VertexIndex {
+  public int[] PositionIndices {
     get => this.vertexIndex_.Value;
     set => this.vertexIndex_.Value = value;
   }
@@ -214,12 +215,12 @@ public sealed class A3dMeshNode : A3dNode {
     set => this.normalIndex_.Value = value;
   }
 
-  public float[] Map {
+  public float[] Uvs {
     get => this.map_.Value;
     set => this.map_.Value = value;
   }
 
-  public int[] MapIndex {
+  public int[] UvIndices {
     get => this.mapIndex_.Value;
     set => this.mapIndex_.Value = value;
   }
@@ -242,6 +243,11 @@ public sealed class A3dMeshNode : A3dNode {
   public int[] MaterialIndex {
     get => this.materialIndex_.Value;
     set => this.materialIndex_.Value = value;
+  }
+
+  public A3dTextureNode? Texture {
+    get => this.texture_.Value as A3dTextureNode;
+    set => this.texture_.Value = value;
   }
 
   public float Crease {
@@ -275,19 +281,23 @@ public sealed class A3dMeshNode : A3dNode {
     this.colorIndex_ = this.RegisterField("colorIndex",
                                           A3dFieldType.INT_ARRAY,
                                           Array.Empty<int>());
-    this.material_
-        = this.RegisterField<A3dNode?>("material", A3dFieldType.NODE, null);
+    this.material_ = this.RegisterField<BA3dNode?>("material",
+      A3dFieldType.NODE,
+      null);
     this.materialIndex_ = this.RegisterField("materialIndex",
                                              A3dFieldType.INT_ARRAY,
                                              Array.Empty<int>());
+    this.texture_ = this.RegisterField<BA3dNode?>("texture",
+                                                  A3dFieldType.NODE,
+                                                  null);
     this.crease_ = this.RegisterField("crease", A3dFieldType.FLOAT, 0.5f);
   }
 }
 
-public sealed class A3dMaterialNode : A3dNode {
+public sealed class A3dMaterialNode : BA3dNode {
   private readonly A3dField<Vector3> diffuse_;
   private readonly A3dField<Vector3> emissive_;
-  private readonly A3dField<A3dNode?> texture_;
+  private readonly A3dField<BA3dNode?> texture_;
   private readonly A3dField<float> alpha_;
   private readonly A3dField<float> transparency_;
   private readonly A3dField<int> shading_;
@@ -334,7 +344,7 @@ public sealed class A3dMaterialNode : A3dNode {
     this.emissive_
         = this.RegisterField("emissive", A3dFieldType.FLOAT3, Vector3.Zero);
     this.texture_
-        = this.RegisterField<A3dNode?>("texture", A3dFieldType.NODE, null);
+        = this.RegisterField<BA3dNode?>("texture", A3dFieldType.NODE, null);
     this.alpha_ = this.RegisterField("alpha", A3dFieldType.FLOAT, 1.0f);
     this.transparency_
         = this.RegisterField("transparency", A3dFieldType.FLOAT, 0.0f);
@@ -343,9 +353,9 @@ public sealed class A3dMaterialNode : A3dNode {
   }
 }
 
-public sealed class A3dTextureNode : A3dNode {
-  private readonly A3dField image_;
-  private readonly A3dField bilinear_;
+public sealed class A3dTextureNode : BA3dNode {
+  private readonly A3dField<string> image_;
+  private readonly A3dField<bool> bilinear_;
 
   public string Image {
     get => this.image_.Value;
@@ -364,10 +374,10 @@ public sealed class A3dTextureNode : A3dNode {
   }
 }
 
-public sealed class A3dCameraNode : A3dNode {
+public sealed class A3dCameraNode : BA3dNode {
   private readonly A3dField<float> fov_;
   private readonly A3dField<Vector3> position_;
-  private readonly A3dField<Quaternion> orientation_;
+  private readonly A3dField<Vector4> orientation_;
   private readonly A3dField<string> description_;
   private readonly A3dField<int> cameraType_;
   private readonly A3dField<float> near_;
@@ -383,9 +393,9 @@ public sealed class A3dCameraNode : A3dNode {
     set => this.position_.Value = value;
   }
 
-  public Vector4 Orientation {
-    get => this.orientation_.Value;
-    set => this.orientation_.Value = value;
+  public Quaternion Orientation {
+    get => this.orientation_.Value.AsQuaternion();
+    set => this.orientation_.Value = value.AsVector4();
   }
 
   public string Description {
@@ -415,7 +425,7 @@ public sealed class A3dCameraNode : A3dNode {
                                         new Vector3(0, 0, 10));
     this.orientation_ = this.RegisterField("orientation",
                                            A3dFieldType.FLOAT4,
-                                           Quaternion.Identity);
+                                           Quaternion.Identity.AsVector4());
     this.description_
         = this.RegisterField("description", A3dFieldType.STRING, string.Empty);
     this.cameraType_ = this.RegisterField("type", A3dFieldType.INT, 0);
@@ -424,7 +434,7 @@ public sealed class A3dCameraNode : A3dNode {
   }
 }
 
-public sealed class A3dLightNode : A3dNode {
+public sealed class A3dLightNode : BA3dNode {
   private readonly A3dField<bool> on_;
   private readonly A3dField<Vector3> color_;
   private readonly A3dField<float> intensity_;
@@ -484,7 +494,7 @@ public sealed class A3dLightNode : A3dNode {
   }
 }
 
-public sealed class A3dParameterNode : A3dNode {
+public sealed class A3dParameterNode : BA3dNode {
   private readonly A3dField<string> copyright_;
   private readonly A3dField<bool> showCopyright_;
   private readonly A3dField<bool> sceneBilinear_;
@@ -571,7 +581,7 @@ public sealed class A3dParameterNode : A3dNode {
   }
 }
 
-public sealed class A3dExternNode : A3dNode {
+public sealed class A3dExternNode : BA3dNode {
   private readonly A3dField<string> url_;
   private readonly A3dField<string> command_;
 
@@ -592,7 +602,7 @@ public sealed class A3dExternNode : A3dNode {
   }
 }
 
-public sealed class A3dTimerNode : A3dNode {
+public sealed class A3dTimerNode : BA3dNode {
   private readonly A3dField<double> cycleInterval_;
   private readonly A3dField<bool> loop_;
   private readonly A3dField<bool> enabled_;
@@ -662,8 +672,8 @@ public sealed class A3dTimerNode : A3dNode {
   }
 }
 
-public sealed class A3dTouchNode : A3dNode {
-  private readonly A3dField<A3dNode?> touch_;
+public sealed class A3dTouchNode : BA3dNode {
+  private readonly A3dField<BA3dNode?> touch_;
   private readonly A3dField<bool> enabled_;
   private readonly A3dField<bool> pressed_;
   private readonly A3dField<bool> isOver_;
@@ -671,7 +681,7 @@ public sealed class A3dTouchNode : A3dNode {
   private readonly A3dField<bool> sendBool_;
   private readonly A3dField<double> sendTime_;
 
-  public A3dNode? Touch {
+  public BA3dNode? Touch {
     get => this.touch_.Value;
     set => this.touch_.Value = value;
   }
@@ -708,7 +718,7 @@ public sealed class A3dTouchNode : A3dNode {
 
   public A3dTouchNode(string name) : base("aTouch", name) {
     this.touch_
-        = this.RegisterField<A3dNode?>("touch", A3dFieldType.NODE, null);
+        = this.RegisterField<BA3dNode?>("touch", A3dFieldType.NODE, null);
     this.enabled_ = this.RegisterField("enabled", A3dFieldType.BOOL, true);
     this.pressed_ = this.RegisterField("pressed", A3dFieldType.BOOL, false);
     this.isOver_ = this.RegisterField("isOver", A3dFieldType.BOOL, false);
@@ -718,7 +728,7 @@ public sealed class A3dTouchNode : A3dNode {
   }
 }
 
-public abstract class A3dInterpolatorNode<TValue> : A3dNode {
+public abstract class A3dInterpolatorNode<TValue> : BA3dNode {
   private readonly A3dField<float> alpha_;
   private readonly A3dField<float[]> keyTime_;
   private readonly A3dField<float[]> keyValue_;
@@ -751,9 +761,13 @@ public abstract class A3dInterpolatorNode<TValue> : A3dNode {
       : base(type, name) {
     this.alpha_ = this.RegisterField("alpha", A3dFieldType.FLOAT, 0.0f);
     this.keyTime_
-        = RegisterField("keyTime", A3dFieldType.FLOAT_ARRAY, Array.Empty());
+        = RegisterField("keyTime",
+                        A3dFieldType.FLOAT_ARRAY,
+                        Array.Empty<float>());
     this.keyValue_
-        = RegisterField("keyValue", A3dFieldType.FLOAT_ARRAY, Array.Empty());
+        = RegisterField("keyValue",
+                        A3dFieldType.FLOAT_ARRAY,
+                        Array.Empty<float>());
     this.value_ = this.RegisterField("value", valueFieldType, defaultValue);
   }
 }
