@@ -1,47 +1,11 @@
 ﻿using System.Buffers.Binary;
 using System.IO.Compression;
+using System.Numerics;
 using System.Text;
 
 using schema.binary;
 
 namespace DanDare.schema;
-
-public enum A3dFieldType {
-  BOOL = 0,
-  INT = 2,
-  INT_ARRAY = 3,
-  FLOAT = 4,
-  FLOAT_ARRAY = 5,
-  DOUBLE = 6,
-  STRING = 8,
-  NODE = 10,
-  NODE_ARRAY = 11,
-  FLOAT3 = 12,
-  FLOAT4 = 13
-}
-
-public sealed record A3dField(string Name, A3dFieldType Type) {
-  public object? Value { get; set; }
-  public List<A3dField> Links { get; } = new();
-}
-
-public sealed record A3dNode(string Type, string Name) {
-  public Dictionary<string, A3dField> Fields { get; } = new();
-
-  public A3dField GetOrCreateField(string name, A3dFieldType defaultType) {
-    if (!Fields.TryGetValue(name, out var field)) {
-      field = new A3dField(name, defaultType);
-      Fields[name] = field;
-    }
-
-    return field;
-  }
-}
-
-public sealed class A3dScene {
-  public A3dNode? Root { get; set; }
-  public Dictionary<string, byte[]> EmbeddedFiles { get; } = new();
-}
 
 public sealed class A3dReader {
   private const int ARCHIVE_MAGIC_ = 1095127040; // "AFP\0" (0x41465000)
@@ -85,14 +49,10 @@ public sealed class A3dReader {
 
   private readonly Dictionary<string, A3dNode> namedNodes_ = new();
 
-  /// <summary>
-  /// Reads a full .a3d archive (header + scene + embedded textures) or a raw/gzipped .a3x scene stream.
-  /// </summary>
   public A3dScene Load(Stream stream) {
     using var br = new SchemaBinaryReader(stream, Endianness.BigEndian);
     int magic = br.ReadInt32();
 
-    // Check if this is an AFP\0 container archive
     if (magic == ARCHIVE_MAGIC_) {
       int entryCount = br.ReadInt32();
       var entries = new (string Name, int Size)[entryCount];
@@ -114,7 +74,6 @@ public sealed class A3dReader {
       return scene;
     }
 
-    // Otherwise, rewind the 4 magic bytes and parse directly as an .a3x scene
     using var combined = new MemoryStream();
     Span<byte> prefix = stackalloc byte[4];
     BinaryPrimitives.WriteInt32BigEndian(prefix, magic);
@@ -133,85 +92,78 @@ public sealed class A3dReader {
     }
 
     using (baseStream) {
-      using var br = new SchemaBinaryReader(baseStream);
-      string header = Encoding.ASCII.GetString(br.ReadBytes(4));
+      using var reader
+          = new SchemaBinaryReader(baseStream, Endianness.BigEndian);
+      string header = Encoding.ASCII.GetString(reader.ReadBytes(4));
       if (header != "a3dx") {
-        throw new InvalidDataException(
-            $"Invalid a3x file header: '{header}'");
+        throw new InvalidDataException($"Invalid a3x file header: '{header}'");
       }
 
-      var root = new A3dNode("aTransform", "SCENEGRAPH");
-      var childrenField
-          = root.GetOrCreateField("children", A3dFieldType.NODE_ARRAY);
-      this.ReadNodeArrayField_(br, root, childrenField);
-
-      this.ReadTrailingLinks_(br);
+      var root = new A3dTransformNode("SCENEGRAPH");
+      this.ReadNodeArrayInto_(reader, root.Children);
+      this.ReadTrailingLinks_(reader);
 
       scene.Root = root;
       return scene;
     }
   }
 
-  private void ReadFieldValue_(IBinaryReader br,
-                               A3dNode ownerNode,
-                               A3dField field) {
-    switch (field.Type) {
-      case A3dFieldType.BOOL:
-        field.Value = br.ReadByte() != 0;
+  private void ReadField_(IBinaryReader br, IA3dField field) {
+    switch (field) {
+      case A3dField<bool> f:
+        f.Value = br.ReadByte() != 0;
         break;
-      case A3dFieldType.INT:
-        field.Value = br.ReadInt32();
+      case A3dField<int> f:
+        f.Value = br.ReadInt32();
         break;
-      case A3dFieldType.INT_ARRAY:
-        field.Value = ReadPackedIntArray_(br);
+      case A3dField<int[]> f:
+        f.Value = ReadPackedIntArray_(br);
         break;
-      case A3dFieldType.FLOAT:
-        field.Value = br.ReadSingle();
+      case A3dField<float> f:
+        f.Value = br.ReadSingle();
         break;
-      case A3dFieldType.FLOAT_ARRAY:
-        field.Value = ReadQuantizedFloatArray_(br);
+      case A3dField<float[]> f:
+        f.Value = ReadQuantizedFloatArray_(br);
         break;
-      case A3dFieldType.DOUBLE:
-        field.Value = br.ReadDouble();
+      case A3dField<double> f:
+        f.Value = br.ReadDouble();
         break;
-      case A3dFieldType.STRING:
-        field.Value = br.ReadStringNT();
+      case A3dField<string> f:
+        f.Value = br.ReadStringNT();
         break;
-      case A3dFieldType.NODE:
-        field.Value = this.ReadNode_(br);
+      case A3dField<A3dNode?> f:
+        f.Value = this.ReadNode_(br);
         break;
-      case A3dFieldType.NODE_ARRAY:
-        this.ReadNodeArrayField_(br, ownerNode, field);
+      case A3dField<List<A3dNode>> f:
+        this.ReadNodeArrayInto_(br, f.Value);
         break;
-      case A3dFieldType.FLOAT3:
-        field.Value = new[]
-            { br.ReadSingle(), br.ReadSingle(), br.ReadSingle() };
+      case A3dField<Vector3> f:
+        f.Value = new Vector3(br.ReadSingle(),
+                              br.ReadSingle(),
+                              br.ReadSingle());
         break;
-      case A3dFieldType.FLOAT4:
-        field.Value = new[] {
-            br.ReadSingle(), br.ReadSingle(), br.ReadSingle(),
-            br.ReadSingle()
-        };
+      case A3dField<Vector4> f:
+        f.Value = new Vector4(br.ReadSingle(),
+                              br.ReadSingle(),
+                              br.ReadSingle(),
+                              br.ReadSingle());
         break;
       default:
         throw new NotSupportedException(
-            $"Unsupported field type {(int) field.Type} on '{ownerNode.Type}.{field.Name}'");
+            $"Unsupported field implementation '{field.GetType().Name}' for '{field.Name}'");
     }
   }
 
-  private void ReadNodeArrayField_(IBinaryReader br,
-                                   A3dNode ownerNode,
-                                   A3dField field) {
+  private void ReadNodeArrayInto_(IBinaryReader br,
+                                  List<A3dNode> targetList) {
     int count = br.ReadInt32();
-    var list = field.Value as List<A3dNode> ?? new List<A3dNode>(count);
+    targetList.EnsureCapacity(targetList.Count + count);
     for (int i = 0; i < count; i++) {
       var node = this.ReadNode_(br);
       if (node != null) {
-        list.Add(node);
+        targetList.Add(node);
       }
     }
-
-    field.Value = list;
   }
 
   private static int[] ReadPackedIntArray_(IBinaryReader br) {
@@ -257,7 +209,6 @@ public sealed class A3dReader {
     float[] result = new float[totalFloats];
 
     var (components, byteWidth) = QUANTIZATION_MODES_[mode];
-
     if (components == 0) {
       for (int i = 0; i < totalFloats; i++)
         result[i] = br.ReadSingle();
@@ -273,6 +224,7 @@ public sealed class A3dReader {
 
     int tupleCount = totalFloats / components;
     int outIndex = 0;
+
     if (byteWidth == 1) {
       for (int t = 0; t < tupleCount; t++) {
         for (int c = 0; c < components; c++) {
@@ -295,6 +247,7 @@ public sealed class A3dReader {
   private A3dNode? ReadNode_(IBinaryReader br) {
     byte typeId = br.ReadByte();
     string nodeType = NODE_TYPES_[typeId];
+
     if (nodeType == "USE") {
       string targetName = br.ReadStringNT();
       this.namedNodes_.TryGetValue(targetName, out var existing);
@@ -313,7 +266,7 @@ public sealed class A3dReader {
   private A3dNode ReadNodeBody_(IBinaryReader br,
                                 string nodeType,
                                 string nodeName) {
-    var node = new A3dNode(nodeType, nodeName);
+    var node = A3dNode.Create(nodeType, nodeName);
     this.namedNodes_[nodeName] = node;
     while (true) {
       int rawId = br.ReadByte();
@@ -327,9 +280,14 @@ public sealed class A3dReader {
         continue;
       }
 
-      A3dFieldType fieldType = ResolveFieldType_(nodeType, fieldName);
-      var field = node.GetOrCreateField(fieldName, fieldType);
-      this.ReadFieldValue_(br, node, field);
+      if (!node.Fields.TryGetValue(fieldName, out var field)) {
+        field = node.GetOrCreateField(fieldName,
+                                      ResolveFallbackFieldType_(
+                                          nodeType,
+                                          fieldName));
+      }
+
+      this.ReadField_(br, field);
     }
 
     return node;
@@ -359,96 +317,81 @@ public sealed class A3dReader {
     string dstFieldName = target[(dstDot + 1)..];
     if (this.namedNodes_.TryGetValue(srcNodeName, out var srcNode) &&
         this.namedNodes_.TryGetValue(dstNodeName, out var dstNode)) {
-      var srcField
-          = srcNode.GetOrCreateField(srcFieldName,
-                                     ResolveFieldType_(
-                                         srcNode.Type,
-                                         srcFieldName));
-      var dstField
-          = dstNode.GetOrCreateField(dstFieldName,
-                                     ResolveFieldType_(
-                                         dstNode.Type,
-                                         dstFieldName));
+      var srcField = srcNode.GetOrCreateField(srcFieldName,
+                                              ResolveFallbackFieldType_(
+                                                  srcNode.Type,
+                                                  srcFieldName));
+      var dstField = dstNode.GetOrCreateField(dstFieldName,
+                                              ResolveFallbackFieldType_(
+                                                  dstNode.Type,
+                                                  dstFieldName));
       srcField.Links.Add(dstField);
     }
   }
 
-  /// 
-  /// Maps (nodeType, fieldName) to the binary A3dFieldType expected by the stream.
-  /// 
-  private static A3dFieldType ResolveFieldType_(string nodeType,
-                                                string fieldName)
-    => (nodeType, fieldName) switch {
-        (_, "children") => A3dFieldType.NODE_ARRAY,
-        (_, "ccw"
-            or "loop"
-            or "isActive"
-            or "enabled"
-            or "pressed"
-            or "isOver"
-            or "on"
-            or "bilinear"
-            or "sendBool"
-            or "showCopyright"
-            or "sceneBilinear"
-            or "sceneAntialias"
-            or "fogActive") => A3dFieldType.BOOL,
-        (_, "choice" or "type" or "shading") => A3dFieldType.INT,
-        (_, "vertexIndex"
-            or "mapIndex"
-            or "normalIndex"
-            or "colorIndex"
-            or "materialIndex") => A3dFieldType.INT_ARRAY,
-        (_, "fov"
-            or "crease"
-            or "intensity"
-            or "radius"
-            or "near"
-            or "far"
-            or "alpha"
-            or "transparency"
-            or "fogNear"
-            or "fogFar") => A3dFieldType.FLOAT,
-        (_, "vertex" or "map" or "normal" or "keyTime") => A3dFieldType
-            .FLOAT_ARRAY,
-        ("aColorLinear", "keyValue")    => A3dFieldType.FLOAT_ARRAY,
-        ("aPositionLinear", "keyValue") => A3dFieldType.FLOAT_ARRAY,
-        ("aRotationLinear", "keyValue") => A3dFieldType.FLOAT_ARRAY,
-        ("aVertexLinear", "keyValue")   => A3dFieldType.FLOAT_ARRAY,
-        ("aFloatLinear", "keyValue")    => A3dFieldType.FLOAT_ARRAY,
-        (_, "cycleInterval"
-            or "startTime"
-            or "touchTime"
-            or "stopTime"
-            or "cycleTime"
-            or "time"
-            or "sendTime") => A3dFieldType.DOUBLE,
-        (_, "image"
-            or "description"
-            or "source"
-            or "command"
-            or "url"
-            or "copyright"
-            or "backgroundImage") => A3dFieldType.STRING,
-        (_, "material" or "texture" or "touch") => A3dFieldType.NODE,
-        (_, "position"
-            or "scale"
-            or "center"
-            or "diffuse"
-            or "emissive"
-            or "attenuation"
-            or "direction"
-            or "backgroundColor"
-            or "fogColor") => A3dFieldType.FLOAT3,
-        ("aMesh", "color") => A3dFieldType.FLOAT_ARRAY,
-        (_, "color")       => A3dFieldType.FLOAT3,
-        (_, "orientation" or "rotation" or "scaleRotation") => A3dFieldType
-            .FLOAT4,
-        ("aFloatLinear", "value") => A3dFieldType.FLOAT,
-        ("aPositionLinear" or "aColorLinear", "value") => A3dFieldType.FLOAT3,
-        ("aRotationLinear", "value") => A3dFieldType.FLOAT4,
-        ("aVertexLinear", "value") => A3dFieldType.FLOAT_ARRAY,
-        _ => throw new KeyNotFoundException(
-            $"Unknown field type mapping for '{nodeType}.{fieldName}'.")
-    };
+  private static A3dFieldType ResolveFallbackFieldType_(
+      string nodeType,
+      string fieldName) => (nodeType, fieldName) switch {
+      (_, "children") => A3dFieldType.NODE_ARRAY,
+      (_, "ccw"
+          or "loop"
+          or "isActive"
+          or "enabled"
+          or "pressed"
+          or "isOver"
+          or "on"
+          or "bilinear"
+          or "sendBool"
+          or "showCopyright"
+          or "sceneBilinear"
+          or "sceneAntialias"
+          or "fogActive") => A3dFieldType.BOOL,
+      (_, "choice" or "type" or "shading") => A3dFieldType.INT,
+      (_, "vertexIndex"
+          or "mapIndex"
+          or "normalIndex"
+          or "colorIndex"
+          or "materialIndex") => A3dFieldType.INT_ARRAY,
+      (_, "fov"
+          or "crease"
+          or "intensity"
+          or "radius"
+          or "near"
+          or "far"
+          or "alpha"
+          or "transparency"
+          or "fogNear"
+          or "fogFar") => A3dFieldType.FLOAT,
+      (_, "vertex" or "map" or "normal" or "keyTime" or "keyValue") =>
+          A3dFieldType.FLOAT_ARRAY,
+      (_, "cycleInterval"
+          or "startTime"
+          or "touchTime"
+          or "stopTime"
+          or "cycleTime"
+          or "time"
+          or "sendTime") => A3dFieldType.DOUBLE,
+      (_, "image"
+          or "description"
+          or "source"
+          or "command"
+          or "url"
+          or "copyright"
+          or "backgroundImage") => A3dFieldType.STRING,
+      (_, "material" or "texture" or "touch") => A3dFieldType.NODE,
+      (_, "position"
+          or "scale"
+          or "center"
+          or "diffuse"
+          or "emissive"
+          or "attenuation"
+          or "direction"
+          or "backgroundColor"
+          or "fogColor"
+          or "color") => A3dFieldType.FLOAT3,
+      (_, "orientation" or "rotation" or "scaleRotation") =>
+          A3dFieldType.FLOAT4,
+      _ => throw new KeyNotFoundException(
+          $"Unknown field '{nodeType}.{fieldName}'.")
+  };
 }
