@@ -1,4 +1,8 @@
-﻿using fin.image;
+﻿using System.IO.Compression;
+
+using DanDare.schema;
+
+using fin.image;
 using fin.io;
 using fin.model;
 using fin.model.impl;
@@ -18,24 +22,15 @@ public sealed record A3dModelFileBundle(IReadOnlyTreeFile MainFile)
 public sealed partial class A3dModelImporter
     : IModelImporter<A3dModelImporter, A3dModelFileBundle> {
   public IModel Import(A3dModelFileBundle fileBundle) {
-    using var br = fileBundle.MainFile.OpenReadAsBinary(Endianness.BigEndian);
-
-    br.AssertString("AFP\0");
-
-    var fileCount = br.ReadInt32();
-    var fileHeaders = br.ReadNews<FileHeader>(fileCount);
-
-    var files = new Dictionary<string, byte[]>();
-    for (var f = 0; f < fileCount; ++f) {
-      var fileHeader = fileHeaders[f];
-      var bytes = br.ReadBytes(fileHeader.Size);
-      files[fileHeader.Name] = bytes;
-    }
-
     var finModel = new ModelImpl {
         FileBundle = fileBundle,
         Files = fileBundle.MainFile.AsFileSet(),
     };
+
+    using var fs = fileBundle.MainFile.OpenRead();
+    var a3dScene = new A3dReader().Load(fs);
+
+    var files = a3dScene.EmbeddedFiles;
 
     var imageFiles
         = files.Where(t => Path.GetExtension(t.Key).ToLower() is ".gif"
@@ -43,8 +38,12 @@ public sealed partial class A3dModelImporter
     foreach (var (imageFileName, imageFileBytes) in imageFiles) {
       using var ms = new MemoryStream(imageFileBytes);
       var img = FinImage.FromStream(ms);
-      finModel.MaterialManager.CreateTexture(img);
+     
+      var finTexture = finModel.MaterialManager.CreateTexture(img);
+      finTexture.Name = imageFileName;
     }
+
+
 
     return finModel;
   }

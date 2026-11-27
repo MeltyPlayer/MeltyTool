@@ -1,0 +1,51 @@
+//------------------------------------------------
+//--- 010 Editor v16.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+BigEndian();
+
+uint magic;
+
+uint fileCount;
+struct FileHeader {
+    string name;
+    uint size;
+} fileHeaders[fileCount] <optimize=false>;
+
+string Extension(string fileName) {
+    local int periodOffset = Strchr(fileName, '.');
+    return SubStr(fileName, periodOffset);
+}
+
+struct A3d {
+    uint magic;
+};
+
+local uint startOffset;
+local uint endOffset;
+for (local int i = 0; i < fileCount; ++i) {
+    startOffset = FTell();
+    
+    struct FileData {
+        byte bytes[fileHeaders[i].size];
+    } data;
+
+    endOffset = FTell();
+    
+    if (Stricmp(Extension(fileHeaders[i].name), ".a3d") == 0) {
+        FSeek(startOffset);
+        
+        A3d a3d;
+
+        FSeek(endOffset);
+    }    
+}

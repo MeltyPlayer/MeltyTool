@@ -13,16 +13,18 @@
 
 BigEndian();
 
+local uint COLOR_MAGIC = 0xff00ff;
+local uint COLOR_IMAGE = 0x0000ff;
+local uint COLOR_COUNT = 0x00ff00;
+local uint COLOR_OFFSET = 0xff0000;
+local uint COLOR_ORIENTATION = 0x888800;
+local uint COLOR_HEADER = 0xffffff;
+local uint COLOR_INDEX = 0x00ffff;
+
 uint magic;
 
-uint fileCount;
-struct FileHeader {
+uint stringCount <bgcolor=COLOR_COUNT>;
+struct SomeString {
     string name;
-    uint size;
-} fileHeaders[fileCount] <optimize=false>;
-
-for (local int i = 0; i < fileCount; ++i) {
-    struct FileData {
-        byte bytes[fileHeaders[i].size];
-    } data;
-}
+    uint unk;
+} someStrings[stringCount] <optimize=false, bgcolor=COLOR_HEADER>;
