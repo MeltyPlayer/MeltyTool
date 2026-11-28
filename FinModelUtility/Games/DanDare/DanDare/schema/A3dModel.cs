@@ -141,9 +141,9 @@ public sealed class A3dTransformNode : BA3dNode {
     set => this.scale_.Value = value;
   }
 
-  public Vector4 ScaleRotation {
-    get => this.scaleRotation_.Value;
-    set => this.scaleRotation_.Value = value;
+  public Quaternion ScaleRotation {
+    get => this.scaleRotation_.Value.AsQuaternion();
+    set => this.scaleRotation_.Value = value.AsVector4();
   }
 
   public Vector3 Center {

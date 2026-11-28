@@ -10,6 +10,8 @@ using fin.data.lazy;
 using fin.data.queues;
 using fin.image;
 using fin.io;
+using fin.math;
+using fin.math.matrix.four;
 using fin.math.transform;
 using fin.model;
 using fin.model.impl;
@@ -86,10 +88,59 @@ public sealed partial class A3dModelImporter
       while (nodeQueue.TryDequeue(out var a3dNode, out var parentFinBone)) {
         switch (a3dNode) {
           case A3dTransformNode a3dTransformNode: {
-            var finBone = parentFinBone.AddChild(a3dTransformNode.Position);
-            finBone.Transform
-                   .SetScale(a3dTransformNode.Scale)
-                   .SetRotation(a3dTransformNode.Rotation);
+            var finBone = parentFinBone;
+
+            var name = a3dTransformNode.Name;
+
+            var center = a3dTransformNode.Center;
+            var translation = a3dTransformNode.Position;
+            var rotation = a3dTransformNode.Rotation;
+            var scaleRotation = a3dTransformNode.ScaleRotation;
+            var scale = a3dTransformNode.Scale;
+
+            if (!translation.IsRoughly0()) {
+              finBone = finBone.AddChild(translation);
+              finBone.Name = $"{name}_translation";
+            }
+
+            if (!center.IsRoughly0()) {
+              finBone = finBone.AddChild(center);
+              finBone.Name = $"{name}_+center";
+            }
+
+            if (!rotation.IsIdentity) {
+              finBone = finBone.AddChild(Vector3.Zero);
+              finBone.Transform.SetRotation(rotation);
+              finBone.Name = $"{name}_rotation";
+            }
+
+            if (!scaleRotation.IsIdentity) {
+              finBone = finBone.AddChild(Vector3.Zero);
+              finBone.Transform.SetRotation(scaleRotation);
+              finBone.Name = $"{name}_+scaleRotation";
+            }
+
+            if (!scale.IsRoughly1()) {
+              finBone = finBone.AddChild(Vector3.Zero);
+              finBone.Transform.SetScale(scale);
+              finBone.Name = $"{name}_scale";
+            }
+
+            if (!scaleRotation.IsIdentity) {
+              finBone = finBone.AddChild(Vector3.Zero);
+              finBone.Transform.SetRotation(-scaleRotation);
+              finBone.Name = $"{name}_-scaleRotation";
+            }
+
+            if (!center.IsRoughly0()) {
+              finBone = finBone.AddChild(-center);
+              finBone.Name = $"{name}_-center";
+            }
+
+            if (finBone == parentFinBone) {
+              finBone = parentFinBone.AddChild(Vector3.Zero);
+              finBone.Name = name;
+            }
 
             nodeQueue.Enqueue(
                 a3dTransformNode.Children.Select(c => (c, finBone)));
@@ -163,7 +214,7 @@ public sealed partial class A3dModelImporter
           case A3dTimerNode or A3dCameraNode or A3dLightNode: {
             break;
           }
-          case A3dRotationLinearNode or A3dVector3LinearNode: {
+          case A3dRotationLinearNode a3dRotationLinearNode: {
             break;
           }
           default: {

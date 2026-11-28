@@ -20,4 +20,10 @@ public static class SystemVector4Util {
 
     return true;
   }
+
+  public static bool IsRoughly0(this in Vector4 vector)
+    => vector.X.IsRoughly0() &&
+       vector.Y.IsRoughly0() &&
+       vector.Z.IsRoughly0() &&
+       vector.W.IsRoughly0();
 }
