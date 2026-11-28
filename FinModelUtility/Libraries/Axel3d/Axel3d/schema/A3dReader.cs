@@ -5,7 +5,7 @@ using System.Text;
 
 using schema.binary;
 
-namespace DanDare.schema;
+namespace axel3d.schema;
 
 public sealed class A3dReader {
   private const int ARCHIVE_MAGIC_ = 1095127040; // "AFP\0" (0x41465000)

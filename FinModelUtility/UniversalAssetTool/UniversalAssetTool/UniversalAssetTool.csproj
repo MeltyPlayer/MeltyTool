@@ -133,7 +133,6 @@
     <ProjectReference Include="..\..\Formats\Glo\Glo\Glo.csproj" />
     <ProjectReference Include="..\..\Formats\Ssm\Ssm\Ssm.csproj" />
     <ProjectReference Include="..\..\Formats\Vrml\Vrml\Vrml.csproj" />
-    <ProjectReference Include="..\..\Games\DanDare\DanDare\DanDare.csproj" />
     <ProjectReference Include="..\..\Games\DonkeyKong64\DonkeyKong64\DonkeyKong64.csproj" />
     <ProjectReference Include="..\..\Games\MarioParty\MarioParty\MarioParty.csproj" />
     <ProjectReference Include="..\..\Games\PaperMario\PaperMario\PaperMario.csproj" />
@@ -142,6 +141,7 @@
     <ProjectReference Include="..\..\Games\SwordOfTheBerserkGutsRage\SwordOfTheBerserkGutsRage\SwordOfTheBerserkGutsRage.csproj" />
 
     <ProjectReference Include="..\..\Libraries\AngelStudios\AngelStudios\AngelStudios.csproj" />
+    <ProjectReference Include="..\..\Libraries\Axel3d\Axel3d\Axel3d.csproj" />
     <ProjectReference Include="..\..\Libraries\F3dzex2\F3dzex2\F3dzex2.csproj" />
     <ProjectReference Include="..\..\Libraries\Fmod\Fmod\Fmod.csproj" />
     <ProjectReference Include="..\..\Libraries\Grezzo\Grezzo\Grezzo.csproj" />

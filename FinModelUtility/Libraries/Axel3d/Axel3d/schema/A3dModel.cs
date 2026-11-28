@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace DanDare.schema;
+namespace axel3d.schema;
 
 public enum A3dFieldType {
   BOOL = 0,

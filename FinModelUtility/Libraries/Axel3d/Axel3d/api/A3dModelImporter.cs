@@ -1,9 +1,9 @@
 ﻿using System.Drawing;
 using System.Numerics;
 
-using CommunityToolkit.HighPerformance;
+using axel3d.schema;
 
-using DanDare.schema;
+using CommunityToolkit.HighPerformance;
 
 using fin.color;
 using fin.data.lazy;
@@ -23,7 +23,7 @@ using fin.util.sets;
 using schema.binary;
 using schema.binary.attributes;
 
-namespace DanDare.api;
+namespace axel3d.api;
 
 public sealed record A3dModelFileBundle(IReadOnlyTreeFile MainFile)
     : IModelFileBundle<A3dModelFileBundle, A3dModelImporter>;
